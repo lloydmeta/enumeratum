@@ -28,7 +28,7 @@ object EnumMacros {
         When moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
 
         val enclosingModuleMembers = c.internal.enclosingOwner.owner.typeSignature.decls.toList
-        enclosingModule.filter { x =>
+        enclosingModuleMembers.filter { x =>
           try (x.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
         }
 
