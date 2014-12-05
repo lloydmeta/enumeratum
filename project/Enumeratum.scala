@@ -2,6 +2,8 @@ import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
 import scalariform.formatter.preferences._
+import scoverage.ScoverageSbtPlugin
+import scoverage.ScoverageSbtPlugin._
 
 object Enumeratum extends Build {
 
