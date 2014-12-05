@@ -57,10 +57,10 @@ object EnumMacros {
 
   private def findSubclassSymbols(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
     import c.universe._
-    val directKnownSubclasses = typeSymbol.asClass.knownDirectSubclasses.toList // is generaly empty dunno why
+    val directKnownSubclasses = typeSymbol.asClass.knownDirectSubclasses.toList // is generally empty dunno why
     val enclosingBodySubclasses: List[Symbol] = try {
       /*
-        Whem moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
+        When moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
 
         val enclosingModuleMembers = c.internal.enclosingOwner.owner.typeSignature.decls.toList
         enclosingModule.filter { x =>
