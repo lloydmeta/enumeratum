@@ -9,13 +9,14 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "0.0.2", 
+    "com.beachape" %% "enumeratum" % "0.0.3", 
 )
 ```
 
 ## Example
 
-Using Enumeratum is simple. Simply declare your own sealed trait, and implement as follows.
+Using Enumeratum is simple. Simply declare your own sealed trait `A`, and implement it in case objects inside
+an object that extends from `Enum[A]` as follows.
 
 *Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you 
 implement the value method. If you don't care about ordinality, just pass `findValues` directly into your
