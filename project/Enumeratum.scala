@@ -2,8 +2,7 @@ import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
 import scalariform.formatter.preferences._
-import scoverage.ScoverageSbtPlugin
-import scoverage.ScoverageSbtPlugin._
+import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 
 object Enumeratum extends Build {
 
@@ -49,6 +48,7 @@ object Enumeratum extends Build {
     scalaVersion := theScalaVersion
   ) ++
     scalariformSettings ++
+    scoverageSettings ++
     formatterPrefs ++
     compilerSettings ++
     resolverSettings ++
@@ -84,6 +84,11 @@ object Enumeratum extends Build {
   lazy val testSettings = Seq(Test).flatMap { t =>
     Seq(parallelExecution in t := false) // Avoid DB-related tests stomping on each other
   }
+
+  lazy val scoverageSettings = Seq(
+    coverageExcludedPackages := """enumeratum\.EnumMacros""",
+    coverageHighlighting := true
+  )
 
   // Settings for publishing to Maven Central
   lazy val publishSettings = Seq(
