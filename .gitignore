@@ -1,0 +1,30 @@
+logs
+project/project
+project/target
+target
+tmp
+.history
+dist
+/.idea
+/*.iml
+/out
+/.idea_modules
+/.classpath
+/.project
+/RUNNING_PID
+/.settings
+
+#OSX
+.DS_Store
+
+#Vagrant
+.vagrant
+vagrant_ansible_inventory_default
+tmp
+
+# Assets stuff
+.sass-cache
+node_modules
+
+# Ignore compiled assets
+/public/assets
