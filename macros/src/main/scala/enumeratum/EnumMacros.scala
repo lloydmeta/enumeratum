@@ -14,7 +14,7 @@ object EnumMacros {
     val subclassSymbols = findSubclassSymbols(c)(typeSymbol)
     // 2.10.x has major problems unquoting a Map[String, Ident]
     val subclassNameToObjPairs: Seq[c.universe.Tree] = subclassSymbols.map { s =>
-      val obj = symbolToIdent(c)(s)
+      val obj = Ident(s)
       Apply(
         Select(
           reify(Tuple2).tree,
@@ -44,7 +44,7 @@ object EnumMacros {
     val typeSymbol = weakTypeOf[A].typeSymbol
     validateType(c)(typeSymbol)
     val subclassSymbols = findSubclassSymbols(c)(typeSymbol)
-    c.Expr[Set[A]](q"Set[${tq"$resultType"}](..${subclassSymbols.map(symbolToIdent(c)(_))})")
+    c.Expr[Set[A]](q"Set[${tq"$resultType"}](..${subclassSymbols.map(s => Ident(s))})")
   }
 
   private def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
@@ -59,6 +59,16 @@ object EnumMacros {
     import c.universe._
     val directKnownSubclasses = typeSymbol.asClass.knownDirectSubclasses.toList // is generaly empty dunno why
     val enclosingBodySubclasses: List[Symbol] = try {
+      /*
+        Whem moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
+
+        val enclosingModuleMembers = c.internal.enclosingOwner.owner.typeSignature.decls.toList
+        enclosingModule.filter { x =>
+          try (x.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
+        }
+
+        Unfortunately, 2.10.x does not support .enclosingOwner :P
+      */
       val enclosingModule = c.enclosingClass.asInstanceOf[ModuleDef]
       enclosingModule.impl.body.filter { x =>
         try (x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
@@ -70,10 +80,4 @@ object EnumMacros {
     else subclasses
   }
 
-  private def symbolToIdent(c: Context)(sym: c.universe.Symbol): c.universe.Ident = {
-    import c.universe._
-    Ident(if (sym.isModule) sym else
-      sym.asInstanceOf[scala.reflect.internal.Symbols#Symbol].sourceModule.asInstanceOf[Symbol]
-    )
-  }
 }

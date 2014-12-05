@@ -5,7 +5,7 @@ import scalariform.formatter.preferences._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "0.0.1"
+  lazy val theVersion = "0.0.2"
   lazy val theScalaVersion = "2.11.4"
 
   lazy val root = Project(id = "enumeratum", base = file("."), settings = commonWithPublishSettings)
@@ -16,11 +16,11 @@ object Enumeratum extends Build {
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(macros)
+    ).dependsOn(macros).aggregate(macros)
 
   lazy val macros = Project(id = "enumeratum-macros", base = file("macros"), settings = commonWithPublishSettings)
     .settings(
-      name := "enumeratum-macrus",
+      name := "enumeratum-macros",
       crossScalaVersions := Seq("2.10.4", "2.11.4"),
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
@@ -86,7 +86,7 @@ object Enumeratum extends Build {
   // Settings for publishing to Maven Central
   lazy val publishSettings = Seq(
     pomExtra :=
-      <url>https://github.com/lloydmeta/enumeratus</url>
+      <url>https://github.com/lloydmeta/enumeratum</url>
         <licenses>
           <license>
             <name>MIT</name>
@@ -95,8 +95,8 @@ object Enumeratum extends Build {
           </license>
         </licenses>
         <scm>
-          <url>git@github.com:lloydmeta/enumeratus.git</url>
-          <connection>scm:git:git@github.com:lloydmeta/enumeratus.git</connection>
+          <url>git@github.com:lloydmeta/enumeratum.git</url>
+          <connection>scm:git:git@github.com:lloydmeta/enumeratum.git</connection>
         </scm>
         <developers>
           <developer>
