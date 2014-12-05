@@ -1,4 +1,4 @@
-# Enumeratum
+# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg)](https://travis-ci.org/lloydmeta/enumeratum)
 
 Yet another enumeration implementation for Scala for the sake of exhaustive pattern match warnings, Enumeratum is
 an implementation based on a single Scala macro that searches for implementations of a sealed trait.
