@@ -5,7 +5,7 @@ an implementation based on a single Scala macro that searches for implementation
 
 Compatible with Scala 2.10.x and 2.11.x
 
-# SBT
+## SBT
 
 ```scala
 libraryDependencies ++= Seq(
@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-## Example
+## How-to + example
 
 Using Enumeratum is simple. Simply declare your own sealed trait `A`, and implement it in case objects inside
 an object that extends from `Enum[A]` as follows.
