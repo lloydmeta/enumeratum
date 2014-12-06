@@ -26,18 +26,35 @@ implement the value method. If you don't care about ordinality, just pass `findV
 
 import enumeratum.Enum
 
-sealed trait MyEnum
+sealed trait Greeting
 
-object MyEnum extends Enum[MyEnum] {
+object Greeting extends Enum[Greeting] {
 
-  /* Implement the values method as a val */
   val values = findValues
 
-  case object Hello extends MyEnum
-  case object GoodBye extends MyEnum
-  case object Hi extends MyEnum
+  case object Hello extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi extends Greeting
+  case object Bye extends Greeting
 
 }
+
+import Greeting._
+
+def tryMatching(v: Greeting): Unit = v match {
+  case Hello => println("Hello")
+  case GoodBye => println("GoodBye")
+  case Hi => println("Hi")
+}
+
+/**
+Pattern match warning ...
+  
+<console>:24: warning: match may not be exhaustive.
+It would fail on the following input: Bye
+       def tryMatching(v: Greeting): Unit = v match {
+  
+*/
 
 ```
 
