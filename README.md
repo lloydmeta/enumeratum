@@ -18,8 +18,8 @@ libraryDependencies ++= Seq(
 Using Enumeratum is simple. Simply declare your own sealed trait `A`, and implement it in case objects inside
 an object that extends from `Enum[A]` as follows.
 
-*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you 
-implement the value method. If you don't care about ordinality, just pass `findValues` directly into your
+*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement 
+the `values` method. If you don't care about ordinality, just pass `findValues` directly into your
 `val values` implementation.
 
 ```scala
