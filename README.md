@@ -9,7 +9,7 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "0.0.3", 
+    "com.beachape" %% "enumeratum" % "0.0.4", 
 )
 ```
 
