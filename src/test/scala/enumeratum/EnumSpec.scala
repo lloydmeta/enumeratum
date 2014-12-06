@@ -96,6 +96,19 @@ class EnumSpec extends FunSpec with Matchers {
         }
       """ shouldNot compile
     }
+
+    it("should fail to compile if the enum is not an object") {
+      """
+      sealed trait Foo
+
+      class Class extends Enum[Foo] {
+        val values = findValues
+
+        case object Bar extends Foo
+        case object Baz extends Foo
+      }
+        """ shouldNot compile
+    }
   }
 
 }

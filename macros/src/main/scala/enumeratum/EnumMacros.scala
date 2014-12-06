@@ -1,6 +1,6 @@
 package enumeratum
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.Context // TODO switch to blackbox.Context when dropping support for 2.10.x
 
 object EnumMacros {
 
@@ -34,11 +34,24 @@ object EnumMacros {
 
         Unfortunately, 2.10.x does not support .enclosingOwner :P
       */
-      val enclosingModule = c.enclosingClass.asInstanceOf[ModuleDef]
+      val enclosingModule = c.enclosingClass match {
+        case md @ ModuleDef(_, _, _) => md
+        case _ => c.abort(c.enclosingPosition,
+          "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object")
+      }
       enclosingModule.impl.body.filter { x =>
-        try (x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
+        try {
+          Option(x.symbol) match {
+            case Some(sym) if sym.isModule => sym.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
+            case _ => false
+          }
+        } catch {
+          case e: Throwable =>
+            c.warning(c.enclosingPosition, s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}")
+            false
+        }
       }.map(_.symbol)
-    } catch { case _: Throwable => Nil }
+    } catch { case e: Throwable => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}") }
     if (!enclosingBodySubclasses.forall(x => x.isModule))
       c.abort(c.enclosingPosition, "All subclasses must be objects.")
     else enclosingBodySubclasses
