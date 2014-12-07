@@ -42,6 +42,14 @@ object Greeting extends Enum[Greeting] {
 
 }
 
+// Object Greeting has a `withName(name: String)` method
+Greeting.withName("Hello")
+
+// => res0: Greeting = Hello
+
+Greeting.withName("Haro")
+// => java.lang.IllegalArgumentException: Haro is not a member of Enum Greeting$@7d6b560b
+
 import Greeting._
 
 def tryMatching(v: Greeting): Unit = v match {
