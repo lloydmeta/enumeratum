@@ -6,9 +6,9 @@ an implementation based on a single Scala macro that searches for implementation
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
 more flexibility, safety, and power. 
 
-By allowing you to use your own `sealed` traits/classes without having to maintain your own collection of values, 
-Enumeratum allows you to have not only exhaustive pattern match warnings, but also richer objects, and methods that 
-can take your enum values without having to worry about erasure (for more info, see [this blog post on Scala's 
+Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of 
+values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that 
+can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's 
 `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
 
 Compatible with Scala 2.10.x and 2.11.x
