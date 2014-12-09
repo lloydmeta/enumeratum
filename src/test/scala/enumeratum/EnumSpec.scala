@@ -11,7 +11,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        DummyEnum.values.toSeq should be(Seq(Hello, GoodBye, Hi))
+        DummyEnum.values should be(Set(Hello, GoodBye, Hi))
       }
 
     }
@@ -42,7 +42,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        SmartEnum.values.toSeq should be(Seq(Hello, GoodBye, Hi))
+        SmartEnum.values should be(Set(Hello, GoodBye, Hi))
       }
 
     }
@@ -107,7 +107,7 @@ class EnumSpec extends FunSpec with Matchers {
       """ shouldNot compile
     }
 
-    it("should fail to compile for abstract classes") {
+    it("should fail to compile for unsealed abstract classes") {
       """
         abstract class Abstract
 
