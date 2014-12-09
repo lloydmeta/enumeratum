@@ -14,10 +14,10 @@ object EnumMacros {
   }
 
   private def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
-    if (!typeSymbol.asClass.isTrait || !typeSymbol.asClass.isSealed)
+    if (!typeSymbol.asClass.isSealed)
       c.abort(
         c.enclosingPosition,
-        "You can only use findValues on sealed traits"
+        "You can only use findValues on sealed traits or classes"
       )
   }
 

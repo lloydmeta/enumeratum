@@ -27,3 +27,17 @@ object Wrapper {
   }
 
 }
+
+object InTheWoods {
+  sealed abstract class Mushroom(val toxic: Boolean)
+
+  object Mushroom extends Enum[Mushroom] {
+
+    val values = findValues
+
+    case object FlyAgaric extends Mushroom(true)
+    case object LSD extends Mushroom(false)
+    case object Shimeji extends Mushroom(false)
+
+  }
+}
