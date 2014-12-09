@@ -34,7 +34,7 @@ class EnumSpec extends FunSpec with Matchers {
 
   }
 
-  describe("when wrapped in another object") {
+  describe("when a sealed trait is wrapped in another object") {
 
     import Wrapper._
     import Wrapper.SmartEnum._
@@ -58,6 +58,36 @@ class EnumSpec extends FunSpec with Matchers {
       it("should throw an error otherwise") {
         intercept[IllegalArgumentException] {
           SmartEnum.withName("hello")
+        }
+      }
+
+    }
+
+  }
+
+  describe("when a sealed abstract class is wrapped in another object") {
+
+    import InTheWoods.Mushroom._
+
+    describe("#values") {
+
+      it("should contain objects") {
+        values shouldBe Set(FlyAgaric, LSD, Shimeji)
+      }
+
+    }
+
+    describe("#withName") {
+
+      it("should return the proper object when passed the proper string") {
+        withName("FlyAgaric") should be(FlyAgaric)
+        withName("LSD") should be(LSD)
+        withName("Shimeji") should be(Shimeji)
+      }
+
+      it("should throw an error otherwise") {
+        intercept[IllegalArgumentException] {
+          withName("hello")
         }
       }
 

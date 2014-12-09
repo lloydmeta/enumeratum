@@ -1,7 +1,7 @@
 # Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.png)](https://coveralls.io/r/lloydmeta/enumeratum)
 
 Yet another enumeration implementation for Scala for the sake of exhaustive pattern match warnings, Enumeratum is
-an implementation based on a single Scala macro that searches for implementations of a sealed trait.
+an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
 more flexibility and power.
@@ -18,7 +18,7 @@ libraryDependencies ++= Seq(
 
 ## How-to + example
 
-Using Enumeratum is simple. Simply declare your own sealed trait `A`, and implement it as case objects inside
+Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
 an object that extends from `Enum[A]` as follows.
 
 *Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement 
