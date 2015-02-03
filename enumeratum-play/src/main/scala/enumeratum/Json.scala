@@ -35,7 +35,7 @@ object Json {
   /**
    * Returns a Json format for a given enum [[Enum]]
    */
-  def enumFormat[A](enum: Enum[A]): Format[A] = {
+  def formats[A](enum: Enum[A]): Format[A] = {
     Format(reads(enum), writes(enum))
   }
 

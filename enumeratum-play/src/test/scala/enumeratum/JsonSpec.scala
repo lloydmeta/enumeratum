@@ -13,7 +13,7 @@ class JsonSpec extends FunSpec with Matchers {
     val values = findValues
   }
 
-  describe(".enumReads") {
+  describe("reads") {
     val reads = Json.reads(DummyEnum)
 
     it("should create a reads that works with valid values") {
@@ -26,7 +26,7 @@ class JsonSpec extends FunSpec with Matchers {
     }
   }
 
-  describe(".enumWrites") {
+  describe("writes") {
     val writer = Json.writes(DummyEnum)
 
     it("should create a writes that writes enum values to JsString") {
@@ -34,8 +34,8 @@ class JsonSpec extends FunSpec with Matchers {
     }
   }
 
-  describe(".enumFormat") {
-    val format = Json.enumFormat(DummyEnum)
+  describe("formats") {
+    val format = Json.formats(DummyEnum)
 
     it("should create a format that works with valid values") {
       format.reads(JsString("A")).get should be(DummyEnum.A)
