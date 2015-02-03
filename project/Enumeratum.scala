@@ -6,7 +6,7 @@ import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "0.0.4"
+  lazy val theVersion = "0.0.5"
   lazy val theScalaVersion = "2.11.5"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
@@ -48,7 +48,6 @@ object Enumeratum extends Build {
         }
         additionalMacroDeps }
     )
-
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
