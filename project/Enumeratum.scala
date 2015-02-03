@@ -7,22 +7,30 @@ import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 object Enumeratum extends Build {
 
   lazy val theVersion = "0.0.4"
-  lazy val theScalaVersion = "2.11.4"
+  lazy val theScalaVersion = "2.11.5"
 
-  lazy val root = Project(id = "enumeratum", base = file("."), settings = commonWithPublishSettings)
+  lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
+    .settings(
+      name := "enumeratum-root",
+      publishArtifact := false,
+      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossVersion := CrossVersion.binary
+    ).aggregate(macros, core, enumeratumPlay)
+
+  lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum",
-      crossScalaVersions := Seq("2.10.4", "2.11.4"),
+      crossScalaVersions := Seq("2.10.4", "2.11.5"),
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(macros).aggregate(macros)
+    ).dependsOn(macros)
 
   lazy val macros = Project(id = "enumeratum-macros", base = file("macros"), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum-macros",
-      crossScalaVersions := Seq("2.10.4", "2.11.4"),
+      crossScalaVersions := Seq("2.10.4", "2.11.5"),
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
@@ -40,6 +48,17 @@ object Enumeratum extends Build {
         }
         additionalMacroDeps }
     )
+
+
+  lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
+    .settings(
+      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossVersion := CrossVersion.binary,
+      libraryDependencies ++= Seq(
+        "com.typesafe.play" %% "play" % "2.3.7" % "provided",
+        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+      )
+    ).dependsOn(core)
 
 
   lazy val commonSettings = Seq(
