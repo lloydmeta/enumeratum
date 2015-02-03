@@ -10,13 +10,18 @@ object Forms {
 
   /**
    * Returns an [[Enum]] mapping
+   *
+   * For example:
+   * {{{
+   *   Form("status" -> maps(Status))
+   * }}}
    */
-  def maps[A](enum: Enum[A]): Mapping[A] = PlayForms.of(format(enum))
+  def enum[A](enum: Enum[A]): Mapping[A] = PlayForms.of(format(enum))
 
   /**
    * Returns a Formatter for [[Enum]]
    */
-  def format[A](enum: Enum[A]): Formatter[A] = new Formatter[A] {
+  private[enumeratum] def format[A](enum: Enum[A]): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
         scala.util.control.Exception.allCatch[A]
