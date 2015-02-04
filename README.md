@@ -84,7 +84,11 @@ The included `PlayEnum` trait is probably going to be the most interesting as it
 of built-in implicits like Json formats, Path bindables, Query string bindables,
 and form field support.
 
+For example:
+
 ```scala
+package enums._
+
 import enumeratum.PlayEnum
 
 sealed trait Greeting
