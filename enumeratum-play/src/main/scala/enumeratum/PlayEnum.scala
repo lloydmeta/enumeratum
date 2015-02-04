@@ -27,11 +27,3 @@ trait PlayEnum[A] extends Enum[A] {
   val formField: Mapping[A] = Forms.enum(this)
 
 }
-
-object PlayEnum {
-
-  def from[A](enum: Enum[A]): PlayEnum[A] = new PlayEnum[A] {
-    val values = enum.values
-  }
-
-}
