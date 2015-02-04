@@ -32,7 +32,7 @@ import scala.language.postfixOps
  *
  * DummyEnum.withName("Hello") should be(Hello)
  * }}}
- * @tparam A The sealed trait you want to use as the main
+ * @tparam A The sealed trait
  */
 trait Enum[A] {
 

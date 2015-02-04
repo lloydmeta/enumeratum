@@ -17,7 +17,8 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "0.0.4", 
+    "com.beachape" %% "enumeratum" % "1.0.0",
+    "com.beachape" %% "enumeratum-play" % "1.0.0" // if you are using Play and want to avoid boilerplate
 )
 ```
 
@@ -72,6 +73,39 @@ It would fail on the following input: Bye
   
 */
 
+```
+
+### Play 2
+
+The `enumeratum-play` project is published separately and gives you access to various tools
+to help you avoid boilerplate in your Play project.
+
+The included `PlayEnum` trait is probably going to be the most interesting as it includes a bunch
+of built-in implicits like Json formats, Path bindables, Query string bindables,
+and form field support.
+
+```scala
+import enumeratum.PlayEnum
+
+sealed trait Greeting
+
+object Greeting extends PlayEnum[Greeting] {
+
+  val values = findValues
+
+  case object Hello extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi extends Greeting
+  case object Bye extends Greeting
+
+}
+
+/*
+  Then make sure to import your PlayEnums into your routes in your Build.scala
+  or build.sbt so that you can use them in your routes file.
+
+  `routesImport += "enums._"`
+*/
 ```
 
 ## Licence
