@@ -13,7 +13,7 @@ object EnumMacros {
     c.Expr[Set[A]](q"Set[${tq"$resultType"}](..${subclassSymbols.map(s => Ident(s))})")
   }
 
-  private def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
+  private[this] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
     if (!typeSymbol.asClass.isSealed)
       c.abort(
         c.enclosingPosition,
@@ -21,7 +21,7 @@ object EnumMacros {
       )
   }
 
-  private def enclosedSubClasses(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
+  private[this] def enclosedSubClasses(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
     import c.universe._
     val enclosingBodySubclasses: List[Symbol] = try {
       /*
