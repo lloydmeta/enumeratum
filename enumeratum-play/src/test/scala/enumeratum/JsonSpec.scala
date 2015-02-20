@@ -2,6 +2,7 @@ package enumeratum
 
 import org.scalatest.{ Matchers, FunSpec }
 import play.api.libs.json.{ JsNumber, JsString }
+import org.scalatest.OptionValues._
 
 class JsonSpec extends FunSpec with Matchers {
 
@@ -9,7 +10,7 @@ class JsonSpec extends FunSpec with Matchers {
     val reads = Json.reads(Dummy)
 
     it("should create a reads that works with valid values") {
-      reads.reads(JsString("A")).get should be(Dummy.A)
+      reads.reads(JsString("A")).asOpt.value should be(Dummy.A)
     }
 
     it("should create a reads that fails with invalid values") {
@@ -30,7 +31,7 @@ class JsonSpec extends FunSpec with Matchers {
     val format = Json.formats(Dummy)
 
     it("should create a format that works with valid values") {
-      format.reads(JsString("A")).get should be(Dummy.A)
+      format.reads(JsString("A")).asOpt.get should be(Dummy.A)
     }
 
     it("should create a format that fails with invalid values") {

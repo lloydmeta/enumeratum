@@ -2,6 +2,7 @@ package enumeratum
 
 import org.scalatest._
 import play.api.data.Form
+import org.scalatest.OptionValues._
 
 /**
  * Created by Lloyd on 2/3/15.
@@ -17,8 +18,8 @@ class FormSpec extends FunSpec with Matchers {
     it("should bind proper strings into an Enum value") {
       val r1 = subject.bind(Map("hello" -> "A"))
       val r2 = subject.bind(Map("hello" -> "B"))
-      r1.value.get shouldBe Dummy.A
-      r2.value.get shouldBe Dummy.B
+      r1.value.value shouldBe Dummy.A
+      r2.value.value shouldBe Dummy.B
     }
 
     it("should fail to bind random strings") {

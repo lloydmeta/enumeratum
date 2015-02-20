@@ -1,6 +1,9 @@
 package enumeratum
 
-import scala.reflect.macros.Context // TODO switch to blackbox.Context when dropping support for 2.10.x
+import scala.reflect.macros.Context
+import scala.util.control.NonFatal
+
+// TODO switch to blackbox.Context when dropping support for 2.10.x
 
 object EnumMacros {
 
@@ -46,12 +49,12 @@ object EnumMacros {
             case _ => false
           }
         } catch {
-          case e: Throwable =>
+          case NonFatal(e) =>
             c.warning(c.enclosingPosition, s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}")
             false
         }
       }.map(_.symbol)
-    } catch { case e: Throwable => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}") }
+    } catch { case NonFatal(e) => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}") }
     if (!enclosingBodySubclasses.forall(x => x.isModule))
       c.abort(c.enclosingPosition, "All subclasses must be objects.")
     else enclosingBodySubclasses
