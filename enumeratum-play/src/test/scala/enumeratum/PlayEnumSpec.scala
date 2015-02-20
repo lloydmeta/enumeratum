@@ -3,6 +3,8 @@ package enumeratum
 import org.scalatest.{ Matchers, FunSpec }
 import play.api.data.Form
 import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
+import org.scalatest.OptionValues._
+import org.scalatest.EitherValues._
 
 class PlayEnumSpec extends FunSpec with Matchers {
 
@@ -11,7 +13,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
     describe("deserialisation") {
 
       it("should work with valid values") {
-        JsString("A").asOpt[PlayDummy].get shouldBe PlayDummy.A
+        JsString("A").asOpt[PlayDummy].value shouldBe PlayDummy.A
       }
 
       it("should fail with invalid values") {
@@ -37,8 +39,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
     it("should bind proper strings into an Enum value") {
       val r1 = subject.bind(Map("hello" -> "A"))
       val r2 = subject.bind(Map("hello" -> "B"))
-      r1.value.get shouldBe PlayDummy.A
-      r2.value.get shouldBe PlayDummy.B
+      r1.value.value shouldBe PlayDummy.A
+      r2.value.value shouldBe PlayDummy.B
     }
 
     it("should fail to bind random strings") {
@@ -55,7 +57,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
       val subject = PlayDummy.pathBindable
 
       it("should bind strings corresponding to enum strings") {
-        subject.bind("hello", "A").right.get shouldBe PlayDummy.A
+        subject.bind("hello", "A").right.value shouldBe PlayDummy.A
       }
 
       it("should not bind strings not found in the enumeration") {
@@ -74,11 +76,11 @@ class PlayEnumSpec extends FunSpec with Matchers {
       val subject = PlayDummy.queryBindable
 
       it("should bind strings corresponding to enum strings regardless of case") {
-        subject.bind("hello", Map("hello" -> Seq("A"))).get.right.get should be(PlayDummy.A)
+        subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(PlayDummy.A)
       }
 
       it("should not bind strings not found in the enumeration") {
-        subject.bind("hello", Map("hello" -> Seq("Z"))).get should be('left)
+        subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
         subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
       }
 
