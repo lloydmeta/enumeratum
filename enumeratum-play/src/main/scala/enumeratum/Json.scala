@@ -2,6 +2,7 @@ package enumeratum
 
 import play.api.libs.json._
 
+import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
@@ -15,10 +16,10 @@ object Json {
   def reads[A](enum: Enum[A]): Reads[A] = new Reads[A] {
     def reads(json: JsValue): JsResult[A] = json match {
       case JsString(s) => {
-        try {
+        Try {
           JsSuccess(enum.withName(s))
-        } catch {
-          case NonFatal(e) => JsError(s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'")
+        } getOrElse {
+          JsError(s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'")
         }
       }
       case _ => JsError("String value expected")
