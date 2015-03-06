@@ -8,6 +8,8 @@ import play.api.mvc.{ QueryStringBindable, PathBindable }
  * An Enum that has a lot of the Play-related implicits built-in so you can avoid
  * boilerplate.
  *
+ * Note, the binders created here are case-sensitive.
+ *
  * Things included are:
  *
  *   - implicit JSON format

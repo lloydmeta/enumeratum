@@ -2,9 +2,6 @@ package enumeratum
 
 import play.api.mvc.PathBindable
 import play.api.mvc.QueryStringBindable
-import play.api.mvc.QueryStringBindable._
-
-import scala.util.Try
 
 /**
  * Created by Lloyd on 2/3/15.
@@ -13,11 +10,15 @@ object UrlBinders {
 
   /**
    * Builds a [[PathBindable]] A for a given Enum A
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def pathBinder[A](enum: Enum[A]): PathBindable[A] = new PathBindable[A] {
+  def pathBinder[A](enum: Enum[A], insensitive: Boolean = false): PathBindable[A] = new PathBindable[A] {
     def unbind(key: String, value: A): String = value.toString
     def bind(key: String, value: String): Either[String, A] = {
-      Try(enum.withName(value)).toOption match {
+      val maybeBound = if (insensitive) enum.withNameInsensitiveOption(value) else enum.withNameOption(value)
+      maybeBound match {
         case Some(v) => Right(v)
         case _ => Left(s"Unknown value supplied for $enum '" + value + "'")
       }
@@ -26,11 +27,24 @@ object UrlBinders {
 
   /**
    * Builds a [[QueryStringBindable]] A for a given Enum A
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def queryBinder[A](enum: Enum[A]): QueryStringBindable[A] = new Parsing[A](
-    enum.withName,
-    _.toString,
-    (key, exception) => "Cannot parse parameter %s as an Enum: %s".format(key, exception.getMessage)
-  )
+  def queryBinder[A](enum: Enum[A], insensitive: Boolean = false): QueryStringBindable[A] =
+    new QueryStringBindable[A] {
+
+      def unbind(key: String, value: A): String = key + "=" + value.toString
+
+      def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
+        params.get(key).flatMap(_.headOption).map { p =>
+          val maybeBound = if (insensitive) enum.withNameInsensitiveOption(p) else enum.withNameOption(p)
+          maybeBound match {
+            case Some(v) => Right(v)
+            case _ => Left(s"Cannot parse parameter $key as an Enum: $this")
+          }
+        }
+      }
+    }
 
 }

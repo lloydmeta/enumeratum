@@ -1,6 +1,7 @@
 package enumeratum
 
 import org.scalatest.{ Matchers, FunSpec }
+import org.scalatest.OptionValues._
 
 class EnumSpec extends FunSpec with Matchers {
 
@@ -25,9 +26,41 @@ class EnumSpec extends FunSpec with Matchers {
       }
 
       it("should throw an error otherwise") {
-        intercept[IllegalArgumentException] {
+        intercept[NoSuchElementException] {
           DummyEnum.withName("hello")
         }
+      }
+
+    }
+
+    describe("#withNameOption") {
+
+      it("should return the proper object when passed the proper string") {
+        DummyEnum.withNameOption("Hello").value should be(Hello)
+        DummyEnum.withNameOption("GoodBye").value should be(GoodBye)
+        DummyEnum.withNameOption("Hi").value should be(Hi)
+      }
+
+      it("should return None otherwise") {
+        DummyEnum.withNameOption("hello") shouldBe None
+      }
+
+    }
+
+    describe("#withNameInsensitiveOption") {
+
+      it("should return the proper object when passed the proper string, disregarding cases") {
+        DummyEnum.withNameInsensitiveOption("Hello").value should be(Hello)
+        DummyEnum.withNameInsensitiveOption("hello").value should be(Hello)
+        DummyEnum.withNameInsensitiveOption("GoodBye").value should be(GoodBye)
+        DummyEnum.withNameInsensitiveOption("goodBye").value should be(GoodBye)
+        DummyEnum.withNameInsensitiveOption("gOodbye").value should be(GoodBye)
+        DummyEnum.withNameInsensitiveOption("Hi").value should be(Hi)
+        DummyEnum.withNameInsensitiveOption("hI").value should be(Hi)
+      }
+
+      it("should return None otherwise") {
+        DummyEnum.withNameInsensitiveOption("bbeeeech") shouldBe None
       }
 
     }
@@ -56,7 +89,7 @@ class EnumSpec extends FunSpec with Matchers {
       }
 
       it("should throw an error otherwise") {
-        intercept[IllegalArgumentException] {
+        intercept[NoSuchElementException] {
           SmartEnum.withName("hello")
         }
       }
@@ -86,7 +119,7 @@ class EnumSpec extends FunSpec with Matchers {
       }
 
       it("should throw an error otherwise") {
-        intercept[IllegalArgumentException] {
+        intercept[NoSuchElementException] {
           withName("hello")
         }
       }

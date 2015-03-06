@@ -15,18 +15,26 @@ object Forms {
    * {{{
    *   Form("status" -> maps(Status))
    * }}}
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def enum[A](enum: Enum[A]): Mapping[A] = PlayForms.of(format(enum))
+  def enum[A](enum: Enum[A], insensitive: Boolean = false): Mapping[A] = PlayForms.of(format(enum, insensitive))
 
   /**
    * Returns a Formatter for [[Enum]]
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  private[enumeratum] def format[A](enum: Enum[A]): Formatter[A] = new Formatter[A] {
+  private[enumeratum] def format[A](enum: Enum[A], insensitive: Boolean = false): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
-        scala.util.control.Exception.allCatch[A]
-          .either(enum.withName(s))
-          .left.map(e => Seq(FormError(key, "error.enum", Nil)))
+        val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)
+        maybeBound match {
+          case Some(obj) => Right(obj)
+          case None => Left(Seq(FormError(key, "error.enum", Nil)))
+        }
       }
     }
     def unbind(key: String, value: A) = Map(key -> value.toString)
