@@ -29,12 +29,55 @@ class UrlBindersSpec extends FunSpec with Matchers {
 
   }
 
+  describe(".pathBinder case insensitive") {
+
+    val subject = pathBinder(Dummy, true)
+
+    it("should create an enumeration binder that can bind strings corresponding to enum strings, disregarding case") {
+      subject.bind("hello", "A").right.value shouldBe Dummy.A
+      subject.bind("hello", "a").right.value shouldBe Dummy.A
+      subject.bind("hello", "B").right.value shouldBe Dummy.B
+      subject.bind("hello", "b").right.value shouldBe Dummy.B
+    }
+
+    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+      subject.bind("hello", "Z").isLeft shouldBe true
+    }
+
+    it("should create an enumeration binder that can unbind values") {
+      subject.unbind("hello", Dummy.A) shouldBe "A"
+      subject.unbind("hello", Dummy.B) shouldBe "B"
+    }
+
+  }
+
   describe(".queryBinder") {
 
     val subject = queryBinder(Dummy)
 
     it("should create an enumeration binder that can bind strings corresponding to enum strings regardless of case") {
       subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
+    }
+
+    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
+    }
+
+    it("should create an enumeration binder that can unbind values") {
+      subject.unbind("hello", Dummy.A) should be("hello=A")
+      subject.unbind("hello", Dummy.B) should be("hello=B")
+    }
+
+  }
+
+  describe(".queryBinder case insensitive") {
+
+    val subject = queryBinder(Dummy, true)
+
+    it("should create an enumeration binder that can bind strings corresponding to enum strings regardless of case, disregarding case") {
+      subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
+      subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
     }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {

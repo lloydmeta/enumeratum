@@ -19,6 +19,20 @@ class JsonSpec extends FunSpec with Matchers {
     }
   }
 
+  describe("reads insensitive") {
+    val reads = Json.reads(Dummy, true)
+
+    it("should create a reads that works with valid values disregarding case") {
+      reads.reads(JsString("A")).asOpt.value should be(Dummy.A)
+      reads.reads(JsString("a")).asOpt.value should be(Dummy.A)
+    }
+
+    it("should create a reads that fails with invalid values") {
+      reads.reads(JsString("D")).isError should be(true)
+      reads.reads(JsNumber(2)).isError should be(true)
+    }
+  }
+
   describe("writes") {
     val writer = Json.writes(Dummy)
 

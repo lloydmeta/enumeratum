@@ -9,11 +9,15 @@ object Json {
 
   /**
    * Returns an Json Reads for a given enum [[Enum]]
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def reads[A](enum: Enum[A]): Reads[A] = new Reads[A] {
+  def reads[A](enum: Enum[A], insensitive: Boolean = false): Reads[A] = new Reads[A] {
     def reads(json: JsValue): JsResult[A] = json match {
       case JsString(s) => {
-        enum.withNameOption(s) match {
+        val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)
+        maybeBound match {
           case Some(obj) => JsSuccess(obj)
           case None => JsError(s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'")
         }
@@ -31,9 +35,12 @@ object Json {
 
   /**
    * Returns a Json format for a given enum [[Enum]]
+   *
+   * @param enum The enum
+   * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def formats[A](enum: Enum[A]): Format[A] = {
-    Format(reads(enum), writes(enum))
+  def formats[A](enum: Enum[A], insensitive: Boolean = false): Format[A] = {
+    Format(reads(enum, insensitive), writes(enum))
   }
 
 }
