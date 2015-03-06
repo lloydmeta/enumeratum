@@ -6,21 +6,22 @@ import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.0.1-SNAPSHOT"
-  lazy val theScalaVersion = "2.11.5"
+  lazy val theVersion = "1.0.1"
+  lazy val theScalaVersion = "2.11.6"
+  lazy val scalaVersions = Seq("2.10.5", "2.11.6")
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum-root",
       publishArtifact := false,
-      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary
     ).aggregate(macros, core, enumeratumPlay)
 
   lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum",
-      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
@@ -30,7 +31,7 @@ object Enumeratum extends Build {
   lazy val macros = Project(id = "enumeratum-macros", base = file("macros"), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum-macros",
-      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
@@ -51,10 +52,10 @@ object Enumeratum extends Build {
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := Seq("2.10.4", "2.11.5"),
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % "2.3.7" % "provided",
+        "com.typesafe.play" %% "play" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
     ).dependsOn(core)

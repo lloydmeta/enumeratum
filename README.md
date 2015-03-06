@@ -1,4 +1,4 @@
-# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.png)](https://coveralls.io/r/lloydmeta/enumeratum) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
+# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
 
 Yet another enumeration implementation for Scala for the sake of exhaustive pattern match warnings, Enumeratum is
 an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
@@ -17,8 +17,8 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.0.0",
-    "com.beachape" %% "enumeratum-play" % "1.0.0" // if you are using Play and want to avoid boilerplate
+    "com.beachape" %% "enumeratum" % "1.0.1",
+    "com.beachape" %% "enumeratum-play" % "1.0.1" // if you are using Play and want to avoid boilerplate
 )
 ```
 
