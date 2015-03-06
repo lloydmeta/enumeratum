@@ -4,8 +4,6 @@ import play.api.mvc.PathBindable
 import play.api.mvc.QueryStringBindable
 import play.api.mvc.QueryStringBindable._
 
-import scala.util.Try
-
 /**
  * Created by Lloyd on 2/3/15.
  */
@@ -17,7 +15,7 @@ object UrlBinders {
   def pathBinder[A](enum: Enum[A]): PathBindable[A] = new PathBindable[A] {
     def unbind(key: String, value: A): String = value.toString
     def bind(key: String, value: String): Either[String, A] = {
-      Try(enum.withName(value)).toOption match {
+      enum.withNameOption(value) match {
         case Some(v) => Right(v)
         case _ => Left(s"Unknown value supplied for $enum '" + value + "'")
       }
