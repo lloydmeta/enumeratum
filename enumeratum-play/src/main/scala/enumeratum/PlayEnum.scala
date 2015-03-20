@@ -16,6 +16,6 @@ package enumeratum
  */
 trait PlayEnum[A] extends Enum[A]
   with PlayJsonEnum[A]
-  with PlayPathBindable[A]
+  with PlayPathBindableEnum[A]
   with PlayQueryBindableEnum[A]
   with PlayFormFieldEnum[A]

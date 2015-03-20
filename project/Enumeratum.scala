@@ -6,7 +6,7 @@ import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.0.2-SNAPSHOT"
+  lazy val theVersion = "1.0.2local-SNAPSHOT"
   lazy val theScalaVersion = "2.11.6"
   lazy val scalaVersions = Seq("2.10.5", "2.11.6")
 
@@ -50,6 +50,16 @@ object Enumeratum extends Build {
         additionalMacroDeps }
     )
 
+  lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
+    .settings(
+      crossScalaVersions := scalaVersions,
+      crossVersion := CrossVersion.binary,
+      libraryDependencies ++= Seq(
+        "com.typesafe.play" %% "play-json" % "2.3.8" % "provided",
+        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+      )
+    ).dependsOn(core)
+
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
       crossScalaVersions := scalaVersions,
@@ -58,7 +68,7 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(core)
+    ).dependsOn(core,enumeratumPlayJson)
 
 
   lazy val commonSettings = Seq(
