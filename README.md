@@ -127,7 +127,31 @@ object Greeting extends PlayEnum[Greeting] {
   `routesImport += "enums._"`
 */
 ```
+### Play-JSON
 
+The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
+for JSON serialization in your Enum's.
+
+For example:
+
+```scala
+package enums._
+
+import enumeratum.PlayJsonEnum
+
+sealed trait Greeting
+
+object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
+
+  val values = findValues
+
+  case object Hello extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi extends Greeting
+  case object Bye extends Greeting
+
+}
+```
 ## Licence
 
 The MIT License (MIT)
