@@ -16,7 +16,7 @@ object Enumeratum extends Build {
       publishArtifact := false,
       crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary
-    ).aggregate(macros, core, enumeratumPlay)
+    ).aggregate(macros, core, enumeratumPlay, enumeratumPlayJson)
 
   lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
     .settings(
@@ -68,7 +68,7 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(core,enumeratumPlayJson)
+    ).dependsOn(core, enumeratumPlayJson)
 
 
   lazy val commonSettings = Seq(
