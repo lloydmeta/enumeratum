@@ -15,10 +15,26 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ## SBT
 
+For basic enumeratum (with no Play support):
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.0.1",
-    "com.beachape" %% "enumeratum-play" % "1.0.1" // if you are using Play and want to avoid boilerplate
+    "com.beachape" %% "enumeratum" % "1.1.0"
+)
+```
+
+For enumeratum with Play JSON:
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % "1.1.0",
+    "com.beachape" %% "enumeratum-play-json" % "1.1.0"
+)
+```
+
+For enumeratum with full Play support:
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % "1.1.0",
+    "com.beachape" %% "enumeratum-play" % "1.1.0"
 )
 ```
 
