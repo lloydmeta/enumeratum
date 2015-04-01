@@ -13,6 +13,8 @@ can take your enum values as arguments without having to worry about erasure (fo
 
 Compatible with Scala 2.10.x and 2.11.x
 
+[Scaladocs](https://beachape.com/enumeratum/latest/api)
+
 ## SBT
 
 For basic enumeratum (with no Play support):
