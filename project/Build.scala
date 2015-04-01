@@ -3,6 +3,11 @@ import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
 import scalariform.formatter.preferences._
 import scoverage.ScoverageSbtPlugin.ScoverageKeys._
+import com.typesafe.sbt.SbtGhPages.ghpages
+import com.typesafe.sbt.SbtSite.site
+import sbtunidoc.Plugin.UnidocKeys._
+import sbtunidoc.Plugin._
+import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 object Enumeratum extends Build {
 
@@ -13,10 +18,24 @@ object Enumeratum extends Build {
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum-root",
-      publishArtifact := false,
       crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary
-    ).aggregate(macros, core, enumeratumPlay, enumeratumPlayJson)
+    )
+    .settings(unidocSettings: _*)
+    .settings(site.settings ++ ghpages.settings: _*)
+    .settings(
+      site.addMappingsToSiteDir(
+        mappings in (ScalaUnidoc, packageDoc), "latest/api"
+      ),
+      git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git"
+    )
+    .settings(
+      scalacOptions in (ScalaUnidoc, unidoc) += "-Ymacro-no-expand",
+      // Do not publish the root project (it just serves as an aggregate)
+      publishArtifact := false,
+      publishLocal := {}
+    )
+    .aggregate(macros, core, enumeratumPlay, enumeratumPlayJson)
 
   lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
     .settings(
