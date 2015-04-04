@@ -1,14 +1,14 @@
-# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
+# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
 
 Yet another enumeration implementation for Scala for the sake of exhaustive pattern match warnings, Enumeratum is
 an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
-more flexibility, safety, and power. 
+more flexibility, safety, and power.
 
-Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of 
-values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that 
-can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's 
+Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of
+values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that
+can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's
 `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
 
 Compatible with Scala 2.10.x and 2.11.x
@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
 Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
 an object that extends from `Enum[A]` as follows.
 
-*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement 
+*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement
 the `values` method. If you don't care about ordinality, just pass `findValues` directly into your
 `val values` implementation.
 
@@ -84,11 +84,11 @@ def tryMatching(v: Greeting): Unit = v match {
 
 /**
 Pattern match warning ...
-  
+
 <console>:24: warning: match may not be exhaustive.
 It would fail on the following input: Bye
        def tryMatching(v: Greeting): Unit = v match {
-  
+
 */
 
 ```
