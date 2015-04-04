@@ -8,6 +8,7 @@ import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import org.scalajs.sbtplugin.cross.CrossProject._
 
 object Enumeratum extends Build {
 
@@ -35,9 +36,10 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macros, core, enumeratumPlay, enumeratumPlayJson)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, enumeratumPlay, enumeratumPlayJson)
 
-  lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
+  lazy val core = crossProject.in(file("enumeratum-core"))
+    .settings(commonWithPublishSettings:_*)
     .settings(
       name := "enumeratum",
       crossScalaVersions := scalaVersions,
@@ -47,7 +49,11 @@ object Enumeratum extends Build {
       )
     ).dependsOn(macros)
 
-  lazy val macros = Project(id = "enumeratum-macros", base = file("macros"), settings = commonWithPublishSettings)
+  lazy val coreJs = core.js
+  lazy val coreJvm = core.jvm
+
+  lazy val macros = crossProject.in(file("macros"))
+    .settings(commonWithPublishSettings:_*)
     .settings(
       name := "enumeratum-macros",
       crossScalaVersions := scalaVersions,
@@ -69,6 +75,9 @@ object Enumeratum extends Build {
         additionalMacroDeps }
     )
 
+  lazy val macrosJs = macros.js
+  lazy val macrosJvm = macros.jvm
+
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(
       crossScalaVersions := scalaVersions,
@@ -77,7 +86,7 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play-json" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(core)
+    ).dependsOn(coreJvm)
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
@@ -87,7 +96,7 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(core, enumeratumPlayJson)
+    ).dependsOn(coreJvm, enumeratumPlayJson)
 
 
   lazy val commonSettings = Seq(
