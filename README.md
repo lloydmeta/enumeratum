@@ -4,11 +4,11 @@ Yet another enumeration implementation for Scala for the sake of exhaustive patt
 an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
-more flexibility, safety, and power. 
+more flexibility, safety, and power.
 
-Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of 
-values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that 
-can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's 
+Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of
+values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that
+can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's
 `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
 
 Compatible with Scala 2.10.x and 2.11.x
@@ -40,12 +40,33 @@ libraryDependencies ++= Seq(
 )
 ```
 
+### ScalaJs
+
+There is experimental support for ScalaJs (experimental because ScalaTest does not yet work w/ ScalaJs), though only
+for the core lib and the Play-Json extension project.
+
+For basic enumeratum (with no Play support):
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % "1.1.0"
+)
+```
+
+For enumeratum with Play JSON:
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % "1.1.0",
+    "com.beachape" %%% "enumeratum-play-json" % "1.1.0"
+)
+```
+
+
 ## How-to + example
 
 Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
 an object that extends from `Enum[A]` as follows.
 
-*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement 
+*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement
 the `values` method. If you don't care about ordinality, just pass `findValues` directly into your
 `val values` implementation.
 
@@ -84,11 +105,11 @@ def tryMatching(v: Greeting): Unit = v match {
 
 /**
 Pattern match warning ...
-  
+
 <console>:24: warning: match may not be exhaustive.
 It would fail on the following input: Bye
        def tryMatching(v: Greeting): Unit = v match {
-  
+
 */
 
 ```
