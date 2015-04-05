@@ -1,3 +1,4 @@
+import org.scalajs.sbtplugin.cross.CrossType
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
@@ -36,28 +37,23 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, enumeratumPlay, enumeratumPlayJson)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, enumeratumPlay, enumeratumPlayJsonJs, enumeratumPlayJsonJvm)
 
-  lazy val core = crossProject.in(file("enumeratum-core"))
+  lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(commonWithPublishSettings:_*)
     .settings(
       name := "enumeratum",
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
     ).dependsOn(macros)
-
   lazy val coreJs = core.js
   lazy val coreJvm = core.jvm
 
-  lazy val macros = crossProject.in(file("macros"))
+  lazy val macros = crossProject.crossType(CrossType.Pure).in(file("macros"))
     .settings(commonWithPublishSettings:_*)
     .settings(
       name := "enumeratum-macros",
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
@@ -74,29 +70,28 @@ object Enumeratum extends Build {
         }
         additionalMacroDeps }
     )
-
   lazy val macrosJs = macros.js
   lazy val macrosJvm = macros.jvm
 
-  lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
+  lazy val enumeratumPlayJson = crossProject.crossType(CrossType.Pure).in(file("enumeratum-play-json"))
+    .settings(commonWithPublishSettings:_*)
     .settings(
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
+      name := "enumeratum-play-json",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(coreJvm)
+    ).dependsOn(core)
+  lazy val enumeratumPlayJsonJs = enumeratumPlayJson.js
+  lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % "2.3.8" % "provided",
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
       )
-    ).dependsOn(coreJvm, enumeratumPlayJson)
+    ).dependsOn(coreJvm, enumeratumPlayJsonJvm)
 
 
   lazy val commonSettings = Seq(
