@@ -1,13 +1,15 @@
 package enumeratum
 
-import upickle.{ Js, Writer, Reader }
+import upickle.Aliases.RW
+import upickle.ReadWriter
 
 /**
  * Enum mix-in with default Reader and Writers defined (case sensitive)
  */
 trait UPickleEnum[A] { self: Enum[A] =>
 
-  implicit val upickleEnumWriter: Writer[A] = UPickler.writer(this)
+  import UPickler._
 
-  implicit val upickEnumReader: Reader[A] = UPickler.reader(this, false)
+  implicit val uPickleReadWriter: RW[A] = ReadWriter(writer(this).write, reader(this, false).read)
+
 }

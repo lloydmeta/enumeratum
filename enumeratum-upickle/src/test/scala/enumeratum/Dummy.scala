@@ -10,3 +10,5 @@ object Dummy extends Enum[Dummy] with UPickleEnum[Dummy] {
   case object C extends Dummy
   val values = findValues
 }
+
+object D extends Dummy
