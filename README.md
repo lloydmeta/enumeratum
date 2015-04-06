@@ -24,6 +24,15 @@ libraryDependencies ++= Seq(
 )
 ```
 
+For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % "1.1.0",
+    "com.beachape" %% "enumeratum-upickle" % "1.1.0"
+)
+```
+
 For enumeratum with Play JSON:
 ```scala
 libraryDependencies ++= Seq(
@@ -42,11 +51,20 @@ libraryDependencies ++= Seq(
 
 ### ScalaJs
 
-There is support for ScalaJs, though only for the core lib.
+There is support for ScalaJs, though only for the core lib and the UPickle helper lib.
 
 ```scala
 libraryDependencies ++= Seq(
     "com.beachape" %%% "enumeratum" % "1.1.0"
+)
+```
+
+To use with uPickle:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % "1.1.0",
+    "com.beachape" %%% "enumeratum-upickle" % "1.1.0"
 )
 ```
 
