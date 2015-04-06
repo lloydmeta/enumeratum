@@ -37,7 +37,7 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, enumeratumPlay, enumeratumPlayJson)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm)
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
@@ -53,8 +53,7 @@ object Enumeratum extends Build {
     .settings(
       name := "enumeratum-macros",
       libraryDependencies ++= Seq(
-        "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value
       ) ++ {
         val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
           // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
@@ -70,6 +69,37 @@ object Enumeratum extends Build {
     )
   lazy val macrosJs = macros.js
   lazy val macrosJvm = macros.jvm
+
+  lazy val enumeratumUPickle = crossProject.crossType(CrossType.Pure).in(file("enumeratum-upickle"))
+    .settings(commonWithPublishSettings:_*)
+    .settings(
+      name := "enumeratum-upickle",
+      libraryDependencies ++= {
+        import org.scalajs.sbtplugin._
+        val cross = {
+          if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+            ScalaJSCrossVersion.binary
+          else
+            CrossVersion.binary
+        }
+        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.2.8")
+        } ++ {
+          val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
+            // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
+            case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+              Nil
+            // in Scala 2.10, quasiquotes are provided by macro paradise
+            case Some((2, 10)) =>
+              Seq(
+                "org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary )
+          }
+          additionalMacroDeps
+      }
+    )
+    .settings(utestSettings:_*)
+    .dependsOn(core)
+  lazy val enumeratumUPickleJs = enumeratumUPickle.js
+  lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(commonWithPublishSettings:_*)
@@ -92,7 +122,6 @@ object Enumeratum extends Build {
     )
     .settings(utestSettings: _*)
     .dependsOn(coreJvm, enumeratumPlayJson)
-
 
   lazy val commonSettings = Seq(
     organization := "com.beachape",
