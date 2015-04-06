@@ -8,5 +8,5 @@ jdk:
 scala:
   - 2.11.6
   - 2.10.5
-script: "sbt clean coverage test"
+script: "sbt clean coverage +test"
 after_success: "sbt coveralls"
