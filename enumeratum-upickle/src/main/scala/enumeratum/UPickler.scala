@@ -1,6 +1,6 @@
 package enumeratum
 
-import upickle.{Js, Writer, Reader}
+import upickle.{ Js, Writer, Reader }
 
 object UPickler {
 
