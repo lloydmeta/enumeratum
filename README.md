@@ -42,24 +42,13 @@ libraryDependencies ++= Seq(
 
 ### ScalaJs
 
-There is experimental support for ScalaJs (experimental because ScalaTest does not yet work w/ ScalaJs), though only
-for the core lib and the Play-Json extension project.
+There is support for ScalaJs, though only for the core lib.
 
-For basic enumeratum (with no Play support):
 ```scala
 libraryDependencies ++= Seq(
     "com.beachape" %%% "enumeratum" % "1.1.0"
 )
 ```
-
-For enumeratum with Play JSON:
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % "1.1.0",
-    "com.beachape" %%% "enumeratum-play-json" % "1.1.0"
-)
-```
-
 
 ## How-to + example
 
