@@ -218,6 +218,7 @@ object Enumeratum extends Build {
         }
         impl.ScalaJSGroupID.withCross("com.lihaoyi", "utest", cross) % "0.3.1" % Test
       },
+      scalaJSStage in Test := FastOptStage,
       testFrameworks += new TestFramework("utest.runner.Framework")
     )
   }
