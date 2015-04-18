@@ -37,7 +37,7 @@ object Forms {
         }
       }
     }
-    def unbind(key: String, value: A) = Map(key -> value.toString)
+    def unbind(key: String, value: A) = Map(key -> value.name)
   }
 
 }

@@ -30,7 +30,7 @@ object Json {
    * Returns a Json writes for a given enum [[Enum]]
    */
   def writes[A <: EnumEntry](enum: Enum[A]): Writes[A] = new Writes[A] {
-    def writes(v: A): JsValue = JsString(v.toString)
+    def writes(v: A): JsValue = JsString(v.name)
   }
 
   /**
