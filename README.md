@@ -20,23 +20,23 @@ Compatible with Scala 2.10.x and 2.11.x
 For basic enumeratum (with no Play support):
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.1.0"
+    "com.beachape" %% "enumeratum" % "1.2.0"
 )
 ```
 
 For enumeratum with Play JSON:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.1.0",
-    "com.beachape" %% "enumeratum-play-json" % "1.1.0"
+    "com.beachape" %% "enumeratum" % "1.2.0",
+    "com.beachape" %% "enumeratum-play-json" % "1.2.0"
 )
 ```
 
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.1.0",
-    "com.beachape" %% "enumeratum-play" % "1.1.0"
+    "com.beachape" %% "enumeratum" % "1.2.0",
+    "com.beachape" %% "enumeratum-play" % "1.2.0"
 )
 ```
 
@@ -51,9 +51,9 @@ the `values` method. If you don't care about ordinality, just pass `findValues` 
 
 ```scala
 
-import enumeratum.Enum
+import enumeratum._
 
-sealed trait Greeting
+sealed trait Greeting extends EnumEntry
 
 object Greeting extends Enum[Greeting] {
 
@@ -107,9 +107,9 @@ For example:
 ```scala
 package enums._
 
-import enumeratum.PlayEnum
+import enumeratum._
 
-sealed trait Greeting
+sealed trait Greeting extends EnumEntry
 
 object Greeting extends PlayEnum[Greeting] {
 

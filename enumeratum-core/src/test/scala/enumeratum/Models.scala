@@ -1,6 +1,6 @@
 package enumeratum
 
-sealed trait DummyEnum
+sealed trait DummyEnum extends EnumEntry
 
 object DummyEnum extends Enum[DummyEnum] {
 
@@ -14,7 +14,7 @@ object DummyEnum extends Enum[DummyEnum] {
 
 object Wrapper {
 
-  sealed trait SmartEnum
+  sealed trait SmartEnum extends EnumEntry
 
   object SmartEnum extends Enum[SmartEnum] {
 
@@ -29,7 +29,7 @@ object Wrapper {
 }
 
 object InTheWoods {
-  sealed abstract class Mushroom(val toxic: Boolean)
+  sealed abstract class Mushroom(val toxic: Boolean) extends EnumEntry
 
   object Mushroom extends Enum[Mushroom] {
 

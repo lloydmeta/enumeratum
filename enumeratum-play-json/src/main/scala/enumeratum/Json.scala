@@ -13,7 +13,7 @@ object Json {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def reads[A](enum: Enum[A], insensitive: Boolean = false): Reads[A] = new Reads[A] {
+  def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] = new Reads[A] {
     def reads(json: JsValue): JsResult[A] = json match {
       case JsString(s) => {
         val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)
@@ -29,8 +29,8 @@ object Json {
   /**
    * Returns a Json writes for a given enum [[Enum]]
    */
-  def writes[A](enum: Enum[A]): Writes[A] = new Writes[A] {
-    def writes(v: A): JsValue = JsString(v.toString)
+  def writes[A <: EnumEntry](enum: Enum[A]): Writes[A] = new Writes[A] {
+    def writes(v: A): JsValue = JsString(v.entryName)
   }
 
   /**
@@ -39,7 +39,7 @@ object Json {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def formats[A](enum: Enum[A], insensitive: Boolean = false): Format[A] = {
+  def formats[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Format[A] = {
     Format(reads(enum, insensitive), writes(enum))
   }
 
