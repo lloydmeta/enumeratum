@@ -14,7 +14,7 @@ package enumeratum
  *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
  *
  */
-trait PlayEnum[A] extends Enum[A]
+trait PlayEnum[A <: EnumEntry] extends Enum[A]
   with PlayJsonEnum[A]
   with PlayPathBindableEnum[A]
   with PlayQueryBindableEnum[A]

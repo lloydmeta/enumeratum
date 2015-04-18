@@ -3,7 +3,7 @@ package enumeratum
 /**
  * Created by Lloyd on 2/4/15.
  */
-sealed trait PlayDummy
+sealed trait PlayDummy extends EnumEntry
 
 object PlayDummy extends PlayEnum[PlayDummy] {
   case object A extends PlayDummy

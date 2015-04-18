@@ -19,7 +19,7 @@ object Forms {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def enum[A](enum: Enum[A], insensitive: Boolean = false): Mapping[A] = PlayForms.of(format(enum, insensitive))
+  def enum[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Mapping[A] = PlayForms.of(format(enum, insensitive))
 
   /**
    * Returns a Formatter for [[Enum]]
@@ -27,7 +27,7 @@ object Forms {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  private[enumeratum] def format[A](enum: Enum[A], insensitive: Boolean = false): Formatter[A] = new Formatter[A] {
+  private[enumeratum] def format[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
         val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)

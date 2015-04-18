@@ -34,7 +34,7 @@ import scala.language.postfixOps
  * }}}
  * @tparam A The sealed trait
  */
-trait Enum[A] {
+trait Enum[A <: EnumEntry] {
 
   /**
    * The sequence of values for your [[Enum]]. You will typically want
@@ -57,12 +57,12 @@ trait Enum[A] {
   /**
    * Map of [[A]] object names to [[A]]s
    */
-  lazy final val namesToValuesMap: Map[String, A] = values map (v => v.toString -> v) toMap
+  lazy final val namesToValuesMap: Map[String, A] = values map (v => v.name -> v) toMap
 
   /**
    * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
    */
-  lazy final val lowerCaseNamesToValuesMap: Map[String, A] = values map (v => v.toString.toLowerCase -> v) toMap
+  lazy final val lowerCaseNamesToValuesMap: Map[String, A] = values map (v => v.name.toLowerCase -> v) toMap
 
   /**
    * Optionally returns an [[A]] for a given name.
@@ -75,11 +75,11 @@ trait Enum[A] {
   def withNameInsensitiveOption(name: String): Option[A] = lowerCaseNamesToValuesMap get name.toLowerCase
 
   /**
-   * Tries to get an [[A]] by the supplied name. The name corresponds to the .toString
+   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
    * of the case objects implementing [[A]]
    *
    * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
-   * .toString names.
+   * .names values.
    */
   def withName(name: String): A =
     withNameOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
