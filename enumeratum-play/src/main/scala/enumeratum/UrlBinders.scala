@@ -15,7 +15,7 @@ object UrlBinders {
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
   def pathBinder[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): PathBindable[A] = new PathBindable[A] {
-    def unbind(key: String, value: A): String = value.name
+    def unbind(key: String, value: A): String = value.entryName
     def bind(key: String, value: String): Either[String, A] = {
       val maybeBound = if (insensitive) enum.withNameInsensitiveOption(value) else enum.withNameOption(value)
       maybeBound match {
@@ -34,7 +34,7 @@ object UrlBinders {
   def queryBinder[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): QueryStringBindable[A] =
     new QueryStringBindable[A] {
 
-      def unbind(key: String, value: A): String = key + "=" + value.name
+      def unbind(key: String, value: A): String = key + "=" + value.entryName
 
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
         params.get(key).flatMap(_.headOption).map { p =>

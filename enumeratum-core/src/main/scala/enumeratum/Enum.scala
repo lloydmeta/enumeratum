@@ -57,12 +57,12 @@ trait Enum[A <: EnumEntry] {
   /**
    * Map of [[A]] object names to [[A]]s
    */
-  lazy final val namesToValuesMap: Map[String, A] = values map (v => v.name -> v) toMap
+  lazy final val namesToValuesMap: Map[String, A] = values map (v => v.entryName -> v) toMap
 
   /**
    * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
    */
-  lazy final val lowerCaseNamesToValuesMap: Map[String, A] = values map (v => v.name.toLowerCase -> v) toMap
+  lazy final val lowerCaseNamesToValuesMap: Map[String, A] = values map (v => v.entryName.toLowerCase -> v) toMap
 
   /**
    * Optionally returns an [[A]] for a given name.
@@ -79,7 +79,7 @@ trait Enum[A <: EnumEntry] {
    * of the case objects implementing [[A]]
    *
    * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
-   * .names values.
+   * .entryName values.
    */
   def withName(name: String): A =
     withNameOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
