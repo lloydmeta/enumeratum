@@ -10,7 +10,7 @@ import scala.language.postfixOps
  * This is yet another one.
  *
  * Oh yeah, [[Enum]] is BYOO (bring your own ordinality). Take care of that when
- * you implement the value method.
+ * you implement the values method.
  *
  * How to use:
  *
