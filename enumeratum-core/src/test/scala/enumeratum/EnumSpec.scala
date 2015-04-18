@@ -132,7 +132,7 @@ class EnumSpec extends FunSpec with Matchers {
 
     it("should fail to compile for unsealed traits") {
       """
-        trait NotSealed
+        trait NotSealed extends EnumEntry
 
         object NotSealed extends Enum[NotSealed] {
           val values = findValues
@@ -142,7 +142,7 @@ class EnumSpec extends FunSpec with Matchers {
 
     it("should fail to compile for unsealed abstract classes") {
       """
-        abstract class Abstract
+        abstract class Abstract extends EnumEntry
 
         object Abstract extends Enum[Abstract] {
           val values = findValues
@@ -152,7 +152,7 @@ class EnumSpec extends FunSpec with Matchers {
 
     it("should fail to compile for classes") {
       """
-        class Class
+        class Class extends EnumEntry
 
         object Class extends Enum[Class] {
           val values = findValues
@@ -162,7 +162,7 @@ class EnumSpec extends FunSpec with Matchers {
 
     it("should fail to compile if the enum is not an object") {
       """
-      sealed trait Foo
+      sealed trait Foo extends EnumEntry
 
       class Class extends Enum[Foo] {
         val values = findValues
