@@ -45,7 +45,7 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">PlayEnum</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayJsonEnum.html" class="extype" name="enumeratum.PlayJsonEnum">PlayJsonEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayPathBindableEnum.html" class="extype" name="enumeratum.PlayPathBindableEnum">PlayPathBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayQueryBindableEnum.html" class="extype" name="enumeratum.PlayQueryBindableEnum">PlayQueryBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayFormFieldEnum.html" class="extype" name="enumeratum.PlayFormFieldEnum">PlayFormFieldEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
+        <span class="name">PlayEnum</span><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayJsonEnum.html" class="extype" name="enumeratum.PlayJsonEnum">PlayJsonEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayPathBindableEnum.html" class="extype" name="enumeratum.PlayPathBindableEnum">PlayPathBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayQueryBindableEnum.html" class="extype" name="enumeratum.PlayQueryBindableEnum">PlayQueryBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayFormFieldEnum.html" class="extype" name="enumeratum.PlayFormFieldEnum">PlayFormFieldEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
       </span>
       </h4>
       
@@ -614,9 +614,9 @@ if you aren't using this method...why are you even bothering with this lib?
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .toString
+      <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .name
 of the case objects implementing <span class="extype" name="A">A</span></p><p>Like <span class="extype" name="Enumeration">Enumeration</span>'s <code>withName</code>, this method will throw if the name does not match any of the values'
-.toString names.
+.entryName values.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></dd></dl></div>
     </li><li name="enumeratum.Enum#withNameInsensitiveOption" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="withNameInsensitiveOption(name:String):Option[A]"></a>

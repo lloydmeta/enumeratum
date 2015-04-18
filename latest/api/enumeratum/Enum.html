@@ -45,13 +45,13 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">Enum</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">Enum</span><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>All the cool kids have their own Enumeration implementation, most of which try to
 do so in the name of implementing exhaustive pattern matching.</p><p>This is yet another one.</p><p>Oh yeah, <a href="" class="extype" name="enumeratum.Enum">Enum</a> is BYOO (bring your own ordinality). Take care of that when
-you implement the value method.</p><p>How to use:</p><pre><span class="kw">sealed</span> <span class="kw">trait</span> DummyEnum
+you implement the values method.</p><p>How to use:</p><pre><span class="kw">sealed</span> <span class="kw">trait</span> DummyEnum
 
 <span class="kw">object</span> DummyEnum <span class="kw">extends</span> Enum[DummyEnum] {
 
@@ -564,9 +564,9 @@ if you aren't using this method...why are you even bothering with this lib?
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .toString
+      <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .name
 of the case objects implementing <span class="extype" name="A">A</span></p><p>Like <span class="extype" name="Enumeration">Enumeration</span>'s <code>withName</code>, this method will throw if the name does not match any of the values'
-.toString names.
+.entryName values.
 </p></div></div>
     </li><li name="enumeratum.Enum#withNameInsensitiveOption" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="withNameInsensitiveOption(name:String):Option[A]"></a>

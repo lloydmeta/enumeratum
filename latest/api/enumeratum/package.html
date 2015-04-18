@@ -67,25 +67,25 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="enumeratum.Enum" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="Enum[A]extendsAnyRef"></a>
-      <a id="Enum[A]:Enum[A]"></a>
+      <a id="Enum[A&lt;:enumeratum.EnumEntry]extendsAnyRef"></a>
+      <a id="Enum[A&lt;:EnumEntry]:Enum[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Enum.html"><span class="name">Enum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="Enum.html"><span class="name">Enum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@Enum[A]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@Enum[A&lt;:enumeratum.EnumEntry]extendsAnyRef" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       <p class="shortcomment cmt">All the cool kids have their own Enumeration implementation, most of which try to
 do so in the name of implementing exhaustive pattern matching.</p><div class="fullcomment"><div class="comment cmt"><p>All the cool kids have their own Enumeration implementation, most of which try to
 do so in the name of implementing exhaustive pattern matching.</p><p>This is yet another one.</p><p>Oh yeah, <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a> is BYOO (bring your own ordinality). Take care of that when
-you implement the value method.</p><p>How to use:</p><pre><span class="kw">sealed</span> <span class="kw">trait</span> DummyEnum
+you implement the values method.</p><p>How to use:</p><pre><span class="kw">sealed</span> <span class="kw">trait</span> DummyEnum
 
 <span class="kw">object</span> DummyEnum <span class="kw">extends</span> Enum[DummyEnum] {
 
@@ -102,19 +102,38 @@ DummyEnum.values should be(<span class="std">Set</span>(Hello, GoodBye, Hi))
 
 DummyEnum.withName(<span class="lit">"Hello"</span>) should be(Hello)</pre></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>The sealed trait
 </p></dd></dl></div>
-    </li><li name="enumeratum.PlayEnum" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="PlayEnum[A]extendsEnum[A]withPlayJsonEnum[A]withPlayPathBindableEnum[A]withPlayQueryBindableEnum[A]withPlayFormFieldEnum[A]"></a>
-      <a id="PlayEnum[A]:PlayEnum[A]"></a>
+    </li><li name="enumeratum.EnumEntry" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="EnumEntryextendsAnyRef"></a>
+      <a id="EnumEntry:EnumEntry"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="PlayEnum.html"><span class="name">PlayEnum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayJsonEnum.html" class="extype" name="enumeratum.PlayJsonEnum">PlayJsonEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayPathBindableEnum.html" class="extype" name="enumeratum.PlayPathBindableEnum">PlayPathBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayQueryBindableEnum.html" class="extype" name="enumeratum.PlayQueryBindableEnum">PlayQueryBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayFormFieldEnum.html" class="extype" name="enumeratum.PlayFormFieldEnum">PlayFormFieldEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
+        <a href="EnumEntry.html"><span class="name">EnumEntry</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@PlayEnum[A]extendsEnum[A]withPlayJsonEnum[A]withPlayPathBindableEnum[A]withPlayQueryBindableEnum[A]withPlayFormFieldEnum[A]" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@EnumEntryextendsAnyRef" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Base type for an enum entry for <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></p><div class="fullcomment"><div class="comment cmt"><p>Base type for an enum entry for <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></p><p>By default, the entryName method used for serialising and deseralising Enum values uses
+toString, but feel free to override to fit your needs
+</p></div></div>
+    </li><li name="enumeratum.PlayEnum" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="PlayEnum[A&lt;:enumeratum.EnumEntry]extendsEnum[A]withPlayJsonEnum[A]withPlayPathBindableEnum[A]withPlayQueryBindableEnum[A]withPlayFormFieldEnum[A]"></a>
+      <a id="PlayEnum[A&lt;:EnumEntry]:PlayEnum[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PlayEnum.html"><span class="name">PlayEnum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayJsonEnum.html" class="extype" name="enumeratum.PlayJsonEnum">PlayJsonEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayPathBindableEnum.html" class="extype" name="enumeratum.PlayPathBindableEnum">PlayPathBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayQueryBindableEnum.html" class="extype" name="enumeratum.PlayQueryBindableEnum">PlayQueryBindableEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>] with <a href="PlayFormFieldEnum.html" class="extype" name="enumeratum.PlayFormFieldEnum">PlayFormFieldEnum</a>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.package@PlayEnum[A&lt;:enumeratum.EnumEntry]extendsEnum[A]withPlayJsonEnum[A]withPlayPathBindableEnum[A]withPlayQueryBindableEnum[A]withPlayFormFieldEnum[A]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -122,69 +141,69 @@ DummyEnum.withName(<span class="lit">"Hello"</span>) should be(Hello)</pre></div
 boilerplate.</p><div class="fullcomment"><div class="comment cmt"><p>An Enum that has a lot of the Play-related implicits built-in so you can avoid
 boilerplate.</p><p>Note, the binders created here are case-sensitive.</p><p>Things included are:</p><ul><li>implicit JSON format</li><li>implicit PathBindable (for binding from request path)</li><li>implicit QueryStringBindable (for binding from query strings)</li><li>formField for doing things like <code>Form(&quot;hello&quot; -&gt; MyEnum.formField)</code></li></ul></div></div>
     </li><li name="enumeratum.PlayFormFieldEnum" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="PlayFormFieldEnum[A]extendsAnyRef"></a>
-      <a id="PlayFormFieldEnum[A]:PlayFormFieldEnum[A]"></a>
+      <a id="PlayFormFieldEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef"></a>
+      <a id="PlayFormFieldEnum[A&lt;:EnumEntry]:PlayFormFieldEnum[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="PlayFormFieldEnum.html"><span class="name">PlayFormFieldEnum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="PlayFormFieldEnum.html"><span class="name">PlayFormFieldEnum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@PlayFormFieldEnum[A]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@PlayFormFieldEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       
     </li><li name="enumeratum.PlayJsonEnum" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="PlayJsonEnum[A]extendsAnyRef"></a>
-      <a id="PlayJsonEnum[A]:PlayJsonEnum[A]"></a>
+      <a id="PlayJsonEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef"></a>
+      <a id="PlayJsonEnum[A&lt;:EnumEntry]:PlayJsonEnum[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="PlayJsonEnum.html"><span class="name">PlayJsonEnum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="PlayJsonEnum.html"><span class="name">PlayJsonEnum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@PlayJsonEnum[A]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@PlayJsonEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       
     </li><li name="enumeratum.PlayPathBindableEnum" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="PlayPathBindableEnum[A]extendsAnyRef"></a>
-      <a id="PlayPathBindableEnum[A]:PlayPathBindableEnum[A]"></a>
+      <a id="PlayPathBindableEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef"></a>
+      <a id="PlayPathBindableEnum[A&lt;:EnumEntry]:PlayPathBindableEnum[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="PlayPathBindableEnum.html"><span class="name">PlayPathBindableEnum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="PlayPathBindableEnum.html"><span class="name">PlayPathBindableEnum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@PlayPathBindableEnum[A]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@PlayPathBindableEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       
     </li><li name="enumeratum.PlayQueryBindableEnum" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="PlayQueryBindableEnum[A]extendsAnyRef"></a>
-      <a id="PlayQueryBindableEnum[A]:PlayQueryBindableEnum[A]"></a>
+      <a id="PlayQueryBindableEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef"></a>
+      <a id="PlayQueryBindableEnum[A&lt;:EnumEntry]:PlayQueryBindableEnum[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="PlayQueryBindableEnum.html"><span class="name">PlayQueryBindableEnum</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="PlayQueryBindableEnum.html"><span class="name">PlayQueryBindableEnum</span></a><span class="tparams">[<span name="A">A &lt;: <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.package@PlayQueryBindableEnum[A]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.package@PlayQueryBindableEnum[A&lt;:enumeratum.EnumEntry]extendsAnyRef" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
