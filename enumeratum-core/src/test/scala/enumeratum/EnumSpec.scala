@@ -12,7 +12,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        DummyEnum.values should be(Set(Hello, GoodBye, Hi))
+        DummyEnum.values should be(IndexedSeq(Hello, GoodBye, Hi))
       }
 
     }
@@ -75,7 +75,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        SmartEnum.values should be(Set(Hello, GoodBye, Hi))
+        SmartEnum.values should be(IndexedSeq(Hello, GoodBye, Hi))
       }
 
     }
@@ -105,7 +105,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        values shouldBe Set(FlyAgaric, LSD, Shimeji)
+        values shouldBe IndexedSeq(FlyAgaric, LSD, Shimeji)
       }
 
     }
@@ -113,9 +113,9 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#withName") {
 
       it("should return the proper object when passed the proper string") {
-        withName("FlyAgaric") should be(FlyAgaric)
-        withName("LSD") should be(LSD)
-        withName("Shimeji") should be(Shimeji)
+        withName("FlyAgaric") shouldBe FlyAgaric
+        withName("LSD") shouldBe LSD
+        withName("Shimeji") shouldBe Shimeji
       }
 
       it("should throw an error otherwise") {

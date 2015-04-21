@@ -44,15 +44,15 @@ trait Enum[A <: EnumEntry] {
    * Feel free to implement this however you'd like (including ordering, etc) if that
    * fits your needs better.
    */
-  def values: Iterable[A]
+  def values: Seq[A]
 
   /**
-   * Method that returns the Set of [[A]] objects that the macro was able to find.
+   * Method that returns an IndexedSeq of [[A]] objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
-  protected def findValues: Set[A] = macro EnumMacros.findValuesImpl[A]
+  protected def findValues: IndexedSeq[A] = macro EnumMacros.findValuesImpl[A]
 
   /**
    * Map of [[A]] object names to [[A]]s
