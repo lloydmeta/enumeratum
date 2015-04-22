@@ -7,13 +7,17 @@ import scala.util.control.NonFatal
 
 object EnumMacros {
 
-  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[Set[A]] = {
+  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
     import c.universe._
     val resultType = implicitly[c.WeakTypeTag[A]].tpe
     val typeSymbol = weakTypeOf[A].typeSymbol
     validateType(c)(typeSymbol)
     val subclassSymbols = enclosedSubClasses(c)(typeSymbol)
-    c.Expr[Set[A]](q"Set[${tq"$resultType"}](..${subclassSymbols.map(s => Ident(s))})")
+    c.Expr[IndexedSeq[A]](
+      Apply(
+        Select(reify(IndexedSeq).tree, newTermName("apply")),
+        subclassSymbols.map(Ident(_)).toList
+      ))
   }
 
   private[this] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
@@ -39,8 +43,10 @@ object EnumMacros {
       */
       val enclosingModule = c.enclosingClass match {
         case md @ ModuleDef(_, _, _) => md
-        case _ => c.abort(c.enclosingPosition,
-          "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object")
+        case _ => c.abort(
+          c.enclosingPosition,
+          "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
+        )
       }
       enclosingModule.impl.body.filter { x =>
         try {

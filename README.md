@@ -11,6 +11,16 @@ values, which not only means you get exhaustive pattern match warnings, but also
 can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's
 `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
 
+
+Enumeratum has the following niceties:
+
+- Simplicity; most of the complexity in this lib is in the macro, and the macro is fairly simple conceptually
+- No usage of `synchronized` at runtime , which may help with performance and deadlocks prevention
+- No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
+  environments where reflection is a best effort.
+- All magic happens at compile-time so you know right away when things go awry
+
+
 Compatible with Scala 2.10.x and 2.11.x
 
 [Scaladocs](https://beachape.com/enumeratum/latest/api)
@@ -44,10 +54,6 @@ libraryDependencies ++= Seq(
 
 Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
 an object that extends from `Enum[A]` as follows.
-
-*Note* `Enum` is BYOO (Bring Your Own Ordinality) - take care of ordinality in your own way when you implement
-the `values` method. If you don't care about ordinality, just pass `findValues` directly into your
-`val values` implementation.
 
 ```scala
 

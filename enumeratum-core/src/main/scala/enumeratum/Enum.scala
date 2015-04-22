@@ -9,9 +9,6 @@ import scala.language.postfixOps
  *
  * This is yet another one.
  *
- * Oh yeah, [[Enum]] is BYOO (bring your own ordinality). Take care of that when
- * you implement the values method.
- *
  * How to use:
  *
  * {{{
@@ -41,18 +38,18 @@ trait Enum[A <: EnumEntry] {
    * to implement this in your extending class as a `val` so that `withName`
    * and friends are as efficient as possible.
    *
-   * Feel free to implement this however you'd like (including ordering, etc) if that
+   * Feel free to implement this however you'd like (including messing around with ordering, etc) if that
    * fits your needs better.
    */
-  def values: Iterable[A]
+  def values: Seq[A]
 
   /**
-   * Method that returns the Set of [[A]] objects that the macro was able to find.
+   * Method that returns a Seq of [[A]] objects that the macro was able to find.
    *
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
-  protected def findValues: Set[A] = macro EnumMacros.findValuesImpl[A]
+  protected def findValues: Seq[A] = macro EnumMacros.findValuesImpl[A]
 
   /**
    * Map of [[A]] object names to [[A]]s
@@ -83,5 +80,13 @@ trait Enum[A <: EnumEntry] {
    */
   def withName(name: String): A =
     withNameOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
+
+  /**
+   * Returns the index number of the member passed in the values picked up by this enum
+   *
+   * @param member
+   * @return the index of the first element of values that is equal (as determined by ==) to member, or -1, if none exists.
+   */
+  def indexOf(member: A): Int = values.indexOf(member)
 
 }

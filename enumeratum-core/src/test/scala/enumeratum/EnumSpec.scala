@@ -12,7 +12,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        DummyEnum.values should be(Set(Hello, GoodBye, Hi))
+        DummyEnum.values should be(IndexedSeq(Hello, GoodBye, Hi))
       }
 
     }
@@ -75,7 +75,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        SmartEnum.values should be(Set(Hello, GoodBye, Hi))
+        SmartEnum.values should be(IndexedSeq(Hello, GoodBye, Hi))
       }
 
     }
@@ -105,7 +105,7 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#values") {
 
       it("should contain objects") {
-        values shouldBe Set(FlyAgaric, LSD, Shimeji)
+        values shouldBe IndexedSeq(FlyAgaric, LSD, Shimeji)
       }
 
     }
@@ -113,9 +113,9 @@ class EnumSpec extends FunSpec with Matchers {
     describe("#withName") {
 
       it("should return the proper object when passed the proper string") {
-        withName("FlyAgaric") should be(FlyAgaric)
-        withName("LSD") should be(LSD)
-        withName("Shimeji") should be(Shimeji)
+        withName("FlyAgaric") shouldBe FlyAgaric
+        withName("LSD") shouldBe LSD
+        withName("Shimeji") shouldBe Shimeji
       }
 
       it("should throw an error otherwise") {
@@ -124,6 +124,53 @@ class EnumSpec extends FunSpec with Matchers {
         }
       }
 
+    }
+
+  }
+
+  describe("indexOf") {
+
+    it("should return the proper index") {
+      import DummyEnum._
+      DummyEnum.indexOf(Hello) shouldBe 0
+      DummyEnum.indexOf(GoodBye) shouldBe 1
+      DummyEnum.indexOf(Hi) shouldBe 2
+      import InTheWoods.Mushroom
+      import InTheWoods.Mushroom._
+      Mushroom.indexOf(FlyAgaric) shouldBe 0
+      Mushroom.indexOf(LSD) shouldBe 1
+      Mushroom.indexOf(Shimeji) shouldBe 2
+      import Wrapper.SmartEnum
+      SmartEnum.indexOf(SmartEnum.Hello) shouldBe 0
+      SmartEnum.indexOf(SmartEnum.GoodBye) shouldBe 1
+      SmartEnum.indexOf(SmartEnum.Hi) shouldBe 2
+    }
+
+  }
+
+  describe("findValues Vector") {
+
+    // This is a fairly intense test.
+    it("should be in the same order that the objects were declared in") {
+      import scala.util._
+      (1 to 100).foreach { i =>
+        val members = Random.shuffle((1 to Random.nextInt(20)).map { m => s"member$m" })
+        val membersDefs = members.map { m => s"case object $m extends Enum$i" }.mkString("\n\n")
+        val objDefinition =
+          s"""
+            import enumeratum._
+            sealed trait Enum$i extends EnumEntry
+
+            case object Enum$i extends Enum[Enum$i] {
+             $membersDefs
+             val values = findValues
+            }
+
+            Enum$i
+           """
+        val obj = Eval[Enum[_ <: EnumEntry]](objDefinition)
+        obj.values.map(_.toString) shouldBe members
+      }
     }
 
   }
