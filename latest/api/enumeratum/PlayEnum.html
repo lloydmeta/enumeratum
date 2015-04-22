@@ -95,24 +95,24 @@ boilerplate.</p><p>Note, the binders created here are case-sensitive.</p><p>Thin
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="enumeratum.Enum#values" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="values:Iterable[A]"></a>
-      <a id="values:Iterable[A]"></a>
+      <a id="values:Seq[A]"></a>
+      <a id="values:Seq[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">values</span><span class="result">: <span class="extype" name="scala.Iterable">Iterable</span>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
+        <span class="name">values</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.PlayEnum@values:Iterable[A]" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.PlayEnum@values:Seq[A]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
       <p class="shortcomment cmt">The sequence of values for your <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>.</p><div class="fullcomment"><div class="comment cmt"><p>The sequence of values for your <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a>. You will typically want
 to implement this in your extending class as a <code>val</code> so that <code>withName</code>
-and friends are as efficient as possible.</p><p>Feel free to implement this however you'd like (including ordering, etc) if that
+and friends are as efficient as possible.</p><p>Feel free to implement this however you'd like (including messing around with ordering, etc) if that
 fits your needs better.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></dd></dl></div>
     </li></ol>
@@ -269,22 +269,22 @@ fits your needs better.
               
         </dd></dl></div>
     </li><li name="enumeratum.Enum#findValues" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="findValues:Set[A]"></a>
-      <a id="findValues:Set[A]"></a>
+      <a id="findValues:Seq[A]"></a>
+      <a id="findValues:Seq[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">macro </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">findValues</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
+        <span class="name">findValues</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="enumeratum.PlayEnum.A">A</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.PlayEnum@findValues:Set[A]" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.PlayEnum@findValues:Seq[A]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Method that returns the Set of <span class="extype" name="A">A</span> objects that the macro was able to find.</p><div class="fullcomment"><div class="comment cmt"><p>Method that returns the Set of <span class="extype" name="A">A</span> objects that the macro was able to find.</p><p>You will want to use this in some way to implement your <a href="Enum.html#values:Iterable[A]" class="extmbr" name="enumeratum.Enum#values">values</a> method. In fact,
+      <p class="shortcomment cmt">Method that returns a Seq of <span class="extype" name="A">A</span> objects that the macro was able to find.</p><div class="fullcomment"><div class="comment cmt"><p>Method that returns a Seq of <span class="extype" name="A">A</span> objects that the macro was able to find.</p><p>You will want to use this in some way to implement your <a href="Enum.html#values:Seq[A]" class="extmbr" name="enumeratum.Enum#values">values</a> method. In fact,
 if you aren't using this method...why are you even bothering with this lib?
 </p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></dd></dl></div>
     </li><li name="enumeratum.PlayFormFieldEnum#formField" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -338,6 +338,26 @@ if you aren't using this method...why are you even bothering with this lib?
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="enumeratum.Enum#indexOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="indexOf(member:A):Int"></a>
+      <a id="indexOf(A):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">indexOf</span><span class="params">(<span name="member">member: <span class="extype" name="enumeratum.PlayEnum.A">A</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.PlayEnum@indexOf(member:A):Int" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Returns the index number of the member passed in the values picked up by this enum
+</p><div class="fullcomment"><div class="comment cmt"><p>Returns the index number of the member passed in the values picked up by this enum
+</p></div><dl class="paramcmts block"><dt class="param">member</dt><dd class="cmt"></dd><dt>returns</dt><dd class="cmt"><p>the index of the first element of values that is equal (as determined by ==) to member, or -1, if none exists.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
