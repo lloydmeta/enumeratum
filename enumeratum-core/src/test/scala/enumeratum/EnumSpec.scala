@@ -154,7 +154,7 @@ class EnumSpec extends FunSpec with Matchers {
     it("should be in the same order that the objects were declared in") {
       import scala.util._
       (1 to 100).foreach { i =>
-        val members = Random.shuffle((1 to Random.nextInt(20)).map { m => s"member$m" })
+        val members = Random.shuffle((1 to Random.nextInt(20)).map { m => s"Member$m" })
         val membersDefs = members.map { m => s"case object $m extends Enum$i" }.mkString("\n\n")
         val objDefinition =
           s"""
@@ -169,7 +169,7 @@ class EnumSpec extends FunSpec with Matchers {
             Enum$i
            """
         val obj = Eval[Enum[_ <: EnumEntry]](objDefinition)
-        obj.values.map(_.toString) shouldBe members
+        obj.values.map(_.entryName) shouldBe members
       }
     }
 
