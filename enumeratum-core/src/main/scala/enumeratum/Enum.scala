@@ -16,7 +16,7 @@ import scala.language.postfixOps
  *
  * object DummyEnum extends Enum[DummyEnum] {
  *
- * val values = findValues.toIndexedSeq
+ * val values = findValues
  *
  * case object Hello extends DummyEnum
  * case object GoodBye extends DummyEnum

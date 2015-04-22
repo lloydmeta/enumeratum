@@ -55,6 +55,9 @@ libraryDependencies ++= Seq(
 Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
 an object that extends from `Enum[A]` as follows.
 
+Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
+use the `indexOf` method).
+
 ```scala
 
 import enumeratum._
