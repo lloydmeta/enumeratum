@@ -43,7 +43,8 @@ object Enumeratum extends Build {
       crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+        "org.scalatest" %% "scalatest" % "2.2.1" % Test,
+        "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
       )
     ).dependsOn(macros)
 
@@ -55,18 +56,7 @@ object Enumeratum extends Build {
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
         "org.scalatest" %% "scalatest" % "2.2.1" % "test"
-      ) ++ {
-        val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
-          // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
-          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-            Nil
-          // in Scala 2.10, quasiquotes are provided by macro paradise
-          case Some((2, 10)) =>
-            Seq(
-              compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full),
-              "org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary)
-        }
-        additionalMacroDeps }
+      )
     )
 
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
@@ -84,8 +74,8 @@ object Enumeratum extends Build {
       crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % "2.3.8" % "provided",
-        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+        "com.typesafe.play" %% "play" % "2.3.8" % Provided,
+        "org.scalatest" %% "scalatest" % "2.2.1" % Test
       )
     ).dependsOn(core, enumeratumPlayJson)
 
