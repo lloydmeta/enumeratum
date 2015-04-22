@@ -128,12 +128,32 @@ class EnumSpec extends FunSpec with Matchers {
 
   }
 
+  describe("indexOf") {
+
+    it("should return the proper index") {
+      import DummyEnum._
+      DummyEnum.indexOf(Hello) shouldBe 0
+      DummyEnum.indexOf(GoodBye) shouldBe 1
+      DummyEnum.indexOf(Hi) shouldBe 2
+      import InTheWoods.Mushroom
+      import InTheWoods.Mushroom._
+      Mushroom.indexOf(FlyAgaric) shouldBe 0
+      Mushroom.indexOf(LSD) shouldBe 1
+      Mushroom.indexOf(Shimeji) shouldBe 2
+      import Wrapper.SmartEnum
+      SmartEnum.indexOf(SmartEnum.Hello) shouldBe 0
+      SmartEnum.indexOf(SmartEnum.GoodBye) shouldBe 1
+      SmartEnum.indexOf(SmartEnum.Hi) shouldBe 2
+    }
+
+  }
+
   describe("findValues Vector") {
 
     // This is a fairly intense test.
     it("should be in the same order that the objects were declared in") {
       import scala.util._
-      (1 to 50).foreach { i =>
+      (1 to 100).foreach { i =>
         val members = Random.shuffle((1 to Random.nextInt(20)).map { m => s"member$m" })
         val membersDefs = members.map { m => s"case object $m extends Enum$i" }.mkString("\n\n")
         val objDefinition =
