@@ -100,6 +100,9 @@ It would fail on the following input: Bye
 
 */
 
+Greeting.indexOf(Bye)
+// => res2: Int = 3
+
 ```
 
 ### Play 2
