@@ -17,7 +17,8 @@ object EnumMacros {
       Apply(
         Select(reify(IndexedSeq).tree, newTermName("apply")),
         subclassSymbols.map(Ident(_)).toList
-      ))
+      )
+    )
   }
 
   private[this] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
