@@ -54,7 +54,7 @@ do so in the name of implementing exhaustive pattern matching.</p><p>This is yet
 
 <span class="kw">object</span> DummyEnum <span class="kw">extends</span> Enum[DummyEnum] {
 
-<span class="kw">val</span> values = findValues.toIndexedSeq
+<span class="kw">val</span> values = findValues
 
 <span class="kw">case</span> <span class="kw">object</span> Hello <span class="kw">extends</span> DummyEnum
 <span class="kw">case</span> <span class="kw">object</span> GoodBye <span class="kw">extends</span> DummyEnum
@@ -585,6 +585,26 @@ if you aren't using this method...why are you even bothering with this lib?
     </span>
       <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .name
 of the case objects implementing <span class="extype" name="A">A</span></p><p>Like <span class="extype" name="Enumeration">Enumeration</span>'s <code>withName</code>, this method will throw if the name does not match any of the values'
+.entryName values.
+</p></div></div>
+    </li><li name="enumeratum.Enum#withNameInsensitive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="withNameInsensitive(name:String):A"></a>
+      <a id="withNameInsensitive(String):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">withNameInsensitive</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="enumeratum.Enum.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.Enum@withNameInsensitive(name:String):A" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Tries to get an <span class="extype" name="A">A</span> by the supplied name.</p><div class="fullcomment"><div class="comment cmt"><p>Tries to get an <span class="extype" name="A">A</span> by the supplied name. The name corresponds to the .name
+of the case objects implementing <span class="extype" name="A">A</span>, disregarding case</p><p>Like <span class="extype" name="Enumeration">Enumeration</span>'s <code>withName</code>, this method will throw if the name does not match any of the values'
 .entryName values.
 </p></div></div>
     </li><li name="enumeratum.Enum#withNameInsensitiveOption" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
