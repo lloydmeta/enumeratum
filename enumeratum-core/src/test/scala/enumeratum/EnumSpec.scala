@@ -47,6 +47,26 @@ class EnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("#withNameInsensitive") {
+
+      it("should return the proper object when passed the proper string, disregarding cases") {
+        DummyEnum.withNameInsensitive("Hello") should be(Hello)
+        DummyEnum.withNameInsensitive("hello") should be(Hello)
+        DummyEnum.withNameInsensitive("GoodBye") should be(GoodBye)
+        DummyEnum.withNameInsensitive("goodBye") should be(GoodBye)
+        DummyEnum.withNameInsensitive("gOodbye") should be(GoodBye)
+        DummyEnum.withNameInsensitive("Hi") should be(Hi)
+        DummyEnum.withNameInsensitive("hI") should be(Hi)
+      }
+
+      it("should throw an error otherwise") {
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameInsensitive("Hola")
+        }
+      }
+
+    }
+
     describe("#withNameInsensitiveOption") {
 
       it("should return the proper object when passed the proper string, disregarding cases") {
