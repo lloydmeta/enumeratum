@@ -82,6 +82,16 @@ trait Enum[A <: EnumEntry] {
     withNameOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
 
   /**
+   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
+   * of the case objects implementing [[A]], disregarding case
+   *
+   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * .entryName values.
+   */
+  def withNameInsensitive(name: String): A =
+    withNameInsensitiveOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
+
+  /**
    * Returns the index number of the member passed in the values picked up by this enum
    *
    * @param member
