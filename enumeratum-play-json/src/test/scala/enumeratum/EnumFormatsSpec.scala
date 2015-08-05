@@ -4,10 +4,10 @@ import org.scalatest.OptionValues._
 import org.scalatest.{ FunSpec, Matchers }
 import play.api.libs.json.{ JsNumber, JsString }
 
-class JsonSpec extends FunSpec with Matchers {
+class EnumFormatsSpec extends FunSpec with Matchers {
 
   describe("reads") {
-    val reads = Json.reads(Dummy)
+    val reads = EnumFormats.reads(Dummy)
 
     it("should create a reads that works with valid values") {
       reads.reads(JsString("A")).asOpt.value should be(Dummy.A)
@@ -20,7 +20,7 @@ class JsonSpec extends FunSpec with Matchers {
   }
 
   describe("reads insensitive") {
-    val reads = Json.reads(Dummy, true)
+    val reads = EnumFormats.reads(Dummy, true)
 
     it("should create a reads that works with valid values disregarding case") {
       reads.reads(JsString("A")).asOpt.value should be(Dummy.A)
@@ -34,7 +34,7 @@ class JsonSpec extends FunSpec with Matchers {
   }
 
   describe("writes") {
-    val writer = Json.writes(Dummy)
+    val writer = EnumFormats.writes(Dummy)
 
     it("should create a writes that writes enum values to JsString") {
       writer.writes(Dummy.A) should be(JsString("A"))
@@ -42,7 +42,7 @@ class JsonSpec extends FunSpec with Matchers {
   }
 
   describe("formats") {
-    val format = Json.formats(Dummy)
+    val format = EnumFormats.formats(Dummy)
 
     it("should create a format that works with valid values") {
       format.reads(JsString("A")).asOpt.value should be(Dummy.A)

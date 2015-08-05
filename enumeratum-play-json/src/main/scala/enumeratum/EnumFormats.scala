@@ -5,7 +5,7 @@ import play.api.libs.json._
 /**
  * Holds JSON reads and writes for [[enumeratum.Enum]]
  */
-object Json {
+object EnumFormats {
 
   /**
    * Returns an Json Reads for a given enum [[Enum]]
