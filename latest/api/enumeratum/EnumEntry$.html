@@ -16,7 +16,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
-            var hash = 'enumeratum.EnumEntry';
+            var hash = 'enumeratum.EnumEntry$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,16 +26,16 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="EnumEntry$.html" title="See companion object"><img src="../lib/class_to_object_big.png" /></a>
+        <a href="EnumEntry.html" title="See companion class"><img src="../lib/object_to_class_big.png" /></a>
         <p id="owner"><a href="package.html" class="extype" name="enumeratum">enumeratum</a></p>
-        <h1><a href="EnumEntry$.html" title="See companion object">EnumEntry</a></h1><h3><span class="morelinks"><div>
+        <h1><a href="EnumEntry.html" title="See companion class">EnumEntry</a></h1><h3><span class="morelinks"><div>
             Related Docs:
-            <a href="EnumEntry$.html" title="See companion object">object EnumEntry</a>
+            <a href="EnumEntry.html" title="See companion class">class EnumEntry</a>
             | <a href="package.html" class="extype" name="enumeratum">package enumeratum</a>
           </div></span></h3><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -43,24 +43,18 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">EnumEntry</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">EnumEntry</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Base type for an enum entry for <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></p><p>By default, the entryName method used for serialising and deseralising Enum values uses
-toString, but feel free to override to fit your needs.</p><p>Mix in the supplied stackable traits to convert the entryName to <a href="EnumEntry$$Snakecase.html" class="extype" name="enumeratum.EnumEntry.Snakecase">Snakecase</a>,
-<a href="EnumEntry$$Uppercase.html" class="extype" name="enumeratum.EnumEntry.Uppercase">Uppercase</a>, and <a href="EnumEntry$$Lowercase.html" class="extype" name="enumeratum.EnumEntry.Lowercase">Lowercase</a>
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="EnumEntry$$Lowercase.html" class="extype" name="enumeratum.EnumEntry.Lowercase">Lowercase</a>, <a href="EnumEntry$$Snakecase.html" class="extype" name="enumeratum.EnumEntry.Snakecase">Snakecase</a>, <a href="EnumEntry$$Uppercase.html" class="extype" name="enumeratum.EnumEntry.Uppercase">Uppercase</a></div>
-          </div></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -95,29 +89,65 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="enumeratum.EnumEntry#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;():enumeratum.EnumEntry"></a>
-      <a id="&lt;init&gt;:EnumEntry"></a>
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="enumeratum.EnumEntry.Lowercase" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LowercaseextendsEnumEntry"></a>
+      <a id="Lowercase:Lowercase"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">EnumEntry</span><span class="params">()</span>
+        <a href="EnumEntry$$Lowercase.html"><span class="name">Lowercase</span></a><span class="result"> extends <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@&lt;init&gt;():enumeratum.EnumEntry" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@LowercaseextendsEnumEntry" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Stackable trait to convert the entryName to lowercase.</p>
+    </li><li name="enumeratum.EnumEntry.Snakecase" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="SnakecaseextendsEnumEntry"></a>
+      <a id="Snakecase:Snakecase"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="EnumEntry$$Snakecase.html"><span class="name">Snakecase</span></a><span class="result"> extends <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.EnumEntry$@SnakecaseextendsEnumEntry" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Stackable trait to convert the entryName to snake_case.</p><div class="fullcomment"><div class="comment cmt"><p>Stackable trait to convert the entryName to snake_case. For UPPER_SNAKE_CASE,
+also mix in <a href="EnumEntry$$Uppercase.html" class="extype" name="enumeratum.EnumEntry.Uppercase">Uppercase</a> after this one.
+</p></div></div>
+    </li><li name="enumeratum.EnumEntry.Uppercase" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UppercaseextendsEnumEntry"></a>
+      <a id="Uppercase:Uppercase"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="EnumEntry$$Uppercase.html"><span class="name">Uppercase</span></a><span class="result"> extends <a href="EnumEntry.html" class="extype" name="enumeratum.EnumEntry">EnumEntry</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.EnumEntry$@UppercaseextendsEnumEntry" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Stackable trait to convert the entryName to UPPERCASE.</p>
     </li></ol>
             </div>
-
-        
 
         
 
@@ -135,7 +165,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -152,7 +182,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@##():Int" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@##():Int" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -169,7 +199,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@==(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@==(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -186,7 +216,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -203,7 +233,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@clone():Object" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@clone():Object" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -214,24 +244,6 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="enumeratum.EnumEntry#entryName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="entryName:String"></a>
-      <a id="entryName:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">entryName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@entryName:String" title="Permalink" target="_top">
-        <img src="../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">String representation of this Enum Entry.</p><div class="fullcomment"><div class="comment cmt"><p>String representation of this Enum Entry.</p><p>Override in your implementation if needed
-</p></div></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -244,7 +256,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -261,7 +273,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -278,7 +290,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@finalize():Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@finalize():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -301,7 +313,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@getClass():Class[_]" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@getClass():Class[_]" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -318,7 +330,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@hashCode():Int" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@hashCode():Int" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -335,7 +347,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -352,7 +364,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -369,7 +381,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@notify():Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@notify():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -386,7 +398,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@notifyAll():Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@notifyAll():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -403,7 +415,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -420,7 +432,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@toString():String" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@toString():String" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -437,7 +449,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@wait():Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@wait():Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -460,7 +472,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -483,7 +495,7 @@ toString, but feel free to override to fit your needs.</p><p>Mix in the supplied
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../index.html#enumeratum.EnumEntry@wait(x$1:Long):Unit" title="Permalink" target="_top">
+      <a href="../index.html#enumeratum.EnumEntry$@wait(x$1:Long):Unit" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>

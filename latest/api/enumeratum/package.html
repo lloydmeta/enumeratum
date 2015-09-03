@@ -106,8 +106,8 @@ DummyEnum.withName(<span class="lit">"Hello"</span>) should be(Hello)</pre></div
       <a id="EnumEntry:EnumEntry"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
         <a href="EnumEntry.html"><span class="name">EnumEntry</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
@@ -118,7 +118,8 @@ DummyEnum.withName(<span class="lit">"Hello"</span>) should be(Hello)</pre></div
       </a>
     </span>
       <p class="shortcomment cmt">Base type for an enum entry for <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></p><div class="fullcomment"><div class="comment cmt"><p>Base type for an enum entry for <a href="Enum.html" class="extype" name="enumeratum.Enum">Enum</a></p><p>By default, the entryName method used for serialising and deseralising Enum values uses
-toString, but feel free to override to fit your needs
+toString, but feel free to override to fit your needs.</p><p>Mix in the supplied stackable traits to convert the entryName to <a href="EnumEntry$$Snakecase.html" class="extype" name="enumeratum.EnumEntry.Snakecase">Snakecase</a>,
+<a href="EnumEntry$$Uppercase.html" class="extype" name="enumeratum.EnumEntry.Uppercase">Uppercase</a>, and <a href="EnumEntry$$Lowercase.html" class="extype" name="enumeratum.EnumEntry.Lowercase">Lowercase</a>
 </p></div></div>
     </li><li name="enumeratum.PlayEnum" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="PlayEnum[A&lt;:enumeratum.EnumEntry]extendsEnum[A]withPlayJsonEnum[A]withPlayPathBindableEnum[A]withPlayQueryBindableEnum[A]withPlayFormFieldEnum[A]"></a>
@@ -214,7 +215,24 @@ boilerplate.</p><p>Note, the binders created here are case-sensitive.</p><p>Thin
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="enumeratum.EnumFormats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="enumeratum.EnumEntry" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnumEntry"></a>
+      <a id="EnumEntry:EnumEntry"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="EnumEntry$.html"><span class="name">EnumEntry</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#enumeratum.package@EnumEntry" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="enumeratum.EnumFormats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="EnumFormats"></a>
       <a id="EnumFormats:EnumFormats"></a>
       <h4 class="signature">
