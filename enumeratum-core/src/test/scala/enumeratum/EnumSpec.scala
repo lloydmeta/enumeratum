@@ -148,6 +148,21 @@ class EnumSpec extends FunSpec with Matchers {
 
   }
 
+  describe("when the entry has stackable traits mixed in") {
+
+    describe("#withName") {
+      it("should return the proper object when passed the proper string") {
+        SnakeEnum.withName("hello") shouldBe SnakeEnum.Hello
+        SnakeEnum.withName("good_bye") shouldBe SnakeEnum.GoodBye
+        SnakeEnum.withName("SHOUT_GOOD_BYE") shouldBe SnakeEnum.ShoutGoodBye
+
+        LowerEnum.withName("hello") shouldBe LowerEnum.Hello
+        LowerEnum.withName("goodbye") shouldBe LowerEnum.GoodBye
+        LowerEnum.withName("SIKE") shouldBe LowerEnum.Sike
+      }
+    }
+  }
+
   describe("indexOf") {
 
     it("should return the proper index") {
