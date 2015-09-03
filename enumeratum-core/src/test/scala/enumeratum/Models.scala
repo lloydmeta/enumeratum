@@ -1,5 +1,7 @@
 package enumeratum
 
+import enumeratum.EnumEntry._
+
 sealed trait DummyEnum extends EnumEntry
 
 object DummyEnum extends Enum[DummyEnum] {
@@ -9,6 +11,30 @@ object DummyEnum extends Enum[DummyEnum] {
   case object Hello extends DummyEnum
   case object GoodBye extends DummyEnum
   case object Hi extends DummyEnum
+
+}
+
+sealed trait SnakeEnum extends EnumEntry with Snakecase
+
+object SnakeEnum extends Enum[SnakeEnum] {
+
+  val values = findValues
+
+  case object Hello extends SnakeEnum
+  case object GoodBye extends SnakeEnum
+  case object ShoutGoodBye extends SnakeEnum with Uppercase
+
+}
+
+sealed trait LowerEnum extends EnumEntry with Lowercase
+
+object LowerEnum extends Enum[LowerEnum] {
+
+  val values = findValues
+
+  case object Hello extends LowerEnum
+  case object GoodBye extends LowerEnum
+  case object Sike extends LowerEnum with Uppercase
 
 }
 

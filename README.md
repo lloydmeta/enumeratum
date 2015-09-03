@@ -105,6 +105,58 @@ Greeting.indexOf(Bye)
 
 ```
 
+The name is taken from the `toString` method of the particular
+`EnumEntry`. This behavior can be changed in two ways. The first is
+to manually override the `def entryName: String` method.
+
+```scala
+
+import enumeratum._
+
+sealed abstract class State(override def entryName: String) extends EnumEntry
+
+object State extends Enum[State] {
+
+   val values = findValues
+
+   case object Alabama extends State("AL")
+   case object Alaska extends State("AK")
+   // and so on and so forth.
+}
+
+import State._
+
+State.withName("AL")
+
+```
+
+The second is to mixin the stackable traits provided for common string
+conversions, `Snakecase`, `Uppercase`, and `Lowercase`.
+
+```scala
+
+import enumeratum._
+import enumeratum.EnumEntry._
+
+sealed trait Greeting extends EnumEntry with Snakecase
+
+object Greeting extends Enum[Greeting] {
+
+  val values = findValues
+
+  case object Hello extends Greeting
+  case object GoodBye extends Greeting
+  case object ShoutGoodBye extends Greeting with Uppercase
+
+}
+
+Greeting.withName("hello")
+Greeting.withName("good_bye")
+Greeting.withName("SHOUT_GOOD_BYE")
+
+```
+
+
 ### Play 2
 
 The `enumeratum-play` project is published separately and gives you access to various tools
