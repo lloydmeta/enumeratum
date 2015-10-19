@@ -16,28 +16,15 @@ object EnumMacros {
     if (subclassSymbols.isEmpty) {
       c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
     } else {
-      val seqTypeTree = AppliedTypeTree(
-        Select(Select(Ident(newTermName("scala")), newTermName("collection")), newTypeName("IndexedSeq")),
-        List(TypeTree(resultType))
-      )
-      val typeCheckType = appliedType(
-        weakTypeOf[IndexedSeq[_]].typeConstructor,
-        List(resultType)
-      )
-      val typed = c.typeCheck(
-        tree = Typed(
-          Apply(
-            TypeApply(
-              Select(reify(IndexedSeq).tree, newTermName("apply")),
-              List(TypeTree(resultType))
-            ),
-            subclassSymbols.map(Ident(_)).toList
+      c.Expr[IndexedSeq[A]](
+        Apply(
+          TypeApply(
+            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            List(TypeTree(resultType))
           ),
-          seqTypeTree
-        ),
-        pt = typeCheckType
+          subclassSymbols.map(Ident(_)).toList
+        )
       )
-      c.Expr[IndexedSeq[A]](typed)
     }
   }
 
