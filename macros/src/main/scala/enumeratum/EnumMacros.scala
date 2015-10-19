@@ -27,7 +27,10 @@ object EnumMacros {
       val typed = c.typeCheck(
         tree = Typed(
           Apply(
-            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            TypeApply(
+              Select(reify(IndexedSeq).tree, newTermName("apply")),
+              List(TypeTree(resultType))
+            ),
             subclassSymbols.map(Ident(_)).toList
           ),
           seqTypeTree
