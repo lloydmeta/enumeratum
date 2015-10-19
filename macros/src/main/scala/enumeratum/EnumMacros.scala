@@ -17,9 +17,15 @@ object EnumMacros {
       c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
     } else {
       c.Expr[IndexedSeq[A]](
-        Apply(
-          Select(reify(IndexedSeq).tree, newTermName("apply")),
-          subclassSymbols.map(Ident(_)).toList
+        Typed(
+          Apply(
+            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            subclassSymbols.map(Ident(_)).toList
+          ),
+          AppliedTypeTree(
+            Select(Select(Ident(newTermName("scala")), newTermName("collection")), newTypeName("IndexedSeq")),
+            List(TypeTree(resultType))
+          )
         )
       )
     }
