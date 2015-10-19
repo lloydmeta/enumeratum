@@ -2,6 +2,12 @@ package enumeratum
 
 import enumeratum.EnumEntry._
 
+sealed trait EmptyEnum extends EnumEntry
+
+object EmptyEnum extends Enum[EmptyEnum] {
+  val values = findValues
+}
+
 sealed trait DummyEnum extends EnumEntry
 
 object DummyEnum extends Enum[DummyEnum] {

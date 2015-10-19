@@ -12,9 +12,9 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 object Enumeratum extends Build {
 
   lazy val theVersion = "1.3.1"
-  lazy val theScalaVersion = "2.11.6"
-  lazy val scalaVersions = Seq("2.10.5", "2.11.7")
-  lazy val thePlayVersion = "2.4.2"
+  lazy val theScalaVersion = "2.11.7"
+  lazy val scalaVersions = Seq("2.10.6", "2.11.7")
+  lazy val thePlayVersion = "2.4.3"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(

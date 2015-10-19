@@ -5,6 +5,14 @@ import org.scalatest.OptionValues._
 
 class EnumSpec extends FunSpec with Matchers {
 
+  describe("no values") {
+
+    it("should result in findValues finding nothing") {
+      EmptyEnum.values shouldBe 'empty
+    }
+
+  }
+
   describe("when not wrapped in another object") {
 
     import DummyEnum._
