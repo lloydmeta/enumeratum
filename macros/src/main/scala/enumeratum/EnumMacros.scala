@@ -13,12 +13,19 @@ object EnumMacros {
     val typeSymbol = weakTypeOf[A].typeSymbol
     validateType(c)(typeSymbol)
     val subclassSymbols = enclosedSubClasses(c)(typeSymbol)
-    c.Expr[IndexedSeq[A]](
-      Apply(
-        Select(reify(IndexedSeq).tree, newTermName("apply")),
-        subclassSymbols.map(Ident(_)).toList
+    if (subclassSymbols.isEmpty) {
+      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
+    } else {
+      c.Expr[IndexedSeq[A]](
+        Apply(
+          TypeApply(
+            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            List(TypeTree(resultType))
+          ),
+          subclassSymbols.map(Ident(_)).toList
+        )
       )
-    )
+    }
   }
 
   private[this] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
