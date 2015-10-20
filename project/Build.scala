@@ -11,7 +11,7 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.3.2"
+  lazy val theVersion = "1.3.3-SNAPSHOT"
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
   lazy val thePlayVersion = "2.4.3"
