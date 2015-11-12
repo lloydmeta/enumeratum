@@ -203,9 +203,9 @@ For example:
 ```scala
 package enums._
 
-import enumeratum.PlayJsonEnum
+import enumeratum.{ PlayJsonEnum, Enum, EnumEntry }
 
-sealed trait Greeting
+sealed trait Greeting extends EnumEntry
 
 object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
