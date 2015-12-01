@@ -1,7 +1,7 @@
 package enumeratum
 
-import org.scalatest.{ Matchers, FunSpec }
 import org.scalatest.OptionValues._
+import org.scalatest.{FunSpec, Matchers}
 
 class EnumSpec extends FunSpec with Matchers {
 
@@ -97,8 +97,8 @@ class EnumSpec extends FunSpec with Matchers {
 
   describe("when a sealed trait is wrapped in another object") {
 
-    import Wrapper._
     import Wrapper.SmartEnum._
+    import Wrapper._
 
     describe("#values") {
 
@@ -173,7 +173,7 @@ class EnumSpec extends FunSpec with Matchers {
 
   describe("indexOf") {
 
-    it("should return the proper index") {
+    it("should return the proper index for elements that exist in values") {
       import DummyEnum._
       DummyEnum.indexOf(Hello) shouldBe 0
       DummyEnum.indexOf(GoodBye) shouldBe 1
@@ -187,6 +187,23 @@ class EnumSpec extends FunSpec with Matchers {
       SmartEnum.indexOf(SmartEnum.Hello) shouldBe 0
       SmartEnum.indexOf(SmartEnum.GoodBye) shouldBe 1
       SmartEnum.indexOf(SmartEnum.Hi) shouldBe 2
+    }
+
+    it("should return -1 for elements that do not exist") {
+      // Does this even make sense given that we need to have sealed traits/classes ??
+      sealed trait Reactions extends EnumEntry
+      case object Reactions extends Enum[Reactions] {
+
+        case object Blah extends Reactions
+
+        case object Yay extends Reactions
+
+        case object Nay extends Reactions
+
+        val values = findValues
+      }
+      case object Woot extends Reactions
+      Reactions.indexOf(Woot) shouldBe -1
     }
 
   }
