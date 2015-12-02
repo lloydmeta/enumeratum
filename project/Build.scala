@@ -15,6 +15,7 @@ object Enumeratum extends Build {
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
   lazy val thePlayVersion = "2.4.3"
+  lazy val scalaTestVersion = "2.2.1"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -44,7 +45,7 @@ object Enumeratum extends Build {
       crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "org.scalatest" %% "scalatest" % "2.2.1" % Test,
+        "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
         "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
       )
     ).dependsOn(macros)
@@ -56,7 +57,7 @@ object Enumeratum extends Build {
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
       )
     )
 
@@ -66,7 +67,7 @@ object Enumeratum extends Build {
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json" % thePlayVersion % "provided",
-        "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
       )
     ).dependsOn(core)
 
@@ -76,7 +77,7 @@ object Enumeratum extends Build {
       crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % thePlayVersion % Provided,
-        "org.scalatest" %% "scalatest" % "2.2.1" % Test
+        "org.scalatest" %% "scalatest" % scalaTestVersion % Test
       )
     ).dependsOn(core, enumeratumPlayJson)
 
