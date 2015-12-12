@@ -9,13 +9,15 @@ import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+
 object Enumeratum extends Build {
 
   lazy val theVersion = "1.3.4-SNAPSHOT"
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
-  lazy val thePlayVersion = "2.4.3"
-  lazy val scalaTestVersion = "2.2.1"
+  lazy val thePlayVersion = "2.4.4"
+  lazy val scalaTestVersion = "3.0.0-M14"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -37,49 +39,90 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macros, core, enumeratumPlay, enumeratumPlayJson)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm)
 
-  lazy val core = Project(id = "enumeratum", base = file("enumeratum-core"), settings = commonWithPublishSettings)
+  lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
-      name := "enumeratum",
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
-      libraryDependencies ++= Seq(
-        "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-        "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
-      )
-    ).dependsOn(macros)
+      name := "enumeratum"
+    )
+    .settings(testSettings:_*)
+    .settings(commonWithPublishSettings:_*)
+    .dependsOn(macros)
 
-  lazy val macros = Project(id = "enumeratum-macros", base = file("macros"), settings = commonWithPublishSettings)
+  lazy val coreJs = core.js
+  lazy val coreJvm = core.jvm
+
+  lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"), settings = commonWithPublishSettings)
+    .settings(
+      name := "coreJVMTests",
+      libraryDependencies ++= Seq(
+        "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
+      ),
+      publishArtifact := false
+    )
+    .settings(testSettings:_*)
+    .dependsOn(coreJvm)
+
+  lazy val macros = crossProject.crossType(CrossType.Pure).in(file("macros"))
+    .settings(commonWithPublishSettings:_*)
     .settings(
       name := "enumeratum-macros",
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value
       )
     )
+    .settings(testSettings:_*)
+  lazy val macrosJs = macros.js
+  lazy val macrosJvm = macros.jvm
 
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play-json" % thePlayVersion % "provided",
-        "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
+        "com.typesafe.play" %% "play-json" % thePlayVersion % "provided"
       )
-    ).dependsOn(core)
+    )
+    .settings(testSettings:_*)
+    .dependsOn(coreJvm)
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary,
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % thePlayVersion % Provided,
-        "org.scalatest" %% "scalatest" % scalaTestVersion % Test
+        "com.typesafe.play" %% "play" % thePlayVersion % Provided
       )
-    ).dependsOn(core, enumeratumPlayJson)
+    )
+    .settings(testSettings:_*)
+    .dependsOn(coreJvm, enumeratumPlayJson)
+
+  lazy val enumeratumUPickle = crossProject.crossType(CrossType.Pure).in(file("enumeratum-upickle"))
+    .settings(commonWithPublishSettings:_*)
+    .settings(
+      name := "enumeratum-upickle",
+      libraryDependencies ++= {
+        import org.scalajs.sbtplugin._
+        val cross = {
+          if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+            ScalaJSCrossVersion.binary
+          else
+            CrossVersion.binary
+        }
+        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.6")
+      } ++ {
+        val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
+          // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
+          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+            Nil
+          // in Scala 2.10, quasiquotes are provided by macro paradise
+          case Some((2, 10)) =>
+            Seq(
+              "org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary )
+        }
+        additionalMacroDeps
+      }
+    )
+    .settings(testSettings:_*)
+    .dependsOn(core)
+  lazy val enumeratumUPickleJs = enumeratumUPickle.js
+  lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
 
   lazy val commonSettings = Seq(
@@ -92,8 +135,7 @@ object Enumeratum extends Build {
     formatterPrefs ++
     compilerSettings ++
     resolverSettings ++
-    ideSettings ++
-    testSettings
+    ideSettings
 
   lazy val formatterPrefs = Seq(
     ScalariformKeys.preferences := ScalariformKeys.preferences.value
@@ -120,10 +162,6 @@ object Enumeratum extends Build {
     incOptions := incOptions.value.withNameHashing(nameHashing = true),
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint", "-Xlog-free-terms")
   )
-
-  lazy val testSettings = Seq(Test).flatMap { t =>
-    Seq(parallelExecution in t := false) // Avoid DB-related tests stomping on each other
-  }
 
   lazy val scoverageSettings = Seq(
     coverageExcludedPackages := """enumeratum\.EnumMacros""",
@@ -164,5 +202,18 @@ object Enumeratum extends Build {
     pomIncludeRepository := { _ => false }
   )
 
+  val testSettings = {
+    Seq(
+      libraryDependencies += {
+        import org.scalajs.sbtplugin._
+        val crossVersion = if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+        impl.ScalaJSGroupID.withCross("org.scalatest", "scalatest", crossVersion) % scalaTestVersion % Test
+      },
+      scalaJSStage in Test := FastOptStage
+    )
+  }
 
 }

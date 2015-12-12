@@ -1,7 +1,6 @@
 package enumeratum
 
 import scala.tools.reflect.ToolBox
-import java.io.File
 
 /**
  * Eval with bits and pieces stolen from here and there...
@@ -20,7 +19,7 @@ object Eval {
 
   def macroToolboxClassPath = {
     val paths = Seq(
-      new java.io.File(s"macros/target/scala-${scalaBinaryVersion}/classes")
+      new java.io.File(s"macros/.jvm/target/scala-$scalaBinaryVersion/classes")
     )
     paths.foreach { p =>
       if (!p.exists) sys.error(s"output directory ${p.getAbsolutePath} does not exist.")

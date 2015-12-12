@@ -27,26 +27,56 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ## SBT
 
+Set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.3"`). 
+
 For basic enumeratum (with no Play support):
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.3.3"
+    "com.beachape" %% "enumeratum" % enumeratumVersion
+)
+```
+
+For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-upickle" % enumeratumVersion
 )
 ```
 
 For enumeratum with Play JSON:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.3.3",
-    "com.beachape" %% "enumeratum-play-json" % "1.3.3"
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
 )
 ```
 
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % "1.3.3",
-    "com.beachape" %% "enumeratum-play" % "1.3.3"
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play" % enumeratumVersion
+)
+```
+
+### ScalaJs
+
+There is support for ScalaJs, though only for the core lib and the UPickle helper lib.
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion
+)
+```
+
+To use with uPickle:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion,
+    "com.beachape" %%% "enumeratum-upickle" % enumeratumVersion
 )
 ```
 
