@@ -16,7 +16,7 @@ object Enumeratum extends Build {
   lazy val theVersion = "1.3.4-SNAPSHOT"
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
-  lazy val thePlayVersion = "2.4.3"
+  lazy val thePlayVersion = "2.4.4"
   lazy val scalaTestVersion = "3.0.0-M14"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
@@ -52,7 +52,7 @@ object Enumeratum extends Build {
   lazy val coreJs = core.js
   lazy val coreJvm = core.jvm
 
-  lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"), settings = commonSettings)
+  lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"), settings = commonWithPublishSettings)
     .settings(
       name := "coreJVMTests",
       libraryDependencies ++= Seq(
