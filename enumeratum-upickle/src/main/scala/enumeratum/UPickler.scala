@@ -31,7 +31,7 @@ object UPickler {
     * @param enum [[Enum]] to make a [[Writer]] for
     */
   def writer[A <: EnumEntry](enum: Enum[A]): Writer[A] = Writer[A] {
-    case member => Js.Str(member.toString)
+    case member => Js.Str(member.entryName)
   }
 
   /**
