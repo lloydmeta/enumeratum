@@ -66,7 +66,8 @@ trait Enum[A <: EnumEntry] {
     * .entryName values.
     */
   def withName(name: String): A =
-    withNameOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
+    withNameOption(name) getOrElse
+      (throw new NoSuchElementException(s"$name is not a member of Enum (${values.map(_.entryName).mkString(", ")})"))
 
   /**
    * Optionally returns an [[A]] for a given name.
@@ -81,7 +82,8 @@ trait Enum[A <: EnumEntry] {
     * .entryName values.
    */
   def withNameInsensitive(name: String): A =
-    withNameInsensitiveOption(name) getOrElse (throw new NoSuchElementException(s"$name is not a member of Enum $this"))
+    withNameInsensitiveOption(name) getOrElse
+      (throw new NoSuchElementException(s"$name is not a member of Enum (${values.map(_.entryName).mkString(", ")})"))
 
   /**
     * Optionally returns an [[A]] for a given name, disregarding case
