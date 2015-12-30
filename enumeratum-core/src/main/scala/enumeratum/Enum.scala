@@ -67,7 +67,7 @@ trait Enum[A <: EnumEntry] {
     */
   def withName(name: String): A =
     withNameOption(name) getOrElse
-      (throw new NoSuchElementException(s"$name is not a member of Enum (${values.map(_.entryName).mkString(", ")})"))
+      (throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
    * Optionally returns an [[A]] for a given name.
@@ -83,7 +83,7 @@ trait Enum[A <: EnumEntry] {
    */
   def withNameInsensitive(name: String): A =
     withNameInsensitiveOption(name) getOrElse
-      (throw new NoSuchElementException(s"$name is not a member of Enum (${values.map(_.entryName).mkString(", ")})"))
+      (throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
     * Optionally returns an [[A]] for a given name, disregarding case
@@ -105,5 +105,10 @@ trait Enum[A <: EnumEntry] {
     * if you aren't using this method...why are you even bothering with this lib?
    */
   protected def findValues: Seq[A] = macro EnumMacros.findValuesImpl[A]
+
+  private def buildNotFoundMessage(notFoundName: String): String = {
+    val existingEntries = values.map(_.entryName).mkString(", ")
+    s"$notFoundName is not a member of Enum ($existingEntries)"
+  }
 
 }

@@ -111,7 +111,7 @@ Greeting.withName("Hello")
 // => res0: Greeting = Hello
 
 Greeting.withName("Haro")
-// => java.lang.IllegalArgumentException: Haro is not a member of Enum Greeting$@7d6b560b
+// => java.lang.IllegalArgumentException: Haro is not a member of Enum (Hello, GoodBye, Hi, Bye)
 
 import Greeting._
 
