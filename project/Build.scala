@@ -13,7 +13,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.3.6"
+  lazy val theVersion = "1.3.7-SNAPSHOT"
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
   lazy val thePlayVersion = "2.4.4"
