@@ -1,6 +1,6 @@
 # Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
 
-Yet another enumeration implementation for Scala for the sake of exhaustive pattern match warnings, Enumeratum is
+A type-safe and powerful enumeration implementation for Scala with exhaustive pattern match warnings, Enumeratum is
 an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
@@ -25,7 +25,7 @@ Compatible with Scala 2.10.x and 2.11.x
 
 [Scaladocs](https://beachape.com/enumeratum/latest/api)
 
-## SBT
+## SBT / Installation basics
 
 Set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.6"`).
 
@@ -33,23 +33,6 @@ For basic enumeratum (with no Play support):
 ```scala
 libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum" % enumeratumVersion
-)
-```
-
-For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
-
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
-    "com.beachape" %% "enumeratum-upickle" % enumeratumVersion
-)
-```
-
-For enumeratum with Play JSON:
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
-    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
 )
 ```
 
@@ -61,9 +44,9 @@ libraryDependencies ++= Seq(
 )
 ```
 
-### ScalaJs
+#### ScalaJs
 
-There is support for ScalaJs, though only for the core lib and the UPickle helper lib.
+In a ScalaJS project, add the following:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -71,14 +54,8 @@ libraryDependencies ++= Seq(
 )
 ```
 
-To use with uPickle:
 
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % enumeratumVersion,
-    "com.beachape" %%% "enumeratum-upickle" % enumeratumVersion
-)
-```
+There are other ways to use Enumeratum (e.g. a la carte), [see here](#sbt-a-la-carte).
 
 ## How-to + example
 
@@ -248,6 +225,52 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
 }
 ```
+
+## SBT a la carte
+
+If you just want to use the macro that finds implementations of a sealed trait within an enclosed
+tree:
+
+```scala
+libraryDependencies ++= Seq("com.beachape" %% "enumeratum-macros" % enumeratumVersion)
+```
+
+For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-upickle" % enumeratumVersion
+)
+```
+
+For enumeratum with Play JSON:
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
+)
+```
+
+### ScalaJs
+
+There is support for ScalaJs, though only for the core lib and the UPickle helper lib.
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion
+)
+```
+
+To use with uPickle:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion,
+    "com.beachape" %%% "enumeratum-upickle" % enumeratumVersion
+)
+```
+
 ## Licence
 
 The MIT License (MIT)
