@@ -4,7 +4,8 @@ A type-safe and powerful enumeration implementation for Scala with exhaustive pa
 an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
 Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
-more flexibility, safety, and power.
+more flexibility, safety, and power. It also has **zero** dependencies, which means it's light-weight, but more importantly,
+won't clutter your (or your dependants') namespace.
 
 Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of
 values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that
@@ -14,8 +15,9 @@ can take your enum values as arguments without having to worry about erasure (fo
 
 Enumeratum has the following niceties:
 
+- Zero dependencies
 - Simplicity; most of the complexity in this lib is in the macro, and the macro is fairly simple conceptually
-- No usage of `synchronized` at runtime , which may help with performance and deadlocks prevention
+- No usage of `synchronized`, which may help with performance and deadlocks prevention
 - No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
   environments where reflection is a best effort.
 - All magic happens at compile-time so you know right away when things go awry
