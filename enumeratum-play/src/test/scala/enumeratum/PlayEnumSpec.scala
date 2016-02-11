@@ -2,9 +2,12 @@ package enumeratum
 
 import org.scalatest.{ Matchers, FunSpec }
 import play.api.data.Form
+import play.api.http.HttpVerbs
 import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
+import play.api.mvc.{ Headers, RequestHeader }
+import play.api.routing.Router
 
 class PlayEnumSpec extends FunSpec with Matchers {
 
@@ -25,7 +28,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
     describe("serialisation") {
 
       it("should serialise values to JsString") {
-        PlayJson.toJson(PlayDummy.A) shouldBe (JsString("A"))
+        PlayJson.toJson(PlayDummy.A) shouldBe JsString("A")
       }
 
     }
@@ -71,6 +74,35 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("PathBindableExtractor") {
+
+      val subject = PlayDummy.fromPath
+
+      it("should extract strings corresponding to enum strings") {
+        subject.unapply("A") shouldBe Some(PlayDummy.A)
+        subject.unapply("B") shouldBe Some(PlayDummy.B)
+        subject.unapply("C") shouldBe Some(PlayDummy.C)
+      }
+
+      it("should not extract strings that are not in the enumeration") {
+        subject.unapply("Z") shouldBe None
+      }
+
+      it("should allow me to build an SIRD router") {
+        import play.api.routing.sird._
+        import play.api.routing._
+        import play.api.mvc._
+        val router = Router.from {
+          case GET(p"/${ PlayDummy.fromPath(greeting) }") => Action {
+            Results.Ok(s"$greeting")
+          }
+        }
+        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/A")) shouldBe true
+        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/F")) shouldBe false
+      }
+
+    }
+
     describe("QueryStringBindable") {
 
       val subject = PlayDummy.queryBindable
@@ -92,5 +124,28 @@ class PlayEnumSpec extends FunSpec with Matchers {
     }
 
   }
+
+  private def reqHeaderAt(theMethod: String, theUri: String) =
+    new RequestHeader {
+      def secure: Boolean = ???
+
+      def uri: String = theUri
+
+      def remoteAddress: String = ???
+
+      def queryString: Map[String, Seq[String]] = ???
+
+      def method: String = theMethod
+
+      def headers: Headers = ???
+
+      def path: String = uri
+
+      def version: String = ???
+
+      def tags: Map[String, String] = ???
+
+      def id: Long = ???
+    }
 
 }

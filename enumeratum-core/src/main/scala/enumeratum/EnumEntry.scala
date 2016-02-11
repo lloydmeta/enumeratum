@@ -1,5 +1,7 @@
 package enumeratum
 
+import java.util.regex.Pattern
+
 /**
  * Base type for an enum entry for [[Enum]]
  *
@@ -22,6 +24,15 @@ abstract class EnumEntry {
 
 object EnumEntry {
 
+  /*
+   * Compiled Regular expressions for performance
+   *
+   * http://stackoverflow.com/a/19832063/1814775
+   */
+  private val snakifyRegexp1 = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  private val snakifyRegexp2 = Pattern.compile("([a-z\\d])([A-Z])")
+  private val snakifyReplacement = "$1_$2"
+
   /**
    * Stackable trait to convert the entryName to snake_case. For UPPER_SNAKE_CASE,
    * also mix in [[Uppercase]] after this one.
@@ -29,8 +40,11 @@ object EnumEntry {
   trait Snakecase extends EnumEntry {
     abstract override def entryName: String = camel2snake(super.entryName)
 
-    private def camel2snake(name: String) =
-      "[A-Z]".r.replaceAllIn(name, { m => "_" + m.group(0).toLowerCase }).stripPrefix("_")
+    // Taken from Lift's StringHelpers#snakify https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
+    private def camel2snake(name: String) = {
+      val first = snakifyRegexp1.matcher(name).replaceAll(snakifyReplacement)
+      snakifyRegexp2.matcher(first).replaceAll(snakifyReplacement).toLowerCase
+    }
   }
 
   /**
