@@ -13,10 +13,10 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.3.7-SNAPSHOT"
+  lazy val theVersion = "1.3.7"
   lazy val theScalaVersion = "2.11.7"
   lazy val scalaVersions = Seq("2.10.6", "2.11.7")
-  lazy val thePlayVersion = "2.4.4"
+  lazy val thePlayVersion = "2.4.6"
   lazy val scalaTestVersion = "3.0.0-M14"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
@@ -187,7 +187,7 @@ object Enumeratum extends Build {
           <developer>
             <id>lloydmeta</id>
             <name>Lloyd Chan</name>
-            <url>http://lloydmeta.github.io</url>
+            <url>https://beachape.com</url>
           </developer>
         </developers>,
     publishTo <<= version { v =>

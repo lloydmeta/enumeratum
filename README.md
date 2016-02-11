@@ -29,7 +29,7 @@ Compatible with Scala 2.10.x and 2.11.x
 
 ## SBT / Installation basics
 
-Set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.6"`).
+Set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.7"`).
 
 For basic enumeratum (with no Play support):
 ```scala
