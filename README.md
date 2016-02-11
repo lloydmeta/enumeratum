@@ -201,6 +201,19 @@ object Greeting extends PlayEnum[Greeting] {
 
   `routesImport += "enums._"`
 */
+
+
+// You can also use the String Interpolating Routing DSL:
+
+import play.api.routing.sird._
+import play.api.routing._
+import play.api.mvc._
+Router.from {
+    case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
+      Results.Ok(s"$greeting")
+    }
+}
+
 ```
 ### Play-JSON
 

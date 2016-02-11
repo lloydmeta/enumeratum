@@ -107,8 +107,9 @@ trait Enum[A <: EnumEntry] {
   protected def findValues: Seq[A] = macro EnumMacros.findValuesImpl[A]
 
   private def buildNotFoundMessage(notFoundName: String): String = {
-    val existingEntries = values.map(_.entryName).mkString(", ")
-    s"$notFoundName is not a member of Enum ($existingEntries)"
+    s"$notFoundName is not a member of Enum ($existingEntriesString)"
   }
+
+  private lazy val existingEntriesString = values.map(_.entryName).mkString(", ")
 
 }
