@@ -17,6 +17,7 @@ Enumeratum has the following niceties:
 
 - Zero dependencies
 - Simplicity; most of the complexity in this lib is in the macro, and the macro is fairly simple conceptually
+- As idiomatic as possible: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - No usage of `synchronized`, which may help with performance and deadlocks prevention
 - No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
   environments where reflection is a best effort.
