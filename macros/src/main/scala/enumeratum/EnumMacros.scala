@@ -1,48 +1,12 @@
 package enumeratum
 
 import scala.reflect.ClassTag
-import scala.reflect.macros.blackbox.{ Context => BlackboxContext }
+import ContextUtils.Context
 import scala.util.control.NonFatal
 
 object EnumMacros {
 
-  def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Int](c)
-  }
-
-  def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Long](c)
-  }
-
-  def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Short](c)
-  }
-
-  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType <: AnyVal: ClassTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
-    import c.universe._
-    val resultType = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
-    val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
-    validateType(c)(typeSymbol)
-    val subclassTrees = enclosedSubClassTrees(c)(typeSymbol)
-    val treeWithVals = findValuesForSubclassTrees[ValueType](c)(subclassTrees)
-    ensureUnique[ValueType](c)(treeWithVals)
-    val subclassSymbols = treeWithVals.map(_.tree.symbol)
-    if (subclassSymbols.isEmpty) {
-      c.Expr[IndexedSeq[ValueEntryType]](reify(IndexedSeq.empty[ValueEntryType]).tree)
-    } else {
-      c.Expr[IndexedSeq[ValueEntryType]](
-        Apply(
-          TypeApply(
-            Select(reify(IndexedSeq).tree, TermName("apply")),
-            List(TypeTree(resultType))
-          ),
-          subclassSymbols.map(Ident(_)).toList
-        )
-      )
-    }
-  }
-
-  def findValuesImpl[A: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[A]] = {
+  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
     import c.universe._
     val resultType = implicitly[c.WeakTypeTag[A]].tpe
     val typeSymbol = weakTypeOf[A].typeSymbol
@@ -54,7 +18,7 @@ object EnumMacros {
       c.Expr[IndexedSeq[A]](
         Apply(
           TypeApply(
-            Select(reify(IndexedSeq).tree, TermName("apply")),
+            Select(reify(IndexedSeq).tree, ContextUtils.termName(c)("apply")),
             List(TypeTree(resultType))
           ),
           subclassSymbols.map(Ident(_)).toList
@@ -63,7 +27,7 @@ object EnumMacros {
     }
   }
 
-  private[this] def validateType(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Unit = {
+  private[enumeratum] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
     if (!typeSymbol.asClass.isSealed)
       c.abort(
         c.enclosingPosition,
@@ -71,65 +35,7 @@ object EnumMacros {
       )
   }
 
-  private[this] def findValuesForSubclassTrees[A: ClassTag](c: BlackboxContext)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithVal[c.universe.Tree, A]] = {
-    val treeWithValues = toTreeWithValue[A](c)(memberTrees)
-    val (hasValueMember, lacksValueMember) = treeWithValues.partition(_.maybeValue.isDefined)
-    if (lacksValueMember.nonEmpty) {
-      val lacksValueMemberStr = lacksValueMember.map(_.tree.symbol).mkString(", ")
-      c.abort(
-        c.enclosingPosition,
-        s"It looks like not all of the members have a 'value' declaration, namely: $lacksValueMemberStr"
-      )
-    }
-    hasValueMember.collect {
-      case TreeWithMaybeVal(tree, Some(v)) => TreeWithVal(tree, v)
-    }
-  }
-
-  private[this] def toTreeWithValue[V: ClassTag](c: BlackboxContext)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithMaybeVal[c.universe.Tree, V]] = {
-    import c.universe._
-    val valueTerm = TermName("value") /* TermName("value") when > 2.10 */
-    memberTrees.map { declTree =>
-      // TODO see if we can collectFirst
-      val values = declTree.collect {
-        case ValDef(_, termName, _, Literal(Constant(i: V))) if termName == valueTerm => Some(i)
-        case Apply(fun, args) if fun.tpe != null => {
-          val funTpe = fun.tpe
-          val members: c.universe.MemberScope = funTpe.members
-          val valueTerms = members.collect {
-            case constr if constr.isConstructor => {
-              val asMethod = constr.asMethod
-              val paramTermNames = asMethod.paramLists.flatten.map(_.asTerm.name)
-              val paramsWithArg = paramTermNames.zip(args)
-              paramsWithArg.collectFirst {
-                case (`valueTerm`, Literal(Constant(i: V))) => i
-                // Can't match without using Ident(TermName(" " )) extractor ??!
-                case (_, AssignOrNamedArg(Ident(TermName("value")), Literal(Constant(i: V)))) => i
-              }
-            }
-          }
-          valueTerms.find(_.isDefined).flatten
-        }
-      }
-      TreeWithMaybeVal(declTree, values.headOption.flatten)
-    }
-  }
-
-  private[this] def ensureUnique[A](c: BlackboxContext)(treeWithVals: Seq[TreeWithVal[c.universe.Tree, A]]): Unit = {
-    val membersWithValues = treeWithVals.map { treeWithVal =>
-      treeWithVal.tree.symbol -> treeWithVal.value
-    }
-    val groupedByValue = membersWithValues.groupBy(_._2).mapValues(_.map(_._1))
-    val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) = groupedByValue.partition(_._2.size <= 1)
-    if (valuesWithOneSymbol.size != membersWithValues.distinct.size) {
-      c.abort(
-        c.enclosingPosition,
-        s"It does not look like you have unique values. Found the following values correspond to more than one members: $valuesWithMoreThanOneSymbol"
-      )
-    }
-  }
-
-  private[this] def enclosedSubClassTrees(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Seq[c.universe.Tree] = {
+  private[enumeratum] def enclosedSubClassTrees(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Tree] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
       /*
@@ -167,11 +73,7 @@ object EnumMacros {
     else enclosingBodySubClassTrees
   }
 
-  private[this] def enclosedSubClasses(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
+  private[enumeratum] def enclosedSubClasses(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
     enclosedSubClassTrees(c)(typeSymbol).map(_.symbol)
   }
-
-  private[this] case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
-  private[this] case class TreeWithVal[CTree, T](tree: CTree, value: T)
-
 }

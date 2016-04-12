@@ -77,7 +77,11 @@ object Enumeratum extends Build {
       name := "enumeratum-macros",
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
-      )
+      ),
+      unmanagedSourceDirectories in Compile ++= {
+        if (scalaVersion.value startsWith "2.10.") Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.10")
+        else Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+      }
     )
     .settings(testSettings:_*)
   lazy val macrosJs = macros.js

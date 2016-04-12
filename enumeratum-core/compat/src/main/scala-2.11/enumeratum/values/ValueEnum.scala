@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import enumeratum.EnumMacros
+import enumeratum.ValueEnumMacros
 
 import scala.language.experimental.macros
 
@@ -61,7 +61,7 @@ trait IntEnum[A <: IntEnumEntry] extends ValueEnum[A, Int] {
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
-  protected def findValues: IndexedSeq[A] = macro EnumMacros.findIntValueEntriesImpl[A]
+  protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findIntValueEntriesImpl[A]
 
 }
 
@@ -76,7 +76,7 @@ trait LongEnum[A <: LongEnumEntry] extends ValueEnum[A, Long] {
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
-  final protected def findValues: IndexedSeq[A] = macro EnumMacros.findLongValueEntriesImpl[A]
+  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findLongValueEntriesImpl[A]
 }
 
 /**
@@ -90,5 +90,5 @@ trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[A, Short] {
    * You will want to use this in some way to implement your [[values]] method. In fact,
    * if you aren't using this method...why are you even bothering with this lib?
    */
-  final protected def findValues: IndexedSeq[A] = macro EnumMacros.findShortValueEntriesImpl[A]
+  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findShortValueEntriesImpl[A]
 }
