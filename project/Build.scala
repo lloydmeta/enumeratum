@@ -100,7 +100,15 @@ object Enumeratum extends Build {
     .settings(
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % thePlayVersion % Provided
-      )
+      ),
+      unmanagedSourceDirectories in Compile ++= {
+        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
+        else Nil
+      },
+      unmanagedSourceDirectories in Test ++= {
+        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
+        else Nil
+      }
     )
     .settings(testSettings:_*)
     .dependsOn(coreJvm, enumeratumPlayJson)
