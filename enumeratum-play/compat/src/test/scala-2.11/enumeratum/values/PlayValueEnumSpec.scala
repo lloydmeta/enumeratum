@@ -137,11 +137,11 @@ sealed abstract class PlayContentType(val value: Long, name: String) extends Lon
 case object PlayContentType
     extends PlayLongEnum[PlayContentType] {
 
+  val values = findValues
+
   case object Text extends PlayContentType(value = 1L, name = "text")
   case object Image extends PlayContentType(value = 2L, name = "image")
   case object Video extends PlayContentType(value = 3L, name = "video")
   case object Audio extends PlayContentType(value = 4L, name = "audio")
-
-  val values = findValues
 
 }
