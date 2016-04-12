@@ -152,4 +152,52 @@ class ValueEnumSpec extends FunSpec with Matchers {
     }
 
   }
+
+  describe("compilation failures") {
+
+    describe("trying to use with improper types") {
+
+      it("should fail to compile for unsealed traits") {
+        """
+        trait NotSealed extends IntEnumEntry
+
+        object NotSealed extends IntEnum[NotSealed] {
+          val values = findValues
+        }
+        """ shouldNot compile
+      }
+
+      it("should fail to compile for unsealed abstract classes") {
+        """
+         abstract class NotSealed(val value: Int) extends IntEnumEntry
+
+         object NotSealed extends IntEnum[NotSealed] {
+           val values = findValues
+         }
+        """ shouldNot compile
+      }
+
+      it("should fail to compile for classes") {
+        """
+        class Class(val value: Int) extends IntEnumEntry
+
+        object Class extends IntEnum[Class] {
+          val values = findValues
+        }
+        """ shouldNot compile
+      }
+
+      it("should fail to compile if the enum is not an object") {
+        """
+        sealed abstract class Sealed(val value: Int) extends IntEnumEntry
+
+        class SealedEnum extends IntEnum[Sealed] {
+          val values = findValues
+        }
+        """ shouldNot compile
+      }
+    }
+
+  }
+
 }

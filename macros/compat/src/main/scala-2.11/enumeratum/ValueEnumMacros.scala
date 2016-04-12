@@ -5,14 +5,23 @@ import ContextUtils.Context
 
 object ValueEnumMacros {
 
+  /**
+   * Note, requires the ValueEntryType to have a 'value' member that has a literal value
+   */
   def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Int, Int](c)(identity)
   }
 
+  /**
+   * Note, requires the ValueEntryType to have a 'value' member that has a literal value
+   */
   def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Long, Long](c)(identity)
   }
 
+  /**
+   * Note, requires the ValueEntryType to have a 'value' member that has a literal value
+   */
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Int, Short](c)(_.toShort) // do a transform because there is no such thing as Short literals
   }
