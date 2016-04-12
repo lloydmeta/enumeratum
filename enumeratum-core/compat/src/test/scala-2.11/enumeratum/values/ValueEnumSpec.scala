@@ -107,7 +107,7 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
   describe("LongEnum") {
 
-    describe("withName") {
+    describe("withValue") {
 
       it("should return entries that match the value") {
         ContentType.withValue(1) shouldBe ContentType.Text
