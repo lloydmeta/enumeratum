@@ -1,12 +1,12 @@
 // The Typesafe repository
-resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
-
-resolvers += "jgit-repo" at "http://download.eclipse.org/jgit/maven"
-
+resolvers ++= Seq(
+  Resolver.typesafeRepo("releases"),
+  Classpaths.sbtPluginReleases
+)
 resolvers += Classpaths.sbtPluginReleases
 
 // for code formatting
-addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
+addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
 // SBT-Scoverage version must be compatible with SBT-coveralls version below
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.1")
