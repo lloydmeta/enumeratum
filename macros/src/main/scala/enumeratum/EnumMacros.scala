@@ -1,26 +1,24 @@
 package enumeratum
 
 import scala.reflect.ClassTag
-import scala.reflect.macros.Context
+import scala.reflect.macros.blackbox.{ Context => BlackboxContext }
 import scala.util.control.NonFatal
-
-// TODO switch to blackbox.Context when dropping support for 2.10.x
 
 object EnumMacros {
 
-  def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+  def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Int](c)
   }
 
-  def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+  def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Long](c)
   }
 
-  def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+  def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
     findValueEntriesImpl[ValueEntryType, Short](c)
   }
 
-  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType <: AnyVal: ClassTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType <: AnyVal: ClassTag](c: BlackboxContext): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
     val resultType = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
     val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
@@ -35,7 +33,7 @@ object EnumMacros {
       c.Expr[IndexedSeq[ValueEntryType]](
         Apply(
           TypeApply(
-            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            Select(reify(IndexedSeq).tree, TermName("apply")),
             List(TypeTree(resultType))
           ),
           subclassSymbols.map(Ident(_)).toList
@@ -44,7 +42,7 @@ object EnumMacros {
     }
   }
 
-  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
+  def findValuesImpl[A: c.WeakTypeTag](c: BlackboxContext): c.Expr[IndexedSeq[A]] = {
     import c.universe._
     val resultType = implicitly[c.WeakTypeTag[A]].tpe
     val typeSymbol = weakTypeOf[A].typeSymbol
@@ -56,7 +54,7 @@ object EnumMacros {
       c.Expr[IndexedSeq[A]](
         Apply(
           TypeApply(
-            Select(reify(IndexedSeq).tree, newTermName("apply")),
+            Select(reify(IndexedSeq).tree, TermName("apply")),
             List(TypeTree(resultType))
           ),
           subclassSymbols.map(Ident(_)).toList
@@ -65,7 +63,7 @@ object EnumMacros {
     }
   }
 
-  private[this] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
+  private[this] def validateType(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Unit = {
     if (!typeSymbol.asClass.isSealed)
       c.abort(
         c.enclosingPosition,
@@ -73,7 +71,7 @@ object EnumMacros {
       )
   }
 
-  private[this] def findValuesForSubclassTrees[A: ClassTag](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithVal[c.universe.Tree, A]] = {
+  private[this] def findValuesForSubclassTrees[A: ClassTag](c: BlackboxContext)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithVal[c.universe.Tree, A]] = {
     val treeWithValues = toTreeWithValue[A](c)(memberTrees)
     val (hasValueMember, lacksValueMember) = treeWithValues.partition(_.maybeValue.isDefined)
     if (lacksValueMember.nonEmpty) {
@@ -88,9 +86,9 @@ object EnumMacros {
     }
   }
 
-  private[this] def toTreeWithValue[V: ClassTag](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithMaybeVal[c.universe.Tree, V]] = {
+  private[this] def toTreeWithValue[V: ClassTag](c: BlackboxContext)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithMaybeVal[c.universe.Tree, V]] = {
     import c.universe._
-    val valueTerm = newTermName("value") /* TermName("value") when > 2.10 */
+    val valueTerm = TermName("value") /* TermName("value") when > 2.10 */
     memberTrees.map { declTree =>
       // TODO see if we can collectFirst
       val values = declTree.collect {
@@ -99,10 +97,10 @@ object EnumMacros {
           val funTpe = fun.tpe
           val members: c.universe.MemberScope = funTpe.members
           val valueTerms = members.collect {
-            case constr if constr.name == nme.CONSTRUCTOR /* constr.isConstructor when migrating > 2.10 */ => {
+            case constr if constr.isConstructor => {
               val asMethod = constr.asMethod
-              val paramList = asMethod.paramss.flatten.map(_.asTerm.name)
-              val paramsWithArg = paramList.zip(args)
+              val paramTermNames = asMethod.paramLists.flatten.map(_.asTerm.name)
+              val paramsWithArg = paramTermNames.zip(args)
               paramsWithArg.collectFirst {
                 case (`valueTerm`, Literal(Constant(i: V))) => i
                 // Can't match without using Ident(TermName(" " )) extractor ??!
@@ -117,7 +115,7 @@ object EnumMacros {
     }
   }
 
-  private[this] def ensureUnique[A](c: Context)(treeWithVals: Seq[TreeWithVal[c.universe.Tree, A]]): Unit = {
+  private[this] def ensureUnique[A](c: BlackboxContext)(treeWithVals: Seq[TreeWithVal[c.universe.Tree, A]]): Unit = {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value
     }
@@ -131,7 +129,7 @@ object EnumMacros {
     }
   }
 
-  private[this] def enclosedSubClassTrees(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Tree] = {
+  private[this] def enclosedSubClassTrees(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Seq[c.universe.Tree] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
       /*
@@ -169,7 +167,7 @@ object EnumMacros {
     else enclosingBodySubClassTrees
   }
 
-  private[this] def enclosedSubClasses(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
+  private[this] def enclosedSubClasses(c: BlackboxContext)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
     enclosedSubClassTrees(c)(typeSymbol).map(_.symbol)
   }
 
