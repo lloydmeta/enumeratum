@@ -43,7 +43,15 @@ object Enumeratum extends Build {
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
-      name := "enumeratum"
+      name := "enumeratum",
+      unmanagedSourceDirectories in Compile ++= {
+        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+        else Nil
+      },
+      unmanagedSourceDirectories in Test ++= {
+        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+        else Nil
+      }
     )
     .settings(testSettings:_*)
     .settings(commonWithPublishSettings:_*)
