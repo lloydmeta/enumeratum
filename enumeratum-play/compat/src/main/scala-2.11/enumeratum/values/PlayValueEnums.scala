@@ -10,8 +10,6 @@ package enumeratum.values
  * An IntEnum that has a lot of the Play-related implicits built-in so you can avoid
  * boilerplate.
  *
- * Note, the binders created here are case-sensitive.
- *
  * Things included are:
  *
  *   - implicit PathBindable (for binding from request path)
@@ -28,8 +26,6 @@ trait PlayIntEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
  * An LongEnum that has a lot of the Play-related implicits built-in so you can avoid
  * boilerplate.
  *
- * Note, the binders created here are case-sensitive.
- *
  * Things included are:
  *
  *   - implicit PathBindable (for binding from request path)
@@ -45,8 +41,6 @@ trait PlayLongEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
 /**
  * An ShortEnum that has a lot of the Play-related implicits built-in so you can avoid
  * boilerplate.
- *
- * Note, the binders created here are case-sensitive.
  *
  * Things included are:
  *
