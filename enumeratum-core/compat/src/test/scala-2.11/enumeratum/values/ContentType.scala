@@ -17,3 +17,5 @@ case object ContentType extends LongEnum[ContentType] {
   val values = findValues
 
 }
+
+case object Papyrus extends ContentType(5, "papyrus")

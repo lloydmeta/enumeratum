@@ -17,3 +17,5 @@ case object Drinks extends ShortEnum[Drinks] {
   val values = findValues
 
 }
+
+case object CoughSyrup extends Drinks(5, "cough-syrup")

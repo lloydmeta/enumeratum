@@ -45,6 +45,17 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("indexOf") {
+
+      it("should return the proper index for proper members") {
+        LibraryItem.indexOf(LibraryItem.Book) shouldBe 0
+      }
+      it("should return -1 for non members") {
+        LibraryItem.indexOf(Newspaper) shouldBe -1
+      }
+
+    }
+
   }
 
   describe("ShortEnum") {
@@ -81,6 +92,17 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("indexOf") {
+
+      it("should return the proper index for proper members") {
+        Drinks.indexOf(Drinks.OrangeJuice) shouldBe 0
+      }
+      it("should return -1 for non members") {
+        Drinks.indexOf(CoughSyrup) shouldBe -1
+      }
+
+    }
+
   }
 
   describe("LongEnum") {
@@ -113,6 +135,17 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
       it("should return None when given values that do not map to any entries") {
         ContentType.withValueOpt(5) shouldBe None
+      }
+
+    }
+
+    describe("indexOf") {
+
+      it("should return the proper index for proper members") {
+        ContentType.indexOf(ContentType.Text) shouldBe 0
+      }
+      it("should return -1 for non members") {
+        ContentType.indexOf(Papyrus) shouldBe -1
       }
 
     }
@@ -154,6 +187,45 @@ class ValueEnumSpec extends FunSpec with Matchers {
   }
 
   describe("compilation failures") {
+
+    describe("problematic values") {
+
+      it("should fail to compile when values are repeated") {
+        """
+        sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry
+
+        case object ContentTypeRepeated extends LongEnum[ContentTypeRepeated] {
+
+          case object Text extends ContentTypeRepeated(value = 1L, name = "text")
+          case object Image extends ContentTypeRepeated(value = 2L, name = "image")
+          case object Video extends ContentTypeRepeated(value = 2L, name = "video")
+          case object Audio extends ContentTypeRepeated(value = 4L, name = "audio")
+
+          val values = findValues
+
+        }
+       """ shouldNot compile
+      }
+
+      it("should fail to compile when there are non literal values") {
+        """
+        sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry
+
+        case object ContentTypeRepeated extends LongEnum[ContentTypeRepeated] {
+          val one = 1L
+
+          case object Text extends ContentTypeRepeated(value = one, name = "text")
+          case object Image extends ContentTypeRepeated(value = 2L, name = "image")
+          case object Video extends ContentTypeRepeated(value = 2L, name = "video")
+          case object Audio extends ContentTypeRepeated(value = 4L, name = "audio")
+
+          val values = findValues
+
+        }
+        """ shouldNot compile
+      }
+
+    }
 
     describe("trying to use with improper types") {
 

@@ -20,3 +20,4 @@ case object LibraryItem extends IntEnum[LibraryItem] {
 
 }
 
+case object Newspaper extends LibraryItem(5, "Zeitung")
