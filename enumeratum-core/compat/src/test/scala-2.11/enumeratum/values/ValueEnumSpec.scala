@@ -119,4 +119,37 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
   }
 
+  describe("should still work when using val members in the body") {
+
+    describe("withValue") {
+
+      it("should return entries that match the value") {
+        MovieGenre.withValue(1) shouldBe MovieGenre.Action
+        MovieGenre.withValue(2) shouldBe MovieGenre.Comedy
+        MovieGenre.withValue(3) shouldBe MovieGenre.Romance
+      }
+
+      it("should throw on values that don't map to any entries") {
+        intercept[NoSuchElementException] {
+          MovieGenre.withValue(4)
+        }
+      }
+
+    }
+
+    describe("withValueOpt") {
+
+      it("should return Some(entry) that match the value") {
+        MovieGenre.withValueOpt(1) shouldBe Some(MovieGenre.Action)
+        MovieGenre.withValueOpt(2) shouldBe Some(MovieGenre.Comedy)
+        MovieGenre.withValueOpt(3) shouldBe Some(MovieGenre.Romance)
+      }
+
+      it("should return None when given values that do not map to any entries") {
+        MovieGenre.withValueOpt(5) shouldBe None
+      }
+
+    }
+
+  }
 }
