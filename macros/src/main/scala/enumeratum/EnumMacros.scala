@@ -1,5 +1,6 @@
 package enumeratum
 
+import scala.reflect.ClassTag
 import scala.reflect.macros.Context
 import scala.util.control.NonFatal
 
@@ -7,20 +8,19 @@ import scala.util.control.NonFatal
 
 object EnumMacros {
 
-  def findIntValuesImp[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
+  def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
-    val resultType = implicitly[c.WeakTypeTag[A]].tpe
-    val typeSymbol = weakTypeOf[A].typeSymbol
-
+    val resultType = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
+    val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
     validateType(c)(typeSymbol)
     val subclassTrees = enclosedSubClassTrees(c)(typeSymbol)
-    val treeWithVals = ensureHasValuesDeclarations[Int](c)(subclassTrees)
+    val treeWithVals = findValuesForSubclassTrees[Int](c)(subclassTrees)
     ensureUnique[Int](c)(treeWithVals)
     val subclassSymbols = treeWithVals.map(_.tree.symbol)
     if (subclassSymbols.isEmpty) {
-      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
+      c.Expr[IndexedSeq[ValueEntryType]](reify(IndexedSeq.empty[ValueEntryType]).tree)
     } else {
-      c.Expr[IndexedSeq[A]](
+      c.Expr[IndexedSeq[ValueEntryType]](
         Apply(
           TypeApply(
             Select(reify(IndexedSeq).tree, newTermName("apply")),
@@ -62,14 +62,14 @@ object EnumMacros {
         )
     }
 
-  private [this]  def ensureHasValuesDeclarations[A](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithVal[c.universe.Tree, A]] = {
-      import c.universe._
+  private [this]  def findValuesForSubclassTrees[A: ClassTag](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithVal[c.universe.Tree, A]] = {
       val treeWithValues = toTreeWithValue[A](c)(memberTrees)
       val (hasValueMember , lacksValueMember) = treeWithValues.partition(_.maybeValue.isDefined)
       if(lacksValueMember.nonEmpty) {
+        val lacksValueMemberStr = lacksValueMember.map(_.tree.symbol).mkString(", ")
         c.abort(
           c.enclosingPosition,
-          s"It looks like not all of the members have a 'value' declaration, namely: $lacksValueMember"
+          s"It looks like not all of the members have a 'value' declaration, namely: $lacksValueMemberStr"
         )
       }
       hasValueMember.collect {
@@ -77,26 +77,29 @@ object EnumMacros {
       }
     }
 
-  private [this]  def toTreeWithValue[A](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithMaybeVal[c.universe.Tree, A]] = {
+  private [this]  def toTreeWithValue[V: ClassTag](c: Context)(memberTrees: Seq[c.universe.Tree]): Seq[TreeWithMaybeVal[c.universe.Tree, V]] = {
       import c.universe._
+      val valueTerm = newTermName("value") /* TermName("value") when > 2.10 */
       memberTrees.map { declTree =>
         // TODO see if we can collectFirst
         val values = declTree.collect {
-          case ValDef(_, TermName("value"), _, Literal(Constant(i: A))) => Some(i)
+          case ValDef(_, termName, _, Literal(Constant(i: V))) if termName == valueTerm => Some(i)
           case Apply(fun, args) if fun.tpe != null => {
             val funTpe = fun.tpe
-            val members = funTpe.members
-            val valueTerm = members.collect {
-              case constr if constr.isConstructor => {
+            val members: c.universe.MemberScope = funTpe.members
+            val valueTerms = members.collect {
+              case constr if constr.name == nme.CONSTRUCTOR /* constr.isConstructor when migrating > 2.10 */ => {
                 val asMethod = constr.asMethod
-                val paramList = asMethod.paramLists.flatten.map(_.asTerm)
+                val paramList = asMethod.paramss.flatten.map(_.asTerm.name)
                 val paramsWithArg = paramList.zip(args)
-                paramsWithArg.find(_._1.name == TermName("value")).collectFirst {
-                  case (_, Literal(Constant(i: A))) => i
+                paramsWithArg.collectFirst {
+                  case (`valueTerm`, Literal(Constant(i: V))) => i
+                    // Can't match without using Ident(TermName(" " )) extractor ??!
+                  case (_, AssignOrNamedArg(Ident(TermName("value")) , Literal(Constant(i: V)))) => i
                 }
               }
             }
-            valueTerm.flatten.headOption
+            valueTerms.find(_.isDefined).flatten
           }
         }
         TreeWithMaybeVal(declTree, values.headOption.flatten)
@@ -160,8 +163,8 @@ object EnumMacros {
     }
 
 
-  private [this]  case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
-  private [this]  case class TreeWithVal[CTree, T](tree: CTree, value: T)
+  private [this] case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
+  private [this] case class TreeWithVal[CTree, T](tree: CTree, value: T)
 
 
 }
