@@ -1,6 +1,5 @@
 package enumeratum
 
-import scala.reflect.ClassTag
 import ContextUtils.Context
 import scala.util.control.NonFatal
 
