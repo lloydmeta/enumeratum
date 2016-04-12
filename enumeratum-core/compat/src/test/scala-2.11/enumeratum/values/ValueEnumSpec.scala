@@ -13,7 +13,7 @@ class ValueEnumSpec extends FunSpec with Matchers {
 
   describe("IntEnum") {
 
-    describe("withName") {
+    describe("withValue") {
 
       it("should return entries that match the value") {
         LibraryItem.withValue(1) shouldBe LibraryItem.Book
@@ -38,8 +38,81 @@ class ValueEnumSpec extends FunSpec with Matchers {
         LibraryItem.withValueOpt(3) shouldBe Some(LibraryItem.Magazine)
         LibraryItem.withValueOpt(4) shouldBe Some(LibraryItem.CD)
       }
+
       it("should return None when given values that do not map to any entries") {
         LibraryItem.withValueOpt(5) shouldBe None
+      }
+
+    }
+
+  }
+
+  describe("ShortEnum") {
+
+    describe("withValue") {
+
+      it("should return entries that match the value") {
+        Drinks.withValue(1) shouldBe Drinks.OrangeJuice
+        Drinks.withValue(2) shouldBe Drinks.AppleJuice
+        Drinks.withValue(3) shouldBe Drinks.Cola
+        Drinks.withValue(4) shouldBe Drinks.Beer
+      }
+
+      it("should throw on values that don't map to any entries") {
+        intercept[NoSuchElementException] {
+          LibraryItem.withValue(5)
+        }
+      }
+
+    }
+
+    describe("withValueOpt") {
+
+      it("should return Some(entry) that match the value") {
+        Drinks.withValueOpt(1) shouldBe Some(Drinks.OrangeJuice)
+        Drinks.withValueOpt(2) shouldBe Some(Drinks.AppleJuice)
+        Drinks.withValueOpt(3) shouldBe Some(Drinks.Cola)
+        Drinks.withValueOpt(4) shouldBe Some(Drinks.Beer)
+      }
+
+      it("should return None when given values that do not map to any entries") {
+        Drinks.withValueOpt(5) shouldBe None
+      }
+
+    }
+
+  }
+
+  describe("LongEnum") {
+
+    describe("withName") {
+
+      it("should return entries that match the value") {
+        ContentType.withValue(1) shouldBe ContentType.Text
+        ContentType.withValue(2) shouldBe ContentType.Image
+        ContentType.withValue(3) shouldBe ContentType.Video
+        ContentType.withValue(4) shouldBe ContentType.Audio
+      }
+
+      it("should throw on values that don't map to any entries") {
+        intercept[NoSuchElementException] {
+          LibraryItem.withValue(5)
+        }
+      }
+
+    }
+
+    describe("withValueOpt") {
+
+      it("should return Some(entry) that match the value") {
+        ContentType.withValueOpt(1) shouldBe Some(ContentType.Text)
+        ContentType.withValueOpt(2) shouldBe Some(ContentType.Image)
+        ContentType.withValueOpt(3) shouldBe Some(ContentType.Video)
+        ContentType.withValueOpt(4) shouldBe Some(ContentType.Audio)
+      }
+
+      it("should return None when given values that do not map to any entries") {
+        ContentType.withValueOpt(5) shouldBe None
       }
 
     }

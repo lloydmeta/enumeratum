@@ -42,6 +42,14 @@ sealed trait ValueEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyV
    */
   def withValueOpt(i: ValueType): Option[EntryType] = intToValuesMap.get(i)
 
+  /**
+   * Returns the index number of the member passed in the values picked up by this enum
+   *
+   * @param member the member you want to check the index of
+   * @return the index of the first element of values that is equal (as determined by ==) to member, or -1, if none exists.
+   */
+  def indexOf(member: EntryType): Int = valuesToIndex.getOrElse(member, -1)
+
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
   private def buildNotFoundMessage(i: ValueType): String = {
