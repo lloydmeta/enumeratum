@@ -20,7 +20,7 @@ object UrlBinders {
       val maybeBound = if (insensitive) enum.withNameInsensitiveOption(value) else enum.withNameOption(value)
       maybeBound match {
         case Some(v) => Right(v)
-        case _ => Left(s"Unknown value supplied for $enum '" + value + "'")
+        case _ => Left(s"Unknown value supplied for $enum '$value'")
       }
     }
   }
@@ -34,7 +34,7 @@ object UrlBinders {
   def queryBinder[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): QueryStringBindable[A] =
     new QueryStringBindable[A] {
 
-      def unbind(key: String, value: A): String = key + "=" + value.entryName
+      def unbind(key: String, value: A): String = s"$key=${value.entryName}"
 
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
         params.get(key).flatMap(_.headOption).map { p =>

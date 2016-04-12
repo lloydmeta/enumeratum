@@ -94,6 +94,7 @@ class PlayValueEnumSpec extends FunSpec with Matchers {
 
       it("should not bind strings not found as values in the enumeration") {
         subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+        subject.bind("hello", Map("hello" -> Seq("10"))).value should be('left)
         subject.bind("hello", Map("helloz" -> Seq("1"))) shouldBe None
       }
 

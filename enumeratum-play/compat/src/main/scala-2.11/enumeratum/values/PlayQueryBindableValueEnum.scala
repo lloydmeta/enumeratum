@@ -9,14 +9,26 @@ import play.api.routing.sird.PathBindableExtractor
  * Copyright 2016
  */
 
-sealed trait PlayQueryBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]] { this: EnumType =>
+sealed trait PlayQueryBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]] { enum: EnumType =>
 
   protected def baseQueryBindable: QueryStringBindable[ValueType]
 
   /**
    * Implicit path binder for Play's default router
    */
-  implicit lazy val queryBindable: QueryStringBindable[EntryType] = baseQueryBindable.transform(this.withValue, _.value)
+  implicit lazy val queryBindable: QueryStringBindable[EntryType] = new QueryStringBindable[EntryType] {
+    def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EntryType]] = {
+      baseQueryBindable.bind(key, params).map(_.right.flatMap { s =>
+        val maybeBound = enum.withValueOpt(s)
+        maybeBound match {
+          case Some(obj) => Right(obj)
+          case None => Left(s"Unknown value supplied for $enum '$s'")
+        }
+      })
+    }
+
+    def unbind(key: String, entry: EntryType): String = s"$key=${entry.value}"
+  }
 }
 
 /**
