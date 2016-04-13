@@ -1,7 +1,7 @@
 package enumeratum.values
 
 import play.api.data.format.{ Formatter, Formats }
-import play.api.data.{ FormError, Forms => PlayForms, Mapping }
+import play.api.data.Mapping
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -13,22 +13,10 @@ sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[
 
   protected def baseFormatter: Formatter[ValueType]
 
-  private lazy val formatter: Formatter[EntryType] = new Formatter[EntryType] {
-    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EntryType] = baseFormatter.bind(key, data).right.flatMap { s =>
-      val maybeBound = enum.withValueOpt(s)
-      maybeBound match {
-        case Some(obj) => Right(obj)
-        case None => Left(Seq(FormError(key, "error.enum", Nil)))
-      }
-    }
-
-    def unbind(key: String, value: EntryType): Map[String, String] = Map(key -> value.value.toString)
-  }
-
   /**
    * Field for mapping this enum in Forms
    */
-  lazy val formField: Mapping[EntryType] = PlayForms.of(formatter)
+  lazy val formField: Mapping[EntryType] = Forms.enum(baseFormatter)(enum)
 
 }
 

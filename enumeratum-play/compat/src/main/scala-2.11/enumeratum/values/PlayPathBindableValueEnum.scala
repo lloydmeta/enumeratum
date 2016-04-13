@@ -15,17 +15,7 @@ sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEn
   /**
    * Implicit path binder for Play's default router
    */
-  implicit lazy val pathBindable: PathBindable[EntryType] = new PathBindable[EntryType] {
-    def bind(key: String, value: String): Either[String, EntryType] = basePathBindable.bind(key, value).right.flatMap { b =>
-      val maybeBound = enum.withValueOpt(b)
-      maybeBound match {
-        case Some(obj) => Right(obj)
-        case None => Left(s"Unknown value supplied for $enum '" + value + "'")
-      }
-    }
-
-    def unbind(key: String, value: EntryType): String = value.value.toString
-  }
+  implicit lazy val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(basePathBindable)(enum)
 
   /**
    * Binder for [[play.api.routing.sird]] router
