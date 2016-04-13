@@ -20,20 +20,20 @@ sealed trait PlayQueryBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueE
 /**
  * Query Bindable implicits for IntEnum
  */
-trait PlayQueryBindableIntValueEnum[EntryType <: IntEnumEntry] extends PlayQueryBindableValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
+trait IntPlayQueryBindableValueEnum[EntryType <: IntEnumEntry] extends PlayQueryBindableValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
   implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)
 }
 
 /**
  * Query Bindable implicits for LongEnum
  */
-trait PlayQueryBindableLongValueEnum[EntryType <: LongEnumEntry] extends PlayQueryBindableValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
+trait LongPlayQueryBindableValueEnum[EntryType <: LongEnumEntry] extends PlayQueryBindableValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
   implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)
 }
 
 /**
  * Query Bindable implicits for ShortEnum
  */
-trait PlayQueryBindableShortValueEnum[EntryType <: ShortEnumEntry] extends PlayQueryBindableValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+trait ShortPlayQueryBindableValueEnum[EntryType <: ShortEnumEntry] extends PlayQueryBindableValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableInt.transform(_.toShort, _.toInt))
 }

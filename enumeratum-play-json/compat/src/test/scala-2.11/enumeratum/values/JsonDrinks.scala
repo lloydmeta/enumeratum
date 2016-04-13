@@ -8,7 +8,7 @@ package enumeratum.values
 
 sealed abstract class JsonDrinks(val value: Short, name: String) extends ShortEnumEntry
 
-case object JsonDrinks extends ShortEnum[JsonDrinks] with PlayJsonShortValueEnum[JsonDrinks] {
+case object JsonDrinks extends ShortEnum[JsonDrinks] with ShortPlayJsonValueEnum[JsonDrinks] {
 
   case object OrangeJuice extends JsonDrinks(value = 1, name = "oj")
   case object AppleJuice extends JsonDrinks(value = 2, name = "aj")

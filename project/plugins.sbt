@@ -18,4 +18,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.8.1")
 // Provides auto-generating and publishing a gh-pages site
 addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.3")
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.5")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.8")

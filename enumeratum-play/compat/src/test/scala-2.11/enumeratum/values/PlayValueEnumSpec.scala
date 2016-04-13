@@ -9,17 +9,17 @@ import org.scalatest.{ FunSpec, Matchers }
  */
 class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers {
 
-  testPlayEnum("PlayLongEnum", PlayContentType)
-  testPlayEnum("PlayShortEnum", PlayDrinks)
-  testPlayEnum("PlayIntEnum", PlayLibraryItem)
-  testPlayEnum("PlayIntEnum with values declared as members", PlayMovieGenre)
+  testPlayEnum("LongPlayEnum", PlayContentType)
+  testPlayEnum("ShortPlayEnum", PlayDrinks)
+  testPlayEnum("IntPlayEnum", PlayLibraryItem)
+  testPlayEnum("IntPlayEnum with values declared as members", PlayMovieGenre)
 
 }
 
 sealed abstract class PlayContentType(val value: Long, name: String) extends LongEnumEntry
 
 case object PlayContentType
-    extends PlayLongEnum[PlayContentType] {
+    extends LongPlayEnum[PlayContentType] {
 
   val values = findValues
 
@@ -32,7 +32,7 @@ case object PlayContentType
 
 sealed abstract class PlayDrinks(val value: Short, name: String) extends ShortEnumEntry
 
-case object PlayDrinks extends PlayShortEnum[PlayDrinks] {
+case object PlayDrinks extends ShortPlayEnum[PlayDrinks] {
 
   case object OrangeJuice extends PlayDrinks(value = 1, name = "oj")
   case object AppleJuice extends PlayDrinks(value = 2, name = "aj")
@@ -45,7 +45,7 @@ case object PlayDrinks extends PlayShortEnum[PlayDrinks] {
 
 sealed abstract class PlayLibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object PlayLibraryItem extends PlayIntEnum[PlayLibraryItem] {
+case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
   case object Book extends PlayLibraryItem(value = 1, name = "book")
@@ -59,7 +59,7 @@ case object PlayLibraryItem extends PlayIntEnum[PlayLibraryItem] {
 
 sealed abstract class PlayMovieGenre extends IntEnumEntry
 
-case object PlayMovieGenre extends PlayIntEnum[PlayMovieGenre] {
+case object PlayMovieGenre extends IntPlayEnum[PlayMovieGenre] {
 
   case object Action extends PlayMovieGenre {
     val value = 1

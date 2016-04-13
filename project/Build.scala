@@ -14,10 +14,10 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 object Enumeratum extends Build {
 
   lazy val theVersion = "1.3.8-SNAPSHOT"
-  lazy val theScalaVersion = "2.11.7"
-  lazy val scalaVersions = Seq("2.10.6", "2.11.7")
+  lazy val theScalaVersion = "2.11.8"
+  lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   lazy val thePlayVersion = "2.4.6"
-  lazy val scalaTestVersion = "3.0.0-M14"
+  lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -148,7 +148,7 @@ object Enumeratum extends Build {
           else
             CrossVersion.binary
         }
-        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.6")
+        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.9")
       } ++ {
         val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
           // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
@@ -160,10 +160,22 @@ object Enumeratum extends Build {
               "org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary )
         }
         additionalMacroDeps
+      },
+      unmanagedSourceDirectories in Compile ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case _ => Nil
+        }
+      },
+      unmanagedSourceDirectories in Test ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case _ => Nil
+        }
       }
     )
     .settings(testSettings:_*)
-    .dependsOn(core)
+    .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumUPickleJs = enumeratumUPickle.js
   lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 

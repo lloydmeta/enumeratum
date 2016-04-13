@@ -18,11 +18,11 @@ package enumeratum.values
  *   - implicit Json format
  *
  */
-trait PlayIntEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
-  with PlayPathBindableIntValueEnum[EnumEntry]
-  with PlayQueryBindableIntValueEnum[EnumEntry]
-  with PlayFormIntValueEnum[EnumEntry]
-  with PlayJsonIntValueEnum[EnumEntry]
+trait IntPlayEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
+  with IntPlayPathBindableValueEnum[EnumEntry]
+  with IntPlayQueryBindableValueEnum[EnumEntry]
+  with IntPlayFormValueEnum[EnumEntry]
+  with IntPlayJsonValueEnum[EnumEntry]
 
 /**
  * An LongEnum that has a lot of the Play-related implicits built-in so you can avoid
@@ -36,11 +36,11 @@ trait PlayIntEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
  *   - implicit Json format
  *
  */
-trait PlayLongEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
-  with PlayPathBindableLongValueEnum[EnumEntry]
-  with PlayQueryBindableLongValueEnum[EnumEntry]
-  with PlayFormLongValueEnum[EnumEntry]
-  with PlayJsonLongValueEnum[EnumEntry]
+trait LongPlayEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
+  with LongPlayPathBindableValueEnum[EnumEntry]
+  with LongPlayQueryBindableValueEnum[EnumEntry]
+  with LongPlayFormValueEnum[EnumEntry]
+  with LongPlayJsonValueEnum[EnumEntry]
 
 /**
  * An ShortEnum that has a lot of the Play-related implicits built-in so you can avoid
@@ -54,8 +54,8 @@ trait PlayLongEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
  *   - implicit Json format
  *
  */
-trait PlayShortEnum[EnumEntry <: ShortEnumEntry] extends ShortEnum[EnumEntry]
-  with PlayPathBindableShortValueEnum[EnumEntry]
-  with PlayQueryBindableShortValueEnum[EnumEntry]
-  with PlayFormShortValueEnum[EnumEntry]
-  with PlayJsonShortValueEnum[EnumEntry]
+trait ShortPlayEnum[EnumEntry <: ShortEnumEntry] extends ShortEnum[EnumEntry]
+  with ShortPlayPathBindableValueEnum[EnumEntry]
+  with ShortPlayQueryBindableValueEnum[EnumEntry]
+  with ShortPlayFormValueEnum[EnumEntry]
+  with ShortPlayJsonValueEnum[EnumEntry]

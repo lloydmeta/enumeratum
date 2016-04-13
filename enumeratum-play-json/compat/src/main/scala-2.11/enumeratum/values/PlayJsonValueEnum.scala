@@ -20,20 +20,20 @@ trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTy
 /**
  * Json format implicits for IntEnum
  */
-trait PlayJsonIntValueEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
+trait IntPlayJsonValueEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
  * Json format implicits for LongEnum
  */
-trait PlayJsonLongValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
+trait LongPlayJsonValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
  * Json format implicits for ShortEnum
  */
-trait PlayJsonShortValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+trait ShortPlayJsonValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
