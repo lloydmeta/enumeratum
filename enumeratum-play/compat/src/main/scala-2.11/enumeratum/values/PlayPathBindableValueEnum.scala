@@ -8,7 +8,7 @@ import play.api.routing.sird.PathBindableExtractor
  *
  * Copyright 2016
  */
-sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[EntryType, ValueType] =>
+sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
    * Implicit path binder for Play's default router

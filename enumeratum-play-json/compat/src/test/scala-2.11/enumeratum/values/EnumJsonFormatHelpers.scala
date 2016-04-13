@@ -11,7 +11,7 @@ import org.scalatest.OptionValues._
  */
 trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testWrites[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Writes](enumKind: String, enum: ValueEnum[EntryType, ValueType], providedWrites: Option[Writes[EntryType]] = None): Unit = {
+  def testWrites[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Writes](enumKind: String, enum: ValueEnum[ValueType, EntryType], providedWrites: Option[Writes[EntryType]] = None): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     val writes = providedWrites.getOrElse(EnumFormats.writes(enum))
     describe(enumKind) {
@@ -23,7 +23,7 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testReads[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads](enumKind: String, enum: ValueEnum[EntryType, ValueType], providedReads: Option[Reads[EntryType]] = None): Unit = {
+  def testReads[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads](enumKind: String, enum: ValueEnum[ValueType, EntryType], providedReads: Option[Reads[EntryType]] = None): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     val reads = providedReads.getOrElse(EnumFormats.reads(enum))
     describe(enumKind) {
@@ -39,7 +39,7 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testFormats[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads: Writes](enumKind: String, enum: ValueEnum[EntryType, ValueType], providedFormat: Option[Format[EntryType]] = None): Unit = {
+  def testFormats[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads: Writes](enumKind: String, enum: ValueEnum[ValueType, EntryType], providedFormat: Option[Format[EntryType]] = None): Unit = {
     val format = providedFormat.getOrElse(EnumFormats.formats(enum))
     testReads(enumKind, enum, Some(format))
     testWrites(enumKind, enum, Some(format))

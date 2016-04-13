@@ -1,134 +1,18 @@
 package enumeratum.values
 
 import org.scalatest.{ FunSpec, Matchers }
-import play.api.data.Form
-import org.scalatest.OptionValues._
-import org.scalatest.EitherValues._
-import play.api.http.HttpVerbs
-import play.api.mvc.{ Headers, RequestHeader }
 
 /**
  * Created by Lloyd on 4/13/16.
  *
  * Copyright 2016
  */
-class PlayValueEnumSpec extends FunSpec with Matchers {
+class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers {
 
-  describe("Form binding") {
-
-    val subject = Form("hello" -> PlayContentType.formField)
-
-    it("should bind proper strings into an Enum value") {
-      val r1 = subject.bind(Map("hello" -> "1"))
-      val r2 = subject.bind(Map("hello" -> "2"))
-      r1.value.value shouldBe PlayContentType.Text
-      r2.value.value shouldBe PlayContentType.Image
-    }
-
-    it("should fail to bind random strings") {
-      val r = subject.bind(Map("hello" -> "AARSE"))
-      r.value shouldBe None
-    }
-
-  }
-
-  describe("URL binding") {
-
-    describe("PathBindable") {
-
-      val subject = PlayContentType.pathBindable
-
-      it("should bind strings corresponding to enum values") {
-        subject.bind("hello", "1").right.value shouldBe PlayContentType.Text
-      }
-
-      it("should not bind strings not found as values in the enumeration") {
-        subject.bind("hello", "10").isLeft shouldBe true
-        subject.bind("hello", "Z").isLeft shouldBe true
-      }
-
-      it("should unbind values") {
-        subject.unbind("hello", PlayContentType.Text) shouldBe "1"
-        subject.unbind("hello", PlayContentType.Image) shouldBe "2"
-      }
-
-    }
-
-    describe("PathBindableExtractor") {
-
-      val subject = PlayContentType.fromPath
-
-      it("should extract strings corresponding to enum values") {
-        subject.unapply("1") shouldBe Some(PlayContentType.Text)
-        subject.unapply("2") shouldBe Some(PlayContentType.Image)
-        subject.unapply("3") shouldBe Some(PlayContentType.Video)
-      }
-
-      it("should not extract strings that are not found as valuesin the enumeration") {
-        subject.unapply("Z") shouldBe None
-        subject.unapply("10") shouldBe None
-      }
-
-      it("should allow me to build an SIRD router") {
-        import play.api.routing.sird._
-        import play.api.routing._
-        import play.api.mvc._
-        val router = Router.from {
-          case GET(p"/${ PlayContentType.fromPath(greeting) }") => Action {
-            Results.Ok(s"$greeting")
-          }
-        }
-        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/1")) shouldBe true
-        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/10")) shouldBe false
-      }
-
-    }
-
-    describe("QueryStringBindable") {
-
-      val subject = PlayContentType.queryBindable
-
-      it("should bind strings corresponding to enum values regardless of case") {
-        subject.bind("hello", Map("hello" -> Seq("1"))).value.right.value should be(PlayContentType.Text)
-      }
-
-      it("should not bind strings not found as values in the enumeration") {
-        subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
-        subject.bind("hello", Map("hello" -> Seq("10"))).value should be('left)
-        subject.bind("hello", Map("helloz" -> Seq("1"))) shouldBe None
-      }
-
-      it("should unbind values") {
-        subject.unbind("hello", PlayContentType.Text) should be("hello=1")
-        subject.unbind("hello", PlayContentType.Audio) should be("hello=4")
-      }
-
-    }
-
-  }
-
-  private def reqHeaderAt(theMethod: String, theUri: String) =
-    new RequestHeader {
-      def secure: Boolean = ???
-
-      def uri: String = theUri
-
-      def remoteAddress: String = ???
-
-      def queryString: Map[String, Seq[String]] = ???
-
-      def method: String = theMethod
-
-      def headers: Headers = ???
-
-      def path: String = uri
-
-      def version: String = ???
-
-      def tags: Map[String, String] = ???
-
-      def id: Long = ???
-    }
+  testPlayEnum("PlayLongEnum", PlayContentType)
+  testPlayEnum("PlayShortEnum", PlayDrinks)
+  testPlayEnum("PlayIntEnum", PlayLibraryItem)
+  testPlayEnum("PlayIntEnum with values declared as members", PlayMovieGenre)
 
 }
 
@@ -143,5 +27,50 @@ case object PlayContentType
   case object Image extends PlayContentType(value = 2L, name = "image")
   case object Video extends PlayContentType(value = 3L, name = "video")
   case object Audio extends PlayContentType(value = 4L, name = "audio")
+
+}
+
+sealed abstract class PlayDrinks(val value: Short, name: String) extends ShortEnumEntry
+
+case object PlayDrinks extends PlayShortEnum[PlayDrinks] {
+
+  case object OrangeJuice extends PlayDrinks(value = 1, name = "oj")
+  case object AppleJuice extends PlayDrinks(value = 2, name = "aj")
+  case object Cola extends PlayDrinks(value = 3, name = "cola")
+  case object Beer extends PlayDrinks(value = 4, name = "beer")
+
+  val values = findValues
+
+}
+
+sealed abstract class PlayLibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object PlayLibraryItem extends PlayIntEnum[PlayLibraryItem] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Book extends PlayLibraryItem(value = 1, name = "book")
+  case object Movie extends PlayLibraryItem(name = "movie", value = 2)
+  case object Magazine extends PlayLibraryItem(3, "magazine")
+  case object CD extends PlayLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+sealed abstract class PlayMovieGenre extends IntEnumEntry
+
+case object PlayMovieGenre extends PlayIntEnum[PlayMovieGenre] {
+
+  case object Action extends PlayMovieGenre {
+    val value = 1
+  }
+  case object Comedy extends PlayMovieGenre {
+    val value: Int = 2
+  }
+  case object Romance extends PlayMovieGenre {
+    val value = 3
+  }
+
+  val values = findValues
 
 }

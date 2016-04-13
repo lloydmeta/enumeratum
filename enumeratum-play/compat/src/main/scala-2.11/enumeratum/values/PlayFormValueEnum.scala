@@ -9,7 +9,7 @@ import play.api.data.Mapping
  * Copyright 2016
  */
 
-sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[EntryType, ValueType] =>
+sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   protected def baseFormatter: Formatter[ValueType]
 

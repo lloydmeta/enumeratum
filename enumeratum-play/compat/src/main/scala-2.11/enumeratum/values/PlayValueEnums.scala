@@ -15,12 +15,14 @@ package enumeratum.values
  *   - implicit PathBindable (for binding from request path)
  *   - implicit QueryStringBindable (for binding from query strings)
  *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
+ *   - implicit Json format
  *
  */
 trait PlayIntEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
   with PlayPathBindableIntValueEnum[EnumEntry]
   with PlayQueryBindableIntValueEnum[EnumEntry]
   with PlayFormIntValueEnum[EnumEntry]
+  with PlayJsonIntValueEnum[EnumEntry]
 
 /**
  * An LongEnum that has a lot of the Play-related implicits built-in so you can avoid
@@ -31,12 +33,14 @@ trait PlayIntEnum[EnumEntry <: IntEnumEntry] extends IntEnum[EnumEntry]
  *   - implicit PathBindable (for binding from request path)
  *   - implicit QueryStringBindable (for binding from query strings)
  *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
+ *   - implicit Json format
  *
  */
 trait PlayLongEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
   with PlayPathBindableLongValueEnum[EnumEntry]
   with PlayQueryBindableLongValueEnum[EnumEntry]
   with PlayFormLongValueEnum[EnumEntry]
+  with PlayJsonLongValueEnum[EnumEntry]
 
 /**
  * An ShortEnum that has a lot of the Play-related implicits built-in so you can avoid
@@ -47,9 +51,11 @@ trait PlayLongEnum[EnumEntry <: LongEnumEntry] extends LongEnum[EnumEntry]
  *   - implicit PathBindable (for binding from request path)
  *   - implicit QueryStringBindable (for binding from query strings)
  *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
+ *   - implicit Json format
  *
  */
 trait PlayShortEnum[EnumEntry <: ShortEnumEntry] extends ShortEnum[EnumEntry]
   with PlayPathBindableShortValueEnum[EnumEntry]
   with PlayQueryBindableShortValueEnum[EnumEntry]
   with PlayFormShortValueEnum[EnumEntry]
+  with PlayJsonShortValueEnum[EnumEntry]

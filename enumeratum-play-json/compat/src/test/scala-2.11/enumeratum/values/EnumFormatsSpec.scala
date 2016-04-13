@@ -30,6 +30,7 @@ class EnumFormatsSpec extends FunSpec with Matchers with EnumJsonFormatHelpers {
     testFormats("IntEnum", LibraryItem)
     testFormats("LongEnum", ContentType)
     testFormats("ShortEnum", Drinks)
+    testFormats("PlayJsonValueEnum", JsonDrinks, Some(JsonDrinks.format))
 
   }
 

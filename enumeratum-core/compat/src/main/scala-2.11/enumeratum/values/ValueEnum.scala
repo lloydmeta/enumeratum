@@ -4,7 +4,7 @@ import enumeratum.ValueEnumMacros
 
 import scala.language.experimental.macros
 
-sealed trait ValueEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal] {
+sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] {
 
   /**
    * Map of [[EntryType]] object names to [[EntryType]]s
@@ -46,7 +46,7 @@ sealed trait ValueEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyV
 /**
  * Value enum with [[IntEnumEntry]] entries
  */
-trait IntEnum[A <: IntEnumEntry] extends ValueEnum[A, Int] {
+trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
 
   /**
    * Method that returns a Seq of [[A]] objects that the macro was able to find.
@@ -61,7 +61,7 @@ trait IntEnum[A <: IntEnumEntry] extends ValueEnum[A, Int] {
 /**
  * Value enum with [[LongEnumEntry]] entries
  */
-trait LongEnum[A <: LongEnumEntry] extends ValueEnum[A, Long] {
+trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
 
   /**
    * Method that returns a Seq of [[A]] objects that the macro was able to find.
@@ -75,7 +75,7 @@ trait LongEnum[A <: LongEnumEntry] extends ValueEnum[A, Long] {
 /**
  * Value enum with [[ShortEnumEntry]] entries
  */
-trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[A, Short] {
+trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
 
   /**
    * Method that returns a Seq of [[A]] objects that the macro was able to find.

@@ -134,7 +134,7 @@ object Enumeratum extends Build {
       }
     )
     .settings(testSettings:_*)
-    .dependsOn(coreJvm, enumeratumPlayJson)
+    .dependsOn(coreJvm, enumeratumPlayJson % "test->test;compile->compile")
 
   lazy val enumeratumUPickle = crossProject.crossType(CrossType.Pure).in(file("enumeratum-upickle"))
     .settings(commonWithPublishSettings:_*)

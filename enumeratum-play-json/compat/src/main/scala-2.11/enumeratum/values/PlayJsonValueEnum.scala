@@ -8,7 +8,7 @@ import play.api.libs.json.Format
  * Copyright 2016
  */
 
-trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[EntryType, ValueType] =>
+trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
    * Implicit path binder for Play's default router
@@ -20,20 +20,20 @@ trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTy
 /**
  * Json format implicits for IntEnum
  */
-trait PlayJsonIntValeEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
+trait PlayJsonIntValueEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
  * Json format implicits for LongEnum
  */
-trait PlayJsonLongValeEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
+trait PlayJsonLongValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
  * Json format implicits for ShortEnum
  */
-trait PlayJsonShortValeEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+trait PlayJsonShortValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
