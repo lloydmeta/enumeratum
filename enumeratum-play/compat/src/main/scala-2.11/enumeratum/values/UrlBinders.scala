@@ -12,7 +12,7 @@ object UrlBinders {
   /**
    * Returns a [[PathBindable]] for the provided ValueEnum and base [[PathBindable]]
    */
-  def pathBinder[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]](baseBindable: PathBindable[ValueType])(enum: EnumType): PathBindable[EntryType] = new PathBindable[EntryType] {
+  def pathBinder[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[EntryType, ValueType])(implicit baseBindable: PathBindable[ValueType]): PathBindable[EntryType] = new PathBindable[EntryType] {
     def bind(key: String, value: String): Either[String, EntryType] = baseBindable.bind(key, value).right.flatMap { b =>
       val maybeBound = enum.withValueOpt(b)
       maybeBound match {
@@ -27,7 +27,7 @@ object UrlBinders {
   /**
    * Returns a [[QueryStringBindable]] for the provided ValueEnum and base [[PathBindable]]
    */
-  def queryBinder[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]](baseBindable: QueryStringBindable[ValueType])(enum: EnumType): QueryStringBindable[EntryType] = new QueryStringBindable[EntryType] {
+  def queryBinder[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[EntryType, ValueType])(implicit baseBindable: QueryStringBindable[ValueType]): QueryStringBindable[EntryType] = new QueryStringBindable[EntryType] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EntryType]] = {
       baseBindable.bind(key, params).map(_.right.flatMap { s =>
         val maybeBound = enum.withValueOpt(s)

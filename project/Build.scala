@@ -113,7 +113,7 @@ object Enumeratum extends Build {
       }
     )
     .settings(testSettings:_*)
-    .dependsOn(coreJvm)
+    .dependsOn(coreJvm % "test->test;compile->compile")
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(

@@ -8,14 +8,12 @@ import play.api.routing.sird.PathBindableExtractor
  *
  * Copyright 2016
  */
-sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]] { enum: EnumType =>
-
-  protected def basePathBindable: PathBindable[ValueType]
+sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[EntryType, ValueType] =>
 
   /**
    * Implicit path binder for Play's default router
    */
-  implicit lazy val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(basePathBindable)(enum)
+  implicit def pathBindable: PathBindable[EntryType]
 
   /**
    * Binder for [[play.api.routing.sird]] router
@@ -40,20 +38,20 @@ sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEn
 /**
  * Path Bindable implicits for IntEnum
  */
-trait PlayPathBindableIntValueEnum[EntryType <: IntEnumEntry] extends PlayPathBindableValueEnum[Int, EntryType, IntEnum[EntryType]] { this: IntEnum[EntryType] =>
-  protected val basePathBindable: PathBindable[Int] = PathBindable.bindableInt
+trait PlayPathBindableIntValueEnum[EntryType <: IntEnumEntry] extends PlayPathBindableValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
+  implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)
 }
 
 /**
  * Path Bindable implicits for LongEnum
  */
-trait PlayPathBindableLongValueEnum[EntryType <: LongEnumEntry] extends PlayPathBindableValueEnum[Long, EntryType, LongEnum[EntryType]] { this: LongEnum[EntryType] =>
-  protected val basePathBindable: PathBindable[Long] = PathBindable.bindableLong
+trait PlayPathBindableLongValueEnum[EntryType <: LongEnumEntry] extends PlayPathBindableValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
+  implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)
 }
 
 /**
  * Path Bindable implicits for ShortEnum
  */
-trait PlayPathBindableShortValueEnum[EntryType <: ShortEnumEntry] extends PlayPathBindableValueEnum[Short, EntryType, ShortEnum[EntryType]] { this: ShortEnum[EntryType] =>
-  protected val basePathBindable: PathBindable[Short] = PathBindable.bindableInt.transform(_.toShort, _.toInt)
+trait PlayPathBindableShortValueEnum[EntryType <: ShortEnumEntry] extends PlayPathBindableValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+  implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)(PathBindable.bindableInt.transform(_.toShort, _.toInt))
 }

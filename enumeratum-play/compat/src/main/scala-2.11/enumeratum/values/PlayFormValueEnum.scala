@@ -9,7 +9,7 @@ import play.api.data.Mapping
  * Copyright 2016
  */
 
-sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[EntryType, ValueType]] { enum: EnumType =>
+sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[EntryType, ValueType] =>
 
   protected def baseFormatter: Formatter[ValueType]
 
@@ -23,20 +23,20 @@ sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[
 /**
  * Form Bindable implicits for IntEnum
  */
-trait PlayFormIntValueEnum[EntryType <: IntEnumEntry] extends PlayFormValueEnum[Int, EntryType, IntEnum[EntryType]] { this: IntEnum[EntryType] =>
+trait PlayFormIntValueEnum[EntryType <: IntEnumEntry] extends PlayFormValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
   protected val baseFormatter: Formatter[Int] = Formats.intFormat
 }
 
 /**
  * Form Bindable implicits for LongEnum
  */
-trait PlayFormLongValueEnum[EntryType <: LongEnumEntry] extends PlayFormValueEnum[Long, EntryType, LongEnum[EntryType]] { this: LongEnum[EntryType] =>
+trait PlayFormLongValueEnum[EntryType <: LongEnumEntry] extends PlayFormValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
   protected val baseFormatter: Formatter[Long] = Formats.longFormat
 }
 
 /**
  * Form Bindable implicits for ShortEnum
  */
-trait PlayFormShortValueEnum[EntryType <: ShortEnumEntry] extends PlayFormValueEnum[Short, EntryType, ShortEnum[EntryType]] { this: ShortEnum[EntryType] =>
+trait PlayFormShortValueEnum[EntryType <: ShortEnumEntry] extends PlayFormValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   protected val baseFormatter: Formatter[Short] = Formats.shortFormat
 }
