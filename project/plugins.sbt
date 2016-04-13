@@ -1,9 +1,6 @@
-// The Typesafe repository
 resolvers ++= Seq(
-  Resolver.typesafeRepo("releases"),
   Classpaths.sbtPluginReleases
 )
-resolvers += Classpaths.sbtPluginReleases
 
 // for code formatting
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")

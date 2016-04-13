@@ -45,12 +45,16 @@ object Enumeratum extends Build {
     .settings(
       name := "enumeratum",
       unmanagedSourceDirectories in Compile ++= {
-        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
-        else Nil
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case _ => Nil
+        }
       },
       unmanagedSourceDirectories in Test ++= {
-        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
-        else Nil
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case _ => Nil
+        }
       }
     )
     .settings(testSettings:_*)
@@ -79,8 +83,11 @@ object Enumeratum extends Build {
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
       ),
       unmanagedSourceDirectories in Compile ++= {
-        if (scalaVersion.value startsWith "2.10.") Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.10")
-        else Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, 10)) => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.10")
+          case _ => Nil
+        }
       }
     )
     .settings(testSettings:_*)
@@ -91,7 +98,19 @@ object Enumeratum extends Build {
     .settings(
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json" % thePlayVersion % "provided"
-      )
+      ),
+      unmanagedSourceDirectories in Compile ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
+          case _ => Nil
+        }
+      },
+      unmanagedSourceDirectories in Test ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
+          case _ => Nil
+        }
+      }
     )
     .settings(testSettings:_*)
     .dependsOn(coreJvm)
@@ -102,12 +121,16 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play" % thePlayVersion % Provided
       ),
       unmanagedSourceDirectories in Compile ++= {
-        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
-        else Nil
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
+          case _ => Nil
+        }
       },
       unmanagedSourceDirectories in Test ++= {
-        if (!(scalaVersion.value startsWith "2.10.")) Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
-        else Nil
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
+          case _ => Nil
+        }
       }
     )
     .settings(testSettings:_*)
@@ -184,7 +207,7 @@ object Enumeratum extends Build {
   )
 
   lazy val scoverageSettings = Seq(
-    coverageExcludedPackages := """enumeratum\.EnumMacros""",
+    coverageExcludedPackages := """enumeratum\.EnumMacros;enumeratum\.ContextUtils;enumeratum\.ValueEnumMacros""",
     coverageHighlighting := true
   )
 

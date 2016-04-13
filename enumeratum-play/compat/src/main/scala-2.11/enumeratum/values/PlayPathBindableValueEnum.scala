@@ -17,8 +17,8 @@ sealed trait PlayPathBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEn
    */
   implicit lazy val pathBindable: PathBindable[EntryType] = new PathBindable[EntryType] {
     def bind(key: String, value: String): Either[String, EntryType] = basePathBindable.bind(key, value).right.flatMap { b =>
-      val maybBound = enum.withValueOpt(b)
-      maybBound match {
+      val maybeBound = enum.withValueOpt(b)
+      maybeBound match {
         case Some(obj) => Right(obj)
         case None => Left(s"Unknown value supplied for $enum '" + value + "'")
       }
