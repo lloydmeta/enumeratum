@@ -12,13 +12,6 @@ sealed trait ValueEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyV
   lazy final val intToValuesMap: Map[ValueType, EntryType] = values.map(v => v.value -> v).toMap
 
   /**
-   * Map of [[EntryType]] to their index in the values sequence.
-   *
-   * A performance optimisation so that indexOf can be found in constant time.
-   */
-  lazy final val valuesToIndex: Map[EntryType, Int] = values.zipWithIndex.toMap
-
-  /**
    * The sequence of values for your [[Enum]]. You will typically want
    * to implement this in your extending class as a `val` so that `withName`
    * and friends are as efficient as possible.
@@ -41,14 +34,6 @@ sealed trait ValueEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyV
    * Optionally returns an [[EntryType]] for a given value.
    */
   def withValueOpt(i: ValueType): Option[EntryType] = intToValuesMap.get(i)
-
-  /**
-   * Returns the index number of the member passed in the values picked up by this enum
-   *
-   * @param member the member you want to check the index of
-   * @return the index of the first element of values that is equal (as determined by ==) to member, or -1, if none exists.
-   */
-  def indexOf(member: EntryType): Int = valuesToIndex.getOrElse(member, -1)
 
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
