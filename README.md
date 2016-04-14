@@ -211,6 +211,10 @@ case object LibraryItem extends IntEnum[LibraryItem] {
   val values = findValues
 
 }
+
+assert(LibraryItem.withValue(1) == LibraryItem.Book)
+
+LibraryItem.withValue(10) // => java.util.NoSuchElementException:
 ```
 
 ** Restrictions **
@@ -317,7 +321,9 @@ case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
 }
 
 import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
-assert(PlayJson.toJson(PlayLibraryItem.Book) == JsNumber(1))
+PlayLibraryItem.values.foreach { item =>
+    assert(PlayJson.toJson(item) == JsNumber(item.value))
+}
 ```
 
 
@@ -489,7 +495,7 @@ libraryDependencies ++= Seq(
 
 ### Usage
 
-`CirceEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the 
+`CirceEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the
 `ValueEnum` integration.
 
 ```scala
