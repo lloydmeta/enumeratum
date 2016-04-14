@@ -12,10 +12,10 @@ import io.circe.syntax._
  */
 class CirceValueEnumSpec extends FunSpec with Matchers {
 
-  testCirceEnum("CirceLongEnum", CirceContentType)
-  testCirceEnum("CirceShortEnum", CirceDrinks)
-  testCirceEnum("CirceIntEnum", CirceLibraryItem)
-  testCirceEnum("CirceIntEnum with val value members", CirceMovieGenre)
+  testCirceEnum("LongCirceEnum", CirceContentType)
+  testCirceEnum("ShortCirceEnum", CirceDrinks)
+  testCirceEnum("IntCirceEnum", CirceLibraryItem)
+  testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
   def testCirceEnum[ValueType <: AnyVal: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](enumKind: String, enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
     describe(enumKind) {
