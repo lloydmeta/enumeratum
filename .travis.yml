@@ -8,7 +8,7 @@ script:
  - sbt clean +test:compile
  - sbt +test
  # Manually select the JVM projects to run coverage on until Scoverage is compatible with ScalaJS
- - sbt coverage coreJVM/test enumeratum-play/test enumeratum-play-json/test
+ - sbt coverage coreJVM/test enumeratum-play/test enumeratum-play-json/test enumeratumCirceJVM/test enumeratumUPickleJVM/test
 after_success:
  - sbt coverageReport coverageAggregate coveralls
 cache:
