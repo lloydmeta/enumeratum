@@ -46,13 +46,13 @@ object Enumeratum extends Build {
       name := "enumeratum",
       unmanagedSourceDirectories in Compile ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       },
       unmanagedSourceDirectories in Test ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       }
@@ -101,13 +101,13 @@ object Enumeratum extends Build {
       ),
       unmanagedSourceDirectories in Compile ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       },
       unmanagedSourceDirectories in Test ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       }
@@ -122,13 +122,13 @@ object Enumeratum extends Build {
       ),
       unmanagedSourceDirectories in Compile ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       },
       unmanagedSourceDirectories in Test ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       }
@@ -163,13 +163,13 @@ object Enumeratum extends Build {
       },
       unmanagedSourceDirectories in Compile ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       },
       unmanagedSourceDirectories in Test ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       }
@@ -195,13 +195,13 @@ object Enumeratum extends Build {
       },
       unmanagedSourceDirectories in Compile ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       },
       unmanagedSourceDirectories in Test ++= {
         CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
           case _ => Nil
         }
       }
