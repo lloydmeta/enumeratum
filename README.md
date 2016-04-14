@@ -24,7 +24,7 @@ Enumeratum has the following niceties:
   environments where reflection is a best effort.
 - All magic happens at compile-time so you know right away when things go awry
 
-Compatible with Scala 2.11+ and 2.10 (see [section regarding Scala 2.10](#scala-2.10))
+Compatible with Scala 2.11+ and 2.10.
 
 [Scaladocs](https://beachape.com/enumeratum/latest/api)
 
@@ -41,7 +41,7 @@ Compatible with Scala 2.11+ and 2.10 (see [section regarding Scala 2.10](#scala-
 3. [Play integration](#play-integration)
 4. [Play JSON integration](#play-json)
 5. [UPickle integration](#upickle)
-6. [Scala 2.10](#scala-2.10)
+6. [Scala 2.10](#scala-210)
 7. [Licence](#licence)
 
 
@@ -75,7 +75,7 @@ object Greeting extends Enum[Greeting] {
 
   /*
    `findValues` is a protected method that invokes a macro to find all `Greeting` object declarations inside an `Enum`
-   
+
    You use it to implement the `val values` member
   */
   val values = findValues
@@ -186,7 +186,7 @@ Greeting.withName("SHOUT_GOOD_BYE")
 ### ValueEnum
 
 Asides from enumerations that resolve members from `String` names, Enumeratum also supports `ValueEnum`s, enums that resolve
-members from various primitive types like `Int`, `Long` and`Short`. In order to ensure at compile-time that multiple members 
+members from various primitive types like `Int`, `Long` and`Short`. In order to ensure at compile-time that multiple members
 do not share the same value, these enums are powered by a separate macro and exposed through a different set of traits.
 
 ```scala
@@ -212,7 +212,7 @@ case object LibraryItem extends IntEnum[LibraryItem] {
 }
 ```
 
-** Restrictions ** 
+** Restrictions **
 - `ValueEnum`s must have their value members implemented as literal values.
 - The macro behind this enum does not work within the REPL, but works in normally compiled code.
 - `ValueEnums` are not available for Scala 2.10 projects.
@@ -296,7 +296,7 @@ Router.from {
 ### PlayValueEnums
 
 There are `IntPlayEnum`, `LongPlayEnum`, and `ShortPlayEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
-`ShortEnumEntry` respectively. For example:
+`ShortEnumEntry` respectively that provide Play-specific implicits as with normal `PlayEnum`. For example:
 
 ```scala
 import enumeratum.values._
@@ -358,7 +358,7 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
 ### PlayJsonValueEnum
 
-There are `IntPlayEnum`, `LongPlayEnum`, and `ShortPlayEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
+There are `IntPlayJsonEnum`, `LongPlayJsonEnum`, and `ShortPlayJsonEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
 `ShortEnumEntry` respectively. For example:
 
 ```scala
