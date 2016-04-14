@@ -1,8 +1,8 @@
 package enumeratum
 
+import org.scalatest.{ FunSpec, Matchers }
 import cats.data.Xor
 import io.circe.Json
-import org.scalatest.{ FunSpec, Matchers }
 import io.circe.syntax._
 
 /**

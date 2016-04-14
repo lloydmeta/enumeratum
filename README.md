@@ -40,9 +40,10 @@ Compatible with Scala 2.11+ and 2.10.
 2. [ScalaJS](#scalajs)
 3. [Play integration](#play-integration)
 4. [Play JSON integration](#play-json)
-5. [UPickle integration](#upickle)
-6. [Scala 2.10](#scala-210)
-7. [Licence](#licence)
+5. [Circe integration](#circe)
+6. [UPickle integration](#upickle)
+7. [Scala 2.10](#scala-210)
+8. [Licence](#licence)
 
 
 ## Quick start
@@ -380,17 +381,95 @@ case object JsonDrinks extends ShortEnum[JsonDrinks] with ShortPlayJsonValueEnum
 import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson, JsSuccess }
 
 // Use to deserialise numbers to enum members directly
-
-assert(PlayJson.toJson(JsonDrinks.OrangeJuice) == JsNumber(1))
+JsonDrinks.values.foreach { drink =>
+    assert(PlayJson.toJson(drink) == JsNumber(drink.value))
+}
 assert(PlayJson.fromJson[JsonDrinks](JsNumber(3)) == JsSuccess(JsonDrinks.Cola))
 assert(PlayJson.fromJson[JsonDrinks](JsNumber(19)).isError)
+```
+
+## Circe
+
+### SBT
+
+To use enumeratum with [Circe](https://github.com/travisbrown/circe):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-circe" % enumeratumVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion,
+    "com.beachape" %%% "enumeratum-circe" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends CirceEnum[ShirtSize] with Enum[ShirtSize] {
+
+  case object Small extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large extends ShirtSize
+
+  val values = findValues
+
+}
+
+import io.circe.Json
+import io.circe.syntax._
+
+ShirtSize.values.foreach { size =>
+    assert(size.asJson == Json.fromString(size.entryName))
+}
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class CirceLibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object CirceLibraryItem extends IntEnum[CirceLibraryItem] with IntCirceEnum[CirceLibraryItem] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Book extends CirceLibraryItem(value = 1, name = "book")
+  case object Movie extends CirceLibraryItem(name = "movie", value = 2)
+  case object Magazine extends CirceLibraryItem(3, "magazine")
+  case object CD extends CirceLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+import io.circe.Json
+import io.circe.syntax._
+
+CirceLibraryItem.values.foreach { item =>
+    assert(item.asJson == Json.fromInt(item.value))
+}
 ```
 
 ## UPickle
 
 ### SBT
 
-For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
+To use enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
 
 ```scala
 libraryDependencies ++= Seq(
@@ -409,6 +488,9 @@ libraryDependencies ++= Seq(
 ```
 
 ### Usage
+
+`CirceEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the 
+`ValueEnum` integration.
 
 ```scala
 import enumeratum.values._
