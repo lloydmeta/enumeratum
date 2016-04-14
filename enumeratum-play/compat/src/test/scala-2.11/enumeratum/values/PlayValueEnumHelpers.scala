@@ -34,8 +34,17 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
         }
 
         it("should fail to bind random strings") {
-          val r = subject.bind(Map("hello" -> "AARS143515123E"))
-          r.value shouldBe None
+          val r1 = subject.bind(Map("hello" -> "AARS143515123E"))
+          val r2 = subject.bind(Map("hello" -> s"${Int.MaxValue}"))
+          r1.value shouldBe None
+          r2.value shouldBe None
+        }
+
+        it("should unbind") {
+          enum.values.foreach { entry =>
+            val r = subject.mapping.unbind(entry)
+            r shouldBe Map("hello" -> s"${entry.value}")
+          }
         }
 
       }

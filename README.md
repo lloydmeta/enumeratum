@@ -156,7 +156,7 @@ State.withName("AL")
 
 ```
 
-### Mixins
+#### Mixins
 
 The second is to mixin the stackable traits provided for common string
 conversions, `Snakecase`, `Uppercase`, and `Lowercase`.
@@ -252,6 +252,7 @@ libraryDependencies ++= Seq(
 
 ### Usage
 
+#### PlayEnum
 
 The included `PlayEnum` trait is probably going to be the most interesting as it includes a bunch
 of built-in implicits like Json formats, Path bindables, Query string bindables,
@@ -298,7 +299,7 @@ Router.from {
 
 ```
 
-### PlayValueEnums
+#### PlayValueEnums
 
 There are `IntPlayEnum`, `LongPlayEnum`, and `ShortPlayEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
 `ShortEnumEntry` respectively that provide Play-specific implicits as with normal `PlayEnum`. For example:
@@ -343,6 +344,8 @@ libraryDependencies ++= Seq(
 
 ### Usage
 
+#### PlayJsonEnum
+
 For example:
 
 ```scala
@@ -363,7 +366,7 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
 ```
 
-### PlayJsonValueEnum
+#### PlayJsonValueEnum
 
 There are `IntPlayJsonEnum`, `LongPlayJsonEnum`, and `ShortPlayJsonEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
 `ShortEnumEntry` respectively. For example:
@@ -529,7 +532,7 @@ enum.values.foreach { entry =>
 Scala's Macro API is experimental and has changed quite a bit between 2.10 and 2.11, so some features of Enumeratum are
 not available in 2.10 (though PRs making them available are welcome):
 
-- [Value Enums](#valueenum): The `.tpe` of constructor functions are not resolved yet, so we can't resolve `value` arguments
+- [Value Enums](#valueenum): The `.tpe` of constructor functions are not resolved yet during the macro phase, so we can't resolve `value` arguments
 
 ## Licence
 
