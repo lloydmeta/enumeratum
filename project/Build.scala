@@ -7,7 +7,7 @@ import com.typesafe.sbt.SbtGhPages.ghpages
 import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
-import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.typesafe.sbt.SbtGit.{ GitKeys => git }
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
@@ -39,7 +39,7 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm)
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
@@ -178,6 +178,38 @@ object Enumeratum extends Build {
     .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumUPickleJs = enumeratumUPickle.js
   lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
+
+  lazy val enumeratumCirce = crossProject.crossType(CrossType.Pure).in(file("enumeratum-circe"))
+    .settings(commonWithPublishSettings:_*)
+    .settings(
+      name := "enumeratum-circe",
+      libraryDependencies ++= {
+        import org.scalajs.sbtplugin._
+        val cross = {
+          if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+            ScalaJSCrossVersion.binary
+          else
+            CrossVersion.binary
+        }
+        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.0")
+      },
+      unmanagedSourceDirectories in Compile ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
+          case _ => Nil
+        }
+      },
+      unmanagedSourceDirectories in Test ++= {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11")
+          case _ => Nil
+        }
+      }
+    )
+    .settings(testSettings:_*)
+    .dependsOn(core % "test->test;compile->compile")
+  lazy val enumeratumCirceJs = enumeratumCirce.js
+  lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
 
   lazy val commonSettings = Seq(
