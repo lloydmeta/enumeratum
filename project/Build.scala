@@ -43,20 +43,9 @@ object Enumeratum extends Build {
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
-      name := "enumeratum",
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      },
-      unmanagedSourceDirectories in Test ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      }
+      name := "enumeratum"
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .settings(commonWithPublishSettings:_*)
     .dependsOn(macros)
@@ -81,15 +70,9 @@ object Enumeratum extends Build {
       name := "enumeratum-macros",
       libraryDependencies ++= Seq(
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
-      ),
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11")
-          case Some((2, 10)) => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.10")
-          case _ => Nil
-        }
-      }
+      )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = true, includeTestSrcs = false):_*)
     .settings(testSettings:_*)
   lazy val macrosJs = macros.js
   lazy val macrosJvm = macros.jvm
@@ -98,20 +81,9 @@ object Enumeratum extends Build {
     .settings(
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json" % thePlayVersion % "provided"
-      ),
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      },
-      unmanagedSourceDirectories in Test ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      }
+      )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(coreJvm % "test->test;compile->compile")
 
@@ -119,20 +91,9 @@ object Enumeratum extends Build {
     .settings(
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play" % thePlayVersion % Provided
-      ),
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      },
-      unmanagedSourceDirectories in Test ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      }
+      )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(coreJvm, enumeratumPlayJson % "test->test;compile->compile")
 
@@ -160,20 +121,9 @@ object Enumeratum extends Build {
               "org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary )
         }
         additionalMacroDeps
-      },
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      },
-      unmanagedSourceDirectories in Test ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
       }
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumUPickleJs = enumeratumUPickle.js
@@ -192,20 +142,9 @@ object Enumeratum extends Build {
             CrossVersion.binary
         }
         Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.0")
-      },
-      unmanagedSourceDirectories in Compile ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "main" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
-      },
-      unmanagedSourceDirectories in Test ++= {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(baseDirectory.value / ".." / "compat" / "src" / "test" / "scala-2.11").map(_.getCanonicalFile)
-          case _ => Nil
-        }
       }
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumCirceJs = enumeratumCirce.js
@@ -301,6 +240,34 @@ object Enumeratum extends Build {
       },
       scalaJSStage in Test := FastOptStage
     )
+  }
+
+  /**
+    * Helper function to add unmanaged source compat directories for different scala versions
+    */
+  private def withCompatUnmanagedSources(jsJvmCrossProject: Boolean, include_210Dir: Boolean, includeTestSrcs: Boolean): Seq[Setting[_]] = {
+    def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
+      val base = if (jsJvmCrossProject ) projectbase / ".." else projectbase
+      CrossVersion.partialVersion(scalaVersion) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.11").map(_.getCanonicalFile)
+        case Some((2, scalaMajor)) if scalaMajor == 10 && include_210Dir => Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.10").map(_.getCanonicalFile)
+        case _ => Nil
+      }
+    }
+    val unmanagedMainDirsSetting = Seq(
+      unmanagedSourceDirectories in Compile ++= {
+        compatDirs(projectbase = baseDirectory.value, scalaVersion = scalaVersion.value, isMain = true)
+      }
+    )
+    if (includeTestSrcs) {
+      unmanagedMainDirsSetting ++ {
+        unmanagedSourceDirectories in Test ++= {
+          compatDirs(projectbase = baseDirectory.value, scalaVersion = scalaVersion.value, isMain = false)
+        }
+      }
+    } else {
+      unmanagedMainDirsSetting
+    }
   }
 
 }
