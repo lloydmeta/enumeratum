@@ -1,72 +1,70 @@
-# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum)
+# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://www.codacy.com/project/badge/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/public/lloydmeta/enumeratum) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11)
 
-A type-safe and powerful enumeration implementation for Scala with exhaustive pattern match warnings, Enumeratum is
-an implementation based on a single Scala macro that searches for implementations of a sealed trait or class.
 
-Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
-more flexibility, safety, and power. It also has **zero** dependencies, which means it's light-weight, but more importantly,
-won't clutter your (or your dependants') namespace.
-
-Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of
-values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that
-can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's
-`Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
-
+Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
+integrations with popular Scala libraries, and idiomatic usage that won't break your IDE. It aims to be similar enough 
+to Scala's built in `Enumeration` to be easy-to-use and understand while offering more flexibility, type-safety (see [this blog
+post describing erasure on Scala's `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html)), and
+richer enum values without having to maintain your own collection of values.
 
 Enumeratum has the following niceties:
 
 - Zero dependencies
-- Simplicity; most of the complexity in this lib is in the macro, and the macro is fairly simple conceptually
-- As idiomatic as possible: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
-- No usage of `synchronized`, which may help with performance and deadlocks prevention
+- Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
+- Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
+- Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
 - No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
-  environments where reflection is a best effort.
+  environments where reflection is a best effort (such as Android)
+- No usage of `synchronized`, which may help with performance and deadlocks prevention
 - All magic happens at compile-time so you know right away when things go awry
 
+Compatible with Scala 2.11+ and 2.10 as well as ScalaJS.
 
-Compatible with Scala 2.10.x and 2.11.x
+Integrations are available for:
 
-[Scaladocs](https://beachape.com/enumeratum/latest/api)
+- [Play](https://www.playframework.com/): JVM only
+- [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM only (included in Play integration but also available separately)
+- [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
+- [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 
-## SBT / Installation basics
+### Table of Contents
 
-Set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.7"`).
+1. [Quick start](#quick-start)
+  1. [SBT](#sbt)
+  2. [Usage](#usage)
+2. [More examples](#more-examples)
+  1. [Enum](#enum)
+    1. [Mixins](#mixins)
+  2. [ValueEnum](#valueenum)
+2. [ScalaJS](#scalajs)
+3. [Play integration](#play-integration)
+4. [Play JSON integration](#play-json)
+5. [Circe integration](#circe)
+6. [UPickle integration](#upickle)
+7. [Scala 2.10](#scala-210)
+8. [Licence](#licence)
 
-For basic enumeratum (with no Play support):
+
+## Quick start
+
+### SBT
+
+In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you
+in the Maven badge above).
+
 ```scala
 libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum" % enumeratumVersion
 )
 ```
 
-For enumeratum with full Play support:
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
-    "com.beachape" %% "enumeratum-play" % enumeratumVersion
-)
-```
+Enumeratum has different integrations that can be added to your build a la cart. For more info, see the respective secions in
+[the Table of Contents](#table-of-contents)
 
-#### ScalaJs
+### Usage
 
-In a ScalaJS project, add the following:
-
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % enumeratumVersion
-)
-```
-
-
-There are other ways to use Enumeratum (e.g. a la carte), [see here](#sbt-a-la-carte).
-
-## How-to + example
-
-Using Enumeratum is simple. Simply declare your own sealed trait or class `A`, and implement it as case objects inside
-an object that extends from `Enum[A]` as follows.
-
-Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
-use the `indexOf` method).
+Using Enumeratum is simple. Just declare your own sealed trait or class `A` that extends `EnumEntry` and implement it as case objects inside
+an object that extends from `Enum[A]` as shown below.
 
 ```scala
 
@@ -76,6 +74,11 @@ sealed trait Greeting extends EnumEntry
 
 object Greeting extends Enum[Greeting] {
 
+  /*
+   `findValues` is a protected method that invokes a macro to find all `Greeting` object declarations inside an `Enum`
+
+   You use it to implement the `val values` member
+  */
   val values = findValues
 
   case object Hello extends Greeting
@@ -93,6 +96,19 @@ Greeting.withName("Hello")
 Greeting.withName("Haro")
 // => java.lang.IllegalArgumentException: Haro is not a member of Enum (Hello, GoodBye, Hi, Bye)
 
+```
+
+Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
+use the `indexOf` method).
+
+
+## More examples
+
+### Enum
+
+Continuing from the enum declared in [the quick-start section](#usage):
+
+```scala
 import Greeting._
 
 def tryMatching(v: Greeting): Unit = v match {
@@ -140,6 +156,8 @@ State.withName("AL")
 
 ```
 
+#### Mixins
+
 The second is to mixin the stackable traits provided for common string
 conversions, `Snakecase`, `Uppercase`, and `Lowercase`.
 
@@ -166,15 +184,81 @@ Greeting.withName("SHOUT_GOOD_BYE")
 
 ```
 
+### ValueEnum
 
-### Play 2
+Asides from enumerations that resolve members from `String` names, Enumeratum also supports `ValueEnum`s, enums that resolve
+members from various primitive types like `Int`, `Long` and`Short`. In order to ensure at compile-time that multiple members
+do not share the same value, these enums are powered by a separate macro and exposed through a different set of traits.
+
+```scala
+import enumeratum.values._
+
+sealed abstract class LibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object LibraryItem extends IntEnum[LibraryItem] {
+
+  case object Book extends LibraryItem(value = 1, name = "book")
+  case object Movie extends LibraryItem(name = "movie", value = 2)
+  case object Magazine extends LibraryItem(3, "magazine")
+  case object CD extends LibraryItem(4, name = "cd")
+  // case object Newspaper extends LibraryItem(4, name = "cd") <-- will fail to compile because the value 4 is shared
+
+  /*
+  val five = 5
+  case object Article extends LibraryItem(five, name = "five") <-- will fail to compile because the value is not a literal
+  */
+
+  val values = findValues
+
+}
+
+assert(LibraryItem.withValue(1) == LibraryItem.Book)
+
+LibraryItem.withValue(10) // => java.util.NoSuchElementException:
+```
+
+** Restrictions **
+- `ValueEnum`s must have their value members implemented as literal values.
+- The macro behind this enum does not work within the REPL, but works in normally compiled code.
+- `ValueEnums` are not available for Scala 2.10 projects.
+
+
+## ScalaJS
+
+In a ScalaJS project, add the following to `build.sbt`:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion
+)
+```
+
+As expected, usage is exactly the same as normal Scala.
+
+## Play Integration
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
 
+### SBT
+
+For enumeratum with full Play support:
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play" % enumeratumVersion
+)
+```
+
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
+Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
+
+### Usage
+
+#### PlayEnum
+
 The included `PlayEnum` trait is probably going to be the most interesting as it includes a bunch
-of built-in implicits like Json formats, Path bindables, Query string bindables,
-and form field support.
+of built-in implicits like Json formats, Path bindables, Query string bindables, and Form field support.
 
 For example:
 
@@ -216,16 +300,60 @@ Router.from {
 }
 
 ```
-### Play-JSON
+
+#### PlayValueEnums
+
+There are `IntPlayEnum`, `LongPlayEnum`, and `ShortPlayEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
+`ShortEnumEntry` respectively that provide Play-specific implicits as with normal `PlayEnum`. For example:
+
+```scala
+import enumeratum.values._
+
+sealed abstract class PlayLibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Book extends PlayLibraryItem(value = 1, name = "book")
+  case object Movie extends PlayLibraryItem(name = "movie", value = 2)
+  case object Magazine extends PlayLibraryItem(3, "magazine")
+  case object CD extends PlayLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
+PlayLibraryItem.values.foreach { item =>
+    assert(PlayJson.toJson(item) == JsNumber(item.value))
+}
+```
+
+
+## Play JSON
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
 
+### SBT
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
+)
+```
+
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
+Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
+
+### Usage
+
+#### PlayJsonEnum
+
 For example:
 
 ```scala
-package enums._
-
 import enumeratum.{ PlayJsonEnum, Enum, EnumEntry }
 
 sealed trait Greeting extends EnumEntry
@@ -240,18 +368,122 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
   case object Bye extends Greeting
 
 }
+
 ```
 
-## SBT a la carte
+#### PlayJsonValueEnum
 
-If you just want to use the macro that finds implementations of a sealed trait within an enclosed
-tree:
+There are `IntPlayJsonEnum`, `LongPlayJsonEnum`, and `ShortPlayJsonEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
+`ShortEnumEntry` respectively. For example:
 
 ```scala
-libraryDependencies ++= Seq("com.beachape" %% "enumeratum-macros" % enumeratumVersion)
+import enumeratum.values._
+
+sealed abstract class JsonDrinks(val value: Short, name: String) extends ShortEnumEntry
+
+case object JsonDrinks extends ShortEnum[JsonDrinks] with ShortPlayJsonValueEnum[JsonDrinks] {
+
+  case object OrangeJuice extends JsonDrinks(value = 1, name = "oj")
+  case object AppleJuice extends JsonDrinks(value = 2, name = "aj")
+  case object Cola extends JsonDrinks(value = 3, name = "cola")
+  case object Beer extends JsonDrinks(value = 4, name = "beer")
+
+  val values = findValues
+
+}
+
+import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson, JsSuccess }
+
+// Use to deserialise numbers to enum members directly
+JsonDrinks.values.foreach { drink =>
+    assert(PlayJson.toJson(drink) == JsNumber(drink.value))
+}
+assert(PlayJson.fromJson[JsonDrinks](JsNumber(3)) == JsSuccess(JsonDrinks.Cola))
+assert(PlayJson.fromJson[JsonDrinks](JsNumber(19)).isError)
 ```
 
-For enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
+## Circe
+
+### SBT
+
+To use enumeratum with [Circe](https://github.com/travisbrown/circe):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-circe" % enumeratumVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum" % enumeratumVersion,
+    "com.beachape" %%% "enumeratum-circe" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends CirceEnum[ShirtSize] with Enum[ShirtSize] {
+
+  case object Small extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large extends ShirtSize
+
+  val values = findValues
+
+}
+
+import io.circe.Json
+import io.circe.syntax._
+
+ShirtSize.values.foreach { size =>
+    assert(size.asJson == Json.fromString(size.entryName))
+}
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class CirceLibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object CirceLibraryItem extends IntEnum[CirceLibraryItem] with IntCirceEnum[CirceLibraryItem] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Book extends CirceLibraryItem(value = 1, name = "book")
+  case object Movie extends CirceLibraryItem(name = "movie", value = 2)
+  case object Magazine extends CirceLibraryItem(3, "magazine")
+  case object CD extends CirceLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+import io.circe.Json
+import io.circe.syntax._
+
+CirceLibraryItem.values.foreach { item =>
+    assert(item.asJson == Json.fromInt(item.value))
+}
+```
+
+## UPickle
+
+### SBT
+
+To use enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
 
 ```scala
 libraryDependencies ++= Seq(
@@ -260,25 +492,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-For enumeratum with Play JSON:
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
-    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
-)
-```
-
-### ScalaJs
-
-There is support for ScalaJs, though only for the core lib and the UPickle helper lib.
-
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % enumeratumVersion
-)
-```
-
-To use with uPickle:
+To use with ScalaJS:
 
 ```scala
 libraryDependencies ++= Seq(
@@ -287,11 +501,49 @@ libraryDependencies ++= Seq(
 )
 ```
 
+### Usage
+
+`CirceEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the
+`ValueEnum` integration.
+
+```scala
+import enumeratum.values._
+
+sealed abstract class ContentType(val value: Long, name: String) extends LongEnumEntry
+
+case object ContentType
+    extends LongEnum[ContentType]
+    with LongUPickleEnum[ContentType] {
+
+  val values = findValues
+
+  case object Text extends ContentType(value = 1L, name = "text")
+  case object Image extends ContentType(value = 2L, name = "image")
+  case object Video extends ContentType(value = 3L, name = "video")
+  case object Audio extends ContentType(value = 4L, name = "audio")
+
+}
+
+import upickle.default.{ readJs, writeJs, Reader, Writer }
+enum.values.foreach { entry =>
+  val written = writeJs(entry)
+  assert(readJs(written) == entry)
+}
+
+```
+
+## Scala 2.10
+
+Scala's Macro API is experimental and has changed quite a bit between 2.10 and 2.11, so some features of Enumeratum are
+not available in 2.10 (though PRs making them available are welcome):
+
+- [Value Enums](#valueenum): The `.tpe` of constructor functions are not resolved yet during the macro phase, so we can't resolve `value` arguments
+
 ## Licence
 
 The MIT License (MIT)
 
-Copyright (c) 2015 by Lloyd Chan
+Copyright (c) 2016 by Lloyd Chan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -2,22 +2,26 @@ import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
 import scalariform.formatter.preferences._
-import scoverage.ScoverageSbtPlugin.ScoverageKeys._
+import scoverage.ScoverageKeys._
 import com.typesafe.sbt.SbtGhPages.ghpages
 import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
-import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.typesafe.sbt.SbtGit.{ GitKeys => git }
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.3.8-SNAPSHOT"
-  lazy val theScalaVersion = "2.11.7"
-  lazy val scalaVersions = Seq("2.10.6", "2.11.7")
-  lazy val thePlayVersion = "2.4.6"
-  lazy val scalaTestVersion = "3.0.0-M14"
+  lazy val theVersion = "1.4.0-SNAPSHOT"
+  lazy val theScalaVersion = "2.11.8"
+  lazy val scalaVersions = Seq("2.10.6", "2.11.8")
+  def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.2"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
+    case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+  lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -39,12 +43,13 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm)
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
       name := "enumeratum"
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .settings(commonWithPublishSettings:_*)
     .dependsOn(macros)
@@ -71,6 +76,7 @@ object Enumeratum extends Build {
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
       )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = true, includeTestSrcs = false):_*)
     .settings(testSettings:_*)
   lazy val macrosJs = macros.js
   lazy val macrosJvm = macros.jvm
@@ -78,20 +84,22 @@ object Enumeratum extends Build {
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play-json" % thePlayVersion % "provided"
+        "com.typesafe.play" %% "play-json" % thePlayVersion(scalaVersion.value)
       )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
-    .dependsOn(coreJvm)
+    .dependsOn(coreJvm % "test->test;compile->compile")
 
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % thePlayVersion % Provided
+        "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value)
       )
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
-    .dependsOn(coreJvm, enumeratumPlayJson)
+    .dependsOn(coreJvm, enumeratumPlayJson % "test->test;compile->compile")
 
   lazy val enumeratumUPickle = crossProject.crossType(CrossType.Pure).in(file("enumeratum-upickle"))
     .settings(commonWithPublishSettings:_*)
@@ -105,7 +113,7 @@ object Enumeratum extends Build {
           else
             CrossVersion.binary
         }
-        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.6")
+        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.9")
       } ++ {
         val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
           // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
@@ -119,10 +127,32 @@ object Enumeratum extends Build {
         additionalMacroDeps
       }
     )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
-    .dependsOn(core)
+    .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumUPickleJs = enumeratumUPickle.js
   lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
+
+  lazy val enumeratumCirce = crossProject.crossType(CrossType.Pure).in(file("enumeratum-circe"))
+    .settings(commonWithPublishSettings:_*)
+    .settings(
+      name := "enumeratum-circe",
+      libraryDependencies ++= {
+        import org.scalajs.sbtplugin._
+        val cross = {
+          if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+            ScalaJSCrossVersion.binary
+          else
+            CrossVersion.binary
+        }
+        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.1")
+      }
+    )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
+    .settings(testSettings:_*)
+    .dependsOn(core % "test->test;compile->compile")
+  lazy val enumeratumCirceJs = enumeratumCirce.js
+  lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
 
   lazy val commonSettings = Seq(
@@ -164,7 +194,7 @@ object Enumeratum extends Build {
   )
 
   lazy val scoverageSettings = Seq(
-    coverageExcludedPackages := """enumeratum\.EnumMacros""",
+    coverageExcludedPackages := """enumeratum\.EnumMacros;enumeratum\.ContextUtils;enumeratum\.ValueEnumMacros""",
     coverageHighlighting := true
   )
 
@@ -214,6 +244,34 @@ object Enumeratum extends Build {
       },
       scalaJSStage in Test := FastOptStage
     )
+  }
+
+  /**
+    * Helper function to add unmanaged source compat directories for different scala versions
+    */
+  private def withCompatUnmanagedSources(jsJvmCrossProject: Boolean, include_210Dir: Boolean, includeTestSrcs: Boolean): Seq[Setting[_]] = {
+    def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
+      val base = if (jsJvmCrossProject ) projectbase / ".." else projectbase
+      CrossVersion.partialVersion(scalaVersion) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 11 => Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.11").map(_.getCanonicalFile)
+        case Some((2, scalaMajor)) if scalaMajor == 10 && include_210Dir => Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.10").map(_.getCanonicalFile)
+        case _ => Nil
+      }
+    }
+    val unmanagedMainDirsSetting = Seq(
+      unmanagedSourceDirectories in Compile ++= {
+        compatDirs(projectbase = baseDirectory.value, scalaVersion = scalaVersion.value, isMain = true)
+      }
+    )
+    if (includeTestSrcs) {
+      unmanagedMainDirsSetting ++ {
+        unmanagedSourceDirectories in Test ++= {
+          compatDirs(projectbase = baseDirectory.value, scalaVersion = scalaVersion.value, isMain = false)
+        }
+      }
+    } else {
+      unmanagedMainDirsSetting
+    }
   }
 
 }

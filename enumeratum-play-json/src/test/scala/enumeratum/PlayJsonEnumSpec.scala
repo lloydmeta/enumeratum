@@ -23,7 +23,7 @@ class PlayJsonEnumSpec extends FunSpec with Matchers {
     describe("serialisation") {
 
       it("should serialise values to JsString") {
-        PlayJson.toJson(Dummy.A) shouldBe (JsString("A"))
+        PlayJson.toJson(Dummy.A) shouldBe JsString("A")
       }
 
     }

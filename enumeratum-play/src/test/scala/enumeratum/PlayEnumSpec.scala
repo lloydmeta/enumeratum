@@ -1,6 +1,8 @@
 package enumeratum
 
-import org.scalatest.{ Matchers, FunSpec }
+import java.security.cert.X509Certificate
+
+import org.scalatest.{ FunSpec, Matchers }
 import play.api.data.Form
 import play.api.http.HttpVerbs
 import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
@@ -127,6 +129,9 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
   private def reqHeaderAt(theMethod: String, theUri: String) =
     new RequestHeader {
+
+      def clientCertificateChain: Option[Seq[X509Certificate]] = ???
+
       def secure: Boolean = ???
 
       def uri: String = theUri

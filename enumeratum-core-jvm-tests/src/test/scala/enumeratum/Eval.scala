@@ -8,8 +8,9 @@ import scala.tools.reflect.ToolBox
 object Eval {
 
   def apply[A](
-    string: String,
-    compileOptions: String = s"-cp ${macroToolboxClassPath.mkString(";")}"): A = {
+    string:         String,
+    compileOptions: String = s"-cp ${macroToolboxClassPath.mkString(";")}"
+  ): A = {
     import scala.reflect.runtime.currentMirror
     val toolbox = currentMirror.mkToolBox(options = compileOptions)
     val tree = toolbox.parse(string)

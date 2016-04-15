@@ -1,7 +1,7 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 
 class EnumSpec extends FunSpec with Matchers {
 
