@@ -250,6 +250,9 @@ libraryDependencies ++= Seq(
 )
 ```
 
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
+Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
+
 ### Usage
 
 #### PlayEnum
@@ -340,6 +343,9 @@ libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
 )
 ```
+
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
+Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
 
 ### Usage
 

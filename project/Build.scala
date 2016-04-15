@@ -13,10 +13,14 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.3.8-SNAPSHOT"
+  lazy val theVersion = "1.4.0-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
-  lazy val thePlayVersion = "2.4.6"
+  def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.2"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
+    case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
   lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
@@ -80,7 +84,7 @@ object Enumeratum extends Build {
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play-json" % thePlayVersion % "provided"
+        "com.typesafe.play" %% "play-json" % thePlayVersion(scalaVersion.value)
       )
     )
     .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
@@ -90,7 +94,7 @@ object Enumeratum extends Build {
   lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"), settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play" % thePlayVersion % Provided
+        "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value)
       )
     )
     .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
@@ -141,7 +145,7 @@ object Enumeratum extends Build {
           else
             CrossVersion.binary
         }
-        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.0")
+        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.1")
       }
     )
     .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)

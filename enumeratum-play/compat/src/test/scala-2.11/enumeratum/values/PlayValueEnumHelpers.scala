@@ -1,5 +1,7 @@
 package enumeratum.values
 
+import java.security.cert.X509Certificate
+
 import org.scalatest._
 import play.api.data.Form
 import play.api.http.HttpVerbs
@@ -142,6 +144,8 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
 
   def reqHeaderAt(theMethod: String, theUri: String) =
     new RequestHeader {
+      def clientCertificateChain: Option[Seq[X509Certificate]] = ???
+
       def secure: Boolean = ???
 
       def uri: String = theUri
