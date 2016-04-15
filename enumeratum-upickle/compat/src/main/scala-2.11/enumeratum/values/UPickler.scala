@@ -10,6 +10,9 @@ import upickle.default.{ Reader, Writer }
  */
 object UPickler {
 
+  /**
+    * Returns a Reader for the given ValueEnum
+    */
   def reader[ValueType <: AnyVal: Reader, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Reader[EntryType] = {
     val valueReader = implicitly[Reader[ValueType]]
     Reader[EntryType] {
@@ -17,6 +20,9 @@ object UPickler {
     }
   }
 
+  /**
+    * Returns a Writer for the given ValueEnum
+    */
   def writer[ValueType <: AnyVal: Writer, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Writer[EntryType] = {
     val valueWriter = implicitly[Writer[ValueType]]
     Writer[EntryType] {

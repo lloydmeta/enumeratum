@@ -17,7 +17,8 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("IntCirceEnum", CirceLibraryItem)
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
-  def testCirceEnum[ValueType <: AnyVal: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](enumKind: String, enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
+  // Test method that generates tests for most primitve-based ValueEnums when given a simple descriptor and the enum
+  private def testCirceEnum[ValueType <: AnyVal: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](enumKind: String, enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
     describe(enumKind) {
 
       describe("to JSON") {

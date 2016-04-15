@@ -16,6 +16,9 @@ class UPicklerSpec extends FunSpec with Matchers {
   testPickling("IntUPickleEnum", UPickleLibraryItem)
   testPickling("IntUPickleEnum with values declared as members", UPickleMovieGenre)
 
+  /**
+    * Given an enum, tests its JSON reading and writing behaviour, grouping the test results under the given enumKind descriptor
+    */
   private def testPickling[ValueType <: AnyVal: Writer: Numeric, EntryType <: ValueEnumEntry[ValueType]: Reader: Writer](enumKind: String, enum: UPickleValueEnum[ValueType, EntryType] with ValueEnum[ValueType, EntryType]) = {
     describe(enumKind) {
       describe("Reader") {

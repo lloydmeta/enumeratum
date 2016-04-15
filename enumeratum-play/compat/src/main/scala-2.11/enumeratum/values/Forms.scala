@@ -11,15 +11,7 @@ import play.api.data.{ FormError, Mapping, Forms => PlayForms }
 object Forms {
 
   /**
-   * Returns a [[ValueEnum]] mapping
-   *
-   * For example:
-   * {{{
-   *   Form("status" -> maps(Status))
-   * }}}
-   *
-   * @param baseFormatter the formatter for the base value type
-   * @param enum The enum
+   * Returns a [[ValueEnum]] mapping for Play form fields
    */
   def enum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[ValueType, EntryType]](baseFormatter: Formatter[ValueType])(enum: EnumType): Mapping[EntryType] = {
     PlayForms.of(formatter(baseFormatter)(enum))

@@ -11,6 +11,9 @@ import org.scalatest._
  */
 trait ValueEnumHelpers { this: FunSpec with Matchers =>
 
+  /*
+   * Generates tests for a given enum and groups the tests inside the given enumKind descriptor
+   */
   def testEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric](enumKind: String, enum: ValueEnum[ValueType, EntryType]): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     describe(enumKind) {

@@ -38,10 +38,18 @@ sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTyp
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
   private def buildNotFoundMessage(i: ValueType): String = {
-    s"$i is not a member of Enum ($existingEntriesString)"
+    s"$i is not a member of ValueEnum ($existingEntriesString)"
   }
 
 }
+
+/*
+ * For the sake of keeping implementations of ValueEnums constrainted to a subset that we have tested to work relatively well,
+ * the following traits are implementations of the sealed trait.
+ *
+ * There is a bit of repetition in order to supply the findValues method (esp in the comments) because we are using a macro
+ * and macro invocations cannot provide implementations for a super class's abstract method
+ */
 
 /**
  * Value enum with [[IntEnumEntry]] entries

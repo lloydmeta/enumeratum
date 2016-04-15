@@ -12,8 +12,14 @@ import io.circe.{ Decoder, Encoder }
  */
 trait CirceEnum[A <: EnumEntry] { this: Enum[A] =>
 
+  /**
+   * Implicit Encoder for this enum
+   */
   implicit val circeEncoder: Encoder[A] = Circe.encoder(this)
 
+  /**
+   * Implicit Decoder for this enum
+   */
   implicit val circeDecoder: Decoder[A] = Circe.decoder(this)
 
 }

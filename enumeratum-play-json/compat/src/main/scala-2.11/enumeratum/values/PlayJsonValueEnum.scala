@@ -11,28 +11,28 @@ import play.api.libs.json.Format
 trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
-   * Implicit path binder for Play's default router
+   * Implicit JSON format for the entries of this enum
    */
   implicit def format: Format[EntryType]
 
 }
 
 /**
- * Json format implicits for IntEnum
+ * Enum implementation for Int enum members that contains an implicit Play JSON Format
  */
 trait IntPlayJsonValueEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
- * Json format implicits for LongEnum
+ * Enum implementation for Long enum members that contains an implicit Play JSON Format
  */
 trait LongPlayJsonValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }
 
 /**
- * Json format implicits for ShortEnum
+ * Enum implementation for Short enum members that contains an implicit Play JSON Format
  */
 trait ShortPlayJsonValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)

@@ -255,8 +255,7 @@ libraryDependencies ++= Seq(
 #### PlayEnum
 
 The included `PlayEnum` trait is probably going to be the most interesting as it includes a bunch
-of built-in implicits like Json formats, Path bindables, Query string bindables,
-and form field support.
+of built-in implicits like Json formats, Path bindables, Query string bindables, and Form field support.
 
 For example:
 

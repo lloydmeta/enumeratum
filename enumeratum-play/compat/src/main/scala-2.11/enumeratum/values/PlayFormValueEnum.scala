@@ -11,6 +11,11 @@ import play.api.data.Mapping
 
 sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
+  /**
+   * The [[Formmater]] for binding the ValueType of this ValueEnum.
+   *
+   * Used for building the [[Formmater]] for the entries
+   */
   protected def baseFormatter: Formatter[ValueType]
 
   /**
