@@ -14,8 +14,8 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
     it("should have the proper values") {
       LibraryItem.withValue(1) shouldBe LibraryItem.Book
       LibraryItem.withValue(2) shouldBe LibraryItem.Movie
-      LibraryItem.withValue(3) shouldBe LibraryItem.Magazine
-      LibraryItem.withValue(4) shouldBe LibraryItem.CD
+      LibraryItem.withValue(10) shouldBe LibraryItem.Magazine
+      LibraryItem.withValue(14) shouldBe LibraryItem.CD
     }
 
   }

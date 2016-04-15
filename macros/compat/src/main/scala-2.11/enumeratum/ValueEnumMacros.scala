@@ -93,7 +93,7 @@ object ValueEnumMacros {
           // resolve the type of the constructor method and find the parameter terms and arguments provided
           val funTpe = fun.tpe
           val members: c.universe.MemberScope = funTpe.members
-          val valueTerms = members.collect {
+          val valueArguments: Iterable[Option[ValueType]] = members.collect {
             case constr if constr.isConstructor => {
               val asMethod = constr.asMethod
               val paramTermNames = asMethod.paramLists.flatten.map(_.asTerm.name)
@@ -117,7 +117,7 @@ object ValueEnumMacros {
             }
           }
           // We only want the first such constructor argument
-          valueTerms.find(_.isDefined).flatten
+          valueArguments.collectFirst { case Some(v) => v }
         }
       }
       val processedValue = values.collectFirst { case Some(v) => processFoundValues(v) }
