@@ -2,32 +2,30 @@
 
 
 Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
-integrations with popular Scala libraries, and idiomatic usage that won't break your IDE.
-
-Enumeratum aims to be similar enough to Scala's built in `Enumeration` to be easy-to-use and understand while offering
-more flexibility, safety, and power. It also has **zero** dependencies, which means it's light-weight, but more importantly,
-won't clutter your (or your dependants') namespace.
-
-Using Enumeratum allows you to use your own `sealed` traits/classes without having to maintain your own collection of
-values, which not only means you get exhaustive pattern match warnings, but also richer enum values, and methods that
-can take your enum values as arguments without having to worry about erasure (for more info, see [this blog post on Scala's
-`Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html))
-
+integrations with popular Scala libraries, and idiomatic usage that won't break your IDE. It aims to be similar enough 
+to Scala's built in `Enumeration` to be easy-to-use and understand while offering more flexibility, type-safety (see [this blog
+post describing erasure on Scala's `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html)), and
+richer enum values without having to maintain your own collection of values.
 
 Enumeratum has the following niceties:
 
 - Zero dependencies
 - Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
+- Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
-- As idiomatic as possible: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
-- No usage of `synchronized`, which may help with performance and deadlocks prevention
 - No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
-  environments where reflection is a best effort.
+  environments where reflection is a best effort (such as Android)
+- No usage of `synchronized`, which may help with performance and deadlocks prevention
 - All magic happens at compile-time so you know right away when things go awry
 
-Compatible with Scala 2.11+ and 2.10.
+Compatible with Scala 2.11+ and 2.10 as well as ScalaJS.
 
-[Scaladocs](https://beachape.com/enumeratum/latest/api)
+Integrations are available for:
+
+- [Play](https://www.playframework.com/): JVM only
+- [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM only (included in Play integration but also available separately)
+- [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
+- [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 
 ### Table of Contents
 
@@ -51,7 +49,8 @@ Compatible with Scala 2.11+ and 2.10.
 
 ### SBT
 
-In `build.sbt`, set the Enumeratum version in a variable (for the latest version, use `val enumeratumVersion = "1.3.7"`).
+In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you
+in the Maven badge above).
 
 ```scala
 libraryDependencies ++= Seq(
