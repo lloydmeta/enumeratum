@@ -5,27 +5,22 @@ import scala.util.control.NonFatal
 
 object EnumMacros {
 
+  /**
+   * Finds any [A] in the current scope and returns an expression for a list of them
+   */
   def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
     import c.universe._
-    val resultType = implicitly[c.WeakTypeTag[A]].tpe
     val typeSymbol = weakTypeOf[A].typeSymbol
     validateType(c)(typeSymbol)
     val subclassSymbols = enclosedSubClasses(c)(typeSymbol)
-    if (subclassSymbols.isEmpty) {
-      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
-    } else {
-      c.Expr[IndexedSeq[A]](
-        Apply(
-          TypeApply(
-            Select(reify(IndexedSeq).tree, ContextUtils.termName(c)("apply")),
-            List(TypeTree(resultType))
-          ),
-          subclassSymbols.map(Ident(_)).toList
-        )
-      )
-    }
+    buildSeqExpr[A](c)(subclassSymbols)
   }
 
+  /**
+   * Makes sure that we can work with the given type as an enum:
+   *
+   * Aborts if the type is not sealed
+   */
   private[enumeratum] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
     if (!typeSymbol.asClass.isSealed)
       c.abort(
@@ -34,6 +29,14 @@ object EnumMacros {
       )
   }
 
+  /**
+   * Finds the actual trees in the current scope that implement objects of the given type
+   *
+   * aborts compilation if:
+   *
+   * - the implementations are not all objects
+   * - the current scope is not an object
+   */
   private[enumeratum] def enclosedSubClassTrees(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Tree] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
@@ -72,7 +75,31 @@ object EnumMacros {
     else enclosingBodySubClassTrees
   }
 
+  /**
+   * Returns a sequence of symbols for objects that implement the given type
+   */
   private[enumeratum] def enclosedSubClasses(c: Context)(typeSymbol: c.universe.Symbol): Seq[c.universe.Symbol] = {
     enclosedSubClassTrees(c)(typeSymbol).map(_.symbol)
+  }
+
+  /**
+   * Builds and returns an expression for an IndexedSeq containing the given symbols
+   */
+  private[enumeratum] def buildSeqExpr[A: c.WeakTypeTag](c: Context)(subclassSymbols: Seq[c.universe.Symbol]) = {
+    import c.universe._
+    val resultType = implicitly[c.WeakTypeTag[A]].tpe
+    if (subclassSymbols.isEmpty) {
+      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
+    } else {
+      c.Expr[IndexedSeq[A]](
+        Apply(
+          TypeApply(
+            Select(reify(IndexedSeq).tree, ContextUtils.termName(c)("apply")),
+            List(TypeTree(resultType))
+          ),
+          subclassSymbols.map(Ident(_)).toList
+        )
+      )
+    }
   }
 }

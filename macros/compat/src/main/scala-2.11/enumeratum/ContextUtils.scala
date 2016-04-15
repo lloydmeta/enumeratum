@@ -7,7 +7,7 @@ object ContextUtils {
   /**
    * Returns a TermName
    */
-  def termName(c: Context)(name: String) = {
+  def termName(c: Context)(name: String): c.universe.TermName = {
     c.universe.TermName(name)
   }
 

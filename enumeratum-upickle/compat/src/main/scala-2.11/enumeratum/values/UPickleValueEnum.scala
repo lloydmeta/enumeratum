@@ -20,22 +20,22 @@ sealed trait UPickleValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[V
 }
 
 /**
-  * Enum implementation for Int enum members that contains an implicit UPickle ReadWriter
-  */
+ * Enum implementation for Int enum members that contains an implicit UPickle ReadWriter
+ */
 trait IntUPickleEnum[EntryType <: IntEnumEntry] extends UPickleValueEnum[Int, EntryType] { this: ValueEnum[Int, EntryType] =>
   implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
 }
 
 /**
-  * Enum implementation for Long enum members that contains an implicit UPickle ReadWriter
-  */
+ * Enum implementation for Long enum members that contains an implicit UPickle ReadWriter
+ */
 trait LongUPickleEnum[EntryType <: LongEnumEntry] extends UPickleValueEnum[Long, EntryType] { this: ValueEnum[Long, EntryType] =>
   implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
 }
 
 /**
-  * Enum implementation for Short enum members that contains an implicit UPickle ReadWriter
-  */
+ * Enum implementation for Short enum members that contains an implicit UPickle ReadWriter
+ */
 trait ShortUPickleEnum[EntryType <: ShortEnumEntry] extends UPickleValueEnum[Short, EntryType] { this: ValueEnum[Short, EntryType] =>
   implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
 }
