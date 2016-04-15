@@ -119,7 +119,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
 
           it("should not bind strings not found as values in the enumeration") {
             subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe 'left
-            subject.bind("hello", Map("hello" -> Seq(s"s${Int.MaxValue}"))).value shouldBe 'left
+            subject.bind("hello", Map("hello" -> Seq(s"${Int.MaxValue}"))).value shouldBe 'left
             subject.bind("hello", Map("helloz" -> Seq("1"))) shouldBe None
           }
 
