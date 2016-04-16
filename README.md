@@ -41,8 +41,8 @@ Integrations are available for:
 4. [Play JSON integration](#play-json)
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
-7. [Scala 2.10](#scala-210)
-8. [Licence](#licence)
+7. [Known issues](#known-issues)
+9. [Licence](#licence)
 
 
 ## Quick start
@@ -201,11 +201,11 @@ case object LibraryItem extends IntEnum[LibraryItem] {
   case object Movie extends LibraryItem(name = "movie", value = 2)
   case object Magazine extends LibraryItem(3, "magazine")
   case object CD extends LibraryItem(4, name = "cd")
-  // case object Newspaper extends LibraryItem(4, name = "cd") <-- will fail to compile because the value 4 is shared
+  // case object Newspaper extends LibraryItem(4, name = "newspaper") <-- will fail to compile because the value 4 is shared
 
   /*
   val five = 5
-  case object Article extends LibraryItem(five, name = "five") <-- will fail to compile because the value is not a literal
+  case object Article extends LibraryItem(five, name = "article") <-- will fail to compile because the value is not a literal
   */
 
   val values = findValues
@@ -217,10 +217,10 @@ assert(LibraryItem.withValue(1) == LibraryItem.Book)
 LibraryItem.withValue(10) // => java.util.NoSuchElementException:
 ```
 
-** Restrictions **
+**Restrictions**
 - `ValueEnum`s must have their value members implemented as literal values.
-- The macro behind this enum does not work within the REPL, but works in normally compiled code.
-- `ValueEnums` are not available for Scala 2.10 projects.
+- `ValueEnum`s are not available in Scala 2.10.x and does not work in the REPL because constructor argument calls are not yet
+   typed during macro expansion (`fun.tpe` returns `null`).
 
 
 ## ScalaJS
@@ -532,12 +532,10 @@ enum.values.foreach { entry =>
 
 ```
 
-## Scala 2.10
+## Known issues
 
-Scala's Macro API is experimental and has changed quite a bit between 2.10 and 2.11, so some features of Enumeratum are
-not available in 2.10 (though PRs making them available are welcome):
-
-- [Value Enums](#valueenum): The `.tpe` of constructor functions are not resolved yet during the macro phase, so we can't resolve `value` arguments
+1. `ValueEnum`s is not available in Scala 2.10.x and does not work in the REPL because constructor function calls are not yet
+   typed during macro expansion (`fun.tpe` returns `null`).
 
 ## Licence
 
