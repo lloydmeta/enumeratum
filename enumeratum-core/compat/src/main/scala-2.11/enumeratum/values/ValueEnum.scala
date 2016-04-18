@@ -7,13 +7,13 @@ import scala.language.experimental.macros
 sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] {
 
   /**
-   * Map of [[EntryType]] object names to [[EntryType]]s
+   * Map of [[ValueType]] to [[EntryType]] members
    */
-  lazy final val intToValuesMap: Map[ValueType, EntryType] = values.map(v => v.value -> v).toMap
+  final lazy val valuesToEntriesMap: Map[ValueType, EntryType] = values.map(v => v.value -> v).toMap
 
   /**
    * The sequence of values for your [[Enum]]. You will typically want
-   * to implement this in your extending class as a `val` so that `withName`
+   * to implement this in your extending class as a `val` so that `withValue`
    * and friends are as efficient as possible.
    *
    * Feel free to implement this however you'd like (including messing around with ordering, etc) if that
@@ -22,18 +22,18 @@ sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTyp
   def values: Seq[EntryType]
 
   /**
-   * Tries to get an [[EntryType]] by the supplied value. The name corresponds to the .value
+   * Tries to get an [[EntryType]] by the supplied value. The value corresponds to the .value
    * of the case objects implementing [[EntryType]]
    *
-   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
-   * .entryName values.
+   * Like [[Enumeration]]'s `withValue`, this method will throw if the value does not match any of the values'
+   * `.value` values.
    */
   def withValue(i: ValueType): EntryType = withValueOpt(i).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(i)))
 
   /**
    * Optionally returns an [[EntryType]] for a given value.
    */
-  def withValueOpt(i: ValueType): Option[EntryType] = intToValuesMap.get(i)
+  def withValueOpt(i: ValueType): Option[EntryType] = valuesToEntriesMap.get(i)
 
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
