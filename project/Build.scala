@@ -13,7 +13,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.4.1"
+  lazy val theVersion = "1.4.2-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
