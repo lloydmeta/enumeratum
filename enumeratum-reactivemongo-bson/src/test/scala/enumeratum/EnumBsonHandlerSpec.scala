@@ -38,7 +38,7 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
     }
   }
 
-  describe("writes") {
+  describe("writer") {
     val writer = EnumHandler.writer(Dummy)
 
     it("should create a writer that writes enum values to BSONString") {
@@ -46,19 +46,19 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
     }
   }
 
-  describe("formats") {
+  describe("handler") {
     val handler = EnumHandler.handler(Dummy)
 
-    it("should create a format that works with valid values") {
+    it("should create a handler that works with valid values") {
       handler.readOpt(BSONString("A")).value should be(Dummy.A)
     }
 
-    it("should create a format that fails with invalid values") {
+    it("should create a handler that fails with invalid values") {
       handler.readOpt(BSONString("D")).isEmpty should be(true)
       handler.readOpt(BSONInteger(2)).isEmpty should be(true)
     }
 
-    it("should create a format that writes enum values to BSONString") {
+    it("should create a handler that writes enum values to BSONString") {
       handler.write(Dummy.A) should be(BSONString("A"))
     }
   }

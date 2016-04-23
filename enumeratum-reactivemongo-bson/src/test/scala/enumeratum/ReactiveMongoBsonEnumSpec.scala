@@ -17,7 +17,6 @@ class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
 
       it("should work with valid values") {
         val bsonValue: BSONValue = BSONString("A")
-        //        BSONString("A").asOpt[Dummy].value shouldBe Dummy.A
         bsonValue.asOpt[Dummy].value shouldBe Dummy.A
       }
 
@@ -27,8 +26,6 @@ class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
 
         strBsonValue.asOpt[Dummy] shouldBe None
         intBsonValue.asOpt[Dummy] shouldBe None
-        //        BSONString("D").asOpt[Dummy] shouldBe None
-        //        BSONInteger(2).asOpt[Dummy] shouldBe None
       }
     }
   }

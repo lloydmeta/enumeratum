@@ -28,10 +28,10 @@ trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
   def testReader[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric]
   (enumKind: String,
    enum: ValueEnum[ValueType, EntryType],
-   providedReads: Option[BSONReader[BSONValue, EntryType]] = None
+   providedReader: Option[BSONReader[BSONValue, EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
-    val reader = providedReads.getOrElse(EnumHandler.reader(enum))
+    val reader = providedReader.getOrElse(EnumHandler.reader(enum))
     describe(enumKind) {
       it("should read valid values") {
         enum.values.foreach { entry =>

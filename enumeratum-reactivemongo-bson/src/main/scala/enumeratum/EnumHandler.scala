@@ -33,7 +33,7 @@ object EnumHandler {
         }
         case _ => Failure(new RuntimeException("String value expected"))
       }
-      // TODO: Check if there's another way to avoid exception
+
       result.get
     }
   }
