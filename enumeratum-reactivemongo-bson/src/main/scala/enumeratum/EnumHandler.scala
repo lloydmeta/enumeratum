@@ -18,7 +18,8 @@ object EnumHandler {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def reader[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): BSONReader[BSONValue, A] = new BSONReader[BSONValue, A] {
+  def reader[A <: EnumEntry]
+    (enum: Enum[A], insensitive: Boolean = false): BSONReader[BSONValue, A] = new BSONReader[BSONValue, A] {
 
     override def read(bson: BSONValue): A = {
       val result = bson match {
@@ -51,7 +52,9 @@ object EnumHandler {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  def handler[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): BSONHandler[BSONValue, A] = new BSONHandler[BSONValue, A] {
+  def handler[A <: EnumEntry]
+    (enum: Enum[A], insensitive: Boolean = false): BSONHandler[BSONValue, A] = new BSONHandler[BSONValue, A] {
+
     override def read(bson: BSONValue): A = reader(enum).read(bson)
 
     override def write(t: A): BSONValue = writer(enum).write(t)
