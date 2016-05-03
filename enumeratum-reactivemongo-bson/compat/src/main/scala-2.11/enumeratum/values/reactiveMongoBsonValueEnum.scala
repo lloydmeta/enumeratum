@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import EnumBSONHandlers._
+import BSONValueHandlers._
 import reactivemongo.bson._
 
 /**

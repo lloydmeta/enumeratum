@@ -1,7 +1,7 @@
 package enumeratum.values
 
 import org.scalatest._
-import EnumBSONHandlers._
+import BSONValueHandlers._
 
 /**
  * @author Alessandro Lacava (@lambdista)

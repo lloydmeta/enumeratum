@@ -12,7 +12,7 @@ import reactivemongo.bson.{ BSONHandler, BSONInteger, BSONLong, BSONReader, BSON
  * Holds BSONValue to primitive implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
  * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
  */
-object EnumBSONHandlers extends BSONValueReads with BSONValueWrites {
+object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 
   implicit def bsonHandler[A](implicit reader: BSONReader[BSONValue, A], writer: BSONWriter[A, BSONValue]) = new BSONHandler[BSONValue, A] {
     def write(t: A): BSONValue = writer.write(t)
