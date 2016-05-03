@@ -17,7 +17,7 @@ object Enumeratum extends Build {
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.2"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.3"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
