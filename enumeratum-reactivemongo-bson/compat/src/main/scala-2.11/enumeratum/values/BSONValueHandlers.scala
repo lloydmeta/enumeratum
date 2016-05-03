@@ -14,7 +14,7 @@ import reactivemongo.bson.{ BSONHandler, BSONInteger, BSONLong, BSONReader, BSON
  */
 object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 
-  implicit def bsonHandler[A](implicit reader: BSONReader[BSONValue, A], writer: BSONWriter[A, BSONValue]) = new BSONHandler[BSONValue, A] {
+  implicit def anyBsonHandler[A](implicit reader: BSONReader[BSONValue, A], writer: BSONWriter[A, BSONValue]) = new BSONHandler[BSONValue, A] {
     def write(t: A): BSONValue = writer.write(t)
     def read(bson: BSONValue): A = reader.read(bson)
   }
@@ -25,7 +25,7 @@ trait BSONValueReads {
 
   implicit val bsonReaderShort = new BSONReader[BSONValue, Short] {
     override def read(bson: BSONValue): Short = bson match {
-      case BSONInteger(x) => x.toShort
+      case BSONInteger(x) if Short.MaxValue >= x && Short.MinValue <= x => x.toShort
       case _ => throw new RuntimeException(s"Could not convert $bson to Short")
     }
   }
