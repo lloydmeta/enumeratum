@@ -22,6 +22,7 @@ object Enumeratum extends Build {
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
   lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
+  lazy val reactiveMongoVersion = "0.11.11"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -43,7 +44,7 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm)
+    .aggregate(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm, enumeratumReactiveMongoBson)
 
   lazy val core = crossProject.crossType(CrossType.Pure).in(file("enumeratum-core"))
     .settings(
@@ -80,6 +81,16 @@ object Enumeratum extends Build {
     .settings(testSettings:_*)
   lazy val macrosJs = macros.js
   lazy val macrosJvm = macros.jvm
+
+  lazy val enumeratumReactiveMongoBson = Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"), settings = commonWithPublishSettings)
+    .settings(
+      libraryDependencies ++= Seq(
+        "org.reactivemongo" %% "reactivemongo" % reactiveMongoVersion
+      )
+    )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
+    .settings(testSettings:_*)
+    .dependsOn(coreJvm % "test->test;compile->compile")
 
   lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"), settings = commonWithPublishSettings)
     .settings(

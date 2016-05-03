@@ -26,6 +26,7 @@ Integrations are available for:
 - [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM only (included in Play integration but also available separately)
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
+- [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 
 ### Table of Contents
 
@@ -41,7 +42,8 @@ Integrations are available for:
 4. [Play JSON integration](#play-json)
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
-7. [Known issues](#known-issues)
+7. [ReactiveMongo BSON integration](#reactivemongo-bson)
+8. [Known issues](#known-issues)
 9. [Licence](#licence)
 
 
@@ -530,6 +532,79 @@ enum.values.foreach { entry =>
   assert(readJs(written) == entry)
 }
 
+```
+
+## ReactiveMongo BSON
+
+The `enumeratum-reactivemongo-bson` project is published separately and gives you access to ReactiveMongo's auto-generated boilerplate
+for BSON serialization in your Enum's.
+
+### SBT
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-reactivemongo-bson" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### ReactiveMongoBsonEnum
+
+For example:
+
+```scala
+import enumeratum.{ ReactiveMongoBsonEnum, Enum, EnumEntry }
+
+sealed trait Greeting extends EnumEntry
+
+object Greeting extends Enum[Greeting] with ReactiveMongoBsonEnum[Greeting] {
+
+  val values = findValues
+
+  case object Hello extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi extends Greeting
+  case object Bye extends Greeting
+
+}
+
+```
+
+#### ReactiveMongoBsonValueEnum
+
+There are `IntReactiveMongoBsonValueEnum`, `LongReactiveMongoBsonValueEnum`, and `ShortReactiveMongoBsonValueEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
+`ShortEnumEntry` respectively. For example:
+
+```scala
+import enumeratum.values._
+
+sealed abstract class BsonDrinks(val value: Short, name: String) extends ShortEnumEntry
+
+case object BsonDrinks extends ShortEnum[BsonDrinks] with ShortReactiveMongoBsonValueEnum[BsonDrinks] {
+
+  case object OrangeJuice extends BsonDrinks(value = 1, name = "oj")
+  case object AppleJuice extends BsonDrinks(value = 2, name = "aj")
+  case object Cola extends BsonDrinks(value = 3, name = "cola")
+  case object Beer extends BsonDrinks(value = 4, name = "beer")
+
+  val values = findValues
+
+}
+
+import reactivemongo.bson._
+
+// Use to deserialise numbers to enum members directly
+BsonDrinks.values.foreach { drink =>
+  val writer = implicitly[BSONWriter[BsonDrinks, BSONValue]]
+
+  assert(writer.write(drink) == BSONInteger(drink.value))
+}
+
+val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
+
+assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
 ## Known issues
