@@ -35,7 +35,7 @@ object EnumHandler {
 
         result.get
       }
-  }
+    }
 
   /**
    * Returns a BSONWriter for a given enum [[Enum]]
@@ -58,5 +58,5 @@ object EnumHandler {
       override def read(bson: BSONValue): A = concreteReader.read(bson)
 
       override def write(t: A): BSONValue = concreteWriter.write(t)
-  }
+    }
 }
