@@ -30,7 +30,9 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
     testHandler("IntEnum", LibraryItem)
     testHandler("LongEnum", ContentType)
     testHandler("ShortEnum", Drinks)
-    testHandler("PlayJsonValueEnum", BsonDrinks, Some(BsonDrinks.handler))
+    testHandler("ShortReactiveMongoBsonValueEnum", BsonDrinks, Some(BsonDrinks.handler))
+    testHandler("LongReactiveMongoBsonValueEnum", BsonContentType, Some(BsonContentType.handler))
+    testHandler("IntReactiveMongoBsonValueEnum", BsonLibraryItem, Some(BsonLibraryItem.handler))
 
   }
 
