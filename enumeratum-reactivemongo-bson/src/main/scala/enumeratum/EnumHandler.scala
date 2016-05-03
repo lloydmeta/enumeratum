@@ -20,20 +20,11 @@ object EnumHandler {
   def reader[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): BSONReader[BSONValue, A] =
     new BSONReader[BSONValue, A] {
       override def read(bson: BSONValue): A = {
-        val result = bson match {
-          case BSONString(s) => {
-            val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)
-            maybeBound match {
-              case Some(obj) => Success(obj)
-              case None => Failure(new RuntimeException(
-                s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'"
-              ))
-            }
-          }
-          case _ => Failure(new RuntimeException("String value expected"))
+        bson match {
+          case BSONString(s) if insensitive => enum.withNameInsensitive(s)
+          case BSONString(s) => enum.withName(s)
+          case _ => throw new RuntimeException("String value expected")
         }
-
-        result.get
       }
     }
 

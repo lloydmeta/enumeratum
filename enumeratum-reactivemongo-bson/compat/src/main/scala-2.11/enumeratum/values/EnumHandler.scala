@@ -15,17 +15,8 @@ object EnumHandler {
    */
   def reader[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonReader: BSONReader[BSONValue, ValueType]): BSONReader[BSONValue, EntryType] = new BSONReader[BSONValue, EntryType] {
     override def read(bson: BSONValue): EntryType = {
-      val result: Try[EntryType] = baseBsonReader.readTry(bson).flatMap { s =>
-        val maybeBound = enum.withValueOpt(s)
-        maybeBound match {
-          case Some(obj) => Success(obj)
-          case None => Failure(
-            new RuntimeException(s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'")
-          )
-        }
-      }
-
-      result.get
+      val value = baseBsonReader.read(bson)
+      enum.withValue(value)
     }
   }
 
