@@ -17,7 +17,7 @@ object EnumFormats {
       val maybeBound = enum.withValueOpt(s)
       maybeBound match {
         case Some(obj) => JsSuccess(obj)
-        case None => JsError(s"Enumeration expected of type: '$enum', but it does not appear to contain the value: '$s'")
+        case None => JsError("error.expected.validenumvalue")
       }
     }
   }
