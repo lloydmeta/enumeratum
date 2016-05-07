@@ -2,7 +2,7 @@ package enumeratum
 
 import org.scalatest.OptionValues._
 import org.scalatest.{ FunSpec, Matchers }
-import play.api.libs.json.{ JsNumber, JsString }
+import play.api.libs.json.{ JsNumber, JsResult, JsString }
 
 class EnumFormatsSpec extends FunSpec with Matchers {
 
@@ -15,7 +15,9 @@ class EnumFormatsSpec extends FunSpec with Matchers {
 
     it("should create a reads that fails with invalid values") {
       reads.reads(JsString("D")).isError should be(true)
+      errorMessages(reads.reads(JsString("D"))) should be(Seq("error.expected.validenumvalue"))
       reads.reads(JsNumber(2)).isError should be(true)
+      errorMessages(reads.reads(JsNumber(2))) should be(Seq("error.expected.enumstring"))
     }
   }
 
@@ -29,7 +31,9 @@ class EnumFormatsSpec extends FunSpec with Matchers {
 
     it("should create a reads that fails with invalid values") {
       reads.reads(JsString("D")).isError should be(true)
+      errorMessages(reads.reads(JsString("D"))) should be(Seq("error.expected.validenumvalue"))
       reads.reads(JsNumber(2)).isError should be(true)
+      errorMessages(reads.reads(JsNumber(2))) should be(Seq("error.expected.enumstring"))
     }
   }
 
@@ -58,4 +62,11 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     }
   }
 
+  def errorMessages(jsResult: JsResult[_]): Seq[String] =
+    jsResult.fold(
+      _.collect {
+        case (path, errors) => errors.map(_.message).mkString
+      },
+      _ => Seq.empty
+    )
 }
