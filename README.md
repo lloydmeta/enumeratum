@@ -43,8 +43,9 @@ Integrations are available for:
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
-8. [Known issues](#known-issues)
-9. [Licence](#licence)
+8. [Slick integration](#slick)
+9. [Known issues](#known-issues)
+10. [Licence](#licence)
 
 
 ## Quick start
@@ -606,6 +607,46 @@ val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
 
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
+
+### Slick integration
+
+[Slick](http://slick.lightbend.com) doesn't need a separate integration. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on Scala site.
+
+For example when you want the `Enum[Greeting]` defined in the introduction as a database column, you can use the following code
+
+```
+  implicit lazy val greetingMapper = MappedColumnType.base[Greeting, String](
+    greeting => greeting.entryName,
+    string => Greeting.withName(string)
+  )
+
+```
+
+You can then define the following line in your ```Table[...]``` class
+
+```
+  // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]] 
+  def greeting = column[Greeting]("GREETING")
+
+```
+
+If you want to represent your enum in the database with numeric IDs, just provide a different mapping. This example uses the enum of type `LibraryItem` defined in the introduction:
+
+```
+  implicit lazy val libraryItemMapper = MappedColumnType.base[LibraryItem, Int](
+    item => greeting.value,
+    id => Greeting.withValue(id)
+  )
+
+```
+
+Again you can now simply use `LibraryItem` in your `Table` class:
+
+```
+  // This maps a column of type NUMBER to enums of type [[LibaryItem]] 
+  def item = column[LibraryItem]("LIBRARY_ITEM")
+```
+
 
 ## Known issues
 
