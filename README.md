@@ -610,7 +610,7 @@ assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 
 ### Slick integration
 
-[Slick](http://slick.lightbend.com) doesn't need a separate integration. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on Scala site.
+[Slick](http://slick.lightbend.com) doesn't need a separate integration. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
 
 For example when you want the `Enum[Greeting]` defined in the introduction as a database column, you can use the following code
 
@@ -634,8 +634,8 @@ If you want to represent your enum in the database with numeric IDs, just provid
 
 ```
   implicit lazy val libraryItemMapper = MappedColumnType.base[LibraryItem, Int](
-    item => greeting.value,
-    id => Greeting.withValue(id)
+    item => item.value,
+    id => LibraryItem.withValue(id)
   )
 
 ```
