@@ -43,7 +43,7 @@ Integrations are available for:
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
-8. [Slick integration](#slick)
+8. [Slick integration](#slick-integration)
 9. [Known issues](#known-issues)
 10. [Licence](#licence)
 
@@ -625,7 +625,7 @@ For example when you want the `Enum[Greeting]` defined in the introduction as a 
 You can then define the following line in your ```Table[...]``` class
 
 ```
-  // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]] 
+  // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]]
   def greeting = column[Greeting]("GREETING")
 
 ```
@@ -643,7 +643,7 @@ If you want to represent your enum in the database with numeric IDs, just provid
 Again you can now simply use `LibraryItem` in your `Table` class:
 
 ```
-  // This maps a column of type NUMBER to enums of type [[LibaryItem]] 
+  // This maps a column of type NUMBER to enums of type [[LibaryItem]]
   def item = column[LibraryItem]("LIBRARY_ITEM")
 ```
 
