@@ -610,43 +610,54 @@ assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 
 ### Slick integration
 
-[Slick](http://slick.lightbend.com) doesn't need a separate integration. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
+[Slick](http://slick.lightbend.com) doesn't have a separate integration at the moment. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
 
 For example when you want the `Enum[Greeting]` defined in the introduction as a database column, you can use the following code
 
-```
+```scala
   implicit lazy val greetingMapper = MappedColumnType.base[Greeting, String](
     greeting => greeting.entryName,
     string => Greeting.withName(string)
   )
-
 ```
 
 You can then define the following line in your ```Table[...]``` class
 
-```
+```scala
   // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]]
   def greeting = column[Greeting]("GREETING")
-
 ```
 
 If you want to represent your enum in the database with numeric IDs, just provide a different mapping. This example uses the enum of type `LibraryItem` defined in the introduction:
 
-```
+```scala
   implicit lazy val libraryItemMapper = MappedColumnType.base[LibraryItem, Int](
     item => item.value,
     id => LibraryItem.withValue(id)
   )
-
 ```
 
 Again you can now simply use `LibraryItem` in your `Table` class:
 
-```
+```scala
   // This maps a column of type NUMBER to enums of type [[LibaryItem]]
   def item = column[LibraryItem]("LIBRARY_ITEM")
 ```
 
+Note that because your enum values are singleton objects, you may get errors when you try to use them in Slick queries like
+the following:
+
+
+```scala
+.filter(_.productType === ProductType.Foo)`
+```
+
+This is because `ProductType.Foo` in the above example is inferred to be of its unique type (`ProductType.Foo`) rather than `ProductType`,
+thus causing a failure to find your mapping. In order to fix this, simply assist the compiler by ascribing the type to be `ProductType`:
+
+```scala
+.filter(_.productType === (ProductType.Foo: ProductType))`
+```
 
 ## Known issues
 
