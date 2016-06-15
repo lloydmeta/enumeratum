@@ -332,6 +332,26 @@ PlayLibraryItem.values.foreach { item =>
 }
 ```
 
+#### PlayFormFieldEnum
+`PlayEnum` extends the trait `PlayFormFieldEnum` wich offers `formField` for mapping within a `play.api.data.Form` object.
+
+```scala
+import play.api.data.Form
+import play.api.data.Forms._
+
+object GreetingForm {
+  val form = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "greeting" -> Greeting.formField
+    )(Data.apply)(Data.unapply)
+  )
+
+  case class Data(
+    name: String,
+    greeting: Greeting)
+}
+```
 
 ## Play JSON
 
