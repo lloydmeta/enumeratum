@@ -142,7 +142,7 @@ to manually override the `def entryName: String` method.
 
 import enumeratum._
 
-sealed abstract class State(override def entryName: String) extends EnumEntry
+sealed abstract class State(override val entryName: String) extends EnumEntry
 
 object State extends Enum[State] {
 
