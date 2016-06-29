@@ -16,6 +16,7 @@ case object Drinks extends ShortEnum[Drinks] {
   case object Wine extends Drinks(value = -10, name = "wine")
 
   val values = findValues
+  val indexedEnumMap = new ShortIndexedEnumMap[Drinks](values)
 
 }
 

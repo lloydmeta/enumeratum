@@ -56,7 +56,13 @@ object Enumeratum extends Build {
     .dependsOn(macros)
 
   lazy val coreJs = core.js
-  lazy val coreJvm = core.jvm
+  lazy val coreJvm = core.jvm.settings(
+    libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.7" % Test,
+    resolvers += "Sonatype OSS Snapshots" at
+      "https://oss.sonatype.org/content/repositories/releases",
+    testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
+    parallelExecution in Test := false
+  )
 
   lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"), settings = commonWithPublishSettings)
     .settings(

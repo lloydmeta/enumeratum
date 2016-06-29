@@ -21,6 +21,7 @@ case object LibraryItem extends IntEnum[LibraryItem] {
   case object VideoClip extends LibraryItem(value = -1, name = "video-clip")
 
   val values = findValues
+  val indexedEnumMap = new IntIndexedEnumMap[LibraryItem](values)
 
 }
 
