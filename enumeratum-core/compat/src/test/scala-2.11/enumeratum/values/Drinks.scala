@@ -13,6 +13,7 @@ case object Drinks extends ShortEnum[Drinks] {
   case object AppleJuice extends Drinks(value = 2, name = "aj")
   case object Cola extends Drinks(value = 3, name = "cola")
   case object Beer extends Drinks(value = 4, name = "beer")
+  case object Wine extends Drinks(value = -10, name = "wine")
 
   val values = findValues
 

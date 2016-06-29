@@ -18,6 +18,7 @@ case object LibraryItem extends IntEnum[LibraryItem] {
   case object Book extends LibraryItem(value = 1, name = "book")
   case object Magazine extends LibraryItem(10, "magazine")
   case object CD extends LibraryItem(14, name = "cd")
+  case object VideoClip extends LibraryItem(value = -1, name = "video-clip")
 
   val values = findValues
 

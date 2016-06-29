@@ -58,22 +58,26 @@ trait IndexedEnum[@specialized(Int, Short) ValueType <: AnyVal, EntryType <: Val
    */
   def toIndex(value: ValueType): Int
 
-  protected lazy val arrayValues = {
-    val maxValue = values.map(v => toIndex(v.value)).max
-    val retVal = Array.fill[Option[EntryType]](maxValue + 1)(None)
+  protected lazy val (arrayValues, minValue) = {
+    val indices = values.map(v => toIndex(v.value))
+
+    val minValue = indices.min
+    val maxValue = indices.max
+
+    val retVal = Array.fill[Option[EntryType]](maxValue - minValue + 1)(None)
 
     for (value <- values) {
-      retVal(toIndex(value.value)) = Some(value)
+      retVal(toIndex(value.value) - minValue) = Some(value)
     }
 
-    retVal
+    retVal -> minValue
   }
 
   /**
    * Optionally returns an [[Int]] for a given value.
    */
   override def withValueOpt(i: ValueType) = {
-    val index = toIndex(i)
+    val index = toIndex(i) - minValue
     if (index >= arrayValues.length || index < 0) None else arrayValues(index)
   }
 
@@ -85,7 +89,7 @@ trait IndexedEnum[@specialized(Int, Short) ValueType <: AnyVal, EntryType <: Val
    * `.value` values.
    */
   override def withValue(i: ValueType): EntryType = {
-    val index = toIndex(i)
+    val index = toIndex(i) - minValue
     if (index >= arrayValues.length || index < 0) {
       throw new NoSuchElementException(buildNotFoundMessage(i))
     } else {

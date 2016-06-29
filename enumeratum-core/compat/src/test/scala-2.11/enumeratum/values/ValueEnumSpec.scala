@@ -23,6 +23,7 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   testEnum("IntEnum", LibraryItem)
   testEnum("ShortEnum", Drinks)
   testEnum("LongEnum", ContentType)
+
   testEnum("when using val members in the body", MovieGenre)
 
   describe("compilation failures") {
