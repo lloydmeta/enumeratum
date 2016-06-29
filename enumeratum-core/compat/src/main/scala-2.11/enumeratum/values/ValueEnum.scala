@@ -37,8 +37,60 @@ sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTyp
 
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
-  private def buildNotFoundMessage(i: ValueType): String = {
+  protected def buildNotFoundMessage(i: ValueType): String = {
     s"$i is not a member of ValueEnum ($existingEntriesString)"
+  }
+
+}
+
+/**
+ * An [[ValueEnum]] that has an optimized array access that does not uses
+ * boxing when accessing the methods [[ValueEnum.withValue()]] and [[ValueEnum.withValueOpt()]]
+ */
+trait IndexedEnum[@specialized(Int, Short) ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]]
+    extends ValueEnum[ValueType, EntryType] {
+
+  /**
+   * Converts the given value to [[Int]]
+   *
+   * @param value The value to convert
+   * @return The converted value
+   */
+  def toIndex(value: ValueType): Int
+
+  protected lazy val arrayValues = {
+    val maxValue = values.map(v => toIndex(v.value)).max
+    val retVal = Array.fill[Option[EntryType]](maxValue + 1)(None)
+
+    for (value <- values) {
+      retVal(toIndex(value.value)) = Some(value)
+    }
+
+    retVal
+  }
+
+  /**
+   * Optionally returns an [[Int]] for a given value.
+   */
+  override def withValueOpt(i: ValueType) = {
+    val index = toIndex(i)
+    if (index >= arrayValues.length || index < 0) None else arrayValues(index)
+  }
+
+  /**
+   * Tries to get an [[Int]] by the supplied value. The value corresponds to the .value
+   * of the case objects implementing [[Int]]
+   *
+   * Like [[Enumeration]]'s `withValue`, this method will throw if the value does not match any of the values'
+   * `.value` values.
+   */
+  override def withValue(i: ValueType): EntryType = {
+    val index = toIndex(i)
+    if (index >= arrayValues.length || index < 0) {
+      throw new NoSuchElementException(buildNotFoundMessage(i))
+    } else {
+      arrayValues(index).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(i)))
+    }
   }
 
 }
@@ -54,7 +106,7 @@ sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTyp
 /**
  * Value enum with [[IntEnumEntry]] entries
  */
-trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
+trait IntEnum[A <: IntEnumEntry] extends IndexedEnum[Int, A] {
 
   /**
    * Method that returns a Seq of [[A]] objects that the macro was able to find.
@@ -64,6 +116,13 @@ trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
    */
   protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findIntValueEntriesImpl[A]
 
+  /**
+   * Converts the given value to [[Int]]
+   *
+   * @param value The value to convert
+   * @return The converted value
+   */
+  override def toIndex(value: Int): Int = value
 }
 
 /**
@@ -78,12 +137,13 @@ trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findLongValueEntriesImpl[A]
+
 }
 
 /**
  * Value enum with [[ShortEnumEntry]] entries
  */
-trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
+trait ShortEnum[A <: ShortEnumEntry] extends IndexedEnum[Short, A] {
 
   /**
    * Method that returns a Seq of [[A]] objects that the macro was able to find.
@@ -92,4 +152,13 @@ trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findShortValueEntriesImpl[A]
+
+  /**
+   * Converts the given value to [[Int]]
+   *
+   * @param value The value to convert
+   * @return The converted value
+   */
+  override def toIndex(value: Short): Int = value.toInt
+
 }
