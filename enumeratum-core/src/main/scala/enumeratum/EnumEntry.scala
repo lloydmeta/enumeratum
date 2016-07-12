@@ -61,4 +61,17 @@ object EnumEntry {
     abstract override def entryName: String = super.entryName.toLowerCase
   }
 
+  /**
+   * Helper implicit for more readable checking.
+   */
+  implicit class ComparableEnum[A <: EnumEntry](val enum: A) extends AnyVal {
+    /**
+     * Checks if the current enum value is contained by the set of enum values in the parameter list.
+     * @param firstEnum First enum of the list.
+     * @param otherEnums Remaining enums.
+     * @return `true` if the current value is contained by the parameter list.
+     */
+    def in(firstEnum: A, otherEnums: A*) = (firstEnum +: otherEnums).contains(enum)
+  }
+
 }

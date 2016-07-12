@@ -250,7 +250,28 @@ class EnumSpec extends FunSpec with Matchers {
         case object Bar extends Foo
         case object Baz extends Foo
       }
-        """ shouldNot compile
+      """ shouldNot compile
+    }
+  }
+
+  describe("in") {
+    import DummyEnum._
+
+    it("should return true if enum value is contained by the parameter list") {
+      val enum: DummyEnum = Hello
+      enum.in(Hello, GoodBye) should be(true)
+    }
+
+    it("should return false if enum value is not contained by the parameter list") {
+      val enum: DummyEnum = Hi
+      enum.in(Hello, GoodBye) should be(false)
+    }
+
+    it("should fail to compile if either enum in the parameter list is not instance of the same enum type as the checked one") {
+      """
+        val enum: DummyEnum = DummyEnum.Hi
+        enum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye)
+      """ shouldNot compile
     }
   }
 
