@@ -56,6 +56,12 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
           }
         }
 
+        it("should return false if given a list that does not hold the entry") {
+          enum.values.foreach { entry =>
+            entry.in(enum.values.filterNot(_ == entry)) shouldBe false
+          }
+        }
+
         it("should return true if the list only holds itself") {
           enum.values.foreach { entry =>
             entry.in(entry) shouldBe true
