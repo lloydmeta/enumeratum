@@ -26,7 +26,7 @@ object ValueEnumEntry {
      * @param otherEnums Remaining enums.
      * @return `true` if the current value is contained by the parameter list.
      */
-    def in(firstEnum: A, otherEnums: A*): Boolean = (firstEnum +: otherEnums).contains(enumEntry)
+    def in(firstEnum: A, otherEnums: A*): Boolean = in(firstEnum +: otherEnums)
 
     /**
      * Checks if the current enum value is contained by the set of enum values in the parameter list.
