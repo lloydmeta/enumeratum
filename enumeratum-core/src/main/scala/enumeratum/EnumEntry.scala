@@ -62,16 +62,26 @@ object EnumEntry {
   }
 
   /**
-   * Helper implicit for more readable checking.
+   * Helper implicit class that holds enrichment methods
    */
-  implicit class ComparableEnum[A <: EnumEntry](val enum: A) extends AnyVal {
+  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A) extends AnyVal {
+
     /**
      * Checks if the current enum value is contained by the set of enum values in the parameter list.
-     * @param firstEnum First enum of the list.
+     *
+     * @param firstEntry First enum of the list.
      * @param otherEnums Remaining enums.
      * @return `true` if the current value is contained by the parameter list.
      */
-    def in(firstEnum: A, otherEnums: A*) = (firstEnum +: otherEnums).contains(enum)
+    def in(firstEntry: A, otherEnums: A*): Boolean = in(firstEntry +: otherEnums)
+
+    /**
+     * Checks if the current enum value is contained by the set of enum values in the parameter list.
+     *
+     * @param entries First enum of the list.
+     * @return `true` if the current value is contained by the parameter list.
+     */
+    def in(entries: Seq[A]): Boolean = entries.contains(enumEntry)
   }
 
 }
