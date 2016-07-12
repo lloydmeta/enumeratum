@@ -48,6 +48,27 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
 
       }
 
+      describe("in") {
+
+        it("should return false if given an empty list") {
+          enum.values.foreach { entry =>
+            entry.in(Nil) shouldBe false
+          }
+        }
+
+        it("should return true if the list only holds itself") {
+          enum.values.foreach { entry =>
+            entry.in(entry) shouldBe true
+          }
+        }
+
+        it("should return true if given a list that has the current entry") {
+          enum.values.foreach { entry =>
+            entry.in(enum.values) shouldBe true
+          }
+        }
+      }
+
     }
   }
 

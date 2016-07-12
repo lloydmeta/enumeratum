@@ -15,6 +15,30 @@ sealed trait ValueEnumEntry[ValueType <: AnyVal] {
 
 }
 
+object ValueEnumEntry {
+
+  implicit class ValueEnumOps[A <: ValueEnumEntry[_]](val enumEntry: A) {
+
+    /**
+     * Checks if the current enum value is contained by the set of enum values in the parameter list.
+     *
+     * @param firstEnum First enum of the list.
+     * @param otherEnums Remaining enums.
+     * @return `true` if the current value is contained by the parameter list.
+     */
+    def in(firstEnum: A, otherEnums: A*): Boolean = (firstEnum +: otherEnums).contains(enumEntry)
+
+    /**
+     * Checks if the current enum value is contained by the set of enum values in the parameter list.
+     *
+     * @param entries First enum of the list.
+     * @return `true` if the current value is contained by the parameter list.
+     */
+    def in(entries: Seq[A]): Boolean = entries.contains(enumEntry)
+
+  }
+}
+
 /**
  * Value Enum Entry parent class for [[Int]] valued entries
  */
