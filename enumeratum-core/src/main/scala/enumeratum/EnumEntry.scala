@@ -64,7 +64,7 @@ object EnumEntry {
   /**
    * Helper implicit for more readable checking.
    */
-  implicit class ComparableEnum[A <: EnumEntry](enum: A) {
+  implicit class ComparableEnum[A <: EnumEntry](val enum: A) extends AnyVal {
     /**
      * Checks if the current enum value is contained by the set of enum values in the parameter list.
      * @param firstEnum First enum of the list.
