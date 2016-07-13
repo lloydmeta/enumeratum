@@ -26,7 +26,7 @@ object Circe {
       val maybeMember = enum.withNameOption(s)
       maybeMember match {
         case Some(member) => Xor.right(member)
-        case None => Xor.left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+        case _ => Xor.left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
       }
     }
   }

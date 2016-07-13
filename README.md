@@ -44,8 +44,9 @@ Integrations are available for:
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
 8. [Slick integration](#slick-integration)
-9. [Known issues](#known-issues)
-10. [Licence](#licence)
+9. [Benchmarking](#benchmarking)
+10. [Known issues](#known-issues)
+11. [Licence](#licence)
 
 
 ## Quick start
@@ -678,6 +679,14 @@ thus causing a failure to find your mapping. In order to fix this, simply assist
 ```scala
 .filter(_.productType === (ProductType.Foo: ProductType))`
 ```
+
+## Benchmarking
+
+Benchmarking is in the unpublished `benchmarking` project. It uses JMH and you can run them in the sbt console by issuing the following command from your command line:
+
+`sbt +benchmarking/'jmh:run -i 10 -wi 10 -f3 -t 1'`
+
+The above command will run JMH benchmarks against different versions of Scala. Leave off `+` to run against the main/latest supported version of Scala.
 
 ## Known issues
 

@@ -1,15 +1,16 @@
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
+
 import scalariform.formatter.preferences._
 import scoverage.ScoverageKeys._
 import com.typesafe.sbt.SbtGhPages.ghpages
 import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
 import sbtunidoc.Plugin._
-import com.typesafe.sbt.SbtGit.{ GitKeys => git }
-
+import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import pl.project13.scala.sbt.JmhPlugin
 
 object Enumeratum extends Build {
 
@@ -256,6 +257,20 @@ object Enumeratum extends Build {
       scalaJSStage in Test := FastOptStage
     )
   }
+
+  lazy val benchmarking = Project(id = "benchmarking", base = file("benchmarking"), settings = commonWithPublishSettings)
+    .settings(
+      name := "benchmarking",
+      crossScalaVersions := scalaVersions,
+      crossVersion := CrossVersion.binary,
+      // Do not publish
+      publishArtifact := false,
+      publishLocal := {}
+    )
+    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = false):_*)
+    .dependsOn(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm, enumeratumReactiveMongoBson)
+    .enablePlugins(JmhPlugin)
+    .settings(libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21")
 
   /**
     * Helper function to add unmanaged source compat directories for different scala versions
