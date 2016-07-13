@@ -688,6 +688,24 @@ Benchmarking is in the unpublished `benchmarking` project. It uses JMH and you c
 
 The above command will run JMH benchmarks against different versions of Scala. Leave off `+` to run against the main/latest supported version of Scala.
 
+On my late 2013 MBP using Java8 on OSX El Capitan:
+
+```
+[info] Benchmark                                            Mode  Cnt     Score    Error  Units
+[info] EnumBenchmarks.indexOf                               avgt   30    11.731 ±  0.179  ns/op
+[info] EnumBenchmarks.withNameDoesNotExist                  avgt   30  1706.310 ± 30.260  ns/op
+[info] EnumBenchmarks.withNameExists                        avgt   30    13.377 ±  0.319  ns/op
+[info] EnumBenchmarks.withNameOptionDoesNotExist            avgt   30     5.583 ±  0.047  ns/op
+[info] EnumBenchmarks.withNameOptionExists                  avgt   30     8.924 ±  0.094  ns/op
+[info] values.ValueEnumBenchmarks.withValueDoesNotExist     avgt   30  1711.705 ± 55.101  ns/op
+[info] values.ValueEnumBenchmarks.withValueExists           avgt   30     4.040 ±  0.036  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptDoesNotExist  avgt   30     5.622 ±  0.029  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptExists        avgt   30     6.472 ±  0.052  ns/op
+```
+
+Other than the methods that throw `NoSuchElementException`s, performance is in the 10ns range (taking into account JMH overhead of roughly 2-3ns), which
+is acceptable for almost all use-cases. PRs that promise to increase performance are expected to be demonstrably faster.
+
 ## Known issues
 
 1. `ValueEnum`s is not available in Scala 2.10.x and does not work in the REPL because constructor function calls are not yet
