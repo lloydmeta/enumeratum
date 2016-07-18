@@ -38,11 +38,43 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
     }
   }
 
+  describe("reader lower case") {
+    val reader = EnumHandler.readerLowercaseOnly(Dummy)
+
+    it("should create a reader that works with valid values that are lower case") {
+      reader.readOpt(BSONString("a")).value should be(Dummy.A)
+    }
+  }
+
+  describe("reader upper case") {
+    val reader = EnumHandler.readerUppercaseOnly(Dummy)
+
+    it("should create a reader that works with valid values that are upper case") {
+      reader.readOpt(BSONString("A")).value should be(Dummy.A)
+    }
+  }
+
   describe("writer") {
     val writer = EnumHandler.writer(Dummy)
 
     it("should create a writer that writes enum values to BSONString") {
       writer.write(Dummy.A) should be(BSONString("A"))
+    }
+  }
+
+  describe("writer upper case") {
+    val writer = EnumHandler.writerUppercase(Dummy)
+
+    it("should create a writer that writes enum values to BSONString as lower case") {
+      writer.write(Dummy.A) should be(BSONString("A"))
+    }
+  }
+
+  describe("writer lower case") {
+    val writer = EnumHandler.writerLowercase(Dummy)
+
+    it("should create a writer that writes enum values to BSONString as lower case") {
+      writer.write(Dummy.A) should be(BSONString("a"))
     }
   }
 

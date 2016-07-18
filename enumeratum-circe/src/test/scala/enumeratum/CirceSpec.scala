@@ -20,6 +20,18 @@ class CirceSpec extends FunSpec with Matchers {
       }
     }
 
+    it("should work for lower case") {
+      ShirtSize.values.foreach { entry =>
+        entry.asJson(Circe.encoderLowercase(ShirtSize)) shouldBe Json.fromString(entry.entryName.toLowerCase)
+      }
+    }
+
+    it("should work for upper case") {
+      ShirtSize.values.foreach { entry =>
+        entry.asJson(Circe.encoderUppercase(ShirtSize)) shouldBe Json.fromString(entry.entryName.toUpperCase)
+      }
+    }
+
   }
 
   describe("from Json") {
@@ -30,9 +42,33 @@ class CirceSpec extends FunSpec with Matchers {
       }
     }
 
+    it("should parse to members when given proper JSON for lower case") {
+      ShirtSize.values.foreach { entry =>
+        Json.fromString(entry.entryName.toLowerCase).as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+      }
+    }
+
+    it("should parse to members when given proper JSON for upper case") {
+      ShirtSize.values.foreach { entry =>
+        Json.fromString(entry.entryName.toUpperCase).as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+      }
+    }
+
     it("should fail to parse random JSON to members") {
       Json.fromString("XXL").as[ShirtSize].isLeft shouldBe true
       Json.fromInt(Int.MaxValue).as[ShirtSize].isLeft shouldBe true
+    }
+
+    it("should fail to parse mixed but not upper case") {
+      Json.fromString("Small").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
+      Json.fromString("Medium").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
+      Json.fromString("Large").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
+    }
+
+    it("should fail to parse mixed but not lower case") {
+      Json.fromString("Small").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
+      Json.fromString("Medium").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
+      Json.fromString("Large").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
     }
 
   }

@@ -41,6 +41,11 @@ trait Enum[A <: EnumEntry] {
    * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
    */
   lazy final val lowerCaseNamesToValuesMap: Map[String, A] = values map (v => v.entryName.toLowerCase -> v) toMap
+
+  /**
+   * Map of [[A]] object names in upper case to [[A]]s for case-insensitive comparison
+   */
+  lazy final val upperCaseNameValuesToMap: Map[String, A] = values map (v => v.entryName.toUpperCase -> v) toMap
   /**
    * Map of [[A]] to their index in the values sequence.
    *
@@ -86,9 +91,41 @@ trait Enum[A <: EnumEntry] {
       (throw new NoSuchElementException(buildNotFoundMessage(name)))
 
   /**
+   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
+   * of the case objects implementing [[A]] transformed to upper case
+   *
+   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * .entryName values.
+   */
+  def withNameUppercaseOnly(name: String): A =
+    withNameUppercaseOnlyOption(name) getOrElse
+      (throw new NoSuchElementException(buildNotFoundMessage(name)))
+
+  /**
+   * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
+   * of the case objects implementing [[A]] transformed to lower case
+   *
+   * Like [[Enumeration]]'s `withName`, this method will throw if the name does not match any of the values'
+   * .entryName values.
+   */
+  def withNameLowercaseOnly(name: String): A =
+    withNameLowercaseOnlyOption(name) getOrElse
+      (throw new NoSuchElementException(buildNotFoundMessage(name)))
+
+  /**
    * Optionally returns an [[A]] for a given name, disregarding case
    */
   def withNameInsensitiveOption(name: String): Option[A] = lowerCaseNamesToValuesMap get name.toLowerCase
+
+  /**
+   * Optionally returns an [[A]] for a given name assuming the value is upper case
+   */
+  def withNameUppercaseOnlyOption(name: String): Option[A] = upperCaseNameValuesToMap get name
+
+  /**
+   * Optionally returns an [[A]] for a given name assuming the value is lower case
+   */
+  def withNameLowercaseOnlyOption(name: String): Option[A] = lowerCaseNamesToValuesMap get name
 
   /**
    * Returns the index number of the member passed in the values picked up by this enum

@@ -18,12 +18,40 @@ object Circe {
     final def apply(a: A): Json = stringEncoder.apply(a.entryName)
   }
 
+  def encoderLowercase[A <: EnumEntry](enum: Enum[A]): Encoder[A] = new Encoder[A] {
+    final def apply(a: A): Json = stringEncoder.apply(a.entryName.toLowerCase)
+  }
+
+  def encoderUppercase[A <: EnumEntry](enum: Enum[A]): Encoder[A] = new Encoder[A] {
+    final def apply(a: A): Json = stringEncoder.apply(a.entryName.toUpperCase)
+  }
+
   /**
    * Returns a Decoder for the given enum
    */
   def decoder[A <: EnumEntry](enum: Enum[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = stringDecoder.apply(c).flatMap { s =>
       val maybeMember = enum.withNameOption(s)
+      maybeMember match {
+        case Some(member) => Xor.right(member)
+        case _ => Xor.left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+      }
+    }
+  }
+
+  def decoderLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = stringDecoder.apply(c).flatMap { s =>
+      val maybeMember = enum.withNameLowercaseOnlyOption(s)
+      maybeMember match {
+        case Some(member) => Xor.right(member)
+        case _ => Xor.left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+      }
+    }
+  }
+
+  def decoderUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Decoder[A] = new Decoder[A] {
+    final def apply(c: HCursor): Result[A] = stringDecoder.apply(c).flatMap { s =>
+      val maybeMember = enum.withNameUppercaseOnlyOption(s)
       maybeMember match {
         case Some(member) => Xor.right(member)
         case _ => Xor.left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))

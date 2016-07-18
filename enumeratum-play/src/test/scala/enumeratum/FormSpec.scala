@@ -51,6 +51,42 @@ class FormSpec extends FunSpec with Matchers {
 
   }
 
+  describe(".enum lower case") {
+
+    val subject = Form("hello" -> enumLowerCaseOnly(Dummy))
+
+    it("should bind proper strings into an Enum value disregarding case") {
+      val r1 = subject.bind(Map("hello" -> "a"))
+      val r2 = subject.bind(Map("hello" -> "b"))
+      r1.value.value shouldBe Dummy.A
+      r2.value.value shouldBe Dummy.B
+    }
+
+    it("should fail to bind random strings") {
+      val r = subject.bind(Map("hello" -> "A"))
+      r.value shouldBe None
+    }
+
+  }
+
+  describe(".enum upper case") {
+
+    val subject = Form("hello" -> enumUppercaseOnly(Dummy))
+
+    it("should bind proper strings into an Enum value disregarding case") {
+      val r1 = subject.bind(Map("hello" -> "A"))
+      val r2 = subject.bind(Map("hello" -> "B"))
+      r1.value.value shouldBe Dummy.A
+      r2.value.value shouldBe Dummy.B
+    }
+
+    it("should fail to bind random strings") {
+      val r = subject.bind(Map("hello" -> "a"))
+      r.value shouldBe None
+    }
+
+  }
+
   describe(".format") {
 
     val subject = format(Dummy)
@@ -72,6 +108,50 @@ class FormSpec extends FunSpec with Matchers {
       r shouldBe Map("hello" -> "A")
     }
 
+  }
+
+  describe(".format lower case") {
+
+    val subject = formatLowercaseOnly(Dummy)
+
+    it("should bind proper strings into an Enum value") {
+      val r1 = subject.bind("hello", Map("hello" -> "a"))
+      val r2 = subject.bind("hello", Map("hello" -> "b"))
+      r1 shouldBe Right(Dummy.A)
+      r2 shouldBe Right(Dummy.B)
+    }
+
+    it("should fail to bind random strings") {
+      val r = subject.bind("hello", Map("hello" -> "A"))
+      r should be('left)
+    }
+
+    it("should unbind ") {
+      val r = subject.unbind("hello", Dummy.A)
+      r shouldBe Map("hello" -> "a")
+    }
+  }
+
+  describe(".format upper case") {
+
+    val subject = formatUppercaseOnly(Dummy)
+
+    it("should bind proper strings into an Enum value") {
+      val r1 = subject.bind("hello", Map("hello" -> "A"))
+      val r2 = subject.bind("hello", Map("hello" -> "B"))
+      r1 shouldBe Right(Dummy.A)
+      r2 shouldBe Right(Dummy.B)
+    }
+
+    it("should fail to bind random strings") {
+      val r = subject.bind("hello", Map("hello" -> "a"))
+      r should be('left)
+    }
+
+    it("should unbind ") {
+      val r = subject.unbind("hello", Dummy.A)
+      r shouldBe Map("hello" -> "A")
+    }
   }
 
   describe(".format case insensitive") {

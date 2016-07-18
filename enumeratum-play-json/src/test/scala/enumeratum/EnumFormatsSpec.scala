@@ -37,10 +37,52 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     }
   }
 
+  describe("reads lower case") {
+    val reads = EnumFormats.readsLowercaseOnly(Dummy)
+
+    it("should create a reads that works with valid values that are lower case") {
+      reads.reads(JsString("a")).asOpt.value should be(Dummy.A)
+    }
+
+    it("should create a reads that fails with invalid values") {
+      reads.reads(JsString("A")).isError should be(true)
+      errorMessages(reads.reads(JsString("A"))) should be(Seq("error.expected.validenumvalue"))
+    }
+  }
+
+  describe("reads upper case") {
+    val reads = EnumFormats.readsUppercaseOnly(Dummy)
+
+    it("should create a reads that works with valid values that are lower case") {
+      reads.reads(JsString("A")).asOpt.value should be(Dummy.A)
+    }
+
+    it("should create a reads that fails with invalid values") {
+      reads.reads(JsString("a")).isError should be(true)
+      errorMessages(reads.reads(JsString("a"))) should be(Seq("error.expected.validenumvalue"))
+    }
+  }
+
   describe("writes") {
     val writer = EnumFormats.writes(Dummy)
 
     it("should create a writes that writes enum values to JsString") {
+      writer.writes(Dummy.A) should be(JsString("A"))
+    }
+  }
+
+  describe("writes lower case") {
+    val writer = EnumFormats.writesLowercaseOnly(Dummy)
+
+    it("should create a writes that writes enum values to JsString as lower case") {
+      writer.writes(Dummy.A) should be(JsString("a"))
+    }
+  }
+
+  describe("writes upper case") {
+    val writer = EnumFormats.writesUppercaseOnly(Dummy)
+
+    it("should create a writes that writes enum values to JsString as upper case") {
       writer.writes(Dummy.A) should be(JsString("A"))
     }
   }

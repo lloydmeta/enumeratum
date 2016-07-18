@@ -93,6 +93,93 @@ class EnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("#withNameUppercaseOnly") {
+      it("should return the proper object when passed the proper string, transforming to upper case first") {
+        DummyEnum.withNameUppercaseOnly("HELLO") should be(Hello)
+        DummyEnum.withNameUppercaseOnly("GOODBYE") should be(GoodBye)
+        DummyEnum.withNameUppercaseOnly("HI") should be(Hi)
+      }
+
+      it("should return None for not uppercase but case insensitive values") {
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameUppercaseOnly("Hello")
+        }
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameUppercaseOnly("GoodBye")
+        }
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameUppercaseOnly("Hi")
+        }
+      }
+
+      it("should throw an error otherwise") {
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameUppercaseOnly("bbeeeech")
+        }
+      }
+    }
+
+    describe("#withNameUppercaseOnlyOption") {
+      it("should return the proper object when passed the proper string, transforming to upper case first") {
+        DummyEnum.withNameUppercaseOnlyOption("HELLO").value should be(Hello)
+        DummyEnum.withNameUppercaseOnlyOption("GOODBYE").value should be(GoodBye)
+        DummyEnum.withNameUppercaseOnlyOption("HI").value should be(Hi)
+      }
+
+      it("should return None for not uppercase but case insensitive values") {
+        DummyEnum.withNameUppercaseOnlyOption("Hello") should be(None)
+        DummyEnum.withNameUppercaseOnlyOption("GoodBye") should be(None)
+        DummyEnum.withNameUppercaseOnlyOption("Hi") should be(None)
+      }
+
+      it("should return None otherwise") {
+        DummyEnum.withNameUppercaseOnlyOption("bbeeeech") should be(None)
+      }
+    }
+
+    describe("#withNameLowercaseOnly") {
+      it("should return the proper object when passed the proper string, transforming to lower case first") {
+        DummyEnum.withNameLowercaseOnly("hello") should be(Hello)
+        DummyEnum.withNameLowercaseOnly("goodbye") should be(GoodBye)
+        DummyEnum.withNameLowercaseOnly("hi") should be(Hi)
+      }
+
+      it("should return None for not uppercase but case insensitive values") {
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameLowercaseOnly("Hello")
+        }
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameLowercaseOnly("GoodBye")
+        }
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameLowercaseOnly("Hi")
+        }
+      }
+
+      it("should throw an error otherwise") {
+        intercept[NoSuchElementException] {
+          DummyEnum.withNameLowercaseOnly("bbeeeech")
+        }
+      }
+    }
+
+    describe("#withNameLowercaseOnlyOption") {
+      it("should return the proper object when passed the proper string, transforming to lower case first") {
+        DummyEnum.withNameLowercaseOnlyOption("hello").value should be(Hello)
+        DummyEnum.withNameLowercaseOnlyOption("goodbye").value should be(GoodBye)
+        DummyEnum.withNameLowercaseOnlyOption("hi").value should be(Hi)
+      }
+
+      it("should return None for not uppercase but case insensitive values") {
+        DummyEnum.withNameLowercaseOnlyOption("Hello") should be(None)
+        DummyEnum.withNameLowercaseOnlyOption("GoodBye") should be(None)
+        DummyEnum.withNameLowercaseOnlyOption("Hi") should be(None)
+      }
+
+      it("should throw an error otherwise") {
+        DummyEnum.withNameLowercaseOnlyOption("bbeeeech") should be(None)
+      }
+    }
   }
 
   describe("when a sealed trait is wrapped in another object") {
