@@ -3,132 +3,215 @@ package enumeratum
 import java.security.cert.X509Certificate
 
 import org.scalatest.{ FunSpec, Matchers }
-import play.api.data.Form
+import play.api.data.{ Form, Mapping }
 import play.api.http.HttpVerbs
-import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
+import play.api.libs.json.{ Format, JsNumber, JsString, JsValue, Json => PlayJson }
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.mvc.{ Headers, RequestHeader }
-import play.api.routing.Router
+import play.api.mvc.{ Headers, PathBindable, QueryStringBindable, RequestHeader }
+import play.api.routing.sird.PathBindableExtractor
 
 class PlayEnumSpec extends FunSpec with Matchers {
 
-  describe("JSON serdes") {
+  testScenarios(
+    descriptor = "ordinary operation (no tarnsforms)",
+    enum = PlayDummyNormal,
+    validTransforms = Map("A" -> PlayDummyNormal.A, "B" -> PlayDummyNormal.B, "c" -> PlayDummyNormal.c),
+    expectedFailures = Seq("1.234"),
+    formMapping = PlayDummyNormal.formField,
+    pathBindable = PlayDummyNormal.pathBindable,
+    pathBindableExtractor = PlayDummyNormal.fromPath,
+    queryStringBindable = PlayDummyNormal.queryBindable
+  )
 
-    describe("deserialisation") {
+  testScenarios(
+    descriptor = "lower case transformed",
+    enum = PlayDummyLowerOnly,
+    validTransforms = Map("a" -> PlayDummyLowerOnly.A, "b" -> PlayDummyLowerOnly.B, "c" -> PlayDummyLowerOnly.c),
+    expectedFailures = Seq("C"),
+    formMapping = PlayDummyLowerOnly.formField,
+    pathBindable = PlayDummyLowerOnly.pathBindable,
+    pathBindableExtractor = PlayDummyLowerOnly.fromPath,
+    queryStringBindable = PlayDummyLowerOnly.queryBindable
+  )
 
-      it("should work with valid values") {
-        JsString("A").asOpt[PlayDummy].value shouldBe PlayDummy.A
-      }
+  testScenarios(
+    descriptor = "upper case transformed",
+    enum = PlayDummyUpperOnly,
+    validTransforms = Map("A" -> PlayDummyUpperOnly.A, "B" -> PlayDummyUpperOnly.B, "C" -> PlayDummyUpperOnly.c),
+    expectedFailures = Seq("c"),
+    formMapping = PlayDummyUpperOnly.formField,
+    pathBindable = PlayDummyUpperOnly.pathBindable,
+    pathBindableExtractor = PlayDummyUpperOnly.fromPath,
+    queryStringBindable = PlayDummyUpperOnly.queryBindable
+  )
 
-      it("should fail with invalid values") {
-        JsString("D").asOpt[PlayDummy] shouldBe None
-        JsNumber(2).asOpt[PlayDummy] shouldBe None
-      }
-    }
+  private def testScenarios[A <: EnumEntry: Format](
+    descriptor:            String,
+    enum:                  Enum[A],
+    validTransforms:       Map[String, A],
+    expectedFailures:      Seq[String],
+    formMapping:           Mapping[A],
+    pathBindable:          PathBindable[A],
+    pathBindableExtractor: PathBindableExtractor[A],
+    queryStringBindable:   QueryStringBindable[A]
+  ): Unit = describe(descriptor) {
 
-    describe("serialisation") {
+    testJson()
+    testFormBinding()
+    testUrlBinding()
 
-      it("should serialise values to JsString") {
-        PlayJson.toJson(PlayDummy.A) shouldBe JsString("A")
-      }
+    def testJson(): Unit = {
 
-    }
+      val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(JsString("AVADSGDSAFA"), JsNumber(Int.MaxValue))
 
-  }
+      describe("JSON serdes") {
 
-  describe("Form binding") {
+        describe("deserialisation") {
 
-    val subject = Form("hello" -> PlayDummy.formField)
+          it("should work with valid values") {
+            validTransforms.foreach {
+              case (k, v) =>
+                JsString(k).asOpt[A].value shouldBe v
+            }
+          }
 
-    it("should bind proper strings into an Enum value") {
-      val r1 = subject.bind(Map("hello" -> "A"))
-      val r2 = subject.bind(Map("hello" -> "B"))
-      r1.value.value shouldBe PlayDummy.A
-      r2.value.value shouldBe PlayDummy.B
-    }
-
-    it("should fail to bind random strings") {
-      val r = subject.bind(Map("hello" -> "AARSE"))
-      r.value shouldBe None
-    }
-
-  }
-
-  describe("URL binding") {
-
-    describe("PathBindable") {
-
-      val subject = PlayDummy.pathBindable
-
-      it("should bind strings corresponding to enum strings") {
-        subject.bind("hello", "A").right.value shouldBe PlayDummy.A
-      }
-
-      it("should not bind strings not found in the enumeration") {
-        subject.bind("hello", "Z").isLeft shouldBe true
-      }
-
-      it("should unbind values") {
-        subject.unbind("hello", PlayDummy.A) shouldBe "A"
-        subject.unbind("hello", PlayDummy.B) shouldBe "B"
-      }
-
-    }
-
-    describe("PathBindableExtractor") {
-
-      val subject = PlayDummy.fromPath
-
-      it("should extract strings corresponding to enum strings") {
-        subject.unapply("A") shouldBe Some(PlayDummy.A)
-        subject.unapply("B") shouldBe Some(PlayDummy.B)
-        subject.unapply("C") shouldBe Some(PlayDummy.C)
-      }
-
-      it("should not extract strings that are not in the enumeration") {
-        subject.unapply("Z") shouldBe None
-      }
-
-      it("should allow me to build an SIRD router") {
-        import play.api.routing.sird._
-        import play.api.routing._
-        import play.api.mvc._
-        val router = Router.from {
-          case GET(p"/${ PlayDummy.fromPath(greeting) }") => Action {
-            Results.Ok(s"$greeting")
+          it("should fail with invalid values") {
+            failures.foreach { v =>
+              v.asOpt[A] shouldBe None
+            }
           }
         }
-        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/A")) shouldBe true
-        router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, "/F")) shouldBe false
-      }
 
+        describe("serialisation") {
+
+          it("should serialise values to JsString") {
+            validTransforms.foreach {
+              case (k, v) =>
+                PlayJson.toJson(v) shouldBe JsString(k)
+            }
+          }
+
+        }
+
+      }
     }
 
-    describe("QueryStringBindable") {
+    def testFormBinding(): Unit = {
 
-      val subject = PlayDummy.queryBindable
+      val subject = Form("hello" -> formMapping)
+      val expectedErrors = expectedFailures ++ Seq(Int.MaxValue.toString, "12asdf13!")
 
-      it("should bind strings corresponding to enum strings regardless of case") {
-        subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(PlayDummy.A)
+      describe("Form binding") {
+        it("should bind proper strings into an Enum value") {
+          validTransforms.foreach {
+            case (k, v) =>
+              val r = subject.bind(Map("hello" -> k))
+              r.value.value shouldBe v
+          }
+        }
+
+        it("should fail to bind random strings") {
+          expectedErrors.foreach { s =>
+            val r = subject.bind(Map("hello" -> s))
+            r.value shouldBe None
+          }
+        }
       }
-
-      it("should not bind strings not found in the enumeration") {
-        subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
-        subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
-      }
-
-      it("should unbind values") {
-        subject.unbind("hello", PlayDummy.A) should be("hello=A")
-        subject.unbind("hello", PlayDummy.B) should be("hello=B")
-      }
-
     }
 
-  }
+    def testUrlBinding(): Unit = {
 
-  private def reqHeaderAt(theMethod: String, theUri: String) =
-    new RequestHeader {
+      val expectedErrors = expectedFailures ++ Seq("1", "abc123", "Z", "F")
+
+      describe("URL Binding") {
+
+        describe("PathBindable") {
+          it("should bind strings corresponding to enum strings") {
+            validTransforms.foreach {
+              case (k, v) =>
+                pathBindable.bind("hello", k).right.value shouldBe v
+            }
+          }
+
+          it("should not bind strings not found in the enumeration") {
+            expectedErrors.foreach { v =>
+              pathBindable.bind("hello", v).isLeft shouldBe true
+            }
+          }
+
+          it("should unbind values") {
+            validTransforms.foreach {
+              case (k, v) =>
+                pathBindable.unbind("hello", v) shouldBe k
+            }
+          }
+        }
+
+        describe("PathBindableExtractor") {
+
+          it("should extract strings corresponding to enum strings") {
+            validTransforms.foreach {
+              case (k, v) =>
+                pathBindableExtractor.unapply(k) shouldBe Some(v)
+            }
+          }
+
+          it("should not extract strings that are not in the enumeration") {
+            expectedErrors.foreach { v =>
+              pathBindableExtractor.unapply(v) shouldBe None
+            }
+          }
+
+          it("should allow me to build an SIRD router") {
+            import play.api.routing.sird._
+            import play.api.routing._
+            import play.api.mvc._
+            val router = Router.from {
+              case GET(p"/${ pathBindableExtractor(greeting) }") => Action {
+                Results.Ok(s"$greeting")
+              }
+            }
+            validTransforms.foreach {
+              case (k, v) =>
+                router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/$k")) shouldBe true
+            }
+            expectedErrors.foreach { v =>
+              router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/$v")) shouldBe false
+            }
+          }
+
+        }
+
+        describe("QueryStringBindable") {
+
+          it("should bind strings corresponding to enum strings") {
+            validTransforms.foreach {
+              case (k, v) =>
+                queryStringBindable.bind("hello", Map("hello" -> Seq(k))).value.right.value should be(v)
+            }
+          }
+
+          it("should not bind strings not found in the enumeration") {
+            expectedErrors.foreach { v =>
+              queryStringBindable.bind("hello", Map("hello" -> Seq(v))).value shouldBe 'left
+              queryStringBindable.bind("hello", Map("helloz" -> Seq(v))) shouldBe None
+            }
+          }
+
+          it("should unbind values") {
+            validTransforms.foreach {
+              case (k, v) =>
+                queryStringBindable.unbind("hello", v) shouldBe s"hello=$k"
+            }
+          }
+
+        }
+
+      }
+    }
+
+    def reqHeaderAt(theMethod: String, theUri: String) = new RequestHeader {
 
       def clientCertificateChain: Option[Seq[X509Certificate]] = ???
 
@@ -152,5 +235,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
       def id: Long = ???
     }
+
+  }
 
 }
