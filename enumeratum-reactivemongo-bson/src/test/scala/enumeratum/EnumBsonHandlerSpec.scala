@@ -84,7 +84,7 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
       it("should write enum values to BSONString") {
         expectedWrites.foreach {
           case (k, v) =>
-            writer.write(k) shouldBe BSONString(v)
+            theWriter.write(k) shouldBe BSONString(v)
         }
       }
     }
