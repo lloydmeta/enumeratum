@@ -9,6 +9,6 @@ sealed trait Dummy extends EnumEntry
 object Dummy extends Enum[Dummy] with ReactiveMongoBsonEnum[Dummy] {
   case object A extends Dummy
   case object B extends Dummy
-  case object C extends Dummy
+  case object c extends Dummy
   val values = findValues
 }
