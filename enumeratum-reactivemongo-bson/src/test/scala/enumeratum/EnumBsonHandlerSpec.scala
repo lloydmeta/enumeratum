@@ -11,87 +11,99 @@ import reactivemongo.bson._
  */
 class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
-  describe("reader") {
-    val reader = EnumHandler.reader(Dummy)
+  testScenario(
+    descriptor = "normal operation (no transformations)",
+    reader = EnumHandler.reader(Dummy),
+    expectedReadSuccesses = Map("A" -> Dummy.A, "c" -> Dummy.c),
+    expectedReadFails = Seq("C"),
+    writer = EnumHandler.writer(Dummy),
+    expectedWrites = Map(Dummy.A -> "A", Dummy.c -> "c"),
+    handler = EnumHandler.handler(Dummy)
+  )
 
-    it("should create a reader that works with valid values") {
-      reader.readOpt(BSONString("A")).value should be(Dummy.A)
+  testScenario(
+    descriptor = "case insensitive",
+    reader = EnumHandler.reader(enum = Dummy, insensitive = true),
+    expectedReadSuccesses = Map("A" -> Dummy.A, "a" -> Dummy.A, "C" -> Dummy.c),
+    expectedReadFails = Nil,
+    writer = EnumHandler.writer(Dummy),
+    expectedWrites = Map(Dummy.A -> "A", Dummy.c -> "c"),
+    handler = EnumHandler.handler(Dummy, insensitive = true)
+  )
+
+  testScenario(
+    descriptor = "lower case transformed",
+    reader = EnumHandler.readerLowercaseOnly(Dummy),
+    expectedReadSuccesses = Map("a" -> Dummy.A, "b" -> Dummy.B, "c" -> Dummy.c),
+    expectedReadFails = Seq("A", "B", "C"),
+    writer = EnumHandler.writerLowercase(Dummy),
+    expectedWrites = Map(Dummy.A -> "a", Dummy.c -> "c"),
+    handler = EnumHandler.handlerLowercaseOnly(Dummy)
+  )
+
+  testScenario(
+    descriptor = "upper case transformed",
+    reader = EnumHandler.readerUppercaseOnly(Dummy),
+    expectedReadSuccesses = Map("A" -> Dummy.A, "B" -> Dummy.B, "C" -> Dummy.c),
+    expectedReadFails = Seq("c"),
+    writer = EnumHandler.writerUppercase(Dummy),
+    expectedWrites = Map(Dummy.A -> "A", Dummy.c -> "C"),
+    handler = EnumHandler.handlerUppercaseOnly(Dummy)
+  )
+
+  private def testScenario(
+    descriptor:            String,
+    reader:                BSONReader[BSONValue, Dummy],
+    expectedReadSuccesses: Map[String, Dummy],
+    expectedReadFails:     Seq[String],
+    writer:                BSONWriter[Dummy, BSONValue],
+    expectedWrites:        Map[Dummy, String],
+    handler:               BSONHandler[BSONValue, Dummy]
+  ): Unit = describe(descriptor) {
+
+    val expectedReadErrors = {
+      expectedReadFails.map(BSONString) ++ Seq(BSONString("D"), BSONInteger(2))
     }
 
-    it("should create a reader that fails with invalid values") {
-      reader.readOpt(BSONString("D")).isEmpty should be(true)
-      reader.readOpt(BSONInteger(2)).isEmpty should be(true)
-    }
-  }
+    def readTests(theReader: BSONReader[BSONValue, Dummy]): Unit = {
+      it("should work with valid values") {
+        expectedReadSuccesses.foreach {
+          case (k, v) =>
+            theReader.readOpt(BSONString(k)).value shouldBe v
+        }
+      }
 
-  describe("reader insensitive") {
-    val reader = EnumHandler.reader(Dummy, true)
-
-    it("should create a reader that works with valid values disregarding case") {
-      reader.readOpt(BSONString("A")).value should be(Dummy.A)
-      reader.readOpt(BSONString("a")).value should be(Dummy.A)
-    }
-
-    it("should create a reader that fails with invalid values") {
-      reader.readOpt(BSONString("D")).isEmpty should be(true)
-      reader.readOpt(BSONInteger(2)).isEmpty should be(true)
-    }
-  }
-
-  describe("reader lower case") {
-    val reader = EnumHandler.readerLowercaseOnly(Dummy)
-
-    it("should create a reader that works with valid values that are lower case") {
-      reader.readOpt(BSONString("a")).value should be(Dummy.A)
-    }
-  }
-
-  describe("reader upper case") {
-    val reader = EnumHandler.readerUppercaseOnly(Dummy)
-
-    it("should create a reader that works with valid values that are upper case") {
-      reader.readOpt(BSONString("A")).value should be(Dummy.A)
-    }
-  }
-
-  describe("writer") {
-    val writer = EnumHandler.writer(Dummy)
-
-    it("should create a writer that writes enum values to BSONString") {
-      writer.write(Dummy.A) should be(BSONString("A"))
-    }
-  }
-
-  describe("writer upper case") {
-    val writer = EnumHandler.writerUppercase(Dummy)
-
-    it("should create a writer that writes enum values to BSONString as lower case") {
-      writer.write(Dummy.A) should be(BSONString("A"))
-    }
-  }
-
-  describe("writer lower case") {
-    val writer = EnumHandler.writerLowercase(Dummy)
-
-    it("should create a writer that writes enum values to BSONString as lower case") {
-      writer.write(Dummy.A) should be(BSONString("a"))
-    }
-  }
-
-  describe("handler") {
-    val handler = EnumHandler.handler(Dummy)
-
-    it("should create a handler that works with valid values") {
-      handler.readOpt(BSONString("A")).value should be(Dummy.A)
+      it("should fail with invalid values") {
+        expectedReadErrors.foreach { v =>
+          theReader.readOpt(v).isEmpty shouldBe true
+        }
+      }
     }
 
-    it("should create a handler that fails with invalid values") {
-      handler.readOpt(BSONString("D")).isEmpty should be(true)
-      handler.readOpt(BSONInteger(2)).isEmpty should be(true)
+    def writeTests(theWriter: BSONWriter[Dummy, BSONValue]): Unit = {
+      it("should write enum values to BSONString") {
+        expectedWrites.foreach {
+          case (k, v) =>
+            writer.write(k) shouldBe BSONString(v)
+        }
+      }
     }
 
-    it("should create a handler that writes enum values to BSONString") {
-      handler.write(Dummy.A) should be(BSONString("A"))
+    describe("BSONReader") {
+      readTests(reader)
+    }
+
+    describe("BSONWriter") {
+      writeTests(writer)
+    }
+
+    describe("BJSONHandler") {
+      describe("reading") {
+        readTests(handler)
+      }
+      describe("writing") {
+        writeTests(handler)
+      }
     }
   }
 
