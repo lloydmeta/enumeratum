@@ -354,7 +354,7 @@ object GreetingForm {
 }
 ```
 
-Another alternative (if your `Enum` cant extend `PlayEnum` or `PlayFormFieldEnum`) is to create an implicit `Format`
+Another alternative (if for example your `Enum` cant extend `PlayEnum` or `PlayFormFieldEnum`) is to create an implicit `Format`
 and bring it into scope using Play's `of`, i.e.
 
 ```scala
