@@ -52,7 +52,7 @@ object Forms {
    * @param enum The enum
    * @param insensitive bind in a case-insensitive way, defaults to false
    */
-  private[enumeratum] def format[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Formatter[A] = new Formatter[A] {
+  def format[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
         val maybeBound = if (insensitive) enum.withNameInsensitiveOption(s) else enum.withNameOption(s)
@@ -70,7 +70,7 @@ object Forms {
    *
    * @param enum The enum
    */
-  private[enumeratum] def formatLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Formatter[A] = new Formatter[A] {
+  def formatLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
         enum.withNameLowercaseOnlyOption(s) match {
@@ -87,7 +87,7 @@ object Forms {
    *
    * @param enum The enum
    */
-  private[enumeratum] def formatUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Formatter[A] = new Formatter[A] {
+  def formatUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Formatter[A] = new Formatter[A] {
     def bind(key: String, data: Map[String, String]) = {
       play.api.data.format.Formats.stringFormat.bind(key, data).right.flatMap { s =>
         enum.withNameUppercaseOnlyOption(s) match {

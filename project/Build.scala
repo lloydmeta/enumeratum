@@ -14,7 +14,7 @@ import pl.project13.scala.sbt.JmhPlugin
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.4.7-SNAPSHOT"
+  lazy val theVersion = "1.4.8-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-M4") // TODO use more recent 2.12 version
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
