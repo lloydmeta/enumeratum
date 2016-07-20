@@ -354,6 +354,34 @@ object GreetingForm {
 }
 ```
 
+Another alternative (if your `Enum` cant extend `PlayEnum` or `PlayFormFieldEnum`) is to create an implicit `Format`
+and bring it into scope using Play's `of`, i.e.
+
+```scala
+import play.api.data.Form
+import play.api.data.Forms._
+
+object Formats {
+  implicit val greetingFormat = enumeratum.Forms.format(Greeting)
+}
+
+object GreetingForm {
+  import Formats._
+  
+  val form = Form(
+      mapping(
+        "name" -> nonEmptyText,
+        "greeting" -> of[Greeting]
+      )(Data.apply)(Data.unapply)
+    )
+  
+    case class Data(
+      name: String,
+      greeting: Greeting)
+
+}
+```
+
 ## Play JSON
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
