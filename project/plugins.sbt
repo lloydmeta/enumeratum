@@ -5,7 +5,8 @@ resolvers ++= Seq(
 // for code formatting
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
+// TODO figure out when this is going to support 2.12
+// addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
 
 addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.1.0")
 
@@ -18,6 +19,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.8.1")
 // Provides auto-generating and publishing a gh-pages site
 addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.3")
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.9")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.10")
 
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.6")

@@ -3,7 +3,7 @@ import sbt.Keys._
 import com.typesafe.sbt.SbtScalariform._
 
 import scalariform.formatter.preferences._
-import scoverage.ScoverageKeys._
+// import scoverage.ScoverageKeys._ TODO figure this out for 2.12
 import com.typesafe.sbt.SbtGhPages.ghpages
 import com.typesafe.sbt.SbtSite.site
 import sbtunidoc.Plugin.UnidocKeys._
@@ -16,13 +16,13 @@ object Enumeratum extends Build {
 
   lazy val theVersion = "1.4.7-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
-  lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12-M5")
+  lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-M4") // TODO use more recent 2.12 version
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.4"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
-  lazy val scalaTestVersion = "3.0.0-R4"
+  lazy val scalaTestVersion = "3.0.0-M16-SNAP4" // "3.0.0-R4" exists TODO: figure out latest version when releasing
   lazy val reactiveMongoVersion = "0.11.11"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
@@ -207,8 +207,11 @@ object Enumeratum extends Build {
   )
 
   lazy val scoverageSettings = Seq(
+    /*
+    TODO clean this up before 2.12
     coverageExcludedPackages := """enumeratum\.EnumMacros;enumeratum\.ContextUtils;enumeratum\.ValueEnumMacros""",
     coverageHighlighting := true
+    */
   )
 
   // Settings for publishing to Maven Central
