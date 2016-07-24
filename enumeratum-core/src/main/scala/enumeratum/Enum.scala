@@ -153,16 +153,10 @@ trait Enum[A <: EnumEntry] {
 }
 
 object Enum {
-  implicit def materializeEnum[A <: EnumEntry]: Enum[A] = macro EnumMacrosAux.materializeEnumImpl[A]
-}
 
-object EnumMacrosAux {
   /**
-   * Given an A <: EnumEntry, provide Enum[A]
+   * Finds the Enum companion object for a particular EnumEntry
    */
-  def materializeEnumImpl[A <: EnumEntry: c.WeakTypeTag](c: Context) = {
-    import c.universe._
-    val symbol = weakTypeOf[A].typeSymbol
-    c.Expr[Enum[A]](Ident(symbol.companionSymbol))
-  }
+  implicit def materializeEnum[A <: EnumEntry]: Enum[A] = macro EnumMacros.materializeEnumImpl[A]
+
 }
