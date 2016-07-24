@@ -17,6 +17,15 @@ object EnumMacros {
   }
 
   /**
+   * Given an A, provides its companion
+   */
+  def materializeEnumImpl[A: c.WeakTypeTag](c: Context) = {
+    import c.universe._
+    val symbol = weakTypeOf[A].typeSymbol
+    c.Expr[A](Ident(ContextUtils.companion(c)(symbol)))
+  }
+
+  /**
    * Makes sure that we can work with the given type as an enum:
    *
    * Aborts if the type is not sealed

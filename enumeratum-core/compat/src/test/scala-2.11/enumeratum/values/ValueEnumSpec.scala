@@ -25,6 +25,25 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   testEnum("LongEnum", ContentType)
   testEnum("when using val members in the body", MovieGenre)
 
+  describe("finding companion object") {
+
+    it("should work for IntEnums") {
+      def findCompanion[EntryType <: IntEnumEntry: IntEnum] = implicitly[IntEnum[EntryType]]
+      findCompanion[LibraryItem].values should contain(LibraryItem.Magazine)
+    }
+
+    it("should work for ShortEnum") {
+      def findCompanion[EntryType <: ShortEnumEntry: ShortEnum] = implicitly[ShortEnum[EntryType]]
+      findCompanion[Drinks].values should contain(Drinks.Cola)
+    }
+
+    it("should work for LongEnum") {
+      def findCompanion[EntryType <: LongEnumEntry: LongEnum] = implicitly[LongEnum[EntryType]]
+      findCompanion[ContentType].values should contain(ContentType.Audio)
+    }
+
+  }
+
   describe("compilation failures") {
 
     describe("problematic values") {

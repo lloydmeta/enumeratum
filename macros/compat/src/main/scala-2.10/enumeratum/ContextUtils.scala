@@ -11,4 +11,9 @@ object ContextUtils {
     c.universe.newTermName(name)
   }
 
+  /**
+   * Returns a companion symbol
+   */
+  def companion(c: Context)(sym: c.Symbol): c.universe.Symbol = sym.companionSymbol
+
 }
