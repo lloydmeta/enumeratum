@@ -69,7 +69,9 @@ object EnumMacros {
             false
         }
       }
-    } catch { case NonFatal(e) => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}") }
+    } catch {
+      case NonFatal(e) => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
+    }
     if (!enclosingBodySubClassTrees.forall(x => x.symbol.isModule))
       c.abort(c.enclosingPosition, "All subclasses must be objects.")
     else enclosingBodySubClassTrees
