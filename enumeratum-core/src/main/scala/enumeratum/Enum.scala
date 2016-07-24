@@ -2,6 +2,7 @@ package enumeratum
 
 import scala.language.experimental.macros
 import scala.language.postfixOps
+import ContextUtils.Context
 
 /**
  * All the cool kids have their own Enumeration implementation, most of which try to
@@ -148,5 +149,14 @@ trait Enum[A <: EnumEntry] {
   }
 
   private lazy val existingEntriesString = values.map(_.entryName).mkString(", ")
+
+}
+
+object Enum {
+
+  /**
+   * Finds the Enum companion object for a particular EnumEntry
+   */
+  implicit def materializeEnum[A <: EnumEntry]: Enum[A] = macro EnumMacros.materializeEnumImpl[A]
 
 }

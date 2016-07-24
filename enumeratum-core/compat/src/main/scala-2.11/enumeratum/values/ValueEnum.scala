@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import enumeratum.ValueEnumMacros
+import enumeratum.{ EnumMacros, ValueEnumMacros }
 
 import scala.language.experimental.macros
 
@@ -51,6 +51,14 @@ sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueTyp
  * and macro invocations cannot provide implementations for a super class's abstract method
  */
 
+object IntEnum {
+
+  /**
+   * Materializes an IntEnum for a given IntEnumEntry
+   */
+  implicit def materialiseIntValueEnum[EntryType <: IntEnumEntry]: IntEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
+}
 /**
  * Value enum with [[IntEnumEntry]] entries
  */
@@ -66,6 +74,15 @@ trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
 
 }
 
+object LongEnum {
+
+  /**
+   * Materializes a LongEnum for an scope LongEnumEntry
+   */
+  implicit def materialiseLongValueEnum[EntryType <: LongEnumEntry]: LongEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
+}
+
 /**
  * Value enum with [[LongEnumEntry]] entries
  */
@@ -78,6 +95,15 @@ trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findLongValueEntriesImpl[A]
+}
+
+object ShortEnum {
+
+  /**
+   * Materializes a ShortEnum for an inscope ShortEnumEntry
+   */
+  implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
 }
 
 /**

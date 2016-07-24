@@ -17,6 +17,15 @@ object EnumMacros {
   }
 
   /**
+   * Given an A, provides its companion
+   */
+  def materializeEnumImpl[A: c.WeakTypeTag](c: Context) = {
+    import c.universe._
+    val symbol = weakTypeOf[A].typeSymbol
+    c.Expr[A](Ident(ContextUtils.companion(c)(symbol)))
+  }
+
+  /**
    * Makes sure that we can work with the given type as an enum:
    *
    * Aborts if the type is not sealed
@@ -69,7 +78,9 @@ object EnumMacros {
             false
         }
       }
-    } catch { case NonFatal(e) => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}") }
+    } catch {
+      case NonFatal(e) => c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
+    }
     if (!enclosingBodySubClassTrees.forall(x => x.symbol.isModule))
       c.abort(c.enclosingPosition, "All subclasses must be objects.")
     else enclosingBodySubClassTrees
