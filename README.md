@@ -53,7 +53,7 @@ Integrations are available for:
 
 ### SBT
 
-In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you
+In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you see
 in the Maven badge above).
 
 ```scala
@@ -62,7 +62,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Enumeratum has different integrations that can be added to your build a la cart. For more info, see the respective secions in
+Enumeratum has different integrations that can be added to your build à la carte. For more info, see the respective secions in
 [the Table of Contents](#table-of-contents)
 
 ### Usage
@@ -136,8 +136,11 @@ Greeting.indexOf(Bye)
 ```
 
 The name is taken from the `toString` method of the particular
-`EnumEntry`. This behavior can be changed in two ways. The first is
-to manually override the `def entryName: String` method.
+`EnumEntry`. This behavior can be changed in two ways. 
+
+
+#### Manual override of name
+The first way to change the name behaviour is to manually override the `def entryName: String` method.
 
 ```scala
 
@@ -160,9 +163,9 @@ State.withName("AL")
 
 ```
 
-#### Mixins
+#### Mixins to override the name
 
-The second is to mixin the stackable traits provided for common string
+The second way to override the name behaviour is to mixin the stackable traits provided for common string
 conversions, `Snakecase`, `Uppercase`, and `Lowercase`.
 
 ```scala
