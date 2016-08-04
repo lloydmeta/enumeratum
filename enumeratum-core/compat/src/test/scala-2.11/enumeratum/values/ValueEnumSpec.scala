@@ -20,10 +20,11 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
 
   }
 
-  testEnum("IntEnum", LibraryItem)
-  testEnum("ShortEnum", Drinks)
-  testEnum("LongEnum", ContentType)
-  testEnum("when using val members in the body", MovieGenre)
+  testNumericEnum("IntEnum", LibraryItem)
+  testNumericEnum("ShortEnum", Drinks)
+  testNumericEnum("LongEnum", ContentType)
+  testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
+  testNumericEnum("when using val members in the body", MovieGenre)
 
   describe("finding companion object") {
 

@@ -36,9 +36,20 @@ object ValueEnumMacros {
   }
 
   /**
+   * Finds ValueEntryType-typed objects in scope that have literal value:String implementations
+   *
+   * Note
+   *
+   *  - requires the ValueEntryType to have a 'value' member that has a literal value
+   */
+  def findStringValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+    findValueEntriesImpl[ValueEntryType, String, String](c)(identity)
+  }
+
+  /**
    * The method that does the heavy lifting.
    */
-  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType <: AnyVal: ClassTag, ProcessedValue](c: Context)(processFoundValues: ValueType => ProcessedValue): c.Expr[IndexedSeq[ValueEntryType]] = {
+  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType: ClassTag, ProcessedValue](c: Context)(processFoundValues: ValueType => ProcessedValue): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
     val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
     EnumMacros.validateType(c)(typeSymbol)
@@ -137,7 +148,7 @@ object ValueEnumMacros {
     if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {
       c.abort(
         c.enclosingPosition,
-        s"It does not look like you have unique values. Found the following values correspond to more than one members: $valuesWithMoreThanOneSymbol"
+        s"It does not look like you have unique values. Each of the following values correspond to more than one member: $valuesWithMoreThanOneSymbol"
       )
     }
   }
