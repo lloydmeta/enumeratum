@@ -9,12 +9,12 @@ import play.api.data.Mapping
  * Copyright 2016
  */
 
-sealed trait PlayFormValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
+sealed trait PlayFormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
-   * The [[Formmater]] for binding the ValueType of this ValueEnum.
+   * The [[Formatter]] for binding the ValueType of this ValueEnum.
    *
-   * Used for building the [[Formmater]] for the entries
+   * Used for building the [[Formatter]] for the entries
    */
   protected def baseFormatter: Formatter[ValueType]
 
@@ -44,4 +44,11 @@ trait LongPlayFormValueEnum[EntryType <: LongEnumEntry] extends PlayFormValueEnu
  */
 trait ShortPlayFormValueEnum[EntryType <: ShortEnumEntry] extends PlayFormValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   protected val baseFormatter: Formatter[Short] = Formats.shortFormat
+}
+
+/**
+ * Form Bindable implicits for StringEnum
+ */
+trait StringPlayFormValueEnum[EntryType <: StringEnumEntry] extends PlayFormValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
+  protected val baseFormatter: Formatter[String] = Formats.stringFormat
 }
