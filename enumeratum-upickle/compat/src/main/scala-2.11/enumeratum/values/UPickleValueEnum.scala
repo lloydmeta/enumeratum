@@ -10,7 +10,7 @@ import UPickler._
  * Copyright 2016
  */
 
-sealed trait UPickleValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { this: ValueEnum[ValueType, EntryType] =>
+sealed trait UPickleValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] { this: ValueEnum[ValueType, EntryType] =>
 
   /**
    * Implicit UPickle ReadWriter
@@ -37,5 +37,12 @@ trait LongUPickleEnum[EntryType <: LongEnumEntry] extends UPickleValueEnum[Long,
  * Enum implementation for Short enum members that contains an implicit UPickle ReadWriter
  */
 trait ShortUPickleEnum[EntryType <: ShortEnumEntry] extends UPickleValueEnum[Short, EntryType] { this: ValueEnum[Short, EntryType] =>
+  implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
+}
+
+/**
+ * Enum implementation for String enum members that contains an implicit UPickle ReadWriter
+ */
+trait StringUPickleEnum[EntryType <: StringEnumEntry] extends UPickleValueEnum[String, EntryType] { this: ValueEnum[String, EntryType] =>
   implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
 }
