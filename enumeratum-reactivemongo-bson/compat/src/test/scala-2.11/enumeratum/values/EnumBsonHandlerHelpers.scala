@@ -9,7 +9,7 @@ import reactivemongo.bson._
  */
 trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
 
-  def testWriter[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal](
+  def testWriter[EntryType <: ValueEnumEntry[ValueType], ValueType](
     enumKind:       String,
     enum:           ValueEnum[ValueType, EntryType],
     providedWriter: Option[BSONWriter[EntryType, BSONValue]] = None
@@ -24,7 +24,7 @@ trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testReader[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal](
+  def testReader[EntryType <: ValueEnumEntry[ValueType], ValueType](
     enumKind:       String,
     enum:           ValueEnum[ValueType, EntryType],
     providedReader: Option[BSONReader[BSONValue, EntryType]] = None
@@ -43,14 +43,16 @@ trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testHandler[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal](
+  def testHandler[EntryType <: ValueEnumEntry[ValueType], ValueType](
     enumKind:        String,
     enum:            ValueEnum[ValueType, EntryType],
     providedHandler: Option[BSONHandler[BSONValue, EntryType]] = None
   )(implicit baseHandler: BSONHandler[BSONValue, ValueType]): Unit = {
     val handler = providedHandler.getOrElse(EnumHandler.handler(enum))
-    testReader(enumKind, enum, Some(handler))
-    testWriter(enumKind, enum, Some(handler))
+    describe(s"$enumKind Handler") {
+      testReader(enumKind, enum, Some(handler))
+      testWriter(enumKind, enum, Some(handler))
+    }
   }
 
 }
