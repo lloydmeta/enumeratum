@@ -18,12 +18,12 @@ object Enumeratum extends Build {
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.3"
-    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.4"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
   lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
-  lazy val reactiveMongoVersion = "0.11.11"
+  lazy val reactiveMongoVersion = "0.11.14"
 
   lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
@@ -125,7 +125,7 @@ object Enumeratum extends Build {
           else
             CrossVersion.binary
         }
-        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.3.9")
+        Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.4.1")
       } ++ {
         val additionalMacroDeps = CrossVersion.partialVersion(scalaVersion.value) match {
           // if scala 2.11+ is used, quasiquotes are merged into scala-reflect

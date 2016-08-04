@@ -8,7 +8,7 @@ import reactivemongo.bson._
  * @since 2016-04-23
  */
 
-sealed trait ReactiveMongoBsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] {
+sealed trait ReactiveMongoBsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   enum: ValueEnum[ValueType, EntryType] =>
 
   /**
@@ -40,6 +40,15 @@ trait LongReactiveMongoBsonValueEnum[EntryType <: LongEnumEntry] extends Reactiv
  */
 trait ShortReactiveMongoBsonValueEnum[EntryType <: ShortEnumEntry] extends ReactiveMongoBsonValueEnum[Short, EntryType] {
   this: ShortEnum[EntryType] =>
+
+  implicit val bsonHandler: BSONHandler[BSONValue, EntryType] = EnumHandler.handler(this)
+}
+
+/**
+ * Enum implementation for String enum members that contains an implicit ReactiveMongo BSON Handler
+ */
+trait StringReactiveMongoBsonValueEnum[EntryType <: StringEnumEntry] extends ReactiveMongoBsonValueEnum[String, EntryType] {
+  this: StringEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] = EnumHandler.handler(this)
 }

@@ -13,8 +13,8 @@ object EnumHandler {
   /**
    * Returns a BSONReader for the provided ValueEnum based on the given base BSONReader for the Enum's value type
    */
-  def reader[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonReader: BSONReader[BSONValue, ValueType]): BSONReader[BSONValue, EntryType] = new BSONReader[BSONValue, EntryType] {
-    override def read(bson: BSONValue): EntryType = {
+  def reader[ValueType, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonReader: BSONReader[BSONValue, ValueType]): BSONReader[BSONValue, EntryType] = new BSONReader[BSONValue, EntryType] {
+    def read(bson: BSONValue): EntryType = {
       val value = baseBsonReader.read(bson)
       enum.withValue(value)
     }
@@ -23,18 +23,18 @@ object EnumHandler {
   /**
    * Returns a BSONWriter for the provided ValueEnum based on the given base BSONWriter for the Enum's value type
    */
-  def writer[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonWriter: BSONWriter[ValueType, BSONValue]): BSONWriter[EntryType, BSONValue] = new BSONWriter[EntryType, BSONValue] {
-    override def write(t: EntryType): BSONValue = baseBsonWriter.write(t.value)
+  def writer[ValueType, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonWriter: BSONWriter[ValueType, BSONValue]): BSONWriter[EntryType, BSONValue] = new BSONWriter[EntryType, BSONValue] {
+    def write(t: EntryType): BSONValue = baseBsonWriter.write(t.value)
   }
 
   /**
-   * Returns a BSONHandler for the provided ValueEnum based on the given
-   * base BSONReader and BSONWriter for the Enum's value type
+   * Returns a BSONHandler for the provided ValueEnum based on the given base BSONReader and BSONWriter for the
+   * Enum's value type
    */
-  def handler[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonHandler: BSONHandler[BSONValue, ValueType]): BSONHandler[BSONValue, EntryType] = new BSONHandler[BSONValue, EntryType] {
+  def handler[ValueType, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType])(implicit baseBsonHandler: BSONHandler[BSONValue, ValueType]): BSONHandler[BSONValue, EntryType] = new BSONHandler[BSONValue, EntryType] {
     private val concreteReader = reader(enum)
     private val concreteWriter = writer(enum)
-    override def read(bson: BSONValue): EntryType = concreteReader.read(bson)
-    override def write(t: EntryType): BSONValue = concreteWriter.write(t)
+    def read(bson: BSONValue): EntryType = concreteReader.read(bson)
+    def write(t: EntryType): BSONValue = concreteWriter.write(t)
   }
 }

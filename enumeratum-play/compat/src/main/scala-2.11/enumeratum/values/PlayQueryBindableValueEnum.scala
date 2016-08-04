@@ -9,7 +9,7 @@ import play.api.routing.sird.PathBindableExtractor
  * Copyright 2016
  */
 
-sealed trait PlayQueryBindableValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
+sealed trait PlayQueryBindableValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
    * Implicit path binder for Play's default router
@@ -36,4 +36,11 @@ trait LongPlayQueryBindableValueEnum[EntryType <: LongEnumEntry] extends PlayQue
  */
 trait ShortPlayQueryBindableValueEnum[EntryType <: ShortEnumEntry] extends PlayQueryBindableValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
   implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableInt.transform(_.toShort, _.toInt))
+}
+
+/**
+ * Query Bindable implicits for StringEnum
+ */
+trait StringPlayQueryBindableValueEnum[EntryType <: StringEnumEntry] extends PlayQueryBindableValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
+  implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableString)
 }

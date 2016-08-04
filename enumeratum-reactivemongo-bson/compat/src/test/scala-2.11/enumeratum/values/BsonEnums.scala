@@ -45,3 +45,16 @@ case object BsonLibraryItem extends IntEnum[BsonLibraryItem] with IntReactiveMon
   val values = findValues
 
 }
+
+sealed abstract class BsonOperatingSystem(val value: String) extends StringEnumEntry
+
+case object BsonOperatingSystem extends StringEnum[BsonOperatingSystem] with StringReactiveMongoBsonValueEnum[BsonOperatingSystem] {
+
+  case object Linux extends BsonOperatingSystem("linux")
+  case object OSX extends BsonOperatingSystem("osx")
+  case object Windows extends BsonOperatingSystem("windows")
+  case object Android extends BsonOperatingSystem("android")
+
+  val values = findValues
+
+}

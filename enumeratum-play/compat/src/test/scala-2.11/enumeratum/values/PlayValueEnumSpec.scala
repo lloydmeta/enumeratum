@@ -1,6 +1,7 @@
 package enumeratum.values
 
 import org.scalatest.{ FunSpec, Matchers }
+import play.api.libs.json.JsString
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -9,10 +10,11 @@ import org.scalatest.{ FunSpec, Matchers }
  */
 class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers {
 
-  testPlayEnum("LongPlayEnum", PlayContentType)
-  testPlayEnum("ShortPlayEnum", PlayDrinks)
-  testPlayEnum("IntPlayEnum", PlayLibraryItem)
-  testPlayEnum("IntPlayEnum with values declared as members", PlayMovieGenre)
+  testNumericPlayEnum("LongPlayEnum", PlayContentType)
+  testNumericPlayEnum("ShortPlayEnum", PlayDrinks)
+  testNumericPlayEnum("IntPlayEnum", PlayLibraryItem)
+  testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString)
+  testNumericPlayEnum("IntPlayEnum with values declared as members", PlayMovieGenre)
 
 }
 
@@ -52,6 +54,19 @@ case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
   case object Movie extends PlayLibraryItem(name = "movie", value = 2)
   case object Magazine extends PlayLibraryItem(3, "magazine")
   case object CD extends PlayLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+sealed abstract class PlayOperatingSystem(val value: String) extends StringEnumEntry
+
+case object PlayOperatingSystem extends StringPlayEnum[PlayOperatingSystem] {
+
+  case object Linux extends PlayOperatingSystem("linux")
+  case object OSX extends PlayOperatingSystem("osx")
+  case object Windows extends PlayOperatingSystem("windows")
+  case object Android extends PlayOperatingSystem("android")
 
   val values = findValues
 

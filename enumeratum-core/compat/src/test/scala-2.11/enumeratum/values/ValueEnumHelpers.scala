@@ -14,8 +14,16 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
   /*
    * Generates tests for a given enum and groups the tests inside the given enumKind descriptor
    */
-  def testEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric](enumKind: String, enum: ValueEnum[ValueType, EntryType]): Unit = {
+  def testNumericEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric](enumKind: String, enum: ValueEnum[ValueType, EntryType]): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
+    testEnum(enumKind, enum, Seq(numeric.fromInt(Int.MaxValue)))
+  }
+
+  /*
+   * Generates tests for a given enum and groups the tests inside the given enumKind descriptor
+   */
+  def testEnum[EntryType <: ValueEnumEntry[ValueType], ValueType](enumKind: String, enum: ValueEnum[ValueType, EntryType], invalidValues: Seq[ValueType]): Unit = {
+
     describe(enumKind) {
 
       describe("withValue") {
@@ -27,8 +35,10 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
         }
 
         it("should throw on values that don't map to any entries") {
-          intercept[NoSuchElementException] {
-            enum.withValue(numeric.fromInt(Int.MaxValue))
+          invalidValues.foreach { invalid =>
+            intercept[NoSuchElementException] {
+              enum.withValue(invalid)
+            }
           }
         }
 
@@ -43,7 +53,9 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
         }
 
         it("should return None when given values that do not map to any entries") {
-          enum.withValueOpt(numeric.fromInt(Int.MaxValue)) shouldBe None
+          invalidValues.foreach { invalid =>
+            enum.withValueOpt(invalid) shouldBe None
+          }
         }
 
       }

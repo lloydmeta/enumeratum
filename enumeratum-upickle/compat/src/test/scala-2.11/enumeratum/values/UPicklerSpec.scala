@@ -14,12 +14,13 @@ class UPicklerSpec extends FunSpec with Matchers {
   testPickling("LongUPickleEnum", UPickleContentType)
   testPickling("ShortUPickleEnum", UPickleDrinks)
   testPickling("IntUPickleEnum", UPickleLibraryItem)
+  testPickling("StringUPickleEnum", UPickleOperatingSystem)
   testPickling("IntUPickleEnum with values declared as members", UPickleMovieGenre)
 
   /**
    * Given an enum, tests its JSON reading and writing behaviour, grouping the test results under the given enumKind descriptor
    */
-  private def testPickling[ValueType <: AnyVal: Writer: Numeric, EntryType <: ValueEnumEntry[ValueType]: Reader: Writer](enumKind: String, enum: UPickleValueEnum[ValueType, EntryType] with ValueEnum[ValueType, EntryType]) = {
+  private def testPickling[ValueType: Writer, EntryType <: ValueEnumEntry[ValueType]: Reader: Writer](enumKind: String, enum: UPickleValueEnum[ValueType, EntryType] with ValueEnum[ValueType, EntryType]) = {
     describe(enumKind) {
       describe("Reader") {
 
@@ -44,7 +45,6 @@ class UPicklerSpec extends FunSpec with Matchers {
       describe("Writer") {
 
         it("should write enum values to JS") {
-          val numeric = implicitly[Numeric[ValueType]]
           val valueTypeWriter = implicitly[Writer[ValueType]]
           enum.values.foreach { entry =>
             writeJs(entry) shouldBe valueTypeWriter.write(entry.value)
@@ -94,6 +94,19 @@ case object UPickleLibraryItem extends IntEnum[UPickleLibraryItem] with IntUPick
   case object Movie extends UPickleLibraryItem(name = "movie", value = 2)
   case object Magazine extends UPickleLibraryItem(3, "magazine")
   case object CD extends UPickleLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+sealed abstract class UPickleOperatingSystem(val value: String) extends StringEnumEntry
+
+case object UPickleOperatingSystem extends StringEnum[UPickleOperatingSystem] with StringUPickleEnum[UPickleOperatingSystem] {
+
+  case object Linux extends UPickleOperatingSystem("linux")
+  case object OSX extends UPickleOperatingSystem("osx")
+  case object Windows extends UPickleOperatingSystem("windows")
+  case object Android extends UPickleOperatingSystem("android")
 
   val values = findValues
 

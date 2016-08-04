@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import reactivemongo.bson.{ BSONHandler, BSONInteger, BSONLong, BSONReader, BSONValue, BSONWriter }
+import reactivemongo.bson.{ BSONHandler, BSONInteger, BSONLong, BSONReader, BSONString, BSONValue, BSONWriter }
 
 /**
  * Created by Lloyd on 5/3/16.
@@ -24,23 +24,30 @@ object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 trait BSONValueReads {
 
   implicit val bsonReaderShort = new BSONReader[BSONValue, Short] {
-    override def read(bson: BSONValue): Short = bson match {
+    def read(bson: BSONValue): Short = bson match {
       case BSONInteger(x) if Short.MaxValue >= x && Short.MinValue <= x => x.toShort
       case _ => throw new RuntimeException(s"Could not convert $bson to Short")
     }
   }
 
   implicit val bsonReaderInt = new BSONReader[BSONValue, Int] {
-    override def read(bson: BSONValue): Int = bson match {
+    def read(bson: BSONValue): Int = bson match {
       case BSONInteger(x) => x
       case _ => throw new RuntimeException(s"Could not convert $bson to Int")
     }
   }
 
   implicit val bsonReaderLong = new BSONReader[BSONValue, Long] {
-    override def read(bson: BSONValue): Long = bson match {
+    def read(bson: BSONValue): Long = bson match {
       case BSONLong(x) => x
       case _ => throw new RuntimeException(s"Could not convert $bson to Long")
+    }
+  }
+
+  implicit val bsonReaderString = new BSONReader[BSONValue, String] {
+    def read(bson: BSONValue): String = bson match {
+      case BSONString(x) => x
+      case _ => throw new RuntimeException(s"Could not convert $bson to String")
     }
   }
 
@@ -49,15 +56,19 @@ trait BSONValueReads {
 trait BSONValueWrites {
 
   implicit val bsonWriterShort = new BSONWriter[Short, BSONValue] {
-    override def write(t: Short): BSONValue = BSONInteger(t)
+    def write(t: Short): BSONValue = BSONInteger(t)
   }
 
   implicit val bsonWriterInt = new BSONWriter[Int, BSONValue] {
-    override def write(t: Int): BSONValue = BSONInteger(t)
+    def write(t: Int): BSONValue = BSONInteger(t)
   }
 
   implicit val bsonWriterLong = new BSONWriter[Long, BSONValue] {
-    override def write(t: Long): BSONValue = BSONLong(t)
+    def write(t: Long): BSONValue = BSONLong(t)
+  }
+
+  implicit val bsonWriterString = new BSONWriter[String, BSONValue] {
+    def write(t: String): BSONValue = BSONString(t)
   }
 
 }

@@ -6,7 +6,7 @@ package enumeratum.values
  * Copyright 2016
  */
 
-sealed trait ValueEnumEntry[ValueType <: AnyVal] {
+sealed trait ValueEnumEntry[ValueType] {
 
   /**
    * Value of this entry
@@ -53,3 +53,14 @@ abstract class LongEnumEntry extends ValueEnumEntry[Long]
  * Value Enum Entry parent class for [[Short]] valued entries
  */
 abstract class ShortEnumEntry extends ValueEnumEntry[Short]
+
+/**
+ * Value Enum Entry parent class for [[String]] valued entries
+ *
+ * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * literal values. This restraint allows us to enforce uniqueness at compile time.
+ *
+ * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
+ */
+abstract class StringEnumEntry extends ValueEnumEntry[String]
+
