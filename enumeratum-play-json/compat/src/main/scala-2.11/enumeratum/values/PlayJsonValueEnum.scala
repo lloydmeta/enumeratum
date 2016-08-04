@@ -8,7 +8,7 @@ import play.api.libs.json.Format
  * Copyright 2016
  */
 
-trait PlayJsonValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
+trait PlayJsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] { enum: ValueEnum[ValueType, EntryType] =>
 
   /**
    * Implicit JSON format for the entries of this enum
@@ -35,5 +35,12 @@ trait LongPlayJsonValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnu
  * Enum implementation for Short enum members that contains an implicit Play JSON Format
  */
 trait ShortPlayJsonValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+}
+
+/**
+ * Enum implementation for String enum members that contains an implicit Play JSON Format
+ */
+trait StringPlayJsonValueEnum[EntryType <: StringEnumEntry] extends PlayJsonValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }

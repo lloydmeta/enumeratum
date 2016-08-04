@@ -4,7 +4,7 @@ import enumeratum.{ EnumMacros, ValueEnumMacros }
 
 import scala.language.experimental.macros
 
-sealed trait ValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] {
+sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
 
   /**
    * Map of [[ValueType]] to [[EntryType]] members
@@ -119,3 +119,32 @@ trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
    */
   final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findShortValueEntriesImpl[A]
 }
+
+object StringEnum {
+
+  /**
+   * Materializes a StringEnum for an in-scope StringEnumEntry
+   */
+  implicit def materialiseStringValueEnum[EntryType <: StringEnumEntry]: StringEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
+}
+
+/**
+ * Value enum with [[ShortEnumEntry]] entries
+ *
+ * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * literal values. This restraint allows us to enforce uniqueness at compile time.
+ *
+ * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
+ */
+trait StringEnum[A <: StringEnumEntry] extends ValueEnum[String, A] {
+
+  /**
+   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   *
+   * You will want to use this in some way to implement your [[values]] method. In fact,
+   * if you aren't using this method...why are you even bothering with this lib?
+   */
+  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findStringValueEntriesImpl[A]
+}
+

@@ -20,10 +20,11 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
 
   }
 
-  testEnum("IntEnum", LibraryItem)
-  testEnum("ShortEnum", Drinks)
-  testEnum("LongEnum", ContentType)
-  testEnum("when using val members in the body", MovieGenre)
+  testNumericEnum("IntEnum", LibraryItem)
+  testNumericEnum("ShortEnum", Drinks)
+  testNumericEnum("LongEnum", ContentType)
+  testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
+  testNumericEnum("when using val members in the body", MovieGenre)
 
   describe("finding companion object") {
 
@@ -46,6 +47,13 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
       val companion = findCompanion(ContentType.Image: ContentType)
       companion shouldBe ContentType
       companion.values should contain(ContentType.Audio)
+    }
+
+    it("should work for StringEnum") {
+      def findCompanion[EntryType <: StringEnumEntry: StringEnum](entry: EntryType) = implicitly[StringEnum[EntryType]]
+      val companion = findCompanion(OperatingSystem.Android: OperatingSystem)
+      companion shouldBe OperatingSystem
+      companion.values should contain(OperatingSystem.Windows)
     }
 
   }

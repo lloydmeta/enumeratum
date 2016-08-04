@@ -8,7 +8,7 @@ import play.api.http.HttpVerbs
 import play.api.mvc.{ Headers, RequestHeader }
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.libs.json.Format
+import play.api.libs.json.{ Format, JsNumber, JsValue }
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -17,9 +17,19 @@ import play.api.libs.json.Format
  */
 trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Format](
+  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Format](
     enumKind: String,
     enum:     ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType]
+  ) = {
+    val numeric = implicitly[Numeric[ValueType]]
+    testPlayEnum(enumKind, enum, { i: ValueType => JsNumber(numeric.toInt(i)) })
+
+  }
+
+  def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType: Format](
+    enumKind:  String,
+    enum:      ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType],
+    jsWrapper: ValueType => JsValue
   ) = {
 
     describe(enumKind) {
@@ -134,7 +144,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
         }
 
         describe("JSON formats") {
-          testFormats(enumKind, enum, Some(enum.format))
+          testFormats(enumKind, enum, jsWrapper, Some(enum.format))
         }
 
       }

@@ -8,7 +8,7 @@ import io.circe.{ Decoder, Encoder }
  * Copyright 2016
  */
 
-sealed trait CirceValueEnum[ValueType <: AnyVal, EntryType <: ValueEnumEntry[ValueType]] {
+sealed trait CirceValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
 
   /**
@@ -42,6 +42,14 @@ trait LongCirceEnum[EntryType <: LongEnumEntry] extends CirceValueEnum[Long, Ent
  * CirceEnum for ShortEnumEntry
  */
 trait ShortCirceEnum[EntryType <: ShortEnumEntry] extends CirceValueEnum[Short, EntryType] { this: ValueEnum[Short, EntryType] =>
+  implicit val circeEncoder = Circe.encoder(this)
+  implicit val circeDecoder = Circe.decoder(this)
+}
+
+/**
+ * CirceEnum for StringEnumEntry
+ */
+trait StringCirceEnum[EntryType <: StringEnumEntry] extends CirceValueEnum[String, EntryType] { this: ValueEnum[String, EntryType] =>
   implicit val circeEncoder = Circe.encoder(this)
   implicit val circeDecoder = Circe.decoder(this)
 }

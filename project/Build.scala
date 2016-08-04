@@ -14,12 +14,12 @@ import pl.project13.scala.sbt.JmhPlugin
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.4.9-SNAPSHOT"
+  lazy val theVersion = "1.4.10-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-M4") // TODO use more recent 2.12 version
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.4"
-    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.6"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
   lazy val scalaTestVersion = "3.0.0-M16-SNAP4" // "3.0.0-R4" exists TODO: figure out latest version when releasing
