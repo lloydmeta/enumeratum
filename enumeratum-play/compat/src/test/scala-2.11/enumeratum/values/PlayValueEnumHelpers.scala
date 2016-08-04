@@ -134,7 +134,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
         }
 
         describe("JSON formats") {
-          testFormats(enumKind, enum, Some(enum.format))
+          testNumericFormats(enumKind, enum, Some(enum.format))
         }
 
       }
