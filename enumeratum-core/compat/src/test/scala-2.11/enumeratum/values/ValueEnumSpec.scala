@@ -49,6 +49,13 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
       companion.values should contain(ContentType.Audio)
     }
 
+    it("should work for StringEnum") {
+      def findCompanion[EntryType <: StringEnumEntry: StringEnum](entry: EntryType) = implicitly[StringEnum[EntryType]]
+      val companion = findCompanion(OperatingSystem.Android: OperatingSystem)
+      companion shouldBe OperatingSystem
+      companion.values should contain(OperatingSystem.Windows)
+    }
+
   }
 
   describe("compilation failures") {

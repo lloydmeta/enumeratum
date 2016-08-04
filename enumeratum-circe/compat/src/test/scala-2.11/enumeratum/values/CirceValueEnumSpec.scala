@@ -15,10 +15,11 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("LongCirceEnum", CirceContentType)
   testCirceEnum("ShortCirceEnum", CirceDrinks)
   testCirceEnum("IntCirceEnum", CirceLibraryItem)
+  testCirceEnum("StringCirceEnum", CirceOperatingSystem)
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
   // Test method that generates tests for most primitve-based ValueEnums when given a simple descriptor and the enum
-  private def testCirceEnum[ValueType <: AnyVal: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](enumKind: String, enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
+  private def testCirceEnum[ValueType: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](enumKind: String, enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
     describe(enumKind) {
 
       describe("to JSON") {
@@ -88,6 +89,19 @@ case object CirceLibraryItem extends IntEnum[CirceLibraryItem] with IntCirceEnum
   case object Movie extends CirceLibraryItem(name = "movie", value = 2)
   case object Magazine extends CirceLibraryItem(3, "magazine")
   case object CD extends CirceLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+sealed abstract class CirceOperatingSystem(val value: String) extends StringEnumEntry
+
+case object CirceOperatingSystem extends StringEnum[CirceOperatingSystem] with StringCirceEnum[CirceOperatingSystem] {
+
+  case object Linux extends CirceOperatingSystem("linux")
+  case object OSX extends CirceOperatingSystem("osx")
+  case object Windows extends CirceOperatingSystem("windows")
+  case object Android extends CirceOperatingSystem("android")
 
   val values = findValues
 

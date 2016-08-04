@@ -14,7 +14,7 @@ object Circe {
   /**
    * Returns an Encoder for the provided ValueEnum
    */
-  def encoder[ValueType <: AnyVal: Encoder, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Encoder[EntryType] = {
+  def encoder[ValueType: Encoder, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Encoder[EntryType] = {
     new Encoder[EntryType] {
       private val valueEncoder = implicitly[Encoder[ValueType]]
       def apply(a: EntryType): Json = valueEncoder.apply(a.value)
@@ -24,7 +24,7 @@ object Circe {
   /**
    * Returns a Decoder for the provided ValueEnum
    */
-  def decoder[ValueType <: AnyVal: Decoder, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Decoder[EntryType] = {
+  def decoder[ValueType: Decoder, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Decoder[EntryType] = {
     new Decoder[EntryType] {
       private val valueDecoder = implicitly[Decoder[ValueType]]
       def apply(c: HCursor): Result[EntryType] = valueDecoder.apply(c).flatMap { v =>
