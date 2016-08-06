@@ -9,7 +9,7 @@ import reactivemongo.bson.{ BSONHandler, BSONInteger, BSONLong, BSONReader, BSON
  */
 
 /**
- * Holds BSONValue to primitive implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
+ * Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
  * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
  */
 object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
