@@ -193,9 +193,11 @@ Greeting.withName("SHOUT_GOOD_BYE")
 
 ### ValueEnum
 
-Asides from enumerations that resolve members from `String` names, Enumeratum also supports `ValueEnum`s, enums that resolve
-members from various primitive types like `Int`, `Long` and`Short`. In order to ensure at compile-time that multiple members
-do not share the same value, these enums are powered by a separate macro and exposed through a different set of traits.
+Asides from enumerations that resolve members from `String` _names_, Enumeratum also supports `ValueEnum`s, enums that resolve
+members from simple _values_ like `Int`, `Long`, `Short`, and `String` (without support for runtime transformations). 
+
+These enums are not modelled after `Enumeration` from standard lib, and therefore have the added ability to make sure, at compile-time,
+that that multiple members do not share the same value.
 
 ```scala
 import enumeratum.values._
