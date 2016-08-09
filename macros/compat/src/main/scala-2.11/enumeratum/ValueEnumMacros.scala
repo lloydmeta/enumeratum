@@ -77,7 +77,16 @@ object ValueEnumMacros {
       val lacksValueMemberStr = lacksValueMember.map(_.tree.symbol).mkString(", ")
       c.abort(
         c.enclosingPosition,
-        s"It looks like not all of the members have a literal/constant 'value:${classTag.runtimeClass}' declaration, namely: $lacksValueMemberStr."
+        s"""
+           |It looks like not all of the members have a literal/constant 'value:${classTag.runtimeClass.getSimpleName}' declaration, namely: $lacksValueMemberStr.
+           |
+           |This can happen if:
+           |
+           |- The aforementioned members have their `value` supplied by a variable, or otherwise defined as a method
+           |- ValueEnums are nested. This happens because constructor methods are not yet typed during macro expansion if they're nested.
+           |
+           |If none of the above apply to your case, it's likely you have discovered an issue with Enumeratum, so please file an issue :)
+         """.stripMargin
       )
     }
     hasValueMember.collect {
