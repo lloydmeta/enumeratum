@@ -21,3 +21,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.3")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.11")
 
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.6")
+
+addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.1")
