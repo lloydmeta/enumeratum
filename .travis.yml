@@ -11,6 +11,7 @@ script:
  - sbt coverage coreJVM/test enumeratum-play/test enumeratum-play-json/test enumeratumCirceJVM/test enumeratumUPickleJVM/test enumeratum-reactivemongo-bson/test
 after_success:
  - sbt coverageReport coverageAggregate coveralls
+ - sbt updateImpactSubmit
 cache:
   directories:
   - $HOME/.sbt/0.13
