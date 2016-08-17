@@ -745,7 +745,7 @@ On my late 2013 MBP using Java8 on OSX El Capitan:
 Other than the methods that throw `NoSuchElementException`s, performance is in the 10ns range (taking into account JMH overhead of roughly 2-3ns), which
 is acceptable for almost all use-cases. PRs that promise to increase performance are expected to be demonstrably faster.
 
-Also, Enumeratum's `withName` is faster than `Enumeration` in the standard Scala library, by around 4x in the case where an entry exists with the given name.
+Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
 My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no 
 corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits.  
 

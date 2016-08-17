@@ -5,7 +5,7 @@ package enumeratum
  *
  * Copyright 2016
  */
-object Weekday extends Enumeration {
+object Workday extends Enumeration {
 
   val Monday, Tuesday, Wednesday, Thursday, Friday = Value
 

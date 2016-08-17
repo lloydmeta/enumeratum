@@ -20,13 +20,13 @@ class StdLibEnumBenchmarks {
 
   @Benchmark
   def withNameExists(bh: Blackhole): Unit = bh.consume {
-    Weekday.withName("Monday")
+    Workday.withName("Monday")
   }
 
   @Benchmark
   def withNameDoesNotExist(bh: Blackhole): Unit = bh.consume {
     try {
-      Weekday.withName("Sunday")
+      Workday.withName("Sunday")
     } catch {
       case NonFatal(_) =>
     }
