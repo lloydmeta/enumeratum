@@ -86,7 +86,7 @@ object Enumeratum extends Build {
   lazy val enumeratumReactiveMongoBson = Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"), settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "org.reactivemongo" %% "*" % reactiveMongoVersion
+        "org.reactivemongo" %% "reactivemongo" % reactiveMongoVersion
       )
     )
     .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
