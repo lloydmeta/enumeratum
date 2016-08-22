@@ -228,9 +228,7 @@ LibraryItem.withValue(10) // => java.util.NoSuchElementException:
 
 **Restrictions**
 - `ValueEnum`s must have their value members implemented as literal values.
-- `ValueEnum`s cannot be nested (e.g. declaring one enum inside another)
-- `ValueEnum`s are not available in Scala 2.10.x and does not work in the REPL because constructor argument calls are not yet
-   typed during macro expansion (`fun.tpe` returns `null`).
+- `ValueEnum`s are not available in Scala 2.10.x because constructor argument calls are not yet typed during macro expansion (`fun.tpe` returns `null`).
 
 
 ## ScalaJS
