@@ -25,6 +25,8 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   testNumericEnum("LongEnum", ContentType)
   testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
   testNumericEnum("when using val members in the body", MovieGenre)
+  testNumericEnum("LongEnum that is nesting an IntEnum", Animal)
+  testNumericEnum("IntEnum that is nested inside a Long Enum", Animal.Mammalian)
 
   describe("finding companion object") {
 

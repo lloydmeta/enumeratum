@@ -55,8 +55,10 @@ object ValueEnumMacros {
     EnumMacros.validateType(c)(typeSymbol)
     // Find the trees in the enclosing object that match the given ValueEntryType
     val subclassTrees = EnumMacros.enclosedSubClassTrees(c)(typeSymbol)
+    // Find the parameters for the constructors of ValueEntryType
+    val valueEntryTypeConstructorsParams = findConstructorParamsLists[ValueEntryType](c)
     // Identify the value:ValueType implementations for each of the trees we found and process them if required
-    val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(subclassTrees, processFoundValues)
+    val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(valueEntryTypeConstructorsParams, subclassTrees, processFoundValues)
     // Make sure the processed found value implementations are unique
     ensureUnique[ProcessedValue](c)(treeWithVals)
     // Finish by building our Sequence
@@ -69,8 +71,8 @@ object ValueEnumMacros {
    *
    * Will abort compilation if not all the trees provided have a literal value member/constructor argument
    */
-  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](c: Context)(memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithVal[c.universe.Tree, ProcessedValueType]] = {
-    val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(memberTrees, processFoundValues)
+  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](c: Context)(valueEntryCTorsParams: List[List[c.universe.TermName]], memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithVal[c.universe.Tree, ProcessedValueType]] = {
+    val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(valueEntryCTorsParams, memberTrees, processFoundValues)
     val (hasValueMember, lacksValueMember) = treeWithValues.partition(_.maybeValue.isDefined)
     if (lacksValueMember.nonEmpty) {
       val classTag = implicitly[ClassTag[ValueType]]
@@ -83,7 +85,6 @@ object ValueEnumMacros {
            |This can happen if:
            |
            |- The aforementioned members have their `value` supplied by a variable, or otherwise defined as a method
-           |- ValueEnums are nested. This happens because constructor methods are not yet typed during macro expansion if they're nested.
            |
            |If none of the above apply to your case, it's likely you have discovered an issue with Enumeratum, so please file an issue :)
          """.stripMargin
@@ -99,7 +100,7 @@ object ValueEnumMacros {
    *
    * Aborts compilation if the value declaration/constructor is of the wrong type,
    */
-  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithMaybeVal[c.universe.Tree, ProcessedValueType]] = {
+  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(valueEntryCTorsParams: List[List[c.universe.TermName]], memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithMaybeVal[c.universe.Tree, ProcessedValueType]] = {
     import c.universe._
     val classTag = implicitly[ClassTag[ValueType]]
     val valueTerm = ContextUtils.termName(c)("value")
@@ -108,15 +109,11 @@ object ValueEnumMacros {
       val values = declTree.collect {
         // The tree has a value declaration with a constant value.
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm => Some(i)
-        // The tree has a method
-        case Apply(fun, args) if fun.tpe != null => {
-          // resolve the type of the constructor method and find the parameter terms and arguments provided
-          val funTpe = fun.tpe
-          val members: c.universe.MemberScope = funTpe.members
-          val valueArguments: Iterable[Option[ValueType]] = members.collect {
-            case constr if constr.isConstructor => {
-              val asMethod = constr.asMethod
-              val paramTermNames = asMethod.paramLists.flatten.map(_.asTerm.name)
+        // The tree has a method call
+        case Apply(fun, args) => {
+          val valueArguments: List[Option[ValueType]] = valueEntryCTorsParams.collect {
+            // Find the constructor params list that matches the arguments list size of the method call
+            case paramTermNames if paramTermNames.size == args.size => {
               val paramsWithArg = paramTermNames.zip(args)
               paramsWithArg.collectFirst {
                 // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
@@ -143,6 +140,17 @@ object ValueEnumMacros {
       val processedValue = values.collectFirst { case Some(v) => processFoundValues(v) }
       TreeWithMaybeVal(declTree, processedValue)
     }
+  }
+
+  /**
+   * Given a type, finds the constructor params lists for it
+   */
+  private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](c: Context): List[List[c.universe.TermName]] = {
+    val valueEntryTypeTpe = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
+    val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
+    valueEntryTypeTpeMembers.collect {
+      case m if m.isMethod && m.isPublic && m.isConstructor => m.asMethod.paramLists.flatten.map(_.asTerm.name)
+    }.toList
   }
 
   /**
