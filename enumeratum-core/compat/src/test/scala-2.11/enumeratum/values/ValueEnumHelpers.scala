@@ -27,7 +27,6 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
     describe(enumKind) {
 
       it("should have more than one value (sanity test)") {
-        println(enum.values)
         enum.values.size should be > 0
       }
 
