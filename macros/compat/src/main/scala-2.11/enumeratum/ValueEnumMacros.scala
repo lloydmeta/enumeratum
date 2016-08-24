@@ -149,7 +149,7 @@ object ValueEnumMacros {
     val valueEntryTypeTpe = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
     val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
     valueEntryTypeTpeMembers.collect {
-      case m if m.isMethod && m.isPublic && m.isConstructor => m.asMethod.paramLists.flatten.map(_.asTerm.name)
+      case m if m.isMethod && m.isConstructor => m.asMethod.paramLists.flatten.map(_.asTerm.name)
     }.toList
   }
 
