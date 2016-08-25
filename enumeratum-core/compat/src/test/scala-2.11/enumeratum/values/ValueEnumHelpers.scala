@@ -26,6 +26,10 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
 
     describe(enumKind) {
 
+      it("should have more than one value (sanity test)") {
+        enum.values.size should be > 0
+      }
+
       describe("withValue") {
 
         it("should return entries that match the value") {

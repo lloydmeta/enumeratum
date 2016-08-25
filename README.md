@@ -10,6 +10,7 @@ richer enum values without having to maintain your own collection of values.
 Enumeratum has the following niceties:
 
 - Zero dependencies
+- Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking)) 
 - Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
 - Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
@@ -228,9 +229,7 @@ LibraryItem.withValue(10) // => java.util.NoSuchElementException:
 
 **Restrictions**
 - `ValueEnum`s must have their value members implemented as literal values.
-- `ValueEnum`s cannot be nested (e.g. declaring one enum inside another)
-- `ValueEnum`s are not available in Scala 2.10.x and does not work in the REPL because constructor argument calls are not yet
-   typed during macro expansion (`fun.tpe` returns `null`).
+- `ValueEnum`s are not available in Scala 2.10.x because work needs to be done to bridge all Macro API differences (e.g. `isConstructor`)
 
 
 ## ScalaJS
@@ -726,24 +725,32 @@ On my late 2013 MBP using Java8 on OSX El Capitan:
 
 ```
 [info] Benchmark                                            Mode  Cnt     Score    Error  Units
-[info] EnumBenchmarks.indexOf                               avgt   30    11.731 ±  0.179  ns/op
-[info] EnumBenchmarks.withNameDoesNotExist                  avgt   30  1706.310 ± 30.260  ns/op
-[info] EnumBenchmarks.withNameExists                        avgt   30    13.377 ±  0.319  ns/op
-[info] EnumBenchmarks.withNameOptionDoesNotExist            avgt   30     5.583 ±  0.047  ns/op
-[info] EnumBenchmarks.withNameOptionExists                  avgt   30     8.924 ±  0.094  ns/op
-[info] values.ValueEnumBenchmarks.withValueDoesNotExist     avgt   30  1711.705 ± 55.101  ns/op
-[info] values.ValueEnumBenchmarks.withValueExists           avgt   30     4.040 ±  0.036  ns/op
-[info] values.ValueEnumBenchmarks.withValueOptDoesNotExist  avgt   30     5.622 ±  0.029  ns/op
-[info] values.ValueEnumBenchmarks.withValueOptExists        avgt   30     6.472 ±  0.052  ns/op
+[info] EnumBenchmarks.indexOf                               avgt   30    11.203 ±  0.094  ns/op
+[info] EnumBenchmarks.withNameDoesNotExist                  avgt   30  1706.295 ± 35.134  ns/op
+[info] EnumBenchmarks.withNameExists                        avgt   30    12.753 ±  0.162  ns/op
+[info] EnumBenchmarks.withNameOptionDoesNotExist            avgt   30     5.827 ±  0.039  ns/op
+[info] EnumBenchmarks.withNameOptionExists                  avgt   30     8.824 ±  0.067  ns/op
+[info] StdLibEnumBenchmarks.withNameDoesNotExist            avgt   30  1743.530 ± 49.402  ns/op
+[info] StdLibEnumBenchmarks.withNameExists                  avgt   30    52.960 ±  1.745  ns/op
+[info] values.ValueEnumBenchmarks.withValueDoesNotExist     avgt   30  1730.819 ± 37.693  ns/op
+[info] values.ValueEnumBenchmarks.withValueExists           avgt   30     3.671 ±  0.033  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptDoesNotExist  avgt   30     5.199 ±  0.044  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptExists        avgt   30     5.861 ±  0.050  ns/op
 ```
+
+### Discussion
 
 Other than the methods that throw `NoSuchElementException`s, performance is in the 10ns range (taking into account JMH overhead of roughly 2-3ns), which
 is acceptable for almost all use-cases. PRs that promise to increase performance are expected to be demonstrably faster.
 
+Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
+My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no 
+corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits.  
+
+
 ## Known issues
 
-1. `ValueEnum`s is not available in Scala 2.10.x and does not work in the REPL because constructor function calls are not yet
-   typed during macro expansion (`fun.tpe` returns `null`).
+1. `ValueEnum`s are not available in Scala 2.10.x because work needs to be done to bridge all Macro API differences (e.g. `isConstructor`) 
 
 ## Licence
 
