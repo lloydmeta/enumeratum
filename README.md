@@ -12,6 +12,7 @@ Enumeratum has the following niceties:
 - Zero dependencies
 - Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking)) 
 - Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
+- [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints. 
 - Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
 - No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
@@ -63,7 +64,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Enumeratum has different integrations that can be added to your build à la carte. For more info, see the respective secions in
+Enumeratum has different integrations that can be added to your build à la carte. For more info, see the respective sections in
 [the Table of Contents](#table-of-contents)
 
 ### Usage
@@ -198,7 +199,7 @@ Asides from enumerations that resolve members from `String` _names_, Enumeratum 
 members from simple _values_ like `Int`, `Long`, `Short`, and `String` (without support for runtime transformations). 
 
 These enums are not modelled after `Enumeration` from standard lib, and therefore have the added ability to make sure, at compile-time,
-that that multiple members do not share the same value.
+that multiple members do not share the same value.
 
 ```scala
 import enumeratum.values._
@@ -560,7 +561,7 @@ libraryDependencies ++= Seq(
 
 ### Usage
 
-`CirceEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the
+`UPickleEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the
 `ValueEnum` integration.
 
 ```scala
@@ -745,12 +746,7 @@ is acceptable for almost all use-cases. PRs that promise to increase performance
 
 Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
 My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no 
-corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits.  
-
-
-## Known issues
-
-1. `ValueEnum`s are not available in Scala 2.10.x because work needs to be done to bridge all Macro API differences (e.g. `isConstructor`) 
+corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits. 
 
 ## Licence
 
