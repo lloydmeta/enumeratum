@@ -124,7 +124,6 @@ object ValueEnumMacros {
                 /*
                  * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
                  *
-                 * Note: Can't match without using Ident(ContextUtils.termName(c)(" ")) extractor ??!
                  */
                 case (_, AssignOrNamedArg(Ident(termName), Literal(Constant(i: ValueType)))) if termName == valueTerm => i
                 /*
