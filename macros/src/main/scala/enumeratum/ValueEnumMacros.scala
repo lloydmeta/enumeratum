@@ -123,7 +123,6 @@ object ValueEnumMacros {
                 case (`valueTerm`, Literal(Constant(i))) => c.abort(c.enclosingPosition, s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}.")
                 /*
                  * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
-                 *
                  */
                 case (_, AssignOrNamedArg(Ident(termName), Literal(Constant(i: ValueType)))) if termName == valueTerm => i
                 /*
