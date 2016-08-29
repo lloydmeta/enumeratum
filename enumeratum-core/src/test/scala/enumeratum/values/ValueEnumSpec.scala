@@ -104,6 +104,18 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
 
     describe("trying to use with improper types") {
 
+      it("should fail to compile when value types do not match with the kind of value enum") {
+        """
+          |sealed abstract class IceCream(val value: String) extends IntEnumEntry
+          |
+          |case object IceCream extends IntEnum[IceCream] {
+          |  val value = findValues
+          |
+          |  case object Sandwich extends IceCream("sandwich")
+          |}
+        """ shouldNot compile
+      }
+
       it("should fail to compile for unsealed traits") {
         """
         trait NotSealed extends IntEnumEntry
