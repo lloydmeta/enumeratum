@@ -24,17 +24,17 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
 
   private def stringGenerator = Random.alphanumeric.grouped(10).toStream.map(_.mkString.replaceAll("[0-9]", "")).distinct
 
-  private def testValuesOf[A: ClassTag](generator: Stream[A], valuePrefix: String = "", valueSuffix: String = ""): Unit = {
+  private def testValuesOf[A: ClassTag](valuesGenerator: Stream[A], valuePrefix: String = "", valueSuffix: String = ""): Unit = {
 
     val typeName = implicitly[ClassTag[A]].runtimeClass.getSimpleName.capitalize
 
-    describe(s"${typeName}Enum generation tests") {
+    describe(s"${typeName}Enum withValue") {
 
-      it("should create a value enum that can properly resolve values to members") {
+      it("should return proper members for valid values but throw otherwise") {
         (1 to 10).foreach { i =>
           val enumName = s"Generated${typeName}Enum$i"
           val names = stringGenerator.take(5)
-          val values = generator.distinct
+          val values = valuesGenerator.distinct.take(5)
           val namesToValues = names.zip(values)
           val memberDefs = namesToValues.map { case (n, v) => s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)""" }.mkString("\n\n")
           val objDef =
@@ -54,6 +54,11 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
           namesToValues.foreach {
             case (n, v) =>
               obj.withValue(v).toString shouldBe n
+          }
+          valuesGenerator.filterNot(values.contains).take(5).foreach { invalidValue =>
+            intercept[NoSuchElementException] {
+              obj.withValue(invalidValue)
+            }
           }
         }
       }
