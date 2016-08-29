@@ -4,6 +4,10 @@ object ContextUtils {
 
   type Context = scala.reflect.macros.blackbox.Context
 
+  // Constant types
+  type CTLong = Long
+  type CTInt = Int
+
   /**
    * Returns a TermName
    */
@@ -16,4 +20,10 @@ object ContextUtils {
    */
   def companion(c: Context)(sym: c.Symbol): c.universe.Symbol = sym.companion
 
+  /**
+   * Returns a PartialFunction for turning symbols into names
+   */
+  def constructorsToParamNamesPF(c: Context): PartialFunction[c.universe.Symbol, List[c.universe.Name]] = {
+    case m if m.isConstructor => m.asMethod.paramLists.flatten.map(_.asTerm.name)
+  }
 }
