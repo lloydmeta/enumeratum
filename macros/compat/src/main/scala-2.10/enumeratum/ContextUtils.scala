@@ -4,6 +4,10 @@ object ContextUtils {
 
   type Context = scala.reflect.macros.Context
 
+  // In 2.10, the constants have Java boxed types at compile time for some reason
+  type CTLong = java.lang.Long
+  type CTInt = java.lang.Integer
+
   /**
    * Returns a TermName
    */
@@ -16,4 +20,10 @@ object ContextUtils {
    */
   def companion(c: Context)(sym: c.Symbol): c.universe.Symbol = sym.companionSymbol
 
+  /**
+   * Returns a PartialFunction for turning symbols into names
+   */
+  def constructorsToParamNamesPF(c: Context): PartialFunction[c.universe.Symbol, List[c.universe.Name]] = {
+    case m if m.isMethod && m.asMethod.isConstructor => m.asMethod.paramss.flatten.map(_.asTerm.name)
+  }
 }

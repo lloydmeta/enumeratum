@@ -14,7 +14,7 @@ import pl.project13.scala.sbt.JmhPlugin
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.4.11-SNAPSHOT"
+  lazy val theVersion = "1.4.14-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-M5")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
@@ -51,7 +51,6 @@ object Enumeratum extends Build {
     .settings(
       name := "enumeratum"
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .settings(commonWithPublishSettings:_*)
     .dependsOn(macros)
@@ -89,7 +88,6 @@ object Enumeratum extends Build {
         "org.reactivemongo" %% "reactivemongo" % reactiveMongoVersion
       )
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(coreJvm % "test->test;compile->compile")
 
@@ -99,7 +97,6 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play-json" % thePlayVersion(scalaVersion.value)
       )
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(coreJvm % "test->test;compile->compile")
 
@@ -109,7 +106,6 @@ object Enumeratum extends Build {
         "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value)
       )
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(coreJvm, enumeratumPlayJson % "test->test;compile->compile")
 
@@ -139,7 +135,6 @@ object Enumeratum extends Build {
         additionalMacroDeps
       }
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumUPickleJs = enumeratumUPickle.js
@@ -160,7 +155,6 @@ object Enumeratum extends Build {
         Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.1")
       }
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, include_210Dir = false, includeTestSrcs = true):_*)
     .settings(testSettings:_*)
     .dependsOn(core % "test->test;compile->compile")
   lazy val enumeratumCirceJs = enumeratumCirce.js
@@ -271,7 +265,6 @@ object Enumeratum extends Build {
       publishArtifact := false,
       publishLocal := {}
     )
-    .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, include_210Dir = false, includeTestSrcs = false):_*)
     .dependsOn(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests/*, enumeratumPlay, enumeratumPlayJson, enumeratumUPickleJs, enumeratumUPickleJvm, enumeratumCirceJs, enumeratumCirceJvm, enumeratumReactiveMongoBson */)
     .enablePlugins(JmhPlugin)
     .settings(libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21")

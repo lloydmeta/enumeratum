@@ -1,7 +1,8 @@
 package enumeratum
 
+import enumeratum.ContextUtils.Context
+
 import scala.reflect.ClassTag
-import ContextUtils.Context
 
 object ValueEnumMacros {
 
@@ -11,7 +12,7 @@ object ValueEnumMacros {
    * Note, requires the ValueEntryType to have a 'value' member that has a literal value
    */
   def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Int, Int](c)(identity)
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Int](c)(identity)
   }
 
   /**
@@ -20,7 +21,7 @@ object ValueEnumMacros {
    * Note, requires the ValueEntryType to have a 'value' member that has a literal value
    */
   def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Long, Long](c)(identity)
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTLong, Long](c)(identity)
   }
 
   /**
@@ -32,7 +33,7 @@ object ValueEnumMacros {
    *  - the Short value should be a literal Int (do no need to cast .toShort).
    */
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, Int, Short](c)(_.toShort) // do a transform because there is no such thing as Short literals
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(_.toShort) // do a transform because there is no such thing as Short literals
   }
 
   /**
@@ -55,8 +56,10 @@ object ValueEnumMacros {
     EnumMacros.validateType(c)(typeSymbol)
     // Find the trees in the enclosing object that match the given ValueEntryType
     val subclassTrees = EnumMacros.enclosedSubClassTrees(c)(typeSymbol)
+    // Find the parameters for the constructors of ValueEntryType
+    val valueEntryTypeConstructorsParams = findConstructorParamsLists[ValueEntryType](c)
     // Identify the value:ValueType implementations for each of the trees we found and process them if required
-    val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(subclassTrees, processFoundValues)
+    val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(valueEntryTypeConstructorsParams, subclassTrees, processFoundValues)
     // Make sure the processed found value implementations are unique
     ensureUnique[ProcessedValue](c)(treeWithVals)
     // Finish by building our Sequence
@@ -69,8 +72,8 @@ object ValueEnumMacros {
    *
    * Will abort compilation if not all the trees provided have a literal value member/constructor argument
    */
-  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](c: Context)(memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithVal[c.universe.Tree, ProcessedValueType]] = {
-    val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(memberTrees, processFoundValues)
+  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](c: Context)(valueEntryCTorsParams: List[List[c.universe.Name]], memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithVal[c.universe.Tree, ProcessedValueType]] = {
+    val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(valueEntryCTorsParams, memberTrees, processFoundValues)
     val (hasValueMember, lacksValueMember) = treeWithValues.partition(_.maybeValue.isDefined)
     if (lacksValueMember.nonEmpty) {
       val classTag = implicitly[ClassTag[ValueType]]
@@ -83,7 +86,6 @@ object ValueEnumMacros {
            |This can happen if:
            |
            |- The aforementioned members have their `value` supplied by a variable, or otherwise defined as a method
-           |- ValueEnums are nested. This happens because constructor methods are not yet typed during macro expansion if they're nested.
            |
            |If none of the above apply to your case, it's likely you have discovered an issue with Enumeratum, so please file an issue :)
          """.stripMargin
@@ -99,7 +101,7 @@ object ValueEnumMacros {
    *
    * Aborts compilation if the value declaration/constructor is of the wrong type,
    */
-  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithMaybeVal[c.universe.Tree, ProcessedValueType]] = {
+  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(valueEntryCTorsParams: List[List[c.universe.Name]], memberTrees: Seq[c.universe.Tree], processFoundValues: ValueType => ProcessedValueType): Seq[TreeWithMaybeVal[c.universe.Tree, ProcessedValueType]] = {
     import c.universe._
     val classTag = implicitly[ClassTag[ValueType]]
     val valueTerm = ContextUtils.termName(c)("value")
@@ -108,15 +110,11 @@ object ValueEnumMacros {
       val values = declTree.collect {
         // The tree has a value declaration with a constant value.
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm => Some(i)
-        // The tree has a method
-        case Apply(fun, args) if fun.tpe != null => {
-          // resolve the type of the constructor method and find the parameter terms and arguments provided
-          val funTpe = fun.tpe
-          val members: c.universe.MemberScope = funTpe.members
-          val valueArguments: Iterable[Option[ValueType]] = members.collect {
-            case constr if constr.isConstructor => {
-              val asMethod = constr.asMethod
-              val paramTermNames = asMethod.paramLists.flatten.map(_.asTerm.name)
+        // The tree has a method call
+        case Apply(fun, args) => {
+          val valueArguments: List[Option[ValueType]] = valueEntryCTorsParams.collect {
+            // Find the constructor params list that matches the arguments list size of the method call
+            case paramTermNames if paramTermNames.size == args.size => {
               val paramsWithArg = paramTermNames.zip(args)
               paramsWithArg.collectFirst {
                 // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
@@ -125,14 +123,12 @@ object ValueEnumMacros {
                 case (`valueTerm`, Literal(Constant(i))) => c.abort(c.enclosingPosition, s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}.")
                 /*
                  * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
-                 *
-                 * Note: Can't match without using Ident(ContextUtils.termName(c)(" ")) extractor ??!
                  */
-                case (_, AssignOrNamedArg(Ident(TermName("value")), Literal(Constant(i: ValueType)))) => i
+                case (_, AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) => i
                 /*
                  * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
                  */
-                case (_, AssignOrNamedArg(Ident(TermName("value")), Literal(Constant(i)))) => c.abort(c.enclosingPosition, s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}")
+                case (_, AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i)))) => c.abort(c.enclosingPosition, s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}")
               }
             }
           }
@@ -143,6 +139,17 @@ object ValueEnumMacros {
       val processedValue = values.collectFirst { case Some(v) => processFoundValues(v) }
       TreeWithMaybeVal(declTree, processedValue)
     }
+  }
+
+  /**
+   * Given a type, finds the constructor params lists for it
+   */
+  private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](c: Context): List[List[c.universe.Name]] = {
+    val valueEntryTypeTpe = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
+    val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
+    valueEntryTypeTpeMembers
+      .collect(ContextUtils.constructorsToParamNamesPF(c))
+      .toList
   }
 
   /**

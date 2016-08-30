@@ -25,6 +25,9 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   testNumericEnum("LongEnum", ContentType)
   testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
   testNumericEnum("when using val members in the body", MovieGenre)
+  testNumericEnum("LongEnum that is nesting an IntEnum", Animal)
+  testNumericEnum("IntEnum that is nested inside a LongEnum", Animal.Mammalian)
+  testNumericEnum("Custom IntEnum with private constructors", CustomEnumPrivateConstructor)
 
   describe("finding companion object") {
 
@@ -100,6 +103,18 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
     }
 
     describe("trying to use with improper types") {
+
+      it("should fail to compile when value types do not match with the kind of value enum") {
+        """
+          |sealed abstract class IceCream(val value: String) extends IntEnumEntry
+          |
+          |case object IceCream extends IntEnum[IceCream] {
+          |  val value = findValues
+          |
+          |  case object Sandwich extends IceCream("sandwich")
+          |}
+        """ shouldNot compile
+      }
 
       it("should fail to compile for unsealed traits") {
         """

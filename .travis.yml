@@ -9,9 +9,10 @@ script:
  - sbt +test
  # Manually select the JVM projects to run coverage on until Scoverage is compatible with ScalaJS
  # TODO fix this before merging
- # - sbt coverage coreJVM/test enumeratum-play/test enumeratum-play-json/test enumeratumCirceJVM/test enumeratumUPickleJVM/test enumeratum-reactivemongo-bson/test
+ # - sbt coverage coreJVM/test enumeratum-play/test enumeratum-play-json/test enumeratumCirceJVM/test enumeratumUPickleJVM/test enumeratum-reactivemongo-bson/test coverageReport && sbt coverageAggregate
 after_success:
- - sbt coverageReport coverageAggregate coveralls
+ # TODO fix this before merging
+ # - sbt coveralls
  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && sbt coreJVM/updateImpactSubmit || true'
 cache:
   directories:
