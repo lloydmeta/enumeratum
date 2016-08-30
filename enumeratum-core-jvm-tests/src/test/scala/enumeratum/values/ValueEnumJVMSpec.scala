@@ -31,7 +31,7 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
     describe(s"${typeName}Enum withValue") {
 
       it("should return proper members for valid values but throw otherwise") {
-        (1 to 5).foreach { i =>
+        (1 to 20).foreach { i =>
           val enumName = s"Generated${typeName}Enum$i"
           val names = stringGenerator.take(5)
           val values = valuesGenerator.distinct.take(5)
