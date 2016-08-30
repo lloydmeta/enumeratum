@@ -19,6 +19,7 @@ Enumeratum has the following niceties:
   environments where reflection is a best effort (such as Android)
 - No usage of `synchronized`, which may help with performance and deadlocks prevention
 - All magic happens at compile-time so you know right away when things go awry
+- Comprehensive automated testing to make sure everything is in tip-top shape
 
 Compatible with Scala 2.11+ and 2.10 as well as ScalaJS.
 
