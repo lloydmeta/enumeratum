@@ -13,6 +13,8 @@ import scala.util.Random
  */
 class ValueEnumJVMSpec extends FunSpec with Matchers {
 
+  private def stringGenerator = Random.alphanumeric.grouped(10).toStream.map(_.mkString.replaceAll("[0-9]", "")).distinct
+
   /*
    Non-deterministically generates a bunch of different types of ValueEnums and tests the ability to resolve
    proper members by value
@@ -22,16 +24,14 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
   testValuesOf(Stream.continually(Random.nextInt()).collect { case i if i >= Short.MinValue && i <= Short.MaxValue => i.toShort })
   testValuesOf(stringGenerator, "\"", "\"")
 
-  private def stringGenerator = Random.alphanumeric.grouped(10).toStream.map(_.mkString.replaceAll("[0-9]", "")).distinct
-
-  private def testValuesOf[A: ClassTag](valuesGenerator: Stream[A], valuePrefix: String = "", valueSuffix: String = ""): Unit = {
+  private def testValuesOf[A: ClassTag](valuesGenerator: => Stream[A], valuePrefix: String = "", valueSuffix: String = ""): Unit = {
 
     val typeName = implicitly[ClassTag[A]].runtimeClass.getSimpleName.capitalize
 
     describe(s"${typeName}Enum withValue") {
 
       it("should return proper members for valid values but throw otherwise") {
-        (1 to 10).foreach { i =>
+        (1 to 5).foreach { i =>
           val enumName = s"Generated${typeName}Enum$i"
           val names = stringGenerator.take(5)
           val values = valuesGenerator.distinct.take(5)
@@ -55,7 +55,8 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
             case (n, v) =>
               obj.withValue(v).toString shouldBe n
           }
-          valuesGenerator.filterNot(values.contains).take(5).foreach { invalidValue =>
+          // filterNot is not lazy until 2.12
+          valuesGenerator.filter(a => !values.contains(a)).take(5).foreach { invalidValue =>
             intercept[NoSuchElementException] {
               obj.withValue(invalidValue)
             }
