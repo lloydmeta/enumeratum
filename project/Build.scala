@@ -14,7 +14,7 @@ import pl.project13.scala.sbt.JmhPlugin
 
 object Enumeratum extends Build {
 
-  lazy val theVersion = "1.4.14-SNAPSHOT"
+  lazy val theVersion = "1.4.14"
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
