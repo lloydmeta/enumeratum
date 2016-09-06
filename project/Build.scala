@@ -18,7 +18,7 @@ object Enumeratum extends Build {
   lazy val theScalaVersion = "2.11.8"
   lazy val scalaVersions = Seq("2.10.6", "2.11.8")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.4"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.6"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
@@ -152,7 +152,7 @@ object Enumeratum extends Build {
           else
             CrossVersion.binary
         }
-        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.4.1")
+        Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.5.1")
       }
     )
     .settings(testSettings:_*)
