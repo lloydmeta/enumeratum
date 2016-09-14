@@ -16,7 +16,7 @@ object Enumeratum extends Build {
 
   lazy val theVersion = "1.4.15-SNAPSHOT"
   lazy val theScalaVersion = "2.11.8"
-  lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-M5")
+  lazy val scalaVersions = Seq("2.10.6", "2.11.8", "2.12.0-RC1")
   def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.6"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
