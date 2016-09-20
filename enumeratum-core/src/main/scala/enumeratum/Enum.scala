@@ -13,7 +13,7 @@ import ContextUtils.Context
  * How to use:
  *
  * {{{
- * sealed trait DummyEnum
+ * sealed trait DummyEnum extends EnumEntry
  *
  * object DummyEnum extends Enum[DummyEnum] {
  *
