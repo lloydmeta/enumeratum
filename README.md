@@ -713,6 +713,28 @@ thus causing a failure to find your mapping. In order to fix this, simply assist
 .filter(_.productType === (ProductType.Foo: ProductType))`
 ```
 
+If you want to use slick interpolated SQL queries you need a few additional implicits.
+
+``` scala
+implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
+  override def apply(positionedResult: PositionedResult): Greeting = Greeting.withName(positionedResult.nextString())
+}
+
+implicit val greetingOptionGetResult: GetResult[Option[Greeting]] = new GetResult[Option[Greeting]] {
+  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().map(Greeting.withName)
+}
+
+implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Greeting] {
+  override def apply(value: Greeting, positionedParameter: PositionedParameters): Unit =
+    positionedParameter.setString(value.toString)
+}
+
+implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
+  override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
+    positionedParameter.setStringOption(value.map(v => value.toString))
+}
+```
+
 ## Benchmarking
 
 Benchmarking is in the unpublished `benchmarking` project. It uses JMH and you can run them in the sbt console by issuing the following command from your command line:
