@@ -7,6 +7,7 @@ object ContextUtils {
   // In 2.10, the constants have Java boxed types at compile time for some reason
   type CTLong = java.lang.Long
   type CTInt = java.lang.Integer
+  type CTChar = java.lang.Character
 
   /**
    * Returns a TermName

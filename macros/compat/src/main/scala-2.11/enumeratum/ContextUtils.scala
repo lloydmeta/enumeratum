@@ -7,6 +7,7 @@ object ContextUtils {
   // Constant types
   type CTLong = Long
   type CTInt = Int
+  type CTChar = Char
 
   /**
    * Returns a TermName
