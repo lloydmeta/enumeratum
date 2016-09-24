@@ -1,7 +1,8 @@
 package enumeratum.values
 
 import org.scalatest.{ FunSpec, Matchers }
-import play.api.libs.json.JsString
+import play.api.libs.json.{ JsNumber, JsString }
+import EnumFormats.charFormat
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -14,6 +15,8 @@ class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers 
   testNumericPlayEnum("ShortPlayEnum", PlayDrinks)
   testNumericPlayEnum("IntPlayEnum", PlayLibraryItem)
   testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString)
+  testPlayEnum("BytePlayEnum", PlayBites, { s: Byte => JsNumber(s) })
+  testPlayEnum("CharPlayEnum", PlayAlphabet, { s: Char => JsString(s"$s") })
   testNumericPlayEnum("IntPlayEnum with values declared as members", PlayMovieGenre)
 
 }
@@ -88,4 +91,28 @@ case object PlayMovieGenre extends IntPlayEnum[PlayMovieGenre] {
 
   val values = findValues
 
+}
+
+sealed abstract class PlayAlphabet(val value: Char) extends CharEnumEntry
+
+case object PlayAlphabet extends CharEnum[PlayAlphabet] with CharPlayEnum[PlayAlphabet] {
+
+  case object A extends PlayAlphabet('A')
+  case object B extends PlayAlphabet('B')
+  case object C extends PlayAlphabet('C')
+  case object D extends PlayAlphabet('D')
+
+  val values = findValues
+
+}
+
+sealed abstract class PlayBites(val value: Byte) extends ByteEnumEntry
+
+object PlayBites extends ByteEnum[PlayBites] with BytePlayEnum[PlayBites] {
+  val values = findValues
+
+  case object OneByte extends PlayBites(1)
+  case object TwoByte extends PlayBites(2)
+  case object ThreeByte extends PlayBites(3)
+  case object FourByte extends PlayBites(4)
 }

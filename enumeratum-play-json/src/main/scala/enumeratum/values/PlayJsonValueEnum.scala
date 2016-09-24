@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import play.api.libs.json.Format
+import play.api.libs.json._
+import EnumFormats.charFormat
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -42,5 +43,19 @@ trait ShortPlayJsonValueEnum[EntryType <: ShortEnumEntry] extends PlayJsonValueE
  * Enum implementation for String enum members that contains an implicit Play JSON Format
  */
 trait StringPlayJsonValueEnum[EntryType <: StringEnumEntry] extends PlayJsonValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+}
+
+/**
+ * Enum implementation for Char enum members that contains an implicit Play JSON Format
+ */
+trait CharPlayJsonValueEnum[EntryType <: CharEnumEntry] extends PlayJsonValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+}
+
+/**
+ * Enum implementation for Byte enum members that contains an implicit Play JSON Format
+ */
+trait BytePlayJsonValueEnum[EntryType <: ByteEnumEntry] extends PlayJsonValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
   implicit val format: Format[EntryType] = EnumFormats.formats(this)
 }

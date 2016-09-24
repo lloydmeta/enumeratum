@@ -77,3 +77,39 @@ trait StringPlayEnum[EnumEntry <: StringEnumEntry] extends StringEnum[EnumEntry]
   with StringPlayQueryBindableValueEnum[EnumEntry]
   with StringPlayFormValueEnum[EnumEntry]
   with StringPlayJsonValueEnum[EnumEntry]
+
+/**
+ * A ByteEnum that has a lot of the Play-related implicits built-in so you can avoid
+ * boilerplate.
+ *
+ * Things included are:
+ *
+ *   - implicit PathBindable (for binding from request path)
+ *   - implicit QueryByteBindable (for binding from query strings)
+ *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
+ *   - implicit Json format
+ *
+ */
+trait BytePlayEnum[EnumEntry <: ByteEnumEntry] extends ByteEnum[EnumEntry]
+  with BytePlayPathBindableValueEnum[EnumEntry]
+  with BytePlayQueryBindableValueEnum[EnumEntry]
+  with BytePlayFormValueEnum[EnumEntry]
+  with BytePlayJsonValueEnum[EnumEntry]
+
+/**
+ * A CharEnum that has a lot of the Play-related implicits built-in so you can avoid
+ * boilerplate.
+ *
+ * Things included are:
+ *
+ *   - implicit PathBindable (for binding from request path)
+ *   - implicit QueryCharBindable (for binding from query strings)
+ *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
+ *   - implicit Json format
+ *
+ */
+trait CharPlayEnum[EnumEntry <: CharEnumEntry] extends CharEnum[EnumEntry]
+  with CharPlayPathBindableValueEnum[EnumEntry]
+  with CharPlayQueryBindableValueEnum[EnumEntry]
+  with CharPlayFormValueEnum[EnumEntry]
+  with CharPlayJsonValueEnum[EnumEntry]

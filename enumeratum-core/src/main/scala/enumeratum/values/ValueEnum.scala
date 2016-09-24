@@ -130,7 +130,7 @@ object StringEnum {
 }
 
 /**
- * Value enum with [[ShortEnumEntry]] entries
+ * Value enum with [[StringEnumEntry]] entries
  *
  * This is similar to [[enumeratum.Enum]], but different in that values must be
  * literal values. This restraint allows us to enforce uniqueness at compile time.
@@ -146,5 +146,61 @@ trait StringEnum[A <: StringEnumEntry] extends ValueEnum[String, A] {
    * if you aren't using this method...why are you even bothering with this lib?
    */
   final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findStringValueEntriesImpl[A]
+}
+
+object ByteEnum {
+
+  /**
+   * Materializes a ByteEnum for an in-scope ByteEnumEntry
+   */
+  implicit def materialiseByteValueEnum[EntryType <: ByteEnumEntry]: ByteEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
+}
+
+/**
+ * Value enum with [[ByteEnumEntry]] entries
+ *
+ * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * literal values. This restraint allows us to enforce uniqueness at compile time.
+ *
+ * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
+ */
+trait ByteEnum[A <: ByteEnumEntry] extends ValueEnum[Byte, A] {
+
+  /**
+   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   *
+   * You will want to use this in some way to implement your [[values]] method. In fact,
+   * if you aren't using this method...why are you even bothering with this lib?
+   */
+  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findByteValueEntriesImpl[A]
+}
+
+object CharEnum {
+
+  /**
+   * Materializes a CharEnum for an in-scope CharEnumEntry
+   */
+  implicit def materialiseCharValueEnum[EntryType <: CharEnumEntry]: CharEnum[EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+
+}
+
+/**
+ * Value enum with [[CharEnumEntry]] entries
+ *
+ * This is similar to [[enumeratum.Enum]], but different in that values must be
+ * literal values. This restraint allows us to enforce uniqueness at compile time.
+ *
+ * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on values.
+ */
+trait CharEnum[A <: CharEnumEntry] extends ValueEnum[Char, A] {
+
+  /**
+   * Method that returns a Seq of [[A]] objects that the macro was able to find.
+   *
+   * You will want to use this in some way to implement your [[values]] method. In fact,
+   * if you aren't using this method...why are you even bothering with this lib?
+   */
+  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findCharValueEntriesImpl[A]
 }
 

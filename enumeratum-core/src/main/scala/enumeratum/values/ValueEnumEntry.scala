@@ -64,3 +64,12 @@ abstract class ShortEnumEntry extends ValueEnumEntry[Short]
  */
 abstract class StringEnumEntry extends ValueEnumEntry[String]
 
+/**
+ * Value Enum Entry parent class for [[Byte]] valued entries
+ */
+abstract class ByteEnumEntry extends ValueEnumEntry[Byte]
+
+/**
+ * Value Enum Entry parent class for [[Char]] valued entries
+ */
+abstract class CharEnumEntry extends ValueEnumEntry[Char]

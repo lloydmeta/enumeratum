@@ -196,7 +196,7 @@ Greeting.withName("SHOUT_GOOD_BYE")
 ### ValueEnum
 
 Asides from enumerations that resolve members from `String` _names_, Enumeratum also supports `ValueEnum`s, enums that resolve
-members from simple _values_ like `Int`, `Long`, `Short`, and `String` (without support for runtime transformations). 
+members from simple _values_ like `Int`, `Long`, `Short`, `Char`, `Byte`, and `String` (without support for runtime transformations). 
 
 These enums are not modelled after `Enumeration` from standard lib, and therefore have the added ability to make sure, at compile-time,
 that multiple members do not share the same value.

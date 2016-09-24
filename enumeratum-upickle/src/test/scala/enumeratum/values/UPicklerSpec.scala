@@ -15,6 +15,8 @@ class UPicklerSpec extends FunSpec with Matchers {
   testPickling("ShortUPickleEnum", UPickleDrinks)
   testPickling("IntUPickleEnum", UPickleLibraryItem)
   testPickling("StringUPickleEnum", UPickleOperatingSystem)
+  testPickling("ByteUPickleEnum", UPickleBites)
+  testPickling("CharUPickleEnum", UPickleAlphabet)
   testPickling("IntUPickleEnum with values declared as members", UPickleMovieGenre)
 
   /**
@@ -33,7 +35,7 @@ class UPicklerSpec extends FunSpec with Matchers {
 
         it("should fail with invalid values") {
           intercept[Exception] {
-            readJs(Js.Str("D"))
+            readJs(Js.Str("ababab"))
           }
           intercept[Exception] {
             readJs(Js.Num(Int.MaxValue))
@@ -128,4 +130,28 @@ case object UPickleMovieGenre extends IntEnum[UPickleMovieGenre] with IntUPickle
 
   val values = findValues
 
+}
+
+sealed abstract class UPickleAlphabet(val value: Char) extends CharEnumEntry
+
+case object UPickleAlphabet extends CharEnum[UPickleAlphabet] with CharUPickleEnum[UPickleAlphabet] {
+
+  case object A extends UPickleAlphabet('A')
+  case object B extends UPickleAlphabet('B')
+  case object C extends UPickleAlphabet('C')
+  case object D extends UPickleAlphabet('D')
+
+  val values = findValues
+
+}
+
+sealed abstract class UPickleBites(val value: Byte) extends ByteEnumEntry
+
+object UPickleBites extends ByteEnum[UPickleBites] with ByteUPickleEnum[UPickleBites] {
+  val values = findValues
+
+  case object OneByte extends UPickleBites(1)
+  case object TwoByte extends UPickleBites(2)
+  case object ThreeByte extends UPickleBites(3)
+  case object FourByte extends UPickleBites(4)
 }

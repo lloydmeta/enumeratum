@@ -48,6 +48,28 @@ object ValueEnumMacros {
   }
 
   /**
+   * Finds ValueEntryType-typed objects in scope that have literal value:Byte implementations
+   *
+   * Note
+   *
+   *  - requires the ValueEntryType to have a 'value' member that has a literal value
+   */
+  def findByteValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Byte](c)(_.toByte)
+  }
+
+  /**
+   * Finds ValueEntryType-typed objects in scope that have literal value:Char implementations
+   *
+   * Note
+   *
+   *  - requires the ValueEntryType to have a 'value' member that has a literal value
+   */
+  def findCharValueEntriesImpl[ValueEntryType: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[ValueEntryType]] = {
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTChar, Char](c)(identity)
+  }
+
+  /**
    * The method that does the heavy lifting.
    */
   private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag, ValueType: ClassTag, ProcessedValue](c: Context)(processFoundValues: ValueType => ProcessedValue): c.Expr[IndexedSeq[ValueEntryType]] = {
