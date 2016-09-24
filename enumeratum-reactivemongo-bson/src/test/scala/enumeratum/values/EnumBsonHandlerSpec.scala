@@ -15,6 +15,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
     testReader("LongEnum", ContentType)
     testReader("ShortEnum", Drinks)
     testReader("StringEnum", OperatingSystem)
+    testReader("ByteEnum", Bites)
+    testReader("CharEnum", Alphabet)
 
   }
 
@@ -24,6 +26,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
     testWriter("LongEnum", ContentType)
     testWriter("ShortEnum", Drinks)
     testWriter("StringEnum", OperatingSystem)
+    testWriter("ByteEnum", Bites)
+    testWriter("CharEnum", Alphabet)
 
   }
 
@@ -37,6 +41,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
     testHandler("LongReactiveMongoBsonValueEnum", BsonContentType, Some(BsonContentType.bsonHandler))
     testHandler("IntReactiveMongoBsonValueEnum", BsonLibraryItem, Some(BsonLibraryItem.bsonHandler))
     testHandler("StringReactiveMongoBsonValueEnum", BsonOperatingSystem, Some(BsonOperatingSystem.bsonHandler))
+    testHandler("CharReactiveMongoBsonValueEnum", BsonAlphabet, Some(BsonAlphabet.bsonHandler))
+    testHandler("ByteReactiveMongoBsonValueEnum", BsonBites, Some(BsonBites.bsonHandler))
 
   }
 

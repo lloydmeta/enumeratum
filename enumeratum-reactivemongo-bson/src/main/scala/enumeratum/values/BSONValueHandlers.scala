@@ -51,6 +51,20 @@ trait BSONValueReads {
     }
   }
 
+  implicit val bsonReaderChar = new BSONReader[BSONValue, Char] {
+    def read(bson: BSONValue): Char = bson match {
+      case BSONString(x) if x.length == 1 => x.charAt(0)
+      case _ => throw new RuntimeException(s"Could not convert $bson to Char")
+    }
+  }
+
+  implicit val bsonReaderByte = new BSONReader[BSONValue, Byte] {
+    def read(bson: BSONValue): Byte = bson match {
+      case BSONInteger(x) => x.toByte
+      case _ => throw new RuntimeException(s"Could not convert $bson to Byte")
+    }
+  }
+
 }
 
 trait BSONValueWrites {
@@ -69,6 +83,14 @@ trait BSONValueWrites {
 
   implicit val bsonWriterString = new BSONWriter[String, BSONValue] {
     def write(t: String): BSONValue = BSONString(t)
+  }
+
+  implicit val bsonWriterChar = new BSONWriter[Char, BSONValue] {
+    def write(t: Char): BSONValue = BSONString(s"$t")
+  }
+
+  implicit val bsonWriterByte = new BSONWriter[Byte, BSONValue] {
+    def write(t: Byte): BSONValue = BSONInteger(t)
   }
 
 }
