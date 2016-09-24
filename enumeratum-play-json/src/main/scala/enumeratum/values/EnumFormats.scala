@@ -36,4 +36,16 @@ object EnumFormats {
     Format(reads(enum), writes(enum))
   }
 
+  /**
+   * Format for Char
+   */
+  implicit val charFormat: Format[Char] = new Format[Char] {
+    def writes(o: Char): JsValue = JsString(s"$o")
+
+    def reads(json: JsValue): JsResult[Char] = json match {
+      case JsString(s) if s.length == 1 => JsSuccess(s.charAt(0))
+      case _ => JsError("error.expected.singleChar")
+    }
+  }
+
 }

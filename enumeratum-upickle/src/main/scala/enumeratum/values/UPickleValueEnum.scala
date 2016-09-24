@@ -46,3 +46,17 @@ trait ShortUPickleEnum[EntryType <: ShortEnumEntry] extends UPickleValueEnum[Sho
 trait StringUPickleEnum[EntryType <: StringEnumEntry] extends UPickleValueEnum[String, EntryType] { this: ValueEnum[String, EntryType] =>
   implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
 }
+
+/**
+ * Enum implementation for Byte enum members that contains an implicit UPickle ReadWriter
+ */
+trait ByteUPickleEnum[EntryType <: ByteEnumEntry] extends UPickleValueEnum[Byte, EntryType] { this: ValueEnum[Byte, EntryType] =>
+  implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
+}
+
+/**
+ * Enum implementation for Char enum members that contains an implicit UPickle ReadWriter
+ */
+trait CharUPickleEnum[EntryType <: CharEnumEntry] extends UPickleValueEnum[Char, EntryType] { this: ValueEnum[Char, EntryType] =>
+  implicit val uPickleReadWriter: RW[EntryType] = ReadWriter(writer(this).write, reader(this).read)
+}

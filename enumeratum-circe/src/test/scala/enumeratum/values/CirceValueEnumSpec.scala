@@ -16,6 +16,8 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("ShortCirceEnum", CirceDrinks)
   testCirceEnum("IntCirceEnum", CirceLibraryItem)
   testCirceEnum("StringCirceEnum", CirceOperatingSystem)
+  testCirceEnum("CharEnum", CirceAlphabet)
+  testCirceEnum("ByteEnum", CirceBites)
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
   // Test method that generates tests for most primitve-based ValueEnums when given a simple descriptor and the enum
@@ -123,4 +125,28 @@ case object CirceMovieGenre extends IntEnum[CirceMovieGenre] with IntCirceEnum[C
 
   val values = findValues
 
+}
+
+sealed abstract class CirceAlphabet(val value: Char) extends CharEnumEntry
+
+case object CirceAlphabet extends CharEnum[CirceAlphabet] with CharCirceEnum[CirceAlphabet] {
+
+  case object A extends CirceAlphabet('A')
+  case object B extends CirceAlphabet('B')
+  case object C extends CirceAlphabet('C')
+  case object D extends CirceAlphabet('D')
+
+  val values = findValues
+
+}
+
+sealed abstract class CirceBites(val value: Byte) extends ByteEnumEntry
+
+object CirceBites extends ByteEnum[CirceBites] with ByteCirceEnum[CirceBites] {
+  val values = findValues
+
+  case object OneByte extends CirceBites(1)
+  case object TwoByte extends CirceBites(2)
+  case object ThreeByte extends CirceBites(3)
+  case object FourByte extends CirceBites(4)
 }

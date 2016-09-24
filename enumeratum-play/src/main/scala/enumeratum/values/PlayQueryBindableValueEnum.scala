@@ -44,3 +44,17 @@ trait ShortPlayQueryBindableValueEnum[EntryType <: ShortEnumEntry] extends PlayQ
 trait StringPlayQueryBindableValueEnum[EntryType <: StringEnumEntry] extends PlayQueryBindableValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
   implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableString)
 }
+
+/**
+ * Query Bindable implicits for CharEnum
+ */
+trait CharPlayQueryBindableValueEnum[EntryType <: CharEnumEntry] extends PlayQueryBindableValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
+  implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableChar)
+}
+
+/**
+ * Query Bindable implicits for ByteEnum
+ */
+trait BytePlayQueryBindableValueEnum[EntryType <: ByteEnumEntry] extends PlayQueryBindableValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
+  implicit val queryBindable: QueryStringBindable[EntryType] = UrlBinders.queryBinder(this)(QueryStringBindable.bindableInt.transform(_.toByte, _.toInt))
+}

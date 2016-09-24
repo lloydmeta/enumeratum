@@ -1,7 +1,7 @@
 package enumeratum.values
 
-import play.api.data.format.{ Formatter, Formats }
-import play.api.data.Mapping
+import play.api.data.format.{ Formats, Formatter }
+import play.api.data.{ FormError, Mapping }
 
 /**
  * Created by Lloyd on 4/13/16.
@@ -51,4 +51,18 @@ trait ShortPlayFormValueEnum[EntryType <: ShortEnumEntry] extends PlayFormValueE
  */
 trait StringPlayFormValueEnum[EntryType <: StringEnumEntry] extends PlayFormValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
   protected val baseFormatter: Formatter[String] = Formats.stringFormat
+}
+
+/**
+ * Form Bindable implicits for CharEnum
+ */
+trait CharPlayFormValueEnum[EntryType <: CharEnumEntry] extends PlayFormValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
+  protected val baseFormatter: Formatter[Char] = Forms.charFormatter
+}
+
+/**
+ * Form Bindable implicits for ByteEnum
+ */
+trait BytePlayFormValueEnum[EntryType <: ByteEnumEntry] extends PlayFormValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
+  protected val baseFormatter: Formatter[Byte] = Formats.byteFormat
 }

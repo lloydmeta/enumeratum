@@ -62,3 +62,17 @@ trait ShortPlayPathBindableValueEnum[EntryType <: ShortEnumEntry] extends PlayPa
 trait StringPlayPathBindableValueEnum[EntryType <: StringEnumEntry] extends PlayPathBindableValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
   implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)(PathBindable.bindableString)
 }
+
+/**
+ * Path Bindable implicits for CharEnum
+ */
+trait CharPlayPathBindableValueEnum[EntryType <: CharEnumEntry] extends PlayPathBindableValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
+  implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)(PathBindable.bindableChar)
+}
+
+/**
+ * Path Bindable implicits for ByteEnum
+ */
+trait BytePlayPathBindableValueEnum[EntryType <: ByteEnumEntry] extends PlayPathBindableValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
+  implicit val pathBindable: PathBindable[EntryType] = UrlBinders.pathBinder(this)(PathBindable.bindableInt.transform(_.toByte, _.toInt))
+}

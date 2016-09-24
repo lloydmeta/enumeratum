@@ -58,3 +58,27 @@ case object BsonOperatingSystem extends StringEnum[BsonOperatingSystem] with Str
   val values = findValues
 
 }
+
+sealed abstract class BsonAlphabet(val value: Char) extends CharEnumEntry
+
+case object BsonAlphabet extends CharEnum[BsonAlphabet] with CharReactiveMongoBsonValueEnum[BsonAlphabet] {
+
+  case object A extends BsonAlphabet('A')
+  case object B extends BsonAlphabet('B')
+  case object C extends BsonAlphabet('C')
+  case object D extends BsonAlphabet('D')
+
+  val values = findValues
+
+}
+
+sealed abstract class BsonBites(val value: Byte) extends ByteEnumEntry
+
+object BsonBites extends ByteEnum[BsonBites] with ByteReactiveMongoBsonValueEnum[BsonBites] {
+  val values = findValues
+
+  case object OneByte extends BsonBites(1)
+  case object TwoByte extends BsonBites(2)
+  case object ThreeByte extends BsonBites(3)
+  case object FourByte extends BsonBites(4)
+}
