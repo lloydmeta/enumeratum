@@ -15,7 +15,7 @@ def thePlayVersion(scalaVersion: String) = CrossVersion.partialVersion(scalaVers
   case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
   case _ => throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
 }
-lazy val scalaTestVersion = "3.0.0-M16-SNAP3"
+lazy val scalaTestVersion = "3.0.0"
 lazy val reactiveMongoVersion = "0.11.14"
 
 lazy val root = Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
