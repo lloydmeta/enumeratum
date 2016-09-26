@@ -21,8 +21,10 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
     */
   testValuesOf(Stream.continually(Random.nextInt()))
   testValuesOf(Stream.continually(Random.nextLong()), valueSuffix = "L")
-  testValuesOf(Stream.continually(Random.nextInt()).collect { case i if i >= Short.MinValue && i <= Short.MaxValue => i.toShort })
+  testValuesOf(Stream.continually(Random.nextInt(Short.MaxValue - Short.MinValue) + Short.MinValue).map(_.toShort))
+  testValuesOf(Stream.continually(Random.nextInt(Byte.MaxValue - Byte.MinValue) + Byte.MinValue).map(_.toByte))
   testValuesOf(stringGenerator, "\"", "\"")
+  testValuesOf(Stream.continually(Random.nextPrintableChar()).filter(Character.isAlphabetic(_)), "'", "'")
 
   private def testValuesOf[A: ClassTag](valuesGenerator: => Stream[A], valuePrefix: String = "", valueSuffix: String = ""): Unit = {
 

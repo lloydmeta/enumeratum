@@ -721,7 +721,7 @@ implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
 }
 
 implicit val greetingOptionGetResult: GetResult[Option[Greeting]] = new GetResult[Option[Greeting]] {
-  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().map(Greeting.withName)
+  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().flatMap(Greeting.withNameOption)
 }
 
 implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Greeting] {
@@ -731,7 +731,7 @@ implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Gre
 
 implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
   override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setStringOption(value.map(v => value.toString))
+    positionedParameter.setStringOption(value.map(v => value.entryName))
 }
 ```
 
