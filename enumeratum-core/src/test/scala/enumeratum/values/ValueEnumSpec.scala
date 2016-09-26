@@ -61,6 +61,20 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
       companion.values should contain(OperatingSystem.Windows)
     }
 
+    it("should work for CharEnum") {
+      def findCompanion[EntryType <: CharEnumEntry: CharEnum](entry: EntryType) = implicitly[CharEnum[EntryType]]
+      val companion = findCompanion(Alphabet.A: Alphabet)
+      companion shouldBe Alphabet
+      companion.values should contain(Alphabet.B)
+    }
+
+    it("should work for ByteEnum") {
+      def findCompanion[EntryType <: ByteEnumEntry: ByteEnum](entry: EntryType) = implicitly[ByteEnum[EntryType]]
+      val companion = findCompanion(Bites.OneByte: Bites)
+      companion shouldBe Bites
+      companion.values should contain(Bites.FourByte)
+    }
+
   }
 
   describe("compilation failures") {
