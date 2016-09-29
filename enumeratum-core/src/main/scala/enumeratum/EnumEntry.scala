@@ -3,21 +3,21 @@ package enumeratum
 import java.util.regex.Pattern
 
 /**
- * Base type for an enum entry for [[Enum]]
- *
- * By default, the entryName method used for serialising and deseralising Enum values uses
- * toString, but feel free to override to fit your needs.
- *
- * Mix in the supplied stackable traits to convert the entryName to [[EnumEntry.Snakecase Snakecase]],
- * [[EnumEntry.Uppercase Uppercase]], and [[EnumEntry.Lowercase Lowercase]]
- */
+  * Base type for an enum entry for [[Enum]]
+  *
+  * By default, the entryName method used for serialising and deseralising Enum values uses
+  * toString, but feel free to override to fit your needs.
+  *
+  * Mix in the supplied stackable traits to convert the entryName to [[EnumEntry.Snakecase Snakecase]],
+  * [[EnumEntry.Uppercase Uppercase]], and [[EnumEntry.Lowercase Lowercase]]
+  */
 abstract class EnumEntry {
 
   /**
-   * String representation of this Enum Entry.
-   *
-   * Override in your implementation if needed
-   */
+    * String representation of this Enum Entry.
+    *
+    * Override in your implementation if needed
+    */
   def entryName: String = toString
 
 }
@@ -34,9 +34,9 @@ object EnumEntry {
   private val snakifyReplacement = "$1_$2"
 
   /**
-   * Stackable trait to convert the entryName to snake_case. For UPPER_SNAKE_CASE,
-   * also mix in [[Uppercase]] after this one.
-   */
+    * Stackable trait to convert the entryName to snake_case. For UPPER_SNAKE_CASE,
+    * also mix in [[Uppercase]] after this one.
+    */
   trait Snakecase extends EnumEntry {
     abstract override def entryName: String = camel2snake(super.entryName)
 
@@ -48,39 +48,41 @@ object EnumEntry {
   }
 
   /**
-   * Stackable trait to convert the entryName to UPPERCASE.
-   */
+    * Stackable trait to convert the entryName to UPPERCASE.
+    */
   trait Uppercase extends EnumEntry {
     abstract override def entryName: String = super.entryName.toUpperCase
   }
 
   /**
-   * Stackable trait to convert the entryName to lowercase.
-   */
+    * Stackable trait to convert the entryName to lowercase.
+    */
   trait Lowercase extends EnumEntry {
     abstract override def entryName: String = super.entryName.toLowerCase
   }
 
   /**
-   * Helper implicit class that holds enrichment methods
-   */
-  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A) extends AnyVal {
+    * Helper implicit class that holds enrichment methods
+    */
+  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A)
+      extends AnyVal {
 
     /**
-     * Checks if the current enum value is contained by the set of enum values in the parameter list.
-     *
-     * @param firstEntry First enum of the list.
-     * @param otherEnums Remaining enums.
-     * @return `true` if the current value is contained by the parameter list.
-     */
-    def in(firstEntry: A, otherEnums: A*): Boolean = in(firstEntry +: otherEnums)
+      * Checks if the current enum value is contained by the set of enum values in the parameter list.
+      *
+      * @param firstEntry First enum of the list.
+      * @param otherEnums Remaining enums.
+      * @return `true` if the current value is contained by the parameter list.
+      */
+    def in(firstEntry: A, otherEnums: A*): Boolean =
+      in(firstEntry +: otherEnums)
 
     /**
-     * Checks if the current enum value is contained by the set of enum values in the parameter list.
-     *
-     * @param entries First enum of the list.
-     * @return `true` if the current value is contained by the parameter list.
-     */
+      * Checks if the current enum value is contained by the set of enum values in the parameter list.
+      *
+      * @param entries First enum of the list.
+      * @return `true` if the current value is contained by the parameter list.
+      */
     def in(entries: Seq[A]): Boolean = entries.contains(enumEntry)
   }
 
