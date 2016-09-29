@@ -157,6 +157,7 @@ lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 lazy val commonSettings = Seq(
   organization := "com.beachape",
   version := theVersion,
+  incOptions := incOptions.value.withLogRecompileOnMacro(false),
   scalaVersion := theScalaVersion
 ) ++
   scalariformSettings ++

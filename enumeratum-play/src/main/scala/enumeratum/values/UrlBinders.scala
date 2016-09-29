@@ -21,7 +21,7 @@ object UrlBinders {
       }
     }
 
-    def unbind(key: String, value: EntryType): String = value.value.toString
+    def unbind(key: String, value: EntryType): String = baseBindable.unbind(key, value.value)
   }
 
   /**
@@ -38,7 +38,7 @@ object UrlBinders {
       })
     }
 
-    def unbind(key: String, entry: EntryType): String = s"$key=${entry.value}"
+    def unbind(key: String, entry: EntryType): String = baseBindable.unbind(key, entry.value)
   }
 
 }

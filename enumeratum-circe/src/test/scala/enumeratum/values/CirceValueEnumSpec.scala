@@ -43,8 +43,11 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
         }
 
         it("should fail to parse random JSON to members") {
-          Json.fromString("GOBBLYGOOKITY").as[EntryType].isLeft shouldBe true
-          Json.fromInt(Int.MaxValue).as[EntryType].isLeft shouldBe true
+          val failures = Seq(Json.fromString("GOBBLYGOOKITY"), Json.fromInt(Int.MaxValue)).map(_.as[EntryType])
+          failures.foreach { f =>
+            f.isLeft shouldBe true
+            f.leftMap(_.history shouldBe Nil)
+          }
         }
 
       }
