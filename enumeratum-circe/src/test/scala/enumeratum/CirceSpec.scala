@@ -55,20 +55,27 @@ class CirceSpec extends FunSpec with Matchers {
     }
 
     it("should fail to parse random JSON to members") {
-      Json.fromString("XXL").as[ShirtSize].isLeft shouldBe true
-      Json.fromInt(Int.MaxValue).as[ShirtSize].isLeft shouldBe true
+      val failures = Seq(Json.fromString("XXL"), Json.fromInt(Int.MaxValue)).map(j => j.as[ShirtSize](Circe.decoder(ShirtSize)))
+      failures.foreach { f =>
+        f.isLeft shouldBe true
+        f.leftMap(_.history shouldBe Nil)
+      }
     }
 
     it("should fail to parse mixed but not upper case") {
-      Json.fromString("Small").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
-      Json.fromString("Medium").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
-      Json.fromString("Large").as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)).isLeft shouldBe true
+      val failures = Seq("Small", "Medium", "Large").map(s => Json.fromString(s).as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)))
+      failures.foreach { f =>
+        f.isLeft shouldBe true
+        f.leftMap(_.history shouldBe Nil)
+      }
     }
 
     it("should fail to parse mixed but not lower case") {
-      Json.fromString("Small").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
-      Json.fromString("Medium").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
-      Json.fromString("Large").as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)).isLeft shouldBe true
+      val failures = Seq("Small", "Medium", "Large").map(s => Json.fromString(s).as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)))
+      failures.foreach { f =>
+        f.isLeft shouldBe true
+        f.leftMap(_.history shouldBe Nil)
+      }
     }
 
   }
