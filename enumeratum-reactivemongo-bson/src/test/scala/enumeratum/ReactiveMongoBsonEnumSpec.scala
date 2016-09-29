@@ -1,14 +1,14 @@
 package enumeratum
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{FunSpec, Matchers}
 import reactivemongo.bson._
 import org.scalatest.OptionValues._
 
 /**
- *
- * @author Alessandro Lacava (@lambdista)
- * @since 2016-04-23
- */
+  *
+  * @author Alessandro Lacava (@lambdista)
+  * @since 2016-04-23
+  */
 class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
 
   describe("BSON serdes") {
