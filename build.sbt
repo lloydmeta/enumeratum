@@ -177,7 +177,8 @@ lazy val commonSettings = Seq(
     organization := "com.beachape",
     version := theVersion,
     incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion
+    scalaVersion := theScalaVersion,
+    scalafmtConfig := Some(file(".scalafmt.conf"))
   ) ++
     scoverageSettings ++
     reformatOnCompileSettings ++

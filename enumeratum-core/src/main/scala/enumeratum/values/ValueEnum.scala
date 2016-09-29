@@ -30,8 +30,7 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
     * `.value` values.
     */
   def withValue(i: ValueType): EntryType =
-    withValueOpt(i).getOrElse(
-      throw new NoSuchElementException(buildNotFoundMessage(i)))
+    withValueOpt(i).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(i)))
 
   /**
     * Optionally returns an [[EntryType]] for a given value.
@@ -59,8 +58,8 @@ object IntEnum {
   /**
     * Materializes an IntEnum for a given IntEnumEntry
     */
-  implicit def materialiseIntValueEnum[EntryType <: IntEnumEntry]: IntEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseIntValueEnum[EntryType <: IntEnumEntry]: IntEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -85,8 +84,8 @@ object LongEnum {
   /**
     * Materializes a LongEnum for an scope LongEnumEntry
     */
-  implicit def materialiseLongValueEnum[EntryType <: LongEnumEntry]: LongEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseLongValueEnum[EntryType <: LongEnumEntry]: LongEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -110,8 +109,8 @@ object ShortEnum {
   /**
     * Materializes a ShortEnum for an inscope ShortEnumEntry
     */
-  implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -135,8 +134,8 @@ object StringEnum {
   /**
     * Materializes a StringEnum for an in-scope StringEnumEntry
     */
-  implicit def materialiseStringValueEnum[EntryType <: StringEnumEntry]: StringEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseStringValueEnum[EntryType <: StringEnumEntry]: StringEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -165,8 +164,8 @@ object ByteEnum {
   /**
     * Materializes a ByteEnum for an in-scope ByteEnumEntry
     */
-  implicit def materialiseByteValueEnum[EntryType <: ByteEnumEntry]: ByteEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseByteValueEnum[EntryType <: ByteEnumEntry]: ByteEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 
@@ -195,8 +194,8 @@ object CharEnum {
   /**
     * Materializes a CharEnum for an in-scope CharEnumEntry
     */
-  implicit def materialiseCharValueEnum[EntryType <: CharEnumEntry]: CharEnum[
-    EntryType] = macro EnumMacros.materializeEnumImpl[EntryType]
+  implicit def materialiseCharValueEnum[EntryType <: CharEnumEntry]: CharEnum[EntryType] =
+    macro EnumMacros.materializeEnumImpl[EntryType]
 
 }
 

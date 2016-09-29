@@ -7,8 +7,7 @@ import reactivemongo.bson._
   * @author Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-sealed trait ReactiveMongoBsonValueEnum[
-    ValueType, EntryType <: ValueEnumEntry[ValueType]] {
+sealed trait ReactiveMongoBsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   enum: ValueEnum[ValueType, EntryType] =>
 
   /**
@@ -21,8 +20,7 @@ sealed trait ReactiveMongoBsonValueEnum[
   * Enum implementation for Int enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait IntReactiveMongoBsonValueEnum[EntryType <: IntEnumEntry]
-    extends ReactiveMongoBsonValueEnum[Int, EntryType] {
-  this: IntEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)
@@ -32,8 +30,7 @@ trait IntReactiveMongoBsonValueEnum[EntryType <: IntEnumEntry]
   * Enum implementation for Long enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait LongReactiveMongoBsonValueEnum[EntryType <: LongEnumEntry]
-    extends ReactiveMongoBsonValueEnum[Long, EntryType] {
-  this: LongEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)
@@ -43,8 +40,7 @@ trait LongReactiveMongoBsonValueEnum[EntryType <: LongEnumEntry]
   * Enum implementation for Short enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait ShortReactiveMongoBsonValueEnum[EntryType <: ShortEnumEntry]
-    extends ReactiveMongoBsonValueEnum[Short, EntryType] {
-  this: ShortEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)
@@ -54,8 +50,7 @@ trait ShortReactiveMongoBsonValueEnum[EntryType <: ShortEnumEntry]
   * Enum implementation for String enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait StringReactiveMongoBsonValueEnum[EntryType <: StringEnumEntry]
-    extends ReactiveMongoBsonValueEnum[String, EntryType] {
-  this: StringEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)
@@ -65,8 +60,7 @@ trait StringReactiveMongoBsonValueEnum[EntryType <: StringEnumEntry]
   * Enum implementation for Char enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait CharReactiveMongoBsonValueEnum[EntryType <: CharEnumEntry]
-    extends ReactiveMongoBsonValueEnum[Char, EntryType] {
-  this: CharEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)
@@ -76,8 +70,7 @@ trait CharReactiveMongoBsonValueEnum[EntryType <: CharEnumEntry]
   * Enum implementation for Byte enum members that contains an implicit ReactiveMongo BSON Handler
   */
 trait ByteReactiveMongoBsonValueEnum[EntryType <: ByteEnumEntry]
-    extends ReactiveMongoBsonValueEnum[Byte, EntryType] {
-  this: ByteEnum[EntryType] =>
+    extends ReactiveMongoBsonValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
 
   implicit val bsonHandler: BSONHandler[BSONValue, EntryType] =
     EnumHandler.handler(this)

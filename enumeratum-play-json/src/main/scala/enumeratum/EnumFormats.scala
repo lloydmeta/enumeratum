@@ -13,8 +13,7 @@ object EnumFormats {
     * @param enum The enum
     * @param insensitive bind in a case-insensitive way, defaults to false
     */
-  def reads[A <: EnumEntry](enum: Enum[A],
-                            insensitive: Boolean = false): Reads[A] =
+  def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] =
     new Reads[A] {
       def reads(json: JsValue): JsResult[A] = json match {
         case JsString(s) => {
@@ -23,7 +22,7 @@ object EnumFormats {
             else enum.withNameOption(s)
           maybeBound match {
             case Some(obj) => JsSuccess(obj)
-            case None => JsError("error.expected.validenumvalue")
+            case None      => JsError("error.expected.validenumvalue")
           }
         }
         case _ => JsError("error.expected.enumstring")
@@ -36,7 +35,7 @@ object EnumFormats {
         case JsString(s) =>
           enum.withNameLowercaseOnlyOption(s) match {
             case Some(obj) => JsSuccess(obj)
-            case None => JsError("error.expected.validenumvalue")
+            case None      => JsError("error.expected.validenumvalue")
           }
         case _ => JsError("error.expected.enumstring")
       }
@@ -48,7 +47,7 @@ object EnumFormats {
         case JsString(s) =>
           enum.withNameUppercaseOnlyOption(s) match {
             case Some(obj) => JsSuccess(obj)
-            case None => JsError("error.expected.validenumvalue")
+            case None      => JsError("error.expected.validenumvalue")
           }
         case _ => JsError("error.expected.enumstring")
       }
@@ -83,8 +82,7 @@ object EnumFormats {
     * @param enum The enum
     * @param insensitive bind in a case-insensitive way, defaults to false
     */
-  def formats[A <: EnumEntry](enum: Enum[A],
-                              insensitive: Boolean = false): Format[A] = {
+  def formats[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Format[A] = {
     Format(reads(enum, insensitive), writes(enum))
   }
 
