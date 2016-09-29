@@ -55,7 +55,7 @@ class CirceSpec extends FunSpec with Matchers {
     }
 
     it("should fail to parse random JSON to members") {
-      val failures = Seq(Json.fromString("XXL"), Json.fromInt(Int.MaxValue)).map(j => j.as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)))
+      val failures = Seq(Json.fromString("XXL"), Json.fromInt(Int.MaxValue)).map(j => j.as[ShirtSize](Circe.decoder(ShirtSize)))
       failures.foreach { f =>
         f.isLeft shouldBe true
         f.leftMap(_.history shouldBe Nil)
