@@ -27,7 +27,7 @@ object Forms {
         }
       }
 
-      def unbind(key: String, value: EntryType): Map[String, String] = Map(key -> value.value.toString)
+      def unbind(key: String, value: EntryType): Map[String, String] = baseFormatter.unbind(key, value.value)
     }
   }
 
