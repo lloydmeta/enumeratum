@@ -30,8 +30,7 @@ object EnumMacros {
     *
     * Aborts if the type is not sealed
     */
-  private[enumeratum] def validateType(c: Context)(
-      typeSymbol: c.universe.Symbol): Unit = {
+  private[enumeratum] def validateType(c: Context)(typeSymbol: c.universe.Symbol): Unit = {
     if (!typeSymbol.asClass.isSealed)
       c.abort(
         c.enclosingPosition,

@@ -14,9 +14,9 @@ object DummyEnum extends Enum[DummyEnum] {
 
   val values = findValues
 
-  case object Hello extends DummyEnum
+  case object Hello   extends DummyEnum
   case object GoodBye extends DummyEnum
-  case object Hi extends DummyEnum
+  case object Hi      extends DummyEnum
 
 }
 
@@ -26,8 +26,8 @@ object SnakeEnum extends Enum[SnakeEnum] {
 
   val values = findValues
 
-  case object Hello extends SnakeEnum
-  case object GoodBye extends SnakeEnum
+  case object Hello        extends SnakeEnum
+  case object GoodBye      extends SnakeEnum
   case object ShoutGoodBye extends SnakeEnum with Uppercase
 
 }
@@ -38,9 +38,9 @@ object LowerEnum extends Enum[LowerEnum] {
 
   val values = findValues
 
-  case object Hello extends LowerEnum
+  case object Hello   extends LowerEnum
   case object GoodBye extends LowerEnum
-  case object Sike extends LowerEnum with Uppercase
+  case object Sike    extends LowerEnum with Uppercase
 
 }
 
@@ -52,9 +52,9 @@ object Wrapper {
 
     val values = findValues
 
-    case object Hello extends SmartEnum
+    case object Hello   extends SmartEnum
     case object GoodBye extends SmartEnum
-    case object Hi extends SmartEnum
+    case object Hi      extends SmartEnum
 
   }
 
@@ -68,8 +68,8 @@ object InTheWoods {
     val values = findValues
 
     case object FlyAgaric extends Mushroom(true)
-    case object LSD extends Mushroom(false)
-    case object Shimeji extends Mushroom(false)
+    case object LSD       extends Mushroom(false)
+    case object Shimeji   extends Mushroom(false)
 
   }
 }

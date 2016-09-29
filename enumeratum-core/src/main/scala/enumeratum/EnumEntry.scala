@@ -29,8 +29,8 @@ object EnumEntry {
    *
    * http://stackoverflow.com/a/19832063/1814775
    */
-  private val snakifyRegexp1 = Pattern.compile("([A-Z]+)([A-Z][a-z])")
-  private val snakifyRegexp2 = Pattern.compile("([a-z\\d])([A-Z])")
+  private val snakifyRegexp1     = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  private val snakifyRegexp2     = Pattern.compile("([a-z\\d])([A-Z])")
   private val snakifyReplacement = "$1_$2"
 
   /**
@@ -64,8 +64,7 @@ object EnumEntry {
   /**
     * Helper implicit class that holds enrichment methods
     */
-  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A)
-      extends AnyVal {
+  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A) extends AnyVal {
 
     /**
       * Checks if the current enum value is contained by the set of enum values in the parameter list.

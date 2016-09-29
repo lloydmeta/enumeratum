@@ -15,8 +15,7 @@ object Forms {
     */
   def enum[ValueType,
            EntryType <: ValueEnumEntry[ValueType],
-           EnumType <: ValueEnum[ValueType, EntryType]](
-      baseFormatter: Formatter[ValueType])(
+           EnumType <: ValueEnum[ValueType, EntryType]](baseFormatter: Formatter[ValueType])(
       enum: EnumType): Mapping[EntryType] = {
     PlayForms.of(formatter(baseFormatter)(enum))
   }
@@ -26,13 +25,12 @@ object Forms {
                               EnumType <: ValueEnum[ValueType, EntryType]](
       baseFormatter: Formatter[ValueType])(enum: EnumType) = {
     new Formatter[EntryType] {
-      def bind(key: String,
-               data: Map[String, String]): Either[Seq[FormError], EntryType] =
+      def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EntryType] =
         baseFormatter.bind(key, data).right.flatMap { s =>
           val maybeBound = enum.withValueOpt(s)
           maybeBound match {
             case Some(obj) => Right(obj)
-            case None => Left(Seq(FormError(key, "error.enum", Nil)))
+            case None      => Left(Seq(FormError(key, "error.enum", Nil)))
           }
         }
 

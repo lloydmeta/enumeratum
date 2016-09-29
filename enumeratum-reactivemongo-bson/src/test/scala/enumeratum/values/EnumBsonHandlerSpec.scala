@@ -4,9 +4,9 @@ import org.scalatest._
 import BSONValueHandlers._
 
 /**
- * @author Alessandro Lacava (@lambdista)
- * @since 2016-04-23
- */
+  * @author Alessandro Lacava (@lambdista)
+  * @since 2016-04-23
+  */
 class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelpers {
 
   describe(".reader") {
@@ -38,9 +38,15 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
     testHandler("ShortEnum", Drinks)
     testHandler("StringEnum", OperatingSystem)
     testHandler("ShortReactiveMongoBsonValueEnum", BsonDrinks, Some(BsonDrinks.bsonHandler))
-    testHandler("LongReactiveMongoBsonValueEnum", BsonContentType, Some(BsonContentType.bsonHandler))
-    testHandler("IntReactiveMongoBsonValueEnum", BsonLibraryItem, Some(BsonLibraryItem.bsonHandler))
-    testHandler("StringReactiveMongoBsonValueEnum", BsonOperatingSystem, Some(BsonOperatingSystem.bsonHandler))
+    testHandler("LongReactiveMongoBsonValueEnum",
+                BsonContentType,
+                Some(BsonContentType.bsonHandler))
+    testHandler("IntReactiveMongoBsonValueEnum",
+                BsonLibraryItem,
+                Some(BsonLibraryItem.bsonHandler))
+    testHandler("StringReactiveMongoBsonValueEnum",
+                BsonOperatingSystem,
+                Some(BsonOperatingSystem.bsonHandler))
     testHandler("CharReactiveMongoBsonValueEnum", BsonAlphabet, Some(BsonAlphabet.bsonHandler))
     testHandler("ByteReactiveMongoBsonValueEnum", BsonBites, Some(BsonBites.bsonHandler))
 

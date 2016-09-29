@@ -10,8 +10,7 @@ trait UPickleEnum[A <: EnumEntry] { self: Enum[A] =>
 
   import UPickler._
 
-  implicit val uPickleReadWriter: RW[A] = ReadWriter(
-    writer(this).write,
-    reader(enum = this, insensitive = false).read)
+  implicit val uPickleReadWriter: RW[A] =
+    ReadWriter(writer(this).write, reader(enum = this, insensitive = false).read)
 
 }

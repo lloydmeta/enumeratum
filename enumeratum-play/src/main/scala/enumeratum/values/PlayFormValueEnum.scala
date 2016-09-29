@@ -8,8 +8,7 @@ import play.api.data.{FormError, Mapping}
   *
   * Copyright 2016
   */
-sealed trait PlayFormValueEnum[
-    ValueType, EntryType <: ValueEnumEntry[ValueType]] {
+sealed trait PlayFormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   enum: ValueEnum[ValueType, EntryType] =>
 
   /**
@@ -29,8 +28,8 @@ sealed trait PlayFormValueEnum[
 /**
   * Form Bindable implicits for IntEnum
   */
-trait IntPlayFormValueEnum[EntryType <: IntEnumEntry]
-    extends PlayFormValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
+trait IntPlayFormValueEnum[EntryType <: IntEnumEntry] extends PlayFormValueEnum[Int, EntryType] {
+  this: IntEnum[EntryType] =>
   protected val baseFormatter: Formatter[Int] = Formats.intFormat
 }
 
@@ -54,8 +53,7 @@ trait ShortPlayFormValueEnum[EntryType <: ShortEnumEntry]
   * Form Bindable implicits for StringEnum
   */
 trait StringPlayFormValueEnum[EntryType <: StringEnumEntry]
-    extends PlayFormValueEnum[String, EntryType] {
-  this: StringEnum[EntryType] =>
+    extends PlayFormValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
   protected val baseFormatter: Formatter[String] = Formats.stringFormat
 }
 

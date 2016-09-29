@@ -4,15 +4,15 @@ import org.scalatest._
 import reactivemongo.bson._
 
 /**
- * @author Alessandro Lacava (@lambdista)
- * @since 2016-04-23
- */
+  * @author Alessandro Lacava (@lambdista)
+  * @since 2016-04-23
+  */
 trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
 
   def testWriter[EntryType <: ValueEnumEntry[ValueType], ValueType](
-    enumKind:       String,
-    enum:           ValueEnum[ValueType, EntryType],
-    providedWriter: Option[BSONWriter[EntryType, BSONValue]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedWriter: Option[BSONWriter[EntryType, BSONValue]] = None
   )(implicit baseHandler: BSONHandler[BSONValue, ValueType]): Unit = {
     val writer = providedWriter.getOrElse(EnumHandler.writer(enum))
     describe(enumKind) {
@@ -25,9 +25,9 @@ trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
   }
 
   def testReader[EntryType <: ValueEnumEntry[ValueType], ValueType](
-    enumKind:       String,
-    enum:           ValueEnum[ValueType, EntryType],
-    providedReader: Option[BSONReader[BSONValue, EntryType]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedReader: Option[BSONReader[BSONValue, EntryType]] = None
   )(implicit baseHandler: BSONHandler[BSONValue, ValueType]): Unit = {
     val reader = providedReader.getOrElse(EnumHandler.reader(enum))
     describe(enumKind) {
@@ -44,9 +44,9 @@ trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
   }
 
   def testHandler[EntryType <: ValueEnumEntry[ValueType], ValueType](
-    enumKind:        String,
-    enum:            ValueEnum[ValueType, EntryType],
-    providedHandler: Option[BSONHandler[BSONValue, EntryType]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedHandler: Option[BSONHandler[BSONValue, EntryType]] = None
   )(implicit baseHandler: BSONHandler[BSONValue, ValueType]): Unit = {
     val handler = providedHandler.getOrElse(EnumHandler.handler(enum))
     describe(s"$enumKind Handler") {

@@ -17,7 +17,7 @@ object Circe {
   def encoder[ValueType: Encoder, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]): Encoder[EntryType] = {
     new Encoder[EntryType] {
-      private val valueEncoder = implicitly[Encoder[ValueType]]
+      private val valueEncoder      = implicitly[Encoder[ValueType]]
       def apply(a: EntryType): Json = valueEncoder.apply(a.value)
     }
   }
@@ -35,9 +35,7 @@ object Circe {
           maybeBound match {
             case Some(member) => Xor.Right(member)
             case _ =>
-              Xor.Left(
-                DecodingFailure(s"$v is not a member of enum $enum",
-                                c.history))
+              Xor.Left(DecodingFailure(s"$v is not a member of enum $enum", c.history))
           }
         }
     }

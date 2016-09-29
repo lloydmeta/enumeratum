@@ -42,9 +42,9 @@ object EnumHandler {
       implicit baseBsonHandler: BSONHandler[BSONValue, ValueType])
     : BSONHandler[BSONValue, EntryType] =
     new BSONHandler[BSONValue, EntryType] {
-      private val concreteReader = reader(enum)
-      private val concreteWriter = writer(enum)
+      private val concreteReader           = reader(enum)
+      private val concreteWriter           = writer(enum)
       def read(bson: BSONValue): EntryType = concreteReader.read(bson)
-      def write(t: EntryType): BSONValue = concreteWriter.write(t)
+      def write(t: EntryType): BSONValue   = concreteWriter.write(t)
     }
 }

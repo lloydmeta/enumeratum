@@ -5,16 +5,18 @@ import java.util.NoSuchElementException
 import org.scalatest._
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 trait ValueEnumHelpers { this: FunSpec with Matchers =>
 
   /*
    * Generates tests for a given enum and groups the tests inside the given enumKind descriptor
    */
-  def testNumericEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric](enumKind: String, enum: ValueEnum[ValueType, EntryType]): Unit = {
+  def testNumericEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType]): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     testEnum(enumKind, enum, Seq(numeric.fromInt(Int.MaxValue)))
   }
@@ -22,7 +24,10 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
   /*
    * Generates tests for a given enum and groups the tests inside the given enumKind descriptor
    */
-  def testEnum[EntryType <: ValueEnumEntry[ValueType], ValueType](enumKind: String, enum: ValueEnum[ValueType, EntryType], invalidValues: Seq[ValueType]): Unit = {
+  def testEnum[EntryType <: ValueEnumEntry[ValueType], ValueType](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      invalidValues: Seq[ValueType]): Unit = {
 
     describe(enumKind) {
 

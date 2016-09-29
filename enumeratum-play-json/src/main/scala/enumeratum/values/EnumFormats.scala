@@ -21,7 +21,7 @@ object EnumFormats {
           val maybeBound = enum.withValueOpt(s)
           maybeBound match {
             case Some(obj) => JsSuccess(obj)
-            case None => JsError("error.expected.validenumvalue")
+            case None      => JsError("error.expected.validenumvalue")
           }
         }
     }
@@ -40,9 +40,8 @@ object EnumFormats {
     * Returns a Formats for the provided ValueEnum based on the given base Reads and Writes for the Enum's value type
     */
   def formats[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType])(
-      implicit baseReads: Reads[ValueType],
-      baseWrites: Writes[ValueType]): Format[EntryType] = {
+      enum: ValueEnum[ValueType, EntryType])(implicit baseReads: Reads[ValueType],
+                                             baseWrites: Writes[ValueType]): Format[EntryType] = {
     Format(reads(enum), writes(enum))
   }
 
@@ -54,7 +53,7 @@ object EnumFormats {
 
     def reads(json: JsValue): JsResult[Char] = json match {
       case JsString(s) if s.length == 1 => JsSuccess(s.charAt(0))
-      case _ => JsError("error.expected.singleChar")
+      case _                            => JsError("error.expected.singleChar")
     }
   }
 

@@ -2,13 +2,13 @@ package enumeratum
 
 import java.security.cert.X509Certificate
 
-import org.scalatest.{ FunSpec, Matchers }
-import play.api.data.{ Form, Mapping }
+import org.scalatest.{FunSpec, Matchers}
+import play.api.data.{Form, Mapping}
 import play.api.http.HttpVerbs
-import play.api.libs.json.{ Format, JsNumber, JsString, JsValue, Json => PlayJson }
+import play.api.libs.json.{Format, JsNumber, JsString, JsValue, Json => PlayJson}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.mvc.{ Headers, PathBindable, QueryStringBindable, RequestHeader }
+import play.api.mvc.{Headers, PathBindable, QueryStringBindable, RequestHeader}
 import play.api.routing.sird.PathBindableExtractor
 
 class PlayEnumSpec extends FunSpec with Matchers {
@@ -16,7 +16,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
   testScenarios(
     descriptor = "ordinary operation (no tarnsforms)",
     enum = PlayDummyNormal,
-    validTransforms = Map("A" -> PlayDummyNormal.A, "B" -> PlayDummyNormal.B, "c" -> PlayDummyNormal.c),
+    validTransforms =
+      Map("A" -> PlayDummyNormal.A, "B" -> PlayDummyNormal.B, "c" -> PlayDummyNormal.c),
     expectedFailures = Seq("1.234"),
     formMapping = PlayDummyNormal.formField,
     pathBindable = PlayDummyNormal.pathBindable,
@@ -27,7 +28,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
   testScenarios(
     descriptor = "lower case transformed",
     enum = PlayDummyLowerOnly,
-    validTransforms = Map("a" -> PlayDummyLowerOnly.A, "b" -> PlayDummyLowerOnly.B, "c" -> PlayDummyLowerOnly.c),
+    validTransforms =
+      Map("a" -> PlayDummyLowerOnly.A, "b" -> PlayDummyLowerOnly.B, "c" -> PlayDummyLowerOnly.c),
     expectedFailures = Seq("C"),
     formMapping = PlayDummyLowerOnly.formField,
     pathBindable = PlayDummyLowerOnly.pathBindable,
@@ -38,7 +40,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
   testScenarios(
     descriptor = "upper case transformed",
     enum = PlayDummyUpperOnly,
-    validTransforms = Map("A" -> PlayDummyUpperOnly.A, "B" -> PlayDummyUpperOnly.B, "C" -> PlayDummyUpperOnly.c),
+    validTransforms =
+      Map("A" -> PlayDummyUpperOnly.A, "B" -> PlayDummyUpperOnly.B, "C" -> PlayDummyUpperOnly.c),
     expectedFailures = Seq("c"),
     formMapping = PlayDummyUpperOnly.formField,
     pathBindable = PlayDummyUpperOnly.pathBindable,
@@ -47,14 +50,14 @@ class PlayEnumSpec extends FunSpec with Matchers {
   )
 
   private def testScenarios[A <: EnumEntry: Format](
-    descriptor:            String,
-    enum:                  Enum[A],
-    validTransforms:       Map[String, A],
-    expectedFailures:      Seq[String],
-    formMapping:           Mapping[A],
-    pathBindable:          PathBindable[A],
-    pathBindableExtractor: PathBindableExtractor[A],
-    queryStringBindable:   QueryStringBindable[A]
+      descriptor: String,
+      enum: Enum[A],
+      validTransforms: Map[String, A],
+      expectedFailures: Seq[String],
+      formMapping: Mapping[A],
+      pathBindable: PathBindable[A],
+      pathBindableExtractor: PathBindableExtractor[A],
+      queryStringBindable: QueryStringBindable[A]
   ): Unit = describe(descriptor) {
 
     testJson()
@@ -63,7 +66,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
     def testJson(): Unit = {
 
-      val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(JsString("AVADSGDSAFA"), JsNumber(Int.MaxValue))
+      val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(JsString("AVADSGDSAFA"),
+                                                                         JsNumber(Int.MaxValue))
 
       describe("JSON serdes") {
 
@@ -99,7 +103,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
     def testFormBinding(): Unit = {
 
-      val subject = Form("hello" -> formMapping)
+      val subject        = Form("hello" -> formMapping)
       val expectedErrors = expectedFailures ++ Seq(Int.MaxValue.toString, "12asdf13!")
 
       describe("Form binding") {
@@ -168,9 +172,10 @@ class PlayEnumSpec extends FunSpec with Matchers {
             import play.api.routing._
             import play.api.mvc._
             val router = Router.from {
-              case GET(p"/${ pathBindableExtractor(greeting) }") => Action {
-                Results.Ok(s"$greeting")
-              }
+              case GET(p"/${ pathBindableExtractor(greeting) }") =>
+                Action {
+                  Results.Ok(s"$greeting")
+                }
             }
             validTransforms.foreach {
               case (k, v) =>
@@ -188,13 +193,17 @@ class PlayEnumSpec extends FunSpec with Matchers {
           it("should bind strings corresponding to enum strings") {
             validTransforms.foreach {
               case (k, v) =>
-                queryStringBindable.bind("hello", Map("hello" -> Seq(k))).value.right.value should be(v)
+                queryStringBindable
+                  .bind("hello", Map("hello" -> Seq(k)))
+                  .value
+                  .right
+                  .value should be(v)
             }
           }
 
           it("should not bind strings not found in the enumeration") {
             expectedErrors.foreach { v =>
-              queryStringBindable.bind("hello", Map("hello" -> Seq(v))).value shouldBe 'left
+              queryStringBindable.bind("hello", Map("hello"  -> Seq(v))).value shouldBe 'left
               queryStringBindable.bind("hello", Map("helloz" -> Seq(v))) shouldBe None
             }
           }

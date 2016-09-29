@@ -4,8 +4,8 @@ import org.scalatest._
 import upickle.Js
 
 /**
- * Created by Lloyd on 12/12/15.
- */
+  * Created by Lloyd on 12/12/15.
+  */
 class UPickleSpec extends FunSpec with Matchers {
 
   import Dummy._
