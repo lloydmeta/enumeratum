@@ -39,7 +39,8 @@ lazy val root =
                enumeratumUPickleJvm,
                enumeratumCirceJs,
                enumeratumCirceJvm,
-               enumeratumReactiveMongoBson)
+               enumeratumReactiveMongoBson,
+               enumeratumArgonaut)
 
 lazy val core = crossProject
   .crossType(CrossType.Pure)
@@ -172,6 +173,18 @@ lazy val enumeratumCirce = crossProject
   .dependsOn(core % "test->test;compile->compile")
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
+
+lazy val enumeratumArgonaut =
+  Project(id = "enumeratum-argonaut",
+          base = file("enumeratum-argonaut"),
+          settings = commonWithPublishSettings)
+    .settings(
+      libraryDependencies ++= Seq(
+        "io.argonaut" %% "argonaut" % "6.1"
+      )
+    )
+    .settings(testSettings: _*)
+    .dependsOn(coreJvm % "test->test;compile->compile")
 
 lazy val commonSettings = Seq(
     organization := "com.beachape",
