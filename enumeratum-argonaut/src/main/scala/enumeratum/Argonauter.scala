@@ -8,19 +8,17 @@ import Argonaut._
   */
 object Argonauter {
 
-  private def encoder0[A <: EnumEntry](enum: Enum[A])(f: A => String): EncodeJson[A] =
-    EncodeJson { a =>
-      stringEncoder(f(a))
-    }
+  private def encoder0[A <: EnumEntry](f: A => String): EncodeJson[A] =
+    stringEncoder.contramap(f)
 
   def encoder[A <: EnumEntry](enum: Enum[A]): EncodeJson[A] =
-    encoder0(enum)(_.entryName)
+    encoder0[A](_.entryName)
 
   def encoderLowercase[A <: EnumEntry](enum: Enum[A]): EncodeJson[A] =
-    encoder0(enum)(_.entryName.toLowerCase)
+    encoder0[A](_.entryName.toLowerCase)
 
   def encoderUppercase[A <: EnumEntry](enum: Enum[A]): EncodeJson[A] =
-    encoder0(enum)(_.entryName.toUpperCase)
+    encoder0[A](_.entryName.toUpperCase)
 
   private def decoder0[A <: EnumEntry](enum: Enum[A])(f: String => Option[A]): DecodeJson[A] =
     DecodeJson { cursor =>
