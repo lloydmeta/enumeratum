@@ -1,10 +1,10 @@
 package enumeratum
 
-import argonaut._
-import Argonaut._
+import argonaut.Argonaut._
+import argonaut.{DecodeJson, EncodeJson}
 
 /**
-  * Created by alonsodomin on 14/10/2016.
+  * Created by alonsodomin on 15/10/2016.
   */
 package object values {
 

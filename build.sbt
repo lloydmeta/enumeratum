@@ -194,7 +194,7 @@ lazy val commonSettings = Seq(
     scalafmtConfig := Some(file(".scalafmt.conf"))
   ) ++
     scoverageSettings ++
-    reformatOnCompileSettings ++
+    //reformatOnCompileSettings ++
     compilerSettings ++
     resolverSettings ++
     ideSettings
