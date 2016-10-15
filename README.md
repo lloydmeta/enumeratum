@@ -30,6 +30,7 @@ Integrations are available for:
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
+- [Argonaut](http://www.argonaut.io): JVM only
 
 ### Table of Contents
 
@@ -46,8 +47,9 @@ Integrations are available for:
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
-8. [Slick integration](#slick-integration)
-9. [Benchmarking](#benchmarking)
+8. [Argonaut integration](#argonaut)
+9. [Slick integration](#slick-integration)
+10. [Benchmarking](#benchmarking)
 
 
 ## Quick start
@@ -661,7 +663,69 @@ val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
-### Slick integration
+## Argonaut
+
+### SBT
+
+To use enumeratum with [Argonaut](http://www.argonaut.io):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-argonaut" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait TrafficLight extends EnumEntry
+object TrafficLight extends Enum[TrafficLight] with ArgonautEnum[TrafficLight] {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+  val values = findValues
+}
+
+import argonaut._
+import Argonaut._
+
+TrafficLight.values.foreach { entry =>
+    assert(entry.asJson == entry.entryName.asJson)
+}
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class ArgonautDevice(val value: Short) extends ShortEnumEntry
+case object ArgonautDevice
+    extends ShortEnum[ArgonautDevice]
+    with ShortArgonautEnum[ArgonautDevice] {
+  case object Phone   extends ArgonautDevice(1)
+  case object Laptop  extends ArgonautDevice(2)
+  case object Desktop extends ArgonautDevice(3)
+  case object Tablet  extends ArgonautDevice(4)
+
+  val values = findValues
+}
+
+import argonaut._
+import Argonaut._
+
+ArgonautDevice.values.foreach { item =>
+    assert(item.asJson == item.value.asJson)
+}
+```
+
+## Slick integration
 
 [Slick](http://slick.lightbend.com) doesn't have a separate integration at the moment. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
 
