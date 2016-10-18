@@ -16,7 +16,7 @@ sealed trait ValueEnumEntry[ValueType] {
 
 object ValueEnumEntry {
 
-  implicit class ValueEnumOps[A <: ValueEnumEntry[_]](val enumEntry: A) {
+  implicit class ValueEnumOps[A <: ValueEnumEntry[_]](val enumEntry: A) extends AnyVal {
 
     /**
       * Checks if the current enum value is contained by the set of enum values in the parameter list.

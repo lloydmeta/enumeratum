@@ -15,7 +15,7 @@ Enumeratum has the following niceties:
 - [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints. 
 - Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
-- No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
+- No usage of reflection at runtime. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
   environments where reflection is a best effort (such as Android)
 - No usage of `synchronized`, which may help with performance and deadlocks prevention
 - All magic happens at compile-time so you know right away when things go awry

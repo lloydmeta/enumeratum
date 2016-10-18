@@ -70,11 +70,8 @@ object EnumMacros {
       }
       enclosingModule.impl.body.filter { x =>
         try {
-          Option(x.symbol) match {
-            case Some(sym) if sym.isModule =>
-              sym.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
-            case _ => false
-          }
+          x.symbol.isModule &&
+          x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
         } catch {
           case NonFatal(e) =>
             c.warning(
@@ -87,9 +84,7 @@ object EnumMacros {
       case NonFatal(e) =>
         c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
     }
-    if (!enclosingBodySubClassTrees.forall(x => x.symbol.isModule))
-      c.abort(c.enclosingPosition, "All subclasses must be objects.")
-    else enclosingBodySubClassTrees
+    enclosingBodySubClassTrees
   }
 
   /**
@@ -106,7 +101,7 @@ object EnumMacros {
   private[enumeratum] def buildSeqExpr[A: c.WeakTypeTag](c: Context)(
       subclassSymbols: Seq[c.universe.Symbol]) = {
     import c.universe._
-    val resultType = implicitly[c.WeakTypeTag[A]].tpe
+    val resultType = weakTypeOf[A]
     if (subclassSymbols.isEmpty) {
       c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
     } else {
