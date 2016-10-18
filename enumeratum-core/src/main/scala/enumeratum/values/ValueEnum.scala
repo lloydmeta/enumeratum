@@ -107,7 +107,7 @@ trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
 object ShortEnum {
 
   /**
-    * Materializes a ShortEnum for an inscope ShortEnumEntry
+    * Materializes a ShortEnum for an in-scope ShortEnumEntry
     */
   implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[EntryType] =
     macro EnumMacros.materializeEnumImpl[EntryType]
