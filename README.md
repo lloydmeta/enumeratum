@@ -15,7 +15,7 @@ Enumeratum has the following niceties:
 - [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints. 
 - Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
-- No usage of reflection at run time. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
+- No usage of reflection at runtime. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
   environments where reflection is a best effort (such as Android)
 - No usage of `synchronized`, which may help with performance and deadlocks prevention
 - All magic happens at compile-time so you know right away when things go awry
@@ -30,6 +30,7 @@ Integrations are available for:
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
+- [Argonaut](http://www.argonaut.io): JVM only
 
 ### Table of Contents
 
@@ -46,9 +47,9 @@ Integrations are available for:
 5. [Circe integration](#circe)
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
-8. [Slick integration](#slick-integration)
-9. [Benchmarking](#benchmarking)
-10. [Licence](#licence)
+8. [Argonaut integration](#argonaut)
+9. [Slick integration](#slick-integration)
+10. [Benchmarking](#benchmarking)
 
 
 ## Quick start
@@ -196,7 +197,7 @@ Greeting.withName("SHOUT_GOOD_BYE")
 ### ValueEnum
 
 Asides from enumerations that resolve members from `String` _names_, Enumeratum also supports `ValueEnum`s, enums that resolve
-members from simple _values_ like `Int`, `Long`, `Short`, and `String` (without support for runtime transformations). 
+members from simple _values_ like `Int`, `Long`, `Short`, `Char`, `Byte`, and `String` (without support for runtime transformations). 
 
 These enums are not modelled after `Enumeration` from standard lib, and therefore have the added ability to make sure, at compile-time,
 that multiple members do not share the same value.
@@ -662,7 +663,69 @@ val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
-### Slick integration
+## Argonaut
+
+### SBT
+
+To use enumeratum with [Argonaut](http://www.argonaut.io):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion,
+    "com.beachape" %% "enumeratum-argonaut" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait TrafficLight extends EnumEntry
+object TrafficLight extends Enum[TrafficLight] with ArgonautEnum[TrafficLight] {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+  val values = findValues
+}
+
+import argonaut._
+import Argonaut._
+
+TrafficLight.values.foreach { entry =>
+    assert(entry.asJson == entry.entryName.asJson)
+}
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class ArgonautDevice(val value: Short) extends ShortEnumEntry
+case object ArgonautDevice
+    extends ShortEnum[ArgonautDevice]
+    with ShortArgonautEnum[ArgonautDevice] {
+  case object Phone   extends ArgonautDevice(1)
+  case object Laptop  extends ArgonautDevice(2)
+  case object Desktop extends ArgonautDevice(3)
+  case object Tablet  extends ArgonautDevice(4)
+
+  val values = findValues
+}
+
+import argonaut._
+import Argonaut._
+
+ArgonautDevice.values.foreach { item =>
+    assert(item.asJson == item.value.asJson)
+}
+```
+
+## Slick integration
 
 [Slick](http://slick.lightbend.com) doesn't have a separate integration at the moment. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
 
@@ -713,6 +776,28 @@ thus causing a failure to find your mapping. In order to fix this, simply assist
 .filter(_.productType === (ProductType.Foo: ProductType))`
 ```
 
+If you want to use slick interpolated SQL queries you need a few additional implicits.
+
+``` scala
+implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
+  override def apply(positionedResult: PositionedResult): Greeting = Greeting.withName(positionedResult.nextString())
+}
+
+implicit val greetingOptionGetResult: GetResult[Option[Greeting]] = new GetResult[Option[Greeting]] {
+  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().flatMap(Greeting.withNameOption)
+}
+
+implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Greeting] {
+  override def apply(value: Greeting, positionedParameter: PositionedParameters): Unit =
+    positionedParameter.setString(value.toString)
+}
+
+implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
+  override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
+    positionedParameter.setStringOption(value.map(v => value.entryName))
+}
+```
+
 ## Benchmarking
 
 Benchmarking is in the unpublished `benchmarking` project. It uses JMH and you can run them in the sbt console by issuing the following command from your command line:
@@ -746,27 +831,3 @@ is acceptable for almost all use-cases. PRs that promise to increase performance
 Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
 My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no 
 corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits. 
-
-## Licence
-
-The MIT License (MIT)
-
-Copyright (c) 2016 by Lloyd Chan
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.

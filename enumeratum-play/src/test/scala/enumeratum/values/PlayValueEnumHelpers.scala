@@ -5,31 +5,42 @@ import java.security.cert.X509Certificate
 import org.scalatest._
 import play.api.data.Form
 import play.api.http.HttpVerbs
-import play.api.mvc.{ Headers, RequestHeader }
+import play.api.mvc.{Headers, RequestHeader}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.libs.json.{ Format, JsNumber, JsValue }
+import play.api.libs.json.{Format, JsNumber, JsValue}
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Format](
-    enumKind: String,
-    enum:     ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType]
+  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType],
+                          ValueType <: AnyVal: Numeric: Format](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
+        ValueType,
+        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
+        ValueType,
+        EntryType]
   ) = {
     val numeric = implicitly[Numeric[ValueType]]
-    testPlayEnum(enumKind, enum, { i: ValueType => JsNumber(numeric.toInt(i)) })
+    testPlayEnum(enumKind, enum, { i: ValueType =>
+      JsNumber(numeric.toInt(i))
+    })
 
   }
 
   def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType: Format](
-    enumKind:  String,
-    enum:      ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType],
-    jsWrapper: ValueType => JsValue
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
+        ValueType,
+        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
+        ValueType,
+        EntryType],
+      jsWrapper: ValueType => JsValue
   ) = {
 
     describe(enumKind) {
@@ -106,11 +117,11 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
             import play.api.routing._
             import play.api.mvc._
             enum.values.foreach { entry =>
-
               val router = Router.from {
-                case GET(p"/${ enum.fromPath(greeting) }") => Action {
-                  Results.Ok(s"$greeting")
-                }
+                case GET(p"/${ enum.fromPath(greeting) }") =>
+                  Action {
+                    Results.Ok(s"$greeting")
+                  }
               }
               router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/${entry.value}")) shouldBe true
               router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/${Int.MaxValue}")) shouldBe false
@@ -125,13 +136,17 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
 
           it("should bind strings corresponding to enum values regardless of case") {
             enum.values.foreach { entry =>
-              subject.bind("hello", Map("hello" -> Seq(s"${entry.value}"))).value.right.value shouldBe entry
+              subject
+                .bind("hello", Map("hello" -> Seq(s"${entry.value}")))
+                .value
+                .right
+                .value shouldBe entry
             }
           }
 
           it("should not bind strings not found as values in the enumeration") {
-            subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe 'left
-            subject.bind("hello", Map("hello" -> Seq(s"${Int.MaxValue}"))).value shouldBe 'left
+            subject.bind("hello", Map("hello"  -> Seq("Z"))).value shouldBe 'left
+            subject.bind("hello", Map("hello"  -> Seq(s"${Int.MaxValue}"))).value shouldBe 'left
             subject.bind("hello", Map("helloz" -> Seq("1"))) shouldBe None
           }
 

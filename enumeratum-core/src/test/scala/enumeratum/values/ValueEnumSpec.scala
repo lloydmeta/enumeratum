@@ -1,12 +1,12 @@
 package enumeratum.values
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{FunSpec, Matchers}
 
 /**
- * Created by Lloyd on 4/12/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/12/16.
+  *
+  * Copyright 2016
+  */
 class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
 
   describe("basic sanity check") {
@@ -24,6 +24,8 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   testNumericEnum("ShortEnum", Drinks)
   testNumericEnum("LongEnum", ContentType)
   testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
+  testEnum("CharEnum", Alphabet, Seq('Z'))
+  testEnum("ByteEnum", Bites, Seq(10).map(_.toByte))
   testNumericEnum("when using val members in the body", MovieGenre)
   testNumericEnum("LongEnum that is nesting an IntEnum", Animal)
   testNumericEnum("IntEnum that is nested inside a LongEnum", Animal.Mammalian)
@@ -32,31 +34,51 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
   describe("finding companion object") {
 
     it("should work for IntEnums") {
-      def findCompanion[EntryType <: IntEnumEntry: IntEnum](entry: EntryType) = implicitly[IntEnum[EntryType]]
+      def findCompanion[EntryType <: IntEnumEntry: IntEnum](entry: EntryType) =
+        implicitly[IntEnum[EntryType]]
       val companion = findCompanion(LibraryItem.Magazine: LibraryItem)
       companion shouldBe LibraryItem
       companion.values should contain(LibraryItem.Magazine)
     }
 
     it("should work for ShortEnum") {
-      def findCompanion[EntryType <: ShortEnumEntry: ShortEnum](entry: EntryType) = implicitly[ShortEnum[EntryType]]
+      def findCompanion[EntryType <: ShortEnumEntry: ShortEnum](entry: EntryType) =
+        implicitly[ShortEnum[EntryType]]
       val companion = findCompanion(Drinks.Beer: Drinks)
       companion shouldBe Drinks
       companion.values should contain(Drinks.Cola)
     }
 
     it("should work for LongEnum") {
-      def findCompanion[EntryType <: LongEnumEntry: LongEnum](entry: EntryType) = implicitly[LongEnum[EntryType]]
+      def findCompanion[EntryType <: LongEnumEntry: LongEnum](entry: EntryType) =
+        implicitly[LongEnum[EntryType]]
       val companion = findCompanion(ContentType.Image: ContentType)
       companion shouldBe ContentType
       companion.values should contain(ContentType.Audio)
     }
 
     it("should work for StringEnum") {
-      def findCompanion[EntryType <: StringEnumEntry: StringEnum](entry: EntryType) = implicitly[StringEnum[EntryType]]
+      def findCompanion[EntryType <: StringEnumEntry: StringEnum](entry: EntryType) =
+        implicitly[StringEnum[EntryType]]
       val companion = findCompanion(OperatingSystem.Android: OperatingSystem)
       companion shouldBe OperatingSystem
       companion.values should contain(OperatingSystem.Windows)
+    }
+
+    it("should work for CharEnum") {
+      def findCompanion[EntryType <: CharEnumEntry: CharEnum](entry: EntryType) =
+        implicitly[CharEnum[EntryType]]
+      val companion = findCompanion(Alphabet.A: Alphabet)
+      companion shouldBe Alphabet
+      companion.values should contain(Alphabet.B)
+    }
+
+    it("should work for ByteEnum") {
+      def findCompanion[EntryType <: ByteEnumEntry: ByteEnum](entry: EntryType) =
+        implicitly[ByteEnum[EntryType]]
+      val companion = findCompanion(Bites.OneByte: Bites)
+      companion shouldBe Bites
+      companion.values should contain(Bites.FourByte)
     }
 
   }

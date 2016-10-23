@@ -1,14 +1,14 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{FunSpec, Matchers}
 import reactivemongo.bson._
 
 /**
- *
- * @author Alessandro Lacava (@lambdista)
- * @since 2016-04-23
- */
+  *
+  * @author Alessandro Lacava (@lambdista)
+  * @since 2016-04-23
+  */
 class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
   testScenario(
@@ -52,13 +52,13 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
   )
 
   private def testScenario(
-    descriptor:            String,
-    reader:                BSONReader[BSONValue, Dummy],
-    expectedReadSuccesses: Map[String, Dummy],
-    expectedReadFails:     Seq[String],
-    writer:                BSONWriter[Dummy, BSONValue],
-    expectedWrites:        Map[Dummy, String],
-    handler:               BSONHandler[BSONValue, Dummy]
+      descriptor: String,
+      reader: BSONReader[BSONValue, Dummy],
+      expectedReadSuccesses: Map[String, Dummy],
+      expectedReadFails: Seq[String],
+      writer: BSONWriter[Dummy, BSONValue],
+      expectedWrites: Map[Dummy, String],
+      handler: BSONHandler[BSONValue, Dummy]
   ): Unit = describe(descriptor) {
 
     val expectedReadErrors = {
