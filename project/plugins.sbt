@@ -2,7 +2,7 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-// for code formatting
+// TODO add back Scalafmt for code formatting
 //addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.4.1")
 
 // TODO figure out when this is going to support 2.12

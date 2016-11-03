@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theVersion      = "1.4.18-SNAPSHOT"
 lazy val theScalaVersion = "2.11.8"
-lazy val scalaVersions   = Seq("2.10.6", "2.11.8", "2.12.0-RC2")
+lazy val scalaVersions   = Seq("2.10.6", "2.11.8", "2.12.0")
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.9"
@@ -29,18 +29,18 @@ lazy val root =
       publishLocal := {}
     )
     .aggregate(macrosJs,
-               macrosJvm,
-               coreJs,
-               coreJvm,
-               coreJVMTests //,
-//               enumeratumPlay,
-//               enumeratumPlayJson,
-//               enumeratumUPickleJs,
-//               enumeratumUPickleJvm,
-//               enumeratumCirceJs,
-//               enumeratumCirceJvm,
-//               enumeratumReactiveMongoBson,
-//               enumeratumArgonaut
+      macrosJvm,
+      coreJs,
+      coreJvm,
+      coreJVMTests //,
+      //               enumeratumPlay,
+      //               enumeratumPlayJson,
+      //               enumeratumUPickleJs,
+      //               enumeratumUPickleJvm,
+      //               enumeratumCirceJs,
+      //               enumeratumCirceJvm,
+      //               enumeratumReactiveMongoBson,
+      //               enumeratumArgonaut
     )
 
 lazy val core = crossProject
@@ -57,8 +57,8 @@ lazy val coreJs  = core.js
 lazy val coreJvm = core.jvm
 
 lazy val coreJVMTests = Project(id = "coreJVMTests",
-                                base = file("enumeratum-core-jvm-tests"),
-                                settings = commonWithPublishSettings)
+  base = file("enumeratum-core-jvm-tests"),
+  settings = commonWithPublishSettings)
   .settings(
     name := "coreJVMTests",
     libraryDependencies ++= Seq(
@@ -80,12 +80,12 @@ lazy val macros = crossProject
     )
   )
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
-                                       include_210Dir = true,
-                                       includeTestSrcs = false): _*)
+    include_210Dir = true,
+    includeTestSrcs = false): _*)
   .settings(testSettings: _*)
 lazy val macrosJs  = macros.js
 lazy val macrosJvm = macros.jvm
-/*
+
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson",
           base = file("enumeratum-reactivemongo-bson"),
@@ -186,19 +186,21 @@ lazy val enumeratumArgonaut =
     )
     .settings(testSettings: _*)
     .dependsOn(coreJvm % "test->test;compile->compile")
-*/
+
 lazy val commonSettings = Seq(
-    organization := "com.beachape",
-    version := theVersion,
-    incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion /*,
+  organization := "com.beachape",
+  version := theVersion,
+  incOptions := incOptions.value.withLogRecompileOnMacro(false),
+  scalaVersion := theScalaVersion /*,
+  TODO: Add back ScalaFMT when it works
     scalafmtConfig := Some(file(".scalafmt.conf")) */
-  ) ++
-    // scoverageSettings ++
-//    reformatOnCompileSettings ++
-    compilerSettings ++
-    resolverSettings ++
-    ideSettings
+) ++
+  // TODO Add back scoverage
+  // scoverageSettings ++
+  //    reformatOnCompileSettings ++
+  compilerSettings ++
+  resolverSettings ++
+  ideSettings
 
 lazy val commonWithPublishSettings =
   commonSettings ++
@@ -220,6 +222,7 @@ lazy val compilerSettings = Seq(
   scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint", "-Xlog-free-terms")
 )
 
+// TODO add back Scoverage
 //lazy val scoverageSettings = Seq(
 //  coverageExcludedPackages := """enumeratum\.EnumMacros;enumeratum\.ContextUtils;enumeratum\.ValueEnumMacros""",
 //  coverageHighlighting := true
@@ -247,9 +250,9 @@ lazy val publishSettings = Seq(
           <url>https://beachape.com</url>
         </developer>
       </developers>,
-  publishTo <<= version { v =>
+  publishTo := {
     val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
+    if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at nexus + "content/repositories/snapshots")
     else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
@@ -288,17 +291,17 @@ lazy val benchmarking =
       publishLocal := {}
     )
     .dependsOn(macrosJs,
-               macrosJvm,
-               coreJs,
-               coreJvm,
-               coreJVMTests //,
-//               enumeratumPlay,
-//               enumeratumPlayJson,
-//               enumeratumUPickleJs,
-//               enumeratumUPickleJvm,
-//               enumeratumCirceJs,
-//               enumeratumCirceJvm,
-//               enumeratumReactiveMongoBson
+      macrosJvm,
+      coreJs,
+      coreJvm,
+      coreJVMTests //,
+      //               enumeratumPlay,
+      //               enumeratumPlayJson,
+      //               enumeratumUPickleJs,
+      //               enumeratumUPickleJvm,
+      //               enumeratumCirceJs,
+      //               enumeratumCirceJvm,
+      //               enumeratumReactiveMongoBson
     )
     .enablePlugins(JmhPlugin)
     .settings(libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21")
@@ -324,21 +327,22 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
   val unmanagedMainDirsSetting = Seq(
     unmanagedSourceDirectories in Compile ++= {
       compatDirs(projectbase = baseDirectory.value,
-                 scalaVersion = scalaVersion.value,
-                 isMain = true)
+        scalaVersion = scalaVersion.value,
+        isMain = true)
     }
   )
   if (includeTestSrcs) {
     unmanagedMainDirsSetting ++ {
       unmanagedSourceDirectories in Test ++= {
         compatDirs(projectbase = baseDirectory.value,
-                   scalaVersion = scalaVersion.value,
-                   isMain = false)
+          scalaVersion = scalaVersion.value,
+          isMain = false)
       }
     }
   } else {
     unmanagedMainDirsSetting
   }
 }
-//
+// TODO Add back ScalaFMT
 //scalafmtConfig := Some(file(".scalafmt.conf"))
+
