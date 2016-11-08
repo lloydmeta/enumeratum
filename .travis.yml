@@ -7,6 +7,7 @@ scala:
 script:
  - sbt clean +test:compile
  - sbt +test
+ - sbt ++2.12.0 scala_2_12/test
  - sbt coverage +test coverageReport && sbt coverageAggregate
 after_success:
  - sbt coveralls
