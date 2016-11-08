@@ -12,14 +12,13 @@ script:
      sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test;
    elif [[ $$TRAVIS_SCALA_VERSION == "2.11"* ]]; then
      sbt clean test:compile &&
-     sbt coverage test coverageReport &&
-     sbt coverageAggregate;
+     sbt coverage test coverageReport;
    else
      sbt clean test;
    fi
 after_success:
  - if [[ $TRAVIS_SCALA_VERSION == "2.11"* ]]; then
-    sbt coveralls;
+    sbt coverageAggregate && sbt coveralls;
    fi
 cache:
   directories:
