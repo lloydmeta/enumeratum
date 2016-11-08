@@ -3,14 +3,26 @@ language: scala
 jdk:
   - oraclejdk8
 scala:
+  - 2.10.6
   - 2.11.8
+  - 2.12.0
 script:
- - sbt clean +test:compile
- - sbt +test
- - sbt ++2.12.0 scala_2_12/test
- - sbt coverage +test coverageReport && sbt coverageAggregate
+# Only run aggregation 2.11, for 2.12, only run the special dummy project
+ - if [[ $TRAVIS_SCALA_VERSION == "2.12"* ]];
+   then
+     sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test;
+   elif [[ $$TRAVIS_SCALA_VERSION == "2.11"* ]];
+   then
+     sbt clean test:compile &&
+     sbt coverage test coverageReport &&
+     sbt coverageAggregate;
+   else
+     sbt clean test
+   fi
 after_success:
- - sbt coveralls
+ - if [[ $TRAVIS_SCALA_VERSION == "2.11"* ]]; then
+    sbt coveralls;
+   fi
 cache:
   directories:
   - $HOME/.sbt/0.13
