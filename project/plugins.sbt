@@ -2,8 +2,6 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-// TODO add back Scalafmt for code formatting
-//addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.4.1")
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
