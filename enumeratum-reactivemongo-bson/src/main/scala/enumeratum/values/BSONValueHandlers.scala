@@ -11,20 +11,21 @@ import reactivemongo.bson.{
 }
 
 /**
-  * Created by Lloyd on 5/3/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 5/3/16.
+ *
+ * Copyright 2016
+ */
 /**
-  * Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
-  * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
-  */
+ * Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
+ * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
+ */
 object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 
-  implicit def anyBsonHandler[A](implicit reader: BSONReader[BSONValue, A],
-                                 writer: BSONWriter[A, BSONValue]) =
+  implicit def anyBsonHandler[A](implicit
+    reader: BSONReader[BSONValue, A],
+    writer: BSONWriter[A, BSONValue]) =
     new BSONHandler[BSONValue, A] {
-      def write(t: A): BSONValue   = writer.write(t)
+      def write(t: A): BSONValue = writer.write(t)
       def read(bson: BSONValue): A = reader.read(bson)
     }
 
@@ -43,14 +44,14 @@ trait BSONValueReads {
   implicit val bsonReaderInt = new BSONReader[BSONValue, Int] {
     def read(bson: BSONValue): Int = bson match {
       case BSONInteger(x) => x
-      case _              => throw new RuntimeException(s"Could not convert $bson to Int")
+      case _ => throw new RuntimeException(s"Could not convert $bson to Int")
     }
   }
 
   implicit val bsonReaderLong = new BSONReader[BSONValue, Long] {
     def read(bson: BSONValue): Long = bson match {
       case BSONLong(x) => x
-      case _           => throw new RuntimeException(s"Could not convert $bson to Long")
+      case _ => throw new RuntimeException(s"Could not convert $bson to Long")
     }
   }
 
@@ -65,14 +66,14 @@ trait BSONValueReads {
   implicit val bsonReaderChar = new BSONReader[BSONValue, Char] {
     def read(bson: BSONValue): Char = bson match {
       case BSONString(x) if x.length == 1 => x.charAt(0)
-      case _                              => throw new RuntimeException(s"Could not convert $bson to Char")
+      case _ => throw new RuntimeException(s"Could not convert $bson to Char")
     }
   }
 
   implicit val bsonReaderByte = new BSONReader[BSONValue, Byte] {
     def read(bson: BSONValue): Byte = bson match {
       case BSONInteger(x) => x.toByte
-      case _              => throw new RuntimeException(s"Could not convert $bson to Byte")
+      case _ => throw new RuntimeException(s"Could not convert $bson to Byte")
     }
   }
 

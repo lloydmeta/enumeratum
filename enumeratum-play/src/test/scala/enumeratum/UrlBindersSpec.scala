@@ -6,8 +6,8 @@ import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 
 /**
-  * Created by Lloyd on 2/3/15.
-  */
+ * Created by Lloyd on 2/3/15.
+ */
 class UrlBindersSpec extends FunSpec with Matchers {
 
   describe(".pathBinder") {
@@ -34,12 +34,13 @@ class UrlBindersSpec extends FunSpec with Matchers {
     val subject = pathBinder(Dummy, true)
 
     it(
-      "should create an enumeration binder that can bind strings corresponding to enum strings, disregarding case") {
-      subject.bind("hello", "A").right.value shouldBe Dummy.A
-      subject.bind("hello", "a").right.value shouldBe Dummy.A
-      subject.bind("hello", "B").right.value shouldBe Dummy.B
-      subject.bind("hello", "b").right.value shouldBe Dummy.B
-    }
+      "should create an enumeration binder that can bind strings corresponding to enum strings, disregarding case"
+    ) {
+        subject.bind("hello", "A").right.value shouldBe Dummy.A
+        subject.bind("hello", "a").right.value shouldBe Dummy.A
+        subject.bind("hello", "B").right.value shouldBe Dummy.B
+        subject.bind("hello", "b").right.value shouldBe Dummy.B
+      }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
       subject.bind("hello", "Z").isLeft shouldBe true
@@ -66,9 +67,10 @@ class UrlBindersSpec extends FunSpec with Matchers {
     }
 
     it(
-      "should create an enumeration binder that cannot bind strings that aren't lower case but are mixed case") {
-      subject.bind("hello", "A").isLeft shouldBe true
-    }
+      "should create an enumeration binder that cannot bind strings that aren't lower case but are mixed case"
+    ) {
+        subject.bind("hello", "A").isLeft shouldBe true
+      }
 
     it("should create an enumeration binder that can unbind values") {
       subject.unbind("hello", Dummy.A) shouldBe "a"
@@ -91,9 +93,10 @@ class UrlBindersSpec extends FunSpec with Matchers {
     }
 
     it(
-      "should create an enumeration binder that cannot bind strings that aren't upper case but are mixed case") {
-      subject.bind("hello", "a").isLeft shouldBe true
-    }
+      "should create an enumeration binder that cannot bind strings that aren't upper case but are mixed case"
+    ) {
+        subject.bind("hello", "a").isLeft shouldBe true
+      }
 
     it("should create an enumeration binder that can unbind values") {
       subject.unbind("hello", Dummy.A) shouldBe "A"
@@ -107,12 +110,13 @@ class UrlBindersSpec extends FunSpec with Matchers {
     val subject = queryBinder(Dummy)
 
     it(
-      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case") {
-      subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
-    }
+      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
+      }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
-      subject.bind("hello", Map("hello"  -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
@@ -128,13 +132,14 @@ class UrlBindersSpec extends FunSpec with Matchers {
     val subject = queryBinder(Dummy, true)
 
     it(
-      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case, disregarding case") {
-      subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
-      subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
-    }
+      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case, disregarding case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
+        subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
+      }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
-      subject.bind("hello", Map("hello"  -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
@@ -150,19 +155,21 @@ class UrlBindersSpec extends FunSpec with Matchers {
     val subject = queryBinderLowercaseOnly(Dummy)
 
     it(
-      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case") {
-      subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
-    }
+      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
+      }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
-      subject.bind("hello", Map("hello"  -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("a"))) shouldBe None
     }
 
     it(
-      "should create an enumeration binder that cannot bind strings that aren't lower case but are mixed case") {
-      subject.bind("hello", Map("hello" -> Seq("A"))).value should be('left)
-    }
+      "should create an enumeration binder that cannot bind strings that aren't lower case but are mixed case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("A"))).value should be('left)
+      }
 
     it("should create an enumeration binder that can unbind values") {
       subject.unbind("hello", Dummy.A) should be("hello=a")
@@ -176,19 +183,21 @@ class UrlBindersSpec extends FunSpec with Matchers {
     val subject = queryBinderUppercaseOnly(Dummy)
 
     it(
-      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case") {
-      subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
-    }
+      "should create an enumeration binder that can bind strings corresponding to enum strings regardless of case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
+      }
 
     it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
-      subject.bind("hello", Map("hello"  -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
     it(
-      "should create an enumeration binder that cannot bind strings that aren't upper case but are mixed case") {
-      subject.bind("hello", Map("hello" -> Seq("a"))).value should be('left)
-    }
+      "should create an enumeration binder that cannot bind strings that aren't upper case but are mixed case"
+    ) {
+        subject.bind("hello", Map("hello" -> Seq("a"))).value should be('left)
+      }
 
     it("should create an enumeration binder that can unbind values") {
       subject.unbind("hello", Dummy.A) should be("hello=A")

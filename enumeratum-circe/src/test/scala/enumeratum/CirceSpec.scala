@@ -1,15 +1,15 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
-import cats.data.Xor
+import org.scalatest.{ FunSpec, Matchers }
+import cats.syntax.either._
 import io.circe.Json
 import io.circe.syntax._
 
 /**
-  * Created by Lloyd on 4/14/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 4/14/16.
+ *
+ * Copyright 2016
+ */
 class CirceSpec extends FunSpec with Matchers {
 
   describe("to JSON") {
@@ -23,14 +23,16 @@ class CirceSpec extends FunSpec with Matchers {
     it("should work for lower case") {
       ShirtSize.values.foreach { entry =>
         entry.asJson(Circe.encoderLowercase(ShirtSize)) shouldBe Json.fromString(
-          entry.entryName.toLowerCase)
+          entry.entryName.toLowerCase
+        )
       }
     }
 
     it("should work for upper case") {
       ShirtSize.values.foreach { entry =>
         entry.asJson(Circe.encoderUppercase(ShirtSize)) shouldBe Json.fromString(
-          entry.entryName.toUpperCase)
+          entry.entryName.toUpperCase
+        )
       }
     }
 
@@ -40,7 +42,7 @@ class CirceSpec extends FunSpec with Matchers {
 
     it("should parse to members when given proper JSON") {
       ShirtSize.values.foreach { entry =>
-        Json.fromString(entry.entryName).as[ShirtSize] shouldBe Xor.Right(entry)
+        Json.fromString(entry.entryName).as[ShirtSize] shouldBe Right(entry)
       }
     }
 
@@ -48,7 +50,7 @@ class CirceSpec extends FunSpec with Matchers {
       ShirtSize.values.foreach { entry =>
         Json
           .fromString(entry.entryName.toLowerCase)
-          .as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+          .as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)) shouldBe Right(entry)
       }
     }
 
@@ -56,7 +58,7 @@ class CirceSpec extends FunSpec with Matchers {
       ShirtSize.values.foreach { entry =>
         Json
           .fromString(entry.entryName.toUpperCase)
-          .as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+          .as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)) shouldBe Right(entry)
       }
     }
 

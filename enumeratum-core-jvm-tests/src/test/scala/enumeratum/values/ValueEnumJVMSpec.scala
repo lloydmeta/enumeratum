@@ -1,16 +1,16 @@
 package enumeratum.values
 
 import enumeratum.Eval
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 
 import scala.reflect.ClassTag
 import scala.util.Random
 
 /**
-  * Created by Lloyd on 8/30/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 8/30/16.
+ *
+ * Copyright 2016
+ */
 class ValueEnumJVMSpec extends FunSpec with Matchers {
 
   private def stringGenerator =
@@ -25,19 +25,25 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
   testValuesOf(
     Stream
       .continually(Random.nextInt(Short.MaxValue - Short.MinValue) + Short.MinValue)
-      .map(_.toShort))
+      .map(_.toShort)
+  )
   testValuesOf(
     Stream
       .continually(Random.nextInt(Byte.MaxValue - Byte.MinValue) + Byte.MinValue)
-      .map(_.toByte))
+      .map(_.toByte)
+  )
   testValuesOf(stringGenerator, "\"", "\"")
-  testValuesOf(Stream.continually(Random.nextPrintableChar()).filter(Character.isAlphabetic(_)),
-               "'",
-               "'")
+  testValuesOf(
+    Stream.continually(Random.nextPrintableChar()).filter(Character.isAlphabetic(_)),
+    "'",
+    "'"
+  )
 
-  private def testValuesOf[A: ClassTag](valuesGenerator: => Stream[A],
-                                        valuePrefix: String = "",
-                                        valueSuffix: String = ""): Unit = {
+  private def testValuesOf[A: ClassTag](
+    valuesGenerator: => Stream[A],
+    valuePrefix: String = "",
+    valueSuffix: String = ""
+  ): Unit = {
 
     val typeName = implicitly[ClassTag[A]].runtimeClass.getSimpleName.capitalize
 
@@ -45,9 +51,9 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
 
       it("should return proper members for valid values but throw otherwise") {
         (1 to 20).foreach { i =>
-          val enumName      = s"Generated${typeName}Enum$i"
-          val names         = stringGenerator.take(5)
-          val values        = valuesGenerator.distinct.take(5)
+          val enumName = s"Generated${typeName}Enum$i"
+          val names = stringGenerator.take(5)
+          val values = valuesGenerator.distinct.take(5)
           val namesToValues = names.zip(values)
           val memberDefs = namesToValues.map {
             case (n, v) => s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)"""

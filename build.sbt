@@ -2,45 +2,65 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theVersion      = "1.4.18-SNAPSHOT"
 lazy val theScalaVersion = "2.11.8"
-lazy val scalaVersions   = Seq("2.10.6", "2.11.8")
+/*
+  2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
+  integration libraries are still gaining 2.12.0 support
+ */
+lazy val scalaVersions = Seq("2.10.6", "2.11.8")
+
+lazy val scalaTestVersion     = "3.0.0"
+
+// Library versions
+lazy val reactiveMongoVersion = "0.12.0"
+lazy val circeVersion = "0.6.0"
+lazy val uPickleVersion = "0.4.3"
+lazy val argonautVersion ="6.1"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.9"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
-  }
-lazy val scalaTestVersion     = "3.0.0"
-lazy val reactiveMongoVersion = "0.12.0"
+}
+
+lazy val baseProjectRefs =
+  Seq(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests).map(Project.projectToRef)
+
+lazy val integrationProjectRefs = Seq(
+  enumeratumPlay,
+  enumeratumPlayJson,
+  enumeratumUPickleJs,
+  enumeratumUPickleJvm,
+  enumeratumCirceJs,
+  enumeratumCirceJvm,
+  enumeratumReactiveMongoBson,
+  enumeratumArgonaut
+).map(Project.projectToRef)
 
 lazy val root =
   Project(id = "enumeratum-root", base = file("."), settings = commonWithPublishSettings)
     .settings(
       name := "enumeratum-root",
       crossScalaVersions := scalaVersions,
-      crossVersion := CrossVersion.binary
-    )
-    .settings(
-      git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git"
-    )
-    .settings(
+      crossVersion := CrossVersion.binary,
+      git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git",
       // Do not publish the root project (it just serves as an aggregate)
       publishArtifact := false,
       publishLocal := {}
     )
-    .aggregate(macrosJs,
-               macrosJvm,
-               coreJs,
-               coreJvm,
-               coreJVMTests,
-               enumeratumPlay,
-               enumeratumPlayJson,
-               enumeratumUPickleJs,
-               enumeratumUPickleJvm,
-               enumeratumCirceJs,
-               enumeratumCirceJvm,
-               enumeratumReactiveMongoBson,
-               enumeratumArgonaut)
+    .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
+
+lazy val scala_2_12 = Project(id = "scala_2_12",
+                              base = file("scala_2_12"),
+                              settings = commonSettings ++ publishSettings)
+  .settings(name := "enumeratum-scala_2_12",
+            scalaVersion := "2.12.0", //not sure if this and below are needed
+            crossScalaVersions := Seq("2.12.0"),
+            crossVersion := CrossVersion.binary,
+            // Do not publish this  project (it just serves as an aggregate)
+            publishArtifact := false,
+            publishLocal := {})
+    .aggregate(baseProjectRefs ++ Seq(enumeratumCirceJs, enumeratumCirceJvm).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
   .crossType(CrossType.Pure)
@@ -51,7 +71,6 @@ lazy val core = crossProject
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
   .dependsOn(macros)
-
 lazy val coreJs  = core.js
 lazy val coreJvm = core.jvm
 
@@ -133,7 +152,7 @@ lazy val enumeratumUPickle = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.4.1")
+      Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % uPickleVersion)
     } ++ {
       val additionalMacroDeps =
         CrossVersion.partialVersion(scalaVersion.value) match {
@@ -166,7 +185,7 @@ lazy val enumeratumCirce = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.5.1")
+      Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % circeVersion)
     }
   )
   .settings(testSettings: _*)
@@ -180,7 +199,7 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "io.argonaut" %% "argonaut" % "6.1"
+        "io.argonaut" %% "argonaut" % argonautVersion
       )
     )
     .settings(testSettings: _*)
@@ -190,17 +209,18 @@ lazy val commonSettings = Seq(
     organization := "com.beachape",
     version := theVersion,
     incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion,
-    scalafmtConfig := Some(file(".scalafmt.conf"))
+    scalaVersion := theScalaVersion
   ) ++
-    scoverageSettings ++
-    reformatOnCompileSettings ++
     compilerSettings ++
     resolverSettings ++
     ideSettings
 
-lazy val commonWithPublishSettings =
+lazy val commonSettingsWithTrimmings =
   commonSettings ++
+  scoverageSettings
+
+lazy val commonWithPublishSettings =
+  commonSettingsWithTrimmings ++
     publishSettings
 
 lazy val resolverSettings = Seq(
@@ -246,9 +266,9 @@ lazy val publishSettings = Seq(
           <url>https://beachape.com</url>
         </developer>
       </developers>,
-  publishTo <<= version { v =>
+  publishTo := {
     val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
+    if (version.value.trim.endsWith("SNAPSHOT"))
       Some("snapshots" at nexus + "content/repositories/snapshots")
     else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
@@ -286,18 +306,7 @@ lazy val benchmarking =
       publishArtifact := false,
       publishLocal := {}
     )
-    .dependsOn(macrosJs,
-               macrosJvm,
-               coreJs,
-               coreJvm,
-               coreJVMTests,
-               enumeratumPlay,
-               enumeratumPlayJson,
-               enumeratumUPickleJs,
-               enumeratumUPickleJvm,
-               enumeratumCirceJs,
-               enumeratumCirceJvm,
-               enumeratumReactiveMongoBson)
+    .dependsOn((baseProjectRefs ++ integrationProjectRefs).map(ClasspathDependency(_, None)): _*)
     .enablePlugins(JmhPlugin)
     .settings(libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21")
 
@@ -338,5 +347,3 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
     unmanagedMainDirsSetting
   }
 }
-
-scalafmtConfig := Some(file(".scalafmt.conf"))
