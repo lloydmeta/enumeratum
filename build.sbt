@@ -7,15 +7,21 @@ lazy val theScalaVersion = "2.11.8"
   integration libraries are still gaining 2.12.0 support
  */
 lazy val scalaVersions = Seq("2.10.6", "2.11.8")
+
+lazy val scalaTestVersion     = "3.0.0"
+
+// Library versions
+lazy val reactiveMongoVersion = "0.12.0"
+lazy val circeVersion = "0.6.0"
+lazy val uPickleVersion = "0.4.3"
+lazy val argonautVersion ="6.1"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.9"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
-  }
-lazy val scalaTestVersion     = "3.0.0"
-lazy val reactiveMongoVersion = "0.12.0"
+}
 
 lazy val baseProjectRefs =
   Seq(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests).map(Project.projectToRef)
@@ -54,8 +60,7 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
             publishLocal := {})
-  // .disablePlugins(ScalaFmtPlugin) // these need to be disabled for now
-  .aggregate(baseProjectRefs: _*) // just the base for now.
+    .aggregate((baseProjectRefs ++ Seq(enumeratumCirceJs, enumeratumCirceJvm).map(Project.projectToRef)): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
   .crossType(CrossType.Pure)
@@ -147,7 +152,7 @@ lazy val enumeratumUPickle = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % "0.4.1")
+      Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % uPickleVersion)
     } ++ {
       val additionalMacroDeps =
         CrossVersion.partialVersion(scalaVersion.value) match {
@@ -180,7 +185,7 @@ lazy val enumeratumCirce = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % "0.5.1")
+      Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % circeVersion)
     }
   )
   .settings(testSettings: _*)
@@ -194,7 +199,7 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "io.argonaut" %% "argonaut" % "6.1"
+        "io.argonaut" %% "argonaut" % argonautVersion
       )
     )
     .settings(testSettings: _*)

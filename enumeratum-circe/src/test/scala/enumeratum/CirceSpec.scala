@@ -1,15 +1,15 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 import cats.data.Xor
 import io.circe.Json
 import io.circe.syntax._
 
 /**
-  * Created by Lloyd on 4/14/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 4/14/16.
+ *
+ * Copyright 2016
+ */
 class CirceSpec extends FunSpec with Matchers {
 
   describe("to JSON") {
@@ -23,14 +23,16 @@ class CirceSpec extends FunSpec with Matchers {
     it("should work for lower case") {
       ShirtSize.values.foreach { entry =>
         entry.asJson(Circe.encoderLowercase(ShirtSize)) shouldBe Json.fromString(
-          entry.entryName.toLowerCase)
+          entry.entryName.toLowerCase
+        )
       }
     }
 
     it("should work for upper case") {
       ShirtSize.values.foreach { entry =>
         entry.asJson(Circe.encoderUppercase(ShirtSize)) shouldBe Json.fromString(
-          entry.entryName.toUpperCase)
+          entry.entryName.toUpperCase
+        )
       }
     }
 

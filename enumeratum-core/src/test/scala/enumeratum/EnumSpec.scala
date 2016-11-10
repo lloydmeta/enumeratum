@@ -1,7 +1,7 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 
 class EnumSpec extends FunSpec with Matchers {
 
@@ -355,12 +355,13 @@ class EnumSpec extends FunSpec with Matchers {
     }
 
     it(
-      "should fail to compile if either enum in the parameter list is not instance of the same enum type as the checked one") {
-      """
+      "should fail to compile if either enum in the parameter list is not instance of the same enum type as the checked one"
+    ) {
+        """
         val enum: DummyEnum = DummyEnum.Hi
         enum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye)
       """ shouldNot compile
-    }
+      }
   }
 
   describe("materializeEnum") {
@@ -370,7 +371,7 @@ class EnumSpec extends FunSpec with Matchers {
       def findEnum[A <: EnumEntry: Enum](v: A) = implicitly[Enum[A]]
 
       val hello: DummyEnum = Hello
-      val companion        = findEnum(hello)
+      val companion = findEnum(hello)
       companion shouldBe DummyEnum
       companion.values should contain(Hello)
 

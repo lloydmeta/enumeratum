@@ -1,15 +1,15 @@
 package enumeratum.values
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 import cats.data.Xor
-import io.circe.{Decoder, Encoder, Json}
+import io.circe.{ Decoder, Encoder, Json }
 import io.circe.syntax._
 
 /**
-  * Created by Lloyd on 4/14/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 4/14/16.
+ *
+ * Copyright 2016
+ */
 class CirceValueEnumSpec extends FunSpec with Matchers {
 
   testCirceEnum("LongCirceEnum", CirceContentType)
@@ -21,10 +21,10 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
   // Test method that generates tests for most primitve-based ValueEnums when given a simple descriptor and the enum
-  private def testCirceEnum[ValueType: Encoder: Decoder,
-                            EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](
-      enumKind: String,
-      enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]): Unit = {
+  private def testCirceEnum[ValueType: Encoder: Decoder, EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](
+    enumKind: String,
+    enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]
+  ): Unit = {
     describe(enumKind) {
 
       describe("to JSON") {
@@ -69,7 +69,7 @@ case object CirceContentType
 
   val values = findValues
 
-  case object Text  extends CirceContentType(value = 1L, name = "text")
+  case object Text extends CirceContentType(value = 1L, name = "text")
   case object Image extends CirceContentType(value = 2L, name = "image")
   case object Video extends CirceContentType(value = 3L, name = "video")
   case object Audio extends CirceContentType(value = 4L, name = "audio")
@@ -81,9 +81,9 @@ sealed abstract class CirceDrinks(val value: Short, name: String) extends ShortE
 case object CirceDrinks extends ShortEnum[CirceDrinks] with ShortCirceEnum[CirceDrinks] {
 
   case object OrangeJuice extends CirceDrinks(value = 1, name = "oj")
-  case object AppleJuice  extends CirceDrinks(value = 2, name = "aj")
-  case object Cola        extends CirceDrinks(value = 3, name = "cola")
-  case object Beer        extends CirceDrinks(value = 4, name = "beer")
+  case object AppleJuice extends CirceDrinks(value = 2, name = "aj")
+  case object Cola extends CirceDrinks(value = 3, name = "cola")
+  case object Beer extends CirceDrinks(value = 4, name = "beer")
 
   val values = findValues
 
@@ -96,10 +96,10 @@ case object CirceLibraryItem
     with IntCirceEnum[CirceLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
-  case object Book     extends CirceLibraryItem(value = 1, name = "book")
-  case object Movie    extends CirceLibraryItem(name = "movie", value = 2)
+  case object Book extends CirceLibraryItem(value = 1, name = "book")
+  case object Movie extends CirceLibraryItem(name = "movie", value = 2)
   case object Magazine extends CirceLibraryItem(3, "magazine")
-  case object CD       extends CirceLibraryItem(4, name = "cd")
+  case object CD extends CirceLibraryItem(4, name = "cd")
 
   val values = findValues
 
@@ -111,8 +111,8 @@ case object CirceOperatingSystem
     extends StringEnum[CirceOperatingSystem]
     with StringCirceEnum[CirceOperatingSystem] {
 
-  case object Linux   extends CirceOperatingSystem("linux")
-  case object OSX     extends CirceOperatingSystem("osx")
+  case object Linux extends CirceOperatingSystem("linux")
+  case object OSX extends CirceOperatingSystem("osx")
   case object Windows extends CirceOperatingSystem("windows")
   case object Android extends CirceOperatingSystem("android")
 
@@ -156,8 +156,8 @@ sealed abstract class CirceBites(val value: Byte) extends ByteEnumEntry
 object CirceBites extends ByteEnum[CirceBites] with ByteCirceEnum[CirceBites] {
   val values = findValues
 
-  case object OneByte   extends CirceBites(1)
-  case object TwoByte   extends CirceBites(2)
+  case object OneByte extends CirceBites(1)
+  case object TwoByte extends CirceBites(2)
   case object ThreeByte extends CirceBites(3)
-  case object FourByte  extends CirceBites(4)
+  case object FourByte extends CirceBites(4)
 }

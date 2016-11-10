@@ -1,10 +1,10 @@
 package enumeratum.values
 
 /**
-  * Created by Lloyd on 9/24/16.
-  *
-  * Copyright 2016
-  */
+ * Created by Lloyd on 9/24/16.
+ *
+ * Copyright 2016
+ */
 sealed abstract class Alphabet(val value: Char) extends CharEnumEntry
 
 case object Alphabet extends CharEnum[Alphabet] {
