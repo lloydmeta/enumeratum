@@ -21,7 +21,7 @@ Enumeratum has the following niceties:
 - All magic happens at compile-time so you know right away when things go awry
 - Comprehensive automated testing to make sure everything is in tip-top shape
 
-Compatible with Scala 2.11+ and 2.10 as well as ScalaJS.
+Enumeratum is published for Scala 2.10.x, 2.11.x, and 2.12.x as well as ScalaJS.
 
 Integrations are available for:
 
