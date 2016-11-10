@@ -4,9 +4,9 @@ import org.scalatest._
 import BSONValueHandlers._
 
 /**
- * @author Alessandro Lacava (@lambdista)
- * @since 2016-04-23
- */
+  * @author Alessandro Lacava (@lambdista)
+  * @since 2016-04-23
+  */
 class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelpers {
 
   describe(".reader") {

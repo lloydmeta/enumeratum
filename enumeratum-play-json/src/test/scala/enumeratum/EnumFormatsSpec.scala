@@ -1,7 +1,7 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{FunSpec, Matchers}
 import play.api.libs.json._
 
 class EnumFormatsSpec extends FunSpec with Matchers {
@@ -10,7 +10,7 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     descriptor = "normal operation",
     reads = EnumFormats.reads(Dummy),
     readSuccessExpectations = Map("A" -> Dummy.A),
-    readErrors = Map("C" -> Seq("error.expected.validenumvalue")),
+    readErrors = Map("C"              -> Seq("error.expected.validenumvalue")),
     writes = EnumFormats.writes(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
     formats = EnumFormats.formats(Dummy)
@@ -69,13 +69,13 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     )
 
   private def testScenario(
-    descriptor: String,
-    reads: Reads[Dummy],
-    readSuccessExpectations: Map[String, Dummy],
-    readErrors: Map[String, Seq[String]],
-    writes: Writes[Dummy],
-    writeExpectations: Map[Dummy, String],
-    formats: Format[Dummy]
+      descriptor: String,
+      reads: Reads[Dummy],
+      readSuccessExpectations: Map[String, Dummy],
+      readErrors: Map[String, Seq[String]],
+      writes: Writes[Dummy],
+      writeExpectations: Map[Dummy, String],
+      formats: Format[Dummy]
   ): Unit = describe(descriptor) {
     testReads(reads, readSuccessExpectations, readErrors)
     testWrites(writes, writeExpectations)
@@ -83,18 +83,18 @@ class EnumFormatsSpec extends FunSpec with Matchers {
   }
 
   /**
-   * Shared scenarios for testing Reads
-   */
+    * Shared scenarios for testing Reads
+    */
   private def testReads(
-    reads: Reads[Dummy],
-    expectedSuccesses: Map[String, Dummy],
-    expectedErrors: Map[String, Seq[String]]
+      reads: Reads[Dummy],
+      expectedSuccesses: Map[String, Dummy],
+      expectedErrors: Map[String, Seq[String]]
   ): Unit = describe("Reads") {
     val expectedFails: Map[JsValue, Seq[String]] = {
       val withJsValueKeys = expectedErrors.map { case (k, v) => JsString(k) -> v }
       // Add standard errors
       withJsValueKeys ++ Map(
-        JsNumber(2) -> Seq("error.expected.enumstring"),
+        JsNumber(2)   -> Seq("error.expected.enumstring"),
         JsString("D") -> Seq("error.expected.validenumvalue")
       )
     }
@@ -117,8 +117,8 @@ class EnumFormatsSpec extends FunSpec with Matchers {
   }
 
   /**
-   * Shared scenarios for testing Writes
-   */
+    * Shared scenarios for testing Writes
+    */
   private def testWrites(writer: Writes[Dummy], expectations: Map[Dummy, String]): Unit =
     describe("Writes") {
       it("should create a writes that writes enum values to JsString") {
@@ -130,13 +130,13 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     }
 
   /**
-   * Shared scenarios for testing Formats
-   */
+    * Shared scenarios for testing Formats
+    */
   private def testFormats(
-    formats: Format[Dummy],
-    expectedReadSuccesses: Map[String, Dummy],
-    expectedReadErrors: Map[String, Seq[String]],
-    expectedWrites: Map[Dummy, String]
+      formats: Format[Dummy],
+      expectedReadSuccesses: Map[String, Dummy],
+      expectedReadErrors: Map[String, Seq[String]],
+      expectedWrites: Map[Dummy, String]
   ): Unit = describe("Formats") {
     testReads(formats, expectedReadSuccesses, expectedReadErrors)
     testWrites(formats, expectedWrites)

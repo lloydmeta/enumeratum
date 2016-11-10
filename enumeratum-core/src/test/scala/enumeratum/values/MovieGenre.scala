@@ -1,10 +1,10 @@
 package enumeratum.values
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 sealed abstract class MovieGenre extends IntEnumEntry
 
 case object MovieGenre extends IntEnum[MovieGenre] {

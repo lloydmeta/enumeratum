@@ -5,29 +5,29 @@ import io.circe.Decoder.Result
 import io.circe._
 
 /**
- * Created by Lloyd on 4/14/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/14/16.
+  *
+  * Copyright 2016
+  */
 object Circe {
 
   /**
-   * Returns an Encoder for the provided ValueEnum
-   */
+    * Returns an Encoder for the provided ValueEnum
+    */
   def encoder[ValueType: Encoder, EntryType <: ValueEnumEntry[ValueType]](
-    enum: ValueEnum[ValueType, EntryType]
+      enum: ValueEnum[ValueType, EntryType]
   ): Encoder[EntryType] = {
     new Encoder[EntryType] {
-      private val valueEncoder = implicitly[Encoder[ValueType]]
+      private val valueEncoder      = implicitly[Encoder[ValueType]]
       def apply(a: EntryType): Json = valueEncoder.apply(a.value)
     }
   }
 
   /**
-   * Returns a Decoder for the provided ValueEnum
-   */
+    * Returns a Decoder for the provided ValueEnum
+    */
   def decoder[ValueType: Decoder, EntryType <: ValueEnumEntry[ValueType]](
-    enum: ValueEnum[ValueType, EntryType]
+      enum: ValueEnum[ValueType, EntryType]
   ): Decoder[EntryType] = {
     new Decoder[EntryType] {
       private val valueDecoder = implicitly[Decoder[ValueType]]

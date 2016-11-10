@@ -1,7 +1,7 @@
 package enumeratum
 
-import org.scalatest.{ Matchers, FunSpec }
-import play.api.libs.json.{ JsNumber, JsString, Json => PlayJson }
+import org.scalatest.{Matchers, FunSpec}
+import play.api.libs.json.{JsNumber, JsString, Json => PlayJson}
 import org.scalatest.OptionValues._
 
 class PlayJsonEnumSpec extends FunSpec with Matchers {

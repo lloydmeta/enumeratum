@@ -4,8 +4,8 @@ import upickle.default.Aliases.RW
 import upickle.default.ReadWriter
 
 /**
- * Enum mix-in with default Reader and Writers defined (case sensitive)
- */
+  * Enum mix-in with default Reader and Writers defined (case sensitive)
+  */
 trait UPickleEnum[A <: EnumEntry] { self: Enum[A] =>
 
   import UPickler._

@@ -1,22 +1,21 @@
 package enumeratum.values
 
-import play.api.mvc.{ PathBindable, QueryStringBindable }
+import play.api.mvc.{PathBindable, QueryStringBindable}
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 object UrlBinders {
 
   /**
-   * Returns a [[PathBindable]] for the provided ValueEnum and base [[PathBindable]]
-   */
+    * Returns a [[PathBindable]] for the provided ValueEnum and base [[PathBindable]]
+    */
   def pathBinder[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-    enum: ValueEnum[ValueType, EntryType]
+      enum: ValueEnum[ValueType, EntryType]
   )(
-    implicit
-    baseBindable: PathBindable[ValueType]
+      implicit baseBindable: PathBindable[ValueType]
   ): PathBindable[EntryType] =
     new PathBindable[EntryType] {
       def bind(key: String, value: String): Either[String, EntryType] =
@@ -34,13 +33,12 @@ object UrlBinders {
     }
 
   /**
-   * Returns a [[QueryStringBindable]] for the provided ValueEnum and base [[PathBindable]]
-   */
+    * Returns a [[QueryStringBindable]] for the provided ValueEnum and base [[PathBindable]]
+    */
   def queryBinder[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-    enum: ValueEnum[ValueType, EntryType]
+      enum: ValueEnum[ValueType, EntryType]
   )(
-    implicit
-    baseBindable: QueryStringBindable[ValueType]
+      implicit baseBindable: QueryStringBindable[ValueType]
   ): QueryStringBindable[EntryType] =
     new QueryStringBindable[EntryType] {
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, EntryType]] = {
@@ -50,7 +48,7 @@ object UrlBinders {
             val maybeBound = enum.withValueOpt(s)
             maybeBound match {
               case Some(obj) => Right(obj)
-              case None => Left(s"Unknown value supplied for $enum '$s'")
+              case None      => Left(s"Unknown value supplied for $enum '$s'")
             }
           })
       }

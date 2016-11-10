@@ -8,20 +8,20 @@ lazy val theScalaVersion = "2.11.8"
  */
 lazy val scalaVersions = Seq("2.10.6", "2.11.8")
 
-lazy val scalaTestVersion     = "3.0.0"
+lazy val scalaTestVersion = "3.0.0"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
-lazy val circeVersion = "0.6.0"
-lazy val uPickleVersion = "0.4.3"
-lazy val argonautVersion ="6.1"
+lazy val circeVersion         = "0.6.0"
+lazy val uPickleVersion       = "0.4.3"
+lazy val argonautVersion      = "6.1"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.9"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
-}
+  }
 
 lazy val baseProjectRefs =
   Seq(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests).map(Project.projectToRef)
@@ -60,7 +60,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
             publishLocal := {})
-    .aggregate(baseProjectRefs ++ Seq(enumeratumCirceJs, enumeratumCirceJvm).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
+  .aggregate(baseProjectRefs ++ Seq(enumeratumCirceJs, enumeratumCirceJvm).map(
+    Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
   .crossType(CrossType.Pure)
@@ -209,15 +210,17 @@ lazy val commonSettings = Seq(
     organization := "com.beachape",
     version := theVersion,
     incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion
+    scalaVersion := theScalaVersion,
+    scalafmtConfig := Some(file(".scalafmt.conf"))
   ) ++
+    reformatOnCompileSettings ++
     compilerSettings ++
     resolverSettings ++
     ideSettings
 
 lazy val commonSettingsWithTrimmings =
   commonSettings ++
-  scoverageSettings
+    scoverageSettings
 
 lazy val commonWithPublishSettings =
   commonSettingsWithTrimmings ++
@@ -347,3 +350,5 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
     unmanagedMainDirsSetting
   }
 }
+
+scalafmtConfig := Some(file(".scalafmt.conf"))

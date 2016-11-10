@@ -4,8 +4,8 @@ import argonaut._
 import Argonaut._
 
 /**
- * Created by alonsodomin on 14/10/2016.
- */
+  * Created by alonsodomin on 14/10/2016.
+  */
 sealed trait ArgonautValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
 
@@ -15,8 +15,8 @@ sealed trait ArgonautValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]
 }
 
 /**
- * ArgonautEnum for IntEnumEntry
- */
+  * ArgonautEnum for IntEnumEntry
+  */
 trait IntArgonautEnum[EntryType <: IntEnumEntry] extends ArgonautValueEnum[Int, EntryType] {
   this: ValueEnum[Int, EntryType] =>
 
@@ -25,8 +25,8 @@ trait IntArgonautEnum[EntryType <: IntEnumEntry] extends ArgonautValueEnum[Int, 
 }
 
 /**
- * ArgonautEnum for LongEnumEntry
- */
+  * ArgonautEnum for LongEnumEntry
+  */
 trait LongArgonautEnum[EntryType <: LongEnumEntry] extends ArgonautValueEnum[Long, EntryType] {
   this: ValueEnum[Long, EntryType] =>
 
@@ -35,8 +35,8 @@ trait LongArgonautEnum[EntryType <: LongEnumEntry] extends ArgonautValueEnum[Lon
 }
 
 /**
- * ArgonautEnum for ShortEnumEntry
- */
+  * ArgonautEnum for ShortEnumEntry
+  */
 trait ShortArgonautEnum[EntryType <: ShortEnumEntry] extends ArgonautValueEnum[Short, EntryType] {
   this: ValueEnum[Short, EntryType] =>
 
@@ -45,8 +45,8 @@ trait ShortArgonautEnum[EntryType <: ShortEnumEntry] extends ArgonautValueEnum[S
 }
 
 /**
- * ArgonautEnum for StringEnumEntry
- */
+  * ArgonautEnum for StringEnumEntry
+  */
 trait StringArgonautEnum[EntryType <: StringEnumEntry]
     extends ArgonautValueEnum[String, EntryType] { this: ValueEnum[String, EntryType] =>
 
@@ -55,8 +55,8 @@ trait StringArgonautEnum[EntryType <: StringEnumEntry]
 }
 
 /**
- * ArgonautEnum for CharEnumEntry
- */
+  * ArgonautEnum for CharEnumEntry
+  */
 trait CharArgonautEnum[EntryType <: CharEnumEntry] extends ArgonautValueEnum[Char, EntryType] {
   this: ValueEnum[Char, EntryType] =>
 
@@ -65,8 +65,8 @@ trait CharArgonautEnum[EntryType <: CharEnumEntry] extends ArgonautValueEnum[Cha
 }
 
 /**
- * ArgonautEnum for ByteEnumEntry
- */
+  * ArgonautEnum for ByteEnumEntry
+  */
 trait ByteArgonautEnum[EntryType <: ByteEnumEntry] extends ArgonautValueEnum[Byte, EntryType] {
   this: ValueEnum[Byte, EntryType] =>
 

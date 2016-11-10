@@ -2,13 +2,13 @@ package enumeratum.values
 
 import org.scalatest._
 import EnumFormats._
-import play.api.libs.json.{ JsNumber, JsString }
+import play.api.libs.json.{JsNumber, JsString}
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 class EnumFormatsSpec extends FunSpec with Matchers with EnumJsonFormatHelpers {
 
   describe(".reads") {

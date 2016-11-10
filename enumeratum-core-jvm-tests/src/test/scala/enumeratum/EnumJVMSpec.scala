@@ -1,6 +1,6 @@
 package enumeratum
 
-import org.scalatest.{ FunSpec, Matchers }
+import org.scalatest.{FunSpec, Matchers}
 
 class EnumJVMSpec extends FunSpec with Matchers {
 

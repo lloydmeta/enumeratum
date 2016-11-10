@@ -5,21 +5,26 @@ import java.security.cert.X509Certificate
 import org.scalatest._
 import play.api.data.Form
 import play.api.http.HttpVerbs
-import play.api.mvc.{ Headers, RequestHeader }
+import play.api.mvc.{Headers, RequestHeader}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.libs.json.{ Format, JsNumber, JsValue }
+import play.api.libs.json.{Format, JsNumber, JsValue}
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Format](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType]
+  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType],
+                          ValueType <: AnyVal: Numeric: Format](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
+        ValueType,
+        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
+        ValueType,
+        EntryType]
   ) = {
     val numeric = implicitly[Numeric[ValueType]]
     testPlayEnum(enumKind, enum, { i: ValueType =>
@@ -29,9 +34,13 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
   }
 
   def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType: Format](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[ValueType, EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[ValueType, EntryType],
-    jsWrapper: ValueType => JsValue
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
+        ValueType,
+        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
+        ValueType,
+        EntryType],
+      jsWrapper: ValueType => JsValue
   ) = {
 
     describe(enumKind) {
@@ -109,7 +118,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
             import play.api.mvc._
             enum.values.foreach { entry =>
               val router = Router.from {
-                case GET(p"/${ enum.fromPath(greeting) }") =>
+                case GET(p"/${enum.fromPath(greeting)}") =>
                   Action {
                     Results.Ok(s"$greeting")
                   }

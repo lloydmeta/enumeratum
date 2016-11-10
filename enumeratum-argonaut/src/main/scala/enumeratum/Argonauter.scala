@@ -4,8 +4,8 @@ import argonaut._
 import Argonaut._
 
 /**
- * Created by alonsodomin on 14/10/2016.
- */
+  * Created by alonsodomin on 14/10/2016.
+  */
 object Argonauter {
 
   private def encoder0[A <: EnumEntry](f: A => String): EncodeJson[A] =
@@ -25,7 +25,7 @@ object Argonauter {
       stringDecoder(cursor).flatMap { enumStr =>
         f(enumStr) match {
           case Some(a) => okResult(a)
-          case _ => failResult(s"$enumStr' is not a member of enum $enum", cursor.history)
+          case _       => failResult(s"$enumStr' is not a member of enum $enum", cursor.history)
         }
       }
     }

@@ -5,16 +5,17 @@ import play.api.libs.json._
 import org.scalatest.OptionValues._
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testNumericWrites[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Writes](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    providedWrites: Option[Writes[EntryType]] = None
+  def testNumericWrites[EntryType <: ValueEnumEntry[ValueType],
+                        ValueType <: AnyVal: Numeric: Writes](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedWrites: Option[Writes[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     testWrites(enumKind, enum, { i: ValueType =>
@@ -23,10 +24,10 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
   }
 
   def testWrites[EntryType <: ValueEnumEntry[ValueType], ValueType: Writes](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    jsWrapper: ValueType => JsValue,
-    providedWrites: Option[Writes[EntryType]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      jsWrapper: ValueType => JsValue,
+      providedWrites: Option[Writes[EntryType]] = None
   ): Unit = {
     val writes = providedWrites.getOrElse(EnumFormats.writes(enum))
     describe(enumKind) {
@@ -38,10 +39,11 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testNumericReads[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    providedReads: Option[Reads[EntryType]] = None
+  def testNumericReads[EntryType <: ValueEnumEntry[ValueType],
+                       ValueType <: AnyVal: Numeric: Reads](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedReads: Option[Reads[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     testReads(enumKind, enum, { i: ValueType =>
@@ -50,10 +52,10 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
   }
 
   def testReads[EntryType <: ValueEnumEntry[ValueType], ValueType: Reads](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    jsWrapper: ValueType => JsValue,
-    providedReads: Option[Reads[EntryType]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      jsWrapper: ValueType => JsValue,
+      providedReads: Option[Reads[EntryType]] = None
   ): Unit = {
     val reads = providedReads.getOrElse(EnumFormats.reads(enum))
     describe(enumKind) {
@@ -69,20 +71,21 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testNumericFormats[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads: Writes](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    providedFormat: Option[Format[EntryType]] = None
+  def testNumericFormats[EntryType <: ValueEnumEntry[ValueType],
+                         ValueType <: AnyVal: Numeric: Reads: Writes](
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      providedFormat: Option[Format[EntryType]] = None
   ): Unit = {
     testNumericReads(enumKind, enum, providedFormat)
     testNumericWrites(enumKind, enum, providedFormat)
   }
 
   def testFormats[EntryType <: ValueEnumEntry[ValueType], ValueType: Reads: Writes](
-    enumKind: String,
-    enum: ValueEnum[ValueType, EntryType],
-    jsWrapper: ValueType => JsValue,
-    providedFormat: Option[Format[EntryType]] = None
+      enumKind: String,
+      enum: ValueEnum[ValueType, EntryType],
+      jsWrapper: ValueType => JsValue,
+      providedFormat: Option[Format[EntryType]] = None
   ): Unit = {
     val format = providedFormat.getOrElse(EnumFormats.formats(enum))
     testReads(enumKind, enum, jsWrapper, Some(format))

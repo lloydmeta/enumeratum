@@ -2,7 +2,7 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.4.9")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 

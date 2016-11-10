@@ -2,13 +2,13 @@ package enumeratum
 
 import java.security.cert.X509Certificate
 
-import org.scalatest.{ FunSpec, Matchers }
-import play.api.data.{ Form, Mapping }
+import org.scalatest.{FunSpec, Matchers}
+import play.api.data.{Form, Mapping}
 import play.api.http.HttpVerbs
-import play.api.libs.json.{ Format, JsNumber, JsString, JsValue, Json => PlayJson }
+import play.api.libs.json.{Format, JsNumber, JsString, JsValue, Json => PlayJson}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.mvc.{ Headers, PathBindable, QueryStringBindable, RequestHeader }
+import play.api.mvc.{Headers, PathBindable, QueryStringBindable, RequestHeader}
 import play.api.routing.sird.PathBindableExtractor
 
 class PlayEnumSpec extends FunSpec with Matchers {
@@ -50,14 +50,14 @@ class PlayEnumSpec extends FunSpec with Matchers {
   )
 
   private def testScenarios[A <: EnumEntry: Format](
-    descriptor: String,
-    enum: Enum[A],
-    validTransforms: Map[String, A],
-    expectedFailures: Seq[String],
-    formMapping: Mapping[A],
-    pathBindable: PathBindable[A],
-    pathBindableExtractor: PathBindableExtractor[A],
-    queryStringBindable: QueryStringBindable[A]
+      descriptor: String,
+      enum: Enum[A],
+      validTransforms: Map[String, A],
+      expectedFailures: Seq[String],
+      formMapping: Mapping[A],
+      pathBindable: PathBindable[A],
+      pathBindableExtractor: PathBindableExtractor[A],
+      queryStringBindable: QueryStringBindable[A]
   ): Unit = describe(descriptor) {
 
     testJson()
@@ -67,9 +67,9 @@ class PlayEnumSpec extends FunSpec with Matchers {
     def testJson(): Unit = {
 
       val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(
-        JsString("AVADSGDSAFA"),
-        JsNumber(Int.MaxValue)
-      )
+          JsString("AVADSGDSAFA"),
+          JsNumber(Int.MaxValue)
+        )
 
       describe("JSON serdes") {
 
@@ -105,7 +105,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
     def testFormBinding(): Unit = {
 
-      val subject = Form("hello" -> formMapping)
+      val subject        = Form("hello" -> formMapping)
       val expectedErrors = expectedFailures ++ Seq(Int.MaxValue.toString, "12asdf13!")
 
       describe("Form binding") {
@@ -174,7 +174,7 @@ class PlayEnumSpec extends FunSpec with Matchers {
             import play.api.routing._
             import play.api.mvc._
             val router = Router.from {
-              case GET(p"/${ pathBindableExtractor(greeting) }") =>
+              case GET(p"/${pathBindableExtractor(greeting)}") =>
                 Action {
                   Results.Ok(s"$greeting")
                 }

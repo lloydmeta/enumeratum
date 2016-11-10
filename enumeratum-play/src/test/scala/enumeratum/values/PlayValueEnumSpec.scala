@@ -1,14 +1,14 @@
 package enumeratum.values
 
-import org.scalatest.{ FunSpec, Matchers }
-import play.api.libs.json.{ JsNumber, JsString }
+import org.scalatest.{FunSpec, Matchers}
+import play.api.libs.json.{JsNumber, JsString}
 import EnumFormats.charFormat
 
 /**
- * Created by Lloyd on 4/13/16.
- *
- * Copyright 2016
- */
+  * Created by Lloyd on 4/13/16.
+  *
+  * Copyright 2016
+  */
 class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers {
 
   testNumericPlayEnum("LongPlayEnum", PlayContentType)
@@ -31,7 +31,7 @@ case object PlayContentType extends LongPlayEnum[PlayContentType] {
 
   val values = findValues
 
-  case object Text extends PlayContentType(value = 1L, name = "text")
+  case object Text  extends PlayContentType(value = 1L, name = "text")
   case object Image extends PlayContentType(value = 2L, name = "image")
   case object Video extends PlayContentType(value = 3L, name = "video")
   case object Audio extends PlayContentType(value = 4L, name = "audio")
@@ -43,9 +43,9 @@ sealed abstract class PlayDrinks(val value: Short, name: String) extends ShortEn
 case object PlayDrinks extends ShortPlayEnum[PlayDrinks] {
 
   case object OrangeJuice extends PlayDrinks(value = 1, name = "oj")
-  case object AppleJuice extends PlayDrinks(value = 2, name = "aj")
-  case object Cola extends PlayDrinks(value = 3, name = "cola")
-  case object Beer extends PlayDrinks(value = 4, name = "beer")
+  case object AppleJuice  extends PlayDrinks(value = 2, name = "aj")
+  case object Cola        extends PlayDrinks(value = 3, name = "cola")
+  case object Beer        extends PlayDrinks(value = 4, name = "beer")
 
   val values = findValues
 
@@ -56,10 +56,10 @@ sealed abstract class PlayLibraryItem(val value: Int, val name: String) extends 
 case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
-  case object Book extends PlayLibraryItem(value = 1, name = "book")
-  case object Movie extends PlayLibraryItem(name = "movie", value = 2)
+  case object Book     extends PlayLibraryItem(value = 1, name = "book")
+  case object Movie    extends PlayLibraryItem(name = "movie", value = 2)
   case object Magazine extends PlayLibraryItem(3, "magazine")
-  case object CD extends PlayLibraryItem(4, name = "cd")
+  case object CD       extends PlayLibraryItem(4, name = "cd")
 
   val values = findValues
 
@@ -69,8 +69,8 @@ sealed abstract class PlayOperatingSystem(val value: String) extends StringEnumE
 
 case object PlayOperatingSystem extends StringPlayEnum[PlayOperatingSystem] {
 
-  case object Linux extends PlayOperatingSystem("linux")
-  case object OSX extends PlayOperatingSystem("osx")
+  case object Linux   extends PlayOperatingSystem("linux")
+  case object OSX     extends PlayOperatingSystem("osx")
   case object Windows extends PlayOperatingSystem("windows")
   case object Android extends PlayOperatingSystem("android")
 
@@ -114,8 +114,8 @@ sealed abstract class PlayBites(val value: Byte) extends ByteEnumEntry
 object PlayBites extends ByteEnum[PlayBites] with BytePlayEnum[PlayBites] {
   val values = findValues
 
-  case object OneByte extends PlayBites(1)
-  case object TwoByte extends PlayBites(2)
+  case object OneByte   extends PlayBites(1)
+  case object TwoByte   extends PlayBites(2)
   case object ThreeByte extends PlayBites(3)
-  case object FourByte extends PlayBites(4)
+  case object FourByte  extends PlayBites(4)
 }
