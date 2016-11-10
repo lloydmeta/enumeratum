@@ -1,7 +1,7 @@
 package enumeratum.values
 
 import org.scalatest.{ FunSpec, Matchers }
-import cats.data.Xor
+import cats.syntax.either._
 import io.circe.{ Decoder, Encoder, Json }
 import io.circe.syntax._
 
@@ -41,7 +41,7 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
 
         it("should parse to members when given proper JSON") {
           enum.values.foreach { entry =>
-            entry.value.asJson.as[EntryType] shouldBe Xor.Right(entry)
+            entry.value.asJson.as[EntryType] shouldBe Right(entry)
           }
         }
 

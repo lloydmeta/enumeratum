@@ -1,7 +1,7 @@
 package enumeratum
 
 import org.scalatest.{ FunSpec, Matchers }
-import cats.data.Xor
+import cats.syntax.either._
 import io.circe.Json
 import io.circe.syntax._
 
@@ -42,7 +42,7 @@ class CirceSpec extends FunSpec with Matchers {
 
     it("should parse to members when given proper JSON") {
       ShirtSize.values.foreach { entry =>
-        Json.fromString(entry.entryName).as[ShirtSize] shouldBe Xor.Right(entry)
+        Json.fromString(entry.entryName).as[ShirtSize] shouldBe Right(entry)
       }
     }
 
@@ -50,7 +50,7 @@ class CirceSpec extends FunSpec with Matchers {
       ShirtSize.values.foreach { entry =>
         Json
           .fromString(entry.entryName.toLowerCase)
-          .as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+          .as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)) shouldBe Right(entry)
       }
     }
 
@@ -58,7 +58,7 @@ class CirceSpec extends FunSpec with Matchers {
       ShirtSize.values.foreach { entry =>
         Json
           .fromString(entry.entryName.toUpperCase)
-          .as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)) shouldBe Xor.Right(entry)
+          .as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)) shouldBe Right(entry)
       }
     }
 
