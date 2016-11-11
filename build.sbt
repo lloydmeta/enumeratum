@@ -60,14 +60,14 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
             publishLocal := {})
-  .aggregate(baseProjectRefs ++
-    Seq(
-      enumeratumCirceJs,
-      enumeratumCirceJvm,
-      enumeratumUPickleJs,
-      enumeratumUPickleJvm
-    ).map(
-    Project.projectToRef): _*) // base plus known 2.12 friendly libs
+  .aggregate(
+    baseProjectRefs ++
+      Seq(
+        enumeratumCirceJs,
+        enumeratumCirceJvm,
+        enumeratumUPickleJs,
+        enumeratumUPickleJvm
+      ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
   .crossType(CrossType.Pure)
