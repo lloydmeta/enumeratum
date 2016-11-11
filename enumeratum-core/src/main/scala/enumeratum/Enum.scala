@@ -2,7 +2,8 @@ package enumeratum
 
 import scala.language.experimental.macros
 import scala.language.postfixOps
-import ContextUtils.Context
+
+import scala.collection.immutable._
 
 /**
   * All the cool kids have their own Enumeration implementation, most of which try to
@@ -67,7 +68,7 @@ trait Enum[A <: EnumEntry] {
     * Feel free to implement this however you'd like (including messing around with ordering, etc) if that
     * fits your needs better.
     */
-  def values: Seq[A]
+  def values: IndexedSeq[A]
 
   /**
     * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
@@ -150,7 +151,7 @@ trait Enum[A <: EnumEntry] {
     * You will want to use this in some way to implement your [[values]] method. In fact,
     * if you aren't using this method...why are you even bothering with this lib?
     */
-  protected def findValues: Seq[A] = macro EnumMacros.findValuesImpl[A]
+  protected def findValues: IndexedSeq[A] = macro EnumMacros.findValuesImpl[A]
 
   private def buildNotFoundMessage(notFoundName: String): String = {
     s"$notFoundName is not a member of Enum ($existingEntriesString)"

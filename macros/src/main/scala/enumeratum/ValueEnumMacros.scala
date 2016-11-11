@@ -3,6 +3,7 @@ package enumeratum
 import enumeratum.ContextUtils.Context
 
 import scala.reflect.ClassTag
+import scala.collection.immutable._
 
 object ValueEnumMacros {
 
