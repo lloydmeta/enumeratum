@@ -2,6 +2,7 @@ package enumeratum.values
 
 import enumeratum.{EnumMacros, ValueEnumMacros}
 
+import scala.collection.immutable._
 import scala.language.experimental.macros
 
 sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
@@ -20,7 +21,7 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
     * Feel free to implement this however you'd like (including messing around with ordering, etc) if that
     * fits your needs better.
     */
-  def values: Seq[EntryType]
+  def values: IndexedSeq[EntryType]
 
   /**
     * Tries to get an [[EntryType]] by the supplied value. The value corresponds to the .value

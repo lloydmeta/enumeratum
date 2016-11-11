@@ -1,6 +1,6 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theVersion      = "1.4.19-SNAPSHOT"
+lazy val theVersion      = "1.5.0-SNAPSHOT"
 lazy val theScalaVersion = "2.11.8"
 /*
   2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
