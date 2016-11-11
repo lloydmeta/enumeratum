@@ -13,7 +13,7 @@ lazy val scalaTestVersion = "3.0.0"
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
 lazy val circeVersion         = "0.6.0"
-lazy val uPickleVersion       = "0.4.3"
+lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.1"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -60,7 +60,13 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
             publishLocal := {})
-  .aggregate(baseProjectRefs ++ Seq(enumeratumCirceJs, enumeratumCirceJvm).map(
+  .aggregate(baseProjectRefs ++
+    Seq(
+      enumeratumCirceJs,
+      enumeratumCirceJvm,
+      enumeratumUPickleJs,
+      enumeratumUPickleJvm
+    ).map(
     Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
