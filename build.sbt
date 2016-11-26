@@ -12,12 +12,12 @@ lazy val scalaTestVersion = "3.0.0"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
-lazy val circeVersion         = "0.6.0"
+lazy val circeVersion         = "0.6.1"
 lazy val uPickleVersion       = "0.4.4"
-lazy val argonautVersion      = "6.1"
+lazy val argonautVersion      = "6.2-RC2"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.9"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.10"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -66,7 +66,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumCirceJs,
         enumeratumCirceJvm,
         enumeratumUPickleJs,
-        enumeratumUPickleJvm
+        enumeratumUPickleJvm,
+        enumeratumArgonaut
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
