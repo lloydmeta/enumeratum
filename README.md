@@ -103,6 +103,14 @@ Greeting.withName("Hello")
 Greeting.withName("Haro")
 // => java.lang.IllegalArgumentException: Haro is not a member of Enum (Hello, GoodBye, Hi, Bye)
 
+// A safer alternative would be to use `withNameOption(name: String)` method which returns an Option[Greeting]
+Greeting.withNameOption("Hello")
+
+// => res1: Option[Greeting] = Some(Hello)
+
+Greeting.withNameOption("Haro")
+
+// => res2: Option[Greeting] = None
 ```
 
 Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
