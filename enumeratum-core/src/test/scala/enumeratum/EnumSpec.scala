@@ -251,6 +251,54 @@ class EnumSpec extends FunSpec with Matchers {
         SnakeEnum.withName("good_bye") shouldBe SnakeEnum.GoodBye
         SnakeEnum.withName("SHOUT_GOOD_BYE") shouldBe SnakeEnum.ShoutGoodBye
 
+        UpperSnakeEnum.withName("HELLO") shouldBe UpperSnakeEnum.Hello
+        UpperSnakeEnum.withName("GOOD_BYE") shouldBe UpperSnakeEnum.GoodBye
+        UpperSnakeEnum.withName("whispher_good_bye") shouldBe UpperSnakeEnum.WhispherGoodBye
+
+        CapitalSnakeEnum.withName("Hello") shouldBe CapitalSnakeEnum.Hello
+        CapitalSnakeEnum.withName("Good_Bye") shouldBe CapitalSnakeEnum.GoodBye
+        CapitalSnakeEnum.withName("whispher_good_bye") shouldBe CapitalSnakeEnum.WhispherGoodBye
+
+        HyphenEnum.withName("hello") shouldBe HyphenEnum.Hello
+        HyphenEnum.withName("good-bye") shouldBe HyphenEnum.GoodBye
+        HyphenEnum.withName("SHOUT-GOOD-BYE") shouldBe HyphenEnum.ShoutGoodBye
+
+        UpperHyphenEnum.withName("HELLO") shouldBe UpperHyphenEnum.Hello
+        UpperHyphenEnum.withName("GOOD-BYE") shouldBe UpperHyphenEnum.GoodBye
+        UpperHyphenEnum.withName("whispher-good-bye") shouldBe UpperHyphenEnum.WhispherGoodBye
+
+        CapitalHyphenEnum.withName("Hello") shouldBe CapitalHyphenEnum.Hello
+        CapitalHyphenEnum.withName("Good-Bye") shouldBe CapitalHyphenEnum.GoodBye
+        CapitalHyphenEnum.withName("whispher-good-bye") shouldBe CapitalHyphenEnum.WhispherGoodBye
+
+        DotEnum.withName("hello") shouldBe DotEnum.Hello
+        DotEnum.withName("good.bye") shouldBe DotEnum.GoodBye
+        DotEnum.withName("SHOUT.GOOD.BYE") shouldBe DotEnum.ShoutGoodBye
+
+        UpperDotEnum.withName("HELLO") shouldBe UpperDotEnum.Hello
+        UpperDotEnum.withName("GOOD.BYE") shouldBe UpperDotEnum.GoodBye
+        UpperDotEnum.withName("whispher.good.bye") shouldBe UpperDotEnum.WhispherGoodBye
+
+        CapitalDotEnum.withName("Hello") shouldBe CapitalDotEnum.Hello
+        CapitalDotEnum.withName("Good.Bye") shouldBe CapitalDotEnum.GoodBye
+        CapitalDotEnum.withName("whispher.good.bye") shouldBe CapitalDotEnum.WhispherGoodBye
+
+        WordsEnum.withName("hello") shouldBe WordsEnum.Hello
+        WordsEnum.withName("good bye") shouldBe WordsEnum.GoodBye
+        WordsEnum.withName("SHOUT GOOD BYE") shouldBe WordsEnum.ShoutGoodBye
+
+        UpperWordsEnum.withName("HELLO") shouldBe UpperWordsEnum.Hello
+        UpperWordsEnum.withName("GOOD BYE") shouldBe UpperWordsEnum.GoodBye
+        UpperWordsEnum.withName("whispher good bye") shouldBe UpperWordsEnum.WhispherGoodBye
+
+        CapitalWordsEnum.withName("Hello") shouldBe CapitalWordsEnum.Hello
+        CapitalWordsEnum.withName("Good Bye") shouldBe CapitalWordsEnum.GoodBye
+        CapitalWordsEnum.withName("whispher good bye") shouldBe CapitalWordsEnum.WhispherGoodBye
+
+        UpperEnum.withName("HELLO") shouldBe UpperEnum.Hello
+        UpperEnum.withName("GOODBYE") shouldBe UpperEnum.GoodBye
+        UpperEnum.withName("sike") shouldBe UpperEnum.Sike
+
         LowerEnum.withName("hello") shouldBe LowerEnum.Hello
         LowerEnum.withName("goodbye") shouldBe LowerEnum.GoodBye
         LowerEnum.withName("SIKE") shouldBe LowerEnum.Sike
