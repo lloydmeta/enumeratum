@@ -10,9 +10,9 @@ richer enum values without having to maintain your own collection of values.
 Enumeratum has the following niceties:
 
 - Zero dependencies
-- Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking)) 
+- Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking))
 - Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
-- [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints. 
+- [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints.
 - Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
 - Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
 - No usage of reflection at runtime. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
@@ -147,7 +147,7 @@ Greeting.indexOf(Bye)
 ```
 
 The name is taken from the `toString` method of the particular
-`EnumEntry`. This behavior can be changed in two ways. 
+`EnumEntry`. This behavior can be changed in two ways.
 
 
 #### Manual override of name
@@ -177,7 +177,7 @@ State.withName("AL")
 #### Mixins to override the name
 
 The second way to override the name behaviour is to mixin the stackable traits provided for common string
-conversions, `Snakecase`, `Uppercase`, and `Lowercase`.
+conversions, `Snakecase`, `UpperSnakecase`, `CapitalSnakecase`, `Hyphencase`, `UpperHyphencase`, `CapitalHyphencase`, `Dotcase`, `UpperDotcase`, `CapitalDotcase`, `Words`, `UpperWords`, `CapitalWords`, `Uppercase`, and `Lowercase`.
 
 ```scala
 
@@ -205,7 +205,7 @@ Greeting.withName("SHOUT_GOOD_BYE")
 ### ValueEnum
 
 Asides from enumerations that resolve members from `String` _names_, Enumeratum also supports `ValueEnum`s, enums that resolve
-members from simple _values_ like `Int`, `Long`, `Short`, `Char`, `Byte`, and `String` (without support for runtime transformations). 
+members from simple _values_ like `Int`, `Long`, `Short`, `Char`, `Byte`, and `String` (without support for runtime transformations).
 
 These enums are not modelled after `Enumeration` from standard lib, and therefore have the added ability to make sure, at compile-time,
 that multiple members do not share the same value.
@@ -381,14 +381,14 @@ object Formats {
 
 object GreetingForm {
   import Formats._
-  
+
   val form = Form(
       mapping(
         "name" -> nonEmptyText,
         "greeting" -> of[Greeting]
       )(Data.apply)(Data.unapply)
     )
-  
+
     case class Data(
       name: String,
       greeting: Greeting)
@@ -837,5 +837,5 @@ Other than the methods that throw `NoSuchElementException`s, performance is in t
 is acceptable for almost all use-cases. PRs that promise to increase performance are expected to be demonstrably faster.
 
 Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
-My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no 
-corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits. 
+My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no
+corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits.
