@@ -8,7 +8,7 @@ lazy val theScalaVersion = "2.11.8"
  */
 lazy val scalaVersions = Seq("2.10.6", "2.11.8")
 
-lazy val scalaTestVersion = "3.0.0"
+lazy val scalaTestVersion = "3.0.1"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
