@@ -15,3 +15,5 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.13")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.18")
 
 addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.2.1")
+
+addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.4.1")

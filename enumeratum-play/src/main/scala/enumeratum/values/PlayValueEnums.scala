@@ -16,6 +16,31 @@ package enumeratum.values
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
   *
+  * Example:
+  *
+  * {{{
+  * scala> import enumeratum.values._
+  * scala> import play.api.data.Form
+  * scala> import play.api.libs.json._
+  *
+  * scala> sealed abstract class Greeting(val value:Int) extends IntEnumEntry
+  *
+  * scala> object Greeting extends IntPlayEnum[Greeting] {
+  *      |   val values = findValues
+  *      |   case object Hello extends Greeting(1)
+  *      |   case object GoodBye extends Greeting(2)
+  *      |   case object Hi extends Greeting(3)
+  *      |   case object Bye extends Greeting(4)
+  *      | }
+  *
+  * scala> val form = Form("greeting" -> Greeting.formField)
+  * scala> form.bind(Map("greeting" -> "1")).value
+  * res0: Option[Greeting] = Some(Hello)
+  * }}}
+  *
+  * scala> Json.toJson(Greeting.Hello)
+  * res1: JsValue = 1
+  *
   */
 trait IntPlayEnum[EnumEntry <: IntEnumEntry]
     extends IntEnum[EnumEntry]
@@ -34,6 +59,8 @@ trait IntPlayEnum[EnumEntry <: IntEnumEntry]
   *   - implicit QueryStringBindable (for binding from query strings)
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
+  *
+  * See [[IntPlayEnum]] for example usage.
   *
   */
 trait LongPlayEnum[EnumEntry <: LongEnumEntry]
@@ -54,6 +81,7 @@ trait LongPlayEnum[EnumEntry <: LongEnumEntry]
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
   *
+  * See [[IntPlayEnum]] for example usage.
   */
 trait ShortPlayEnum[EnumEntry <: ShortEnumEntry]
     extends ShortEnum[EnumEntry]
@@ -73,6 +101,7 @@ trait ShortPlayEnum[EnumEntry <: ShortEnumEntry]
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
   *
+  * See [[IntPlayEnum]] for example usage.
   */
 trait StringPlayEnum[EnumEntry <: StringEnumEntry]
     extends StringEnum[EnumEntry]
@@ -92,6 +121,7 @@ trait StringPlayEnum[EnumEntry <: StringEnumEntry]
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
   *
+  * See [[IntPlayEnum]] for example usage.
   */
 trait BytePlayEnum[EnumEntry <: ByteEnumEntry]
     extends ByteEnum[EnumEntry]
@@ -111,6 +141,7 @@ trait BytePlayEnum[EnumEntry <: ByteEnumEntry]
   *   - formField for doing things like `Form("hello" -> MyEnum.formField)`
   *   - implicit Json format
   *
+  * See [[IntPlayEnum]] for example usage.
   */
 trait CharPlayEnum[EnumEntry <: CharEnumEntry]
     extends CharEnum[EnumEntry]

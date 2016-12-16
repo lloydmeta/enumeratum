@@ -11,9 +11,29 @@ object Forms {
   /**
     * Returns an [[Enum]] mapping
     *
-    * For example:
+    * Example:
+    *
     * {{{
-    *   Form("status" -> maps(Status))
+    * scala> import enumeratum._
+    * scala> import play.api.data.Form
+    *
+    * scala> sealed trait Greeting extends EnumEntry
+    *
+    * scala> object Greeting extends Enum[Greeting] {
+    *      |   val values = findValues
+    *      |   case object Hello extends Greeting
+    *      |   case object GoodBye extends Greeting
+    *      |   case object Hi extends Greeting
+    *      |   case object Bye extends Greeting
+    *      | }
+    *
+    * scala> val form = Form("greeting" -> Forms.enum(Greeting))
+    * scala> form.bind(Map("greeting" -> "Hello")).value
+    * res0: Option[Greeting] = Some(Hello)
+    *
+    * scala> val formInsensitive = Form("greeting" -> Forms.enum(Greeting, true))
+    * scala> formInsensitive.bind(Map("greeting" -> "hElLo")).value
+    * res1: Option[Greeting] = Some(Hello)
     * }}}
     *
     * @param enum The enum
@@ -23,11 +43,30 @@ object Forms {
     PlayForms.of(format(enum, insensitive))
 
   /**
-    * Returns an [[Enum]] mapping for lower case
+    * Returns an [[Enum]] mapping for lower case binding only
     *
-    * For example:
+    * Example:
+    *
     * {{{
-    *   Form("status" -> maps(Status))
+    * scala> import enumeratum._
+    * scala> import play.api.data.Form
+    *
+    * scala> sealed trait Greeting extends EnumEntry
+    *
+    * scala> object Greeting extends Enum[Greeting] {
+    *      |   val values = findValues
+    *      |   case object Hello extends Greeting
+    *      |   case object GoodBye extends Greeting
+    *      |   case object Hi extends Greeting
+    *      |   case object Bye extends Greeting
+    *      | }
+    *
+    * scala> val form = Form("greeting" -> Forms.enumLowerCaseOnly(Greeting))
+    * scala> form.bind(Map("greeting" -> "hello")).value
+    * res0: Option[Greeting] = Some(Hello)
+    *
+    * scala> form.bind(Map("greeting" -> "Hello")).value
+    * res1: Option[Greeting] = None
     * }}}
     *
     * @param enum The enum
@@ -36,11 +75,30 @@ object Forms {
     PlayForms.of(formatLowercaseOnly(enum))
 
   /**
-    * Returns an [[Enum]] mapping for upper case
+    * Returns an [[Enum]] mapping for upper case binding only
     *
-    * For example:
+    * Example:
+    *
     * {{{
-    *   Form("status" -> maps(Status))
+    * scala> import enumeratum._
+    * scala> import play.api.data.Form
+    *
+    * scala> sealed trait Greeting extends EnumEntry
+    *
+    * scala> object Greeting extends Enum[Greeting] {
+    *      |   val values = findValues
+    *      |   case object Hello extends Greeting
+    *      |   case object GoodBye extends Greeting
+    *      |   case object Hi extends Greeting
+    *      |   case object Bye extends Greeting
+    *      | }
+    *
+    * scala> val form = Form("greeting" -> Forms.enumUppercaseOnly(Greeting))
+    * scala> form.bind(Map("greeting" -> "HELLO")).value
+    * res0: Option[Greeting] = Some(Hello)
+    *
+    * scala> form.bind(Map("greeting" -> "Hello")).value
+    * res1: Option[Greeting] = None
     * }}}
     *
     * @param enum The enum

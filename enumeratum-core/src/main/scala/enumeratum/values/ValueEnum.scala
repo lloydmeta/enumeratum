@@ -5,6 +5,29 @@ import enumeratum.{EnumMacros, ValueEnumMacros}
 import scala.collection.immutable._
 import scala.language.experimental.macros
 
+/**
+  * Base trait for a Value-based enums.
+  *
+  * Example:
+  *
+  * {{{
+  * scala> sealed abstract class Greeting(val value: Int) extends IntEnumEntry
+  *
+  * scala> object Greeting extends IntEnum[Greeting] {
+  *      |   val values = findValues
+  *      |   case object Hello extends Greeting(1)
+  *      |   case object GoodBye extends Greeting(2)
+  *      |   case object Hi extends Greeting(3)
+  *      |   case object Bye extends Greeting(4)
+  *      | }
+  *
+  * scala> Greeting.withValueOpt(1)
+  * res0: Option[Greeting] = Some(Hello)
+  *
+  * scala> Greeting.withValueOpt(6)
+  * res1: Option[Greeting] = None
+  * }}}
+  */
 sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
 
   /**
