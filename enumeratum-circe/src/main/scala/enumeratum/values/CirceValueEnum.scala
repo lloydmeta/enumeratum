@@ -23,6 +23,32 @@ sealed trait CirceValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
 
 /**
   * CirceEnum for IntEnumEntry
+  *
+  * {{{
+  * scala> import enumeratum.values._
+  * scala> import cats.syntax.either._
+  * scala> import io.circe._
+  * scala> import io.circe.syntax._
+  *
+  * scala> sealed abstract class ShirtSize(val value:Int) extends IntEnumEntry
+  * scala> case object ShirtSize extends IntEnum[ShirtSize] with IntCirceEnum[ShirtSize] {
+  *      |  case object Small  extends ShirtSize(1)
+  *      |  case object Medium extends ShirtSize(2)
+  *      |  case object Large  extends ShirtSize(3)
+  *      |  val values = findValues
+  *      | }
+  *
+  * scala> val size: ShirtSize = ShirtSize.Small
+  *
+  * scala> size.asJson
+  * res0: Json = 1
+  *
+  * scala> Json.fromInt(3).as[ShirtSize]
+  * res1: Decoder.Result[ShirtSize] = Right(Large)
+  *
+  * scala> Json.fromInt(10).as[ShirtSize]
+  * res2: Decoder.Result[ShirtSize] = Left(DecodingFailure(10 is not a member of enum ShirtSize, List()))
+  * }}}
   */
 trait IntCirceEnum[EntryType <: IntEnumEntry] extends CirceValueEnum[Int, EntryType] {
   this: ValueEnum[Int, EntryType] =>
