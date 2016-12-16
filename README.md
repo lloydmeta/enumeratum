@@ -818,17 +818,17 @@ On my late 2013 MBP using Java8 on OSX El Capitan:
 
 ```
 [info] Benchmark                                            Mode  Cnt     Score    Error  Units
-[info] EnumBenchmarks.indexOf                               avgt   30    11.203 ±  0.094  ns/op
-[info] EnumBenchmarks.withNameDoesNotExist                  avgt   30  1706.295 ± 35.134  ns/op
-[info] EnumBenchmarks.withNameExists                        avgt   30    12.753 ±  0.162  ns/op
-[info] EnumBenchmarks.withNameOptionDoesNotExist            avgt   30     5.827 ±  0.039  ns/op
-[info] EnumBenchmarks.withNameOptionExists                  avgt   30     8.824 ±  0.067  ns/op
-[info] StdLibEnumBenchmarks.withNameDoesNotExist            avgt   30  1743.530 ± 49.402  ns/op
-[info] StdLibEnumBenchmarks.withNameExists                  avgt   30    52.960 ±  1.745  ns/op
-[info] values.ValueEnumBenchmarks.withValueDoesNotExist     avgt   30  1730.819 ± 37.693  ns/op
-[info] values.ValueEnumBenchmarks.withValueExists           avgt   30     3.671 ±  0.033  ns/op
-[info] values.ValueEnumBenchmarks.withValueOptDoesNotExist  avgt   30     5.199 ±  0.044  ns/op
-[info] values.ValueEnumBenchmarks.withValueOptExists        avgt   30     5.861 ±  0.050  ns/op
+[info] EnumBenchmarks.indexOf                               avgt   30    11.628 ±  0.190  ns/op
+[info] EnumBenchmarks.withNameDoesNotExist                  avgt   30  1809.194 ± 33.113  ns/op
+[info] EnumBenchmarks.withNameExists                        avgt   30    13.540 ±  0.374  ns/op
+[info] EnumBenchmarks.withNameOptionDoesNotExist            avgt   30     5.999 ±  0.037  ns/op
+[info] EnumBenchmarks.withNameOptionExists                  avgt   30     9.662 ±  0.232  ns/op
+[info] StdLibEnumBenchmarks.withNameDoesNotExist            avgt   30  1921.690 ± 78.898  ns/op
+[info] StdLibEnumBenchmarks.withNameExists                  avgt   30    56.517 ±  1.161  ns/op
+[info] values.ValueEnumBenchmarks.withValueDoesNotExist     avgt   30  1950.291 ± 29.292  ns/op
+[info] values.ValueEnumBenchmarks.withValueExists           avgt   30     4.009 ±  0.062  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptDoesNotExist  avgt   30     5.285 ±  0.063  ns/op
+[info] values.ValueEnumBenchmarks.withValueOptExists        avgt   30     6.621 ±  0.084  ns/op
 ```
 
 ### Discussion

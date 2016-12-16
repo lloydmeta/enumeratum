@@ -12,6 +12,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.5")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.13")
 
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.6")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.18")
 
 addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.2.1")
