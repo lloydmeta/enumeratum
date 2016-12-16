@@ -246,25 +246,33 @@ lazy val ideSettings = Seq(
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
-  scalacOptions ++= Seq(
-    "-Xlog-free-terms",
-    "-encoding",
-    "UTF-8", // yes, this is 2 args
-    "-feature",
-    "-language:existentials",
-    "-language:higherKinds",
-    "-language:implicitConversions",
-    "-unchecked",
-    "-Xfatal-warnings",
-    "-deprecation:false",
-    "-Xlint",
-    "-Yno-adapted-args",
-    "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
-    "-Ywarn-numeric-widen",
-    "-Ywarn-value-discard",
-    "-Xfuture",
-    "-Ywarn-unused-import" // 2.11 only
-  )
+  scalacOptions ++= {
+    val base = Seq(
+      "-Xlog-free-terms",
+      "-encoding",
+      "UTF-8", // yes, this is 2 args
+      "-feature",
+      "-language:existentials",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-unchecked",
+      "-Xfatal-warnings",
+      "-Xlint",
+      "-Yno-adapted-args",
+      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Xfuture",
+      "-Ywarn-unused-import"
+    )
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 12)) =>
+        base ++ Seq("-deprecation:false")
+          .filterNot(_ == "-Ywarn-unused-import") // breaks Circe Either shim
+      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
+      case _             => base
+    }
+  }
 )
 
 lazy val scoverageSettings = Seq(
