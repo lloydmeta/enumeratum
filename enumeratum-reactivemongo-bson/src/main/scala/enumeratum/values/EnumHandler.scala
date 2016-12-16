@@ -2,8 +2,6 @@ package enumeratum.values
 
 import reactivemongo.bson._
 
-import scala.util.{Failure, Success, Try}
-
 /**
   * @author Alessandro Lacava (@lambdista)
   * @since 2016-04-23

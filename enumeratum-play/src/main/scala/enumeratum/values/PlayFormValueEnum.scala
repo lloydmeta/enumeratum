@@ -1,7 +1,7 @@
 package enumeratum.values
 
 import play.api.data.format.{Formats, Formatter}
-import play.api.data.{FormError, Mapping}
+import play.api.data.Mapping
 
 /**
   * Created by Lloyd on 4/13/16.

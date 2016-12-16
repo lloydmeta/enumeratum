@@ -1,7 +1,6 @@
 package enumeratum.values
 
 import play.api.mvc.QueryStringBindable
-import play.api.routing.sird.PathBindableExtractor
 
 /**
   * Created by Lloyd on 4/13/16.

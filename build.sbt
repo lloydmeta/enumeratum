@@ -8,7 +8,7 @@ lazy val theScalaVersion = "2.11.8"
  */
 lazy val scalaVersions = Seq("2.10.6", "2.11.8")
 
-lazy val scalaTestVersion = "3.0.0"
+lazy val scalaTestVersion = "3.0.1"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
@@ -54,8 +54,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
                               base = file("scala_2_12"),
                               settings = commonSettings ++ publishSettings)
   .settings(name := "enumeratum-scala_2_12",
-            scalaVersion := "2.12.0", //not sure if this and below are needed
-            crossScalaVersions := Seq("2.12.0"),
+            scalaVersion := "2.12.1", // not sure if this and below are needed
+            crossScalaVersions := Seq("2.12.1"),
             crossVersion := CrossVersion.binary,
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
@@ -246,7 +246,33 @@ lazy val ideSettings = Seq(
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
-  scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint", "-Xlog-free-terms")
+  scalacOptions ++= {
+    val base = Seq(
+      "-Xlog-free-terms",
+      "-encoding",
+      "UTF-8", // yes, this is 2 args
+      "-feature",
+      "-language:existentials",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-unchecked",
+      "-Xfatal-warnings",
+      "-Xlint",
+      "-Yno-adapted-args",
+      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Xfuture"
+    )
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 12)) =>
+        base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
+      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
+      case _             => base
+    }
+  },
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
+    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
 )
 
 lazy val scoverageSettings = Seq(

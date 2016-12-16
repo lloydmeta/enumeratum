@@ -106,7 +106,7 @@ object EnumEntry {
   trait UpperHyphencase extends EnumEntry with CapitalHyphencase with Uppercase
 
   /**
-    * Stackable trait to convert the entryName to dot.case.
+    * Stackable trait to convert the entryName to dot.case
     */
   trait Dotcase extends EnumEntry with CapitalDotcase with Lowercase
 

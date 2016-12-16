@@ -16,7 +16,7 @@ class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers 
   testNumericPlayEnum("IntPlayEnum", PlayLibraryItem)
   testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString)
   testPlayEnum("BytePlayEnum", PlayBites, { s: Byte =>
-    JsNumber(s)
+    JsNumber(s.toInt)
   })
   testPlayEnum("CharPlayEnum", PlayAlphabet, { s: Char =>
     JsString(s"$s")

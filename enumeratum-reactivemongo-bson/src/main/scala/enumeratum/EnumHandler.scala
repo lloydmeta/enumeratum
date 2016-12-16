@@ -2,14 +2,13 @@ package enumeratum
 
 import reactivemongo.bson._
 
-import scala.util.{Failure, Success}
-
 /**
   * Holds BSON reader and writer for [[enumeratum.Enum]]
   *
   * @author Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
+@SuppressWarnings(Array("org.wartremover.warts.Throw"))
 object EnumHandler {
 
   /**
@@ -97,8 +96,8 @@ object EnumHandler {
       insensitive: Boolean = false
   ): BSONHandler[BSONValue, A] =
     new BSONHandler[BSONValue, A] {
-      val concreteReader = reader(enum, insensitive)
-      val concreteWriter = writer(enum)
+      private val concreteReader = reader(enum, insensitive)
+      private val concreteWriter = writer(enum)
 
       override def read(bson: BSONValue): A = concreteReader.read(bson)
 
@@ -112,8 +111,8 @@ object EnumHandler {
     */
   def handlerLowercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[BSONValue, A] =
     new BSONHandler[BSONValue, A] {
-      val concreteReader = readerLowercaseOnly(enum)
-      val concreteWriter = writerLowercase(enum)
+      private val concreteReader = readerLowercaseOnly(enum)
+      private val concreteWriter = writerLowercase(enum)
 
       override def read(bson: BSONValue): A = concreteReader.read(bson)
 
@@ -127,8 +126,8 @@ object EnumHandler {
     */
   def handlerUppercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[BSONValue, A] =
     new BSONHandler[BSONValue, A] {
-      val concreteReader = readerUppercaseOnly(enum)
-      val concreteWriter = writerUppercase(enum)
+      private val concreteReader = readerUppercaseOnly(enum)
+      private val concreteWriter = writerUppercase(enum)
 
       override def read(bson: BSONValue): A = concreteReader.read(bson)
 

@@ -45,14 +45,11 @@ object Forms {
     * Taken from Play 2.4.x implementation
     */
   private[values] val charFormatter: Formatter[Char] = new Formatter[Char] {
-    def bind(key: String, data: Map[String, String]) =
-      data
-        .get(key)
-        .filter(s => s.length == 1 && s != " ")
-        .map(s => Right(s.charAt(0)))
-        .getOrElse(
-          Left(Seq(FormError(key, "error.required", Nil)))
-        )
-    def unbind(key: String, value: Char) = Map(key -> value.toString)
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Char] = {
+      val maybeChar: Option[Either[Seq[FormError], Char]] =
+        data.get(key).filter(s => s.length == 1 && s != " ").map(s => Right(s.charAt(0)))
+      maybeChar.getOrElse(Left(Seq(FormError(key, "error.required", Nil))))
+    }
+    def unbind(key: String, value: Char): Map[String, String] = Map(key -> value.toString)
   }
 }

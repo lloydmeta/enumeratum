@@ -21,7 +21,7 @@ class EnumFormatsSpec extends FunSpec with Matchers with EnumJsonFormatHelpers {
       JsString(s"$c")
     })
     testReads("ByteEnum", Bites, { b: Byte =>
-      JsNumber(b)
+      JsNumber(b.toInt)
     })
 
   }
@@ -36,7 +36,7 @@ class EnumFormatsSpec extends FunSpec with Matchers with EnumJsonFormatHelpers {
       JsString(s"$c")
     })
     testWrites("ByteEnum", Bites, { b: Byte =>
-      JsNumber(b)
+      JsNumber(b.toInt)
     })
 
   }
