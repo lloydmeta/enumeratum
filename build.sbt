@@ -54,8 +54,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
                               base = file("scala_2_12"),
                               settings = commonSettings ++ publishSettings)
   .settings(name := "enumeratum-scala_2_12",
-            scalaVersion := "2.12.0", //not sure if this and below are needed
-            crossScalaVersions := Seq("2.12.0"),
+            scalaVersion := "2.12.1", // not sure if this and below are needed
+            crossScalaVersions := Seq("2.12.1"),
             crossVersion := CrossVersion.binary,
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
