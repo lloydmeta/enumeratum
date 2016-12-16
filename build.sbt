@@ -262,13 +262,10 @@ lazy val compilerSettings = Seq(
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard",
-      "-Xfuture",
-      "-Ywarn-unused-import"
+      "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) =>
-        base ++ Seq("-deprecation:false")
-          .filterNot(_ == "-Ywarn-unused-import") // breaks Circe Either shim
+      case Some((2, 12)) => base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
       case _             => base
     }
