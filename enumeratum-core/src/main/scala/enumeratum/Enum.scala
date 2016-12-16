@@ -10,26 +10,27 @@ import scala.collection.immutable._
   *
   * This is yet another one.
   *
-  * How to use:
+  * Example:
   *
   * {{{
-  * sealed trait DummyEnum extends EnumEntry
+  * scala> import enumeratum._
   *
-  * object DummyEnum extends Enum[DummyEnum] {
+  * scala> sealed trait DummyEnum extends EnumEntry
   *
-  * val values = findValues
+  * scala> object DummyEnum extends Enum[DummyEnum] {
+  *      |   val values = findValues
+  *      |   case object Hello extends DummyEnum
+  *      |   case object GoodBye extends DummyEnum
+  *      |   case object Hi extends DummyEnum
+  *      | }
   *
-  * case object Hello extends DummyEnum
-  * case object GoodBye extends DummyEnum
-  * case object Hi extends DummyEnum
+  * scala> DummyEnum.withNameOption("Hello")
+  * res0: Option[DummyEnum] = Some(Hello)
   *
-  * }
-  *
-  *
-  * DummyEnum.values should be(Set(Hello, GoodBye, Hi))
-  *
-  * DummyEnum.withName("Hello") should be(Hello)
+  * scala> DummyEnum.withNameOption("Nope")
+  * res1: Option[DummyEnum] = None
   * }}}
+  *
   * @tparam A The sealed trait
   */
 trait Enum[A <: EnumEntry] {

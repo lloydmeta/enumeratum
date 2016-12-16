@@ -22,15 +22,27 @@ sealed trait PlayPathBindableValueEnum[ValueType, EntryType <: ValueEnumEntry[Va
     * Example:
     *
     * {{{
-    *  import play.api.routing.sird._
-    *  import play.api.routing._
-    *  import play.api.mvc._
+    * scala> import play.api.routing.sird._
+    * scala> import play.api.routing._
+    * scala> import play.api.mvc._
     *
-    *  Router.from {
-    *    case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
-    *      Results.Ok(s"$greeting")
-    *    }
-    *  }
+    * scala> sealed abstract class Greeting(val value: Int) extends IntEnumEntry
+    *
+    * scala> object Greeting extends IntPlayEnum[Greeting] {
+    *      |   val values = findValues
+    *      |   case object Hello extends Greeting(1)
+    *      |   case object GoodBye extends Greeting(2)
+    *      |   case object Hi extends Greeting(3)
+    *      |   case object Bye extends Greeting(4)
+    *      | }
+    *
+    * scala> val router = Router.from {
+    *      |   case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
+    *      |     Results.Ok(s"$greeting")
+    *      |   }
+    *      | }
+    * scala> router.routes
+    * res0: Router.Routes = <function1>
     * }}}
     */
   lazy val fromPath = new PathBindableExtractor[EntryType]

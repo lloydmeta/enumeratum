@@ -8,7 +8,8 @@ lazy val theScalaVersion = "2.11.8"
  */
 lazy val scalaVersions = Seq("2.10.6", "2.11.8")
 
-lazy val scalaTestVersion = "3.0.1"
+lazy val scalaTestVersion  = "3.0.1"
+lazy val scalacheckVersion = "1.13.4"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.0"
@@ -59,7 +60,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
             crossVersion := CrossVersion.binary,
             // Do not publish this  project (it just serves as an aggregate)
             publishArtifact := false,
-            publishLocal := {})
+            publishLocal := {},
+            doctestWithDependencies := false)
   .aggregate(
     baseProjectRefs ++
       Seq(
@@ -318,16 +320,28 @@ lazy val publishSettings = Seq(
 
 val testSettings = {
   Seq(
-    libraryDependencies += {
+    libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val crossVersion =
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
           ScalaJSCrossVersion.binary
         else
           CrossVersion.binary
-      impl.ScalaJSGroupID
-        .withCross("org.scalatest", "scalatest", crossVersion) % scalaTestVersion % Test
+      Seq(
+        impl.ScalaJSGroupID
+          .withCross("org.scalatest", "scalatest", crossVersion) % scalaTestVersion % Test,
+        impl.ScalaJSGroupID
+          .withCross("org.scalacheck", "scalacheck", crossVersion) % scalacheckVersion % Test force()
+      )
     },
+    doctestGenTests := {
+      if (isScalaJSProject.value)
+        Seq.empty
+      else
+        doctestGenTests.value
+    },
+    doctestTestFramework := DoctestTestFramework.ScalaTest,
+    doctestWithDependencies := false,
     scalaJSStage in Test := FastOptStage
   )
 }

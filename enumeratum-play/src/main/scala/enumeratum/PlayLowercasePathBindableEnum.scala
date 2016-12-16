@@ -13,20 +13,6 @@ trait PlayLowercasePathBindableEnum[A <: EnumEntry] { self: Enum[A] =>
 
   /**
     * Binder for [[play.api.routing.sird]] router
-    *
-    * Example:
-    *
-    * {{{
-    *  import play.api.routing.sird._
-    *  import play.api.routing._
-    *  import play.api.mvc._
-    *
-    *  Router.from {
-    *    case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
-    *      Results.Ok(s"$greeting")
-    *    }
-    *  }
-    * }}}
     */
   lazy val fromPath = new PathBindableExtractor[A]
 }
