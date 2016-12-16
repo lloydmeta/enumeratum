@@ -30,9 +30,10 @@ object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 
 }
 
+@SuppressWarnings(Array("org.wartremover.warts.Throw"))
 trait BSONValueReads {
 
-  implicit val bsonReaderShort = new BSONReader[BSONValue, Short] {
+  implicit val bsonReaderShort: BSONReader[BSONValue, Short] = new BSONReader[BSONValue, Short] {
     def read(bson: BSONValue): Short = bson match {
       case BSONInteger(x) if Short.MaxValue >= x && Short.MinValue <= x =>
         x.toShort
@@ -40,36 +41,37 @@ trait BSONValueReads {
     }
   }
 
-  implicit val bsonReaderInt = new BSONReader[BSONValue, Int] {
+  implicit val bsonReaderInt: BSONReader[BSONValue, Int] = new BSONReader[BSONValue, Int] {
     def read(bson: BSONValue): Int = bson match {
       case BSONInteger(x) => x
       case _              => throw new RuntimeException(s"Could not convert $bson to Int")
     }
   }
 
-  implicit val bsonReaderLong = new BSONReader[BSONValue, Long] {
+  implicit val bsonReaderLong: BSONReader[BSONValue, Long] = new BSONReader[BSONValue, Long] {
     def read(bson: BSONValue): Long = bson match {
       case BSONLong(x) => x
       case _           => throw new RuntimeException(s"Could not convert $bson to Long")
     }
   }
 
-  implicit val bsonReaderString = new BSONReader[BSONValue, String] {
-    def read(bson: BSONValue): String = bson match {
-      case BSONString(x) => x
-      case _ =>
-        throw new RuntimeException(s"Could not convert $bson to String")
+  implicit val bsonReaderString: BSONReader[BSONValue, String] =
+    new BSONReader[BSONValue, String] {
+      def read(bson: BSONValue): String = bson match {
+        case BSONString(x) => x
+        case _ =>
+          throw new RuntimeException(s"Could not convert $bson to String")
+      }
     }
-  }
 
-  implicit val bsonReaderChar = new BSONReader[BSONValue, Char] {
+  implicit val bsonReaderChar: BSONReader[BSONValue, Char] = new BSONReader[BSONValue, Char] {
     def read(bson: BSONValue): Char = bson match {
       case BSONString(x) if x.length == 1 => x.charAt(0)
       case _                              => throw new RuntimeException(s"Could not convert $bson to Char")
     }
   }
 
-  implicit val bsonReaderByte = new BSONReader[BSONValue, Byte] {
+  implicit val bsonReaderByte: BSONReader[BSONValue, Byte] = new BSONReader[BSONValue, Byte] {
     def read(bson: BSONValue): Byte = bson match {
       case BSONInteger(x) => x.toByte
       case _              => throw new RuntimeException(s"Could not convert $bson to Byte")
@@ -80,15 +82,15 @@ trait BSONValueReads {
 
 trait BSONValueWrites {
 
-  implicit val bsonWriterShort = new BSONWriter[Short, BSONValue] {
+  implicit val bsonWriterShort: BSONWriter[Short, BSONValue] = new BSONWriter[Short, BSONValue] {
     def write(t: Short): BSONValue = BSONInteger(t.toInt)
   }
 
-  implicit val bsonWriterInt = new BSONWriter[Int, BSONValue] {
+  implicit val bsonWriterInt: BSONWriter[Int, BSONValue] = new BSONWriter[Int, BSONValue] {
     def write(t: Int): BSONValue = BSONInteger(t)
   }
 
-  implicit val bsonWriterLong = new BSONWriter[Long, BSONValue] {
+  implicit val bsonWriterLong: BSONWriter[Long, BSONValue] = new BSONWriter[Long, BSONValue] {
     def write(t: Long): BSONValue = BSONLong(t)
   }
 

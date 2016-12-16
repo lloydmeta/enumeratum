@@ -30,6 +30,7 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
     * Like [[Enumeration]]'s `withValue`, this method will throw if the value does not match any of the values'
     * `.value` values.
     */
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def withValue(i: ValueType): EntryType =
     withValueOpt(i).getOrElse(throw new NoSuchElementException(buildNotFoundMessage(i)))
 

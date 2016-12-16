@@ -102,6 +102,7 @@ object EnumMacros {
   /**
     * Builds and returns an expression for an IndexedSeq containing the given symbols
     */
+  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   private[enumeratum] def buildSeqExpr[A: c.WeakTypeTag](c: Context)(
       subclassSymbols: Seq[c.universe.Symbol]
   ) = {

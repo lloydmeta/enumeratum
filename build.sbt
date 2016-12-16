@@ -272,7 +272,8 @@ lazy val compilerSettings = Seq(
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
       case _             => base
     }
-  }
+  },
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe.filterNot(_ == Wart.DefaultArguments)
 )
 
 lazy val scoverageSettings = Seq(
