@@ -246,7 +246,7 @@ lazy val ideSettings = Seq(
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
-  scalacOptions ++= {
+  scalacOptions in (Compile, compile) ++= {
     val base = Seq(
       "-Xlog-free-terms",
       "-encoding",
