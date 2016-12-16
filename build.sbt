@@ -265,12 +265,14 @@ lazy val compilerSettings = Seq(
       "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) => base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
+      case Some((2, 12)) =>
+        base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
       case _             => base
     }
   },
-  wartremoverErrors in (Compile, compile) ++= Warts.unsafe.filterNot(_ == Wart.DefaultArguments)
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
+    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
 )
 
 lazy val scoverageSettings = Seq(

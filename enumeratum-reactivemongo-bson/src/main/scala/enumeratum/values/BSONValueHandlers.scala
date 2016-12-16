@@ -21,8 +21,9 @@ import reactivemongo.bson.{
   */
 object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
 
+  @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes")) // False alarm
   implicit def anyBsonHandler[A](implicit reader: BSONReader[BSONValue, A],
-                                 writer: BSONWriter[A, BSONValue]) =
+                                 writer: BSONWriter[A, BSONValue]): BSONHandler[BSONValue, A] =
     new BSONHandler[BSONValue, A] {
       def write(t: A): BSONValue   = writer.write(t)
       def read(bson: BSONValue): A = reader.read(bson)
@@ -94,15 +95,16 @@ trait BSONValueWrites {
     def write(t: Long): BSONValue = BSONLong(t)
   }
 
-  implicit val bsonWriterString = new BSONWriter[String, BSONValue] {
-    def write(t: String): BSONValue = BSONString(t)
-  }
+  implicit val bsonWriterString: BSONWriter[String, BSONValue] =
+    new BSONWriter[String, BSONValue] {
+      def write(t: String): BSONValue = BSONString(t)
+    }
 
-  implicit val bsonWriterChar = new BSONWriter[Char, BSONValue] {
+  implicit val bsonWriterChar: BSONWriter[Char, BSONValue] = new BSONWriter[Char, BSONValue] {
     def write(t: Char): BSONValue = BSONString(s"$t")
   }
 
-  implicit val bsonWriterByte = new BSONWriter[Byte, BSONValue] {
+  implicit val bsonWriterByte: BSONWriter[Byte, BSONValue] = new BSONWriter[Byte, BSONValue] {
     def write(t: Byte): BSONValue = BSONInteger(t.toInt)
   }
 
