@@ -81,7 +81,7 @@ trait BSONValueReads {
 trait BSONValueWrites {
 
   implicit val bsonWriterShort = new BSONWriter[Short, BSONValue] {
-    def write(t: Short): BSONValue = BSONInteger(t)
+    def write(t: Short): BSONValue = BSONInteger(t.toInt)
   }
 
   implicit val bsonWriterInt = new BSONWriter[Int, BSONValue] {
@@ -101,7 +101,7 @@ trait BSONValueWrites {
   }
 
   implicit val bsonWriterByte = new BSONWriter[Byte, BSONValue] {
-    def write(t: Byte): BSONValue = BSONInteger(t)
+    def write(t: Byte): BSONValue = BSONInteger(t.toInt)
   }
 
 }

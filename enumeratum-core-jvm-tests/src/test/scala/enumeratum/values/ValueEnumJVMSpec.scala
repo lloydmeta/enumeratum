@@ -32,7 +32,7 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
   )
   testValuesOf(stringGenerator, "\"", "\"")
   testValuesOf(
-    Stream.continually(Random.nextPrintableChar()).filter(Character.isAlphabetic(_)),
+    Stream.continually(Random.nextPrintableChar()).filter(c => Character.isAlphabetic(c.toInt)),
     "'",
     "'"
   )
