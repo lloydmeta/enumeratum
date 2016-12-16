@@ -13,7 +13,7 @@ matrix:
         - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
-    - scala: 2.12.0
+    - scala: 2.12.1
       jdk: oraclejdk8
       script: sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test
 cache:
