@@ -21,10 +21,10 @@ object Forms {
     *
     * scala> object Greeting extends Enum[Greeting] {
     *      |   val values = findValues
-    *      |   case object Hello extends Greeting
+    *      |   case object Hello   extends Greeting
     *      |   case object GoodBye extends Greeting
-    *      |   case object Hi extends Greeting
-    *      |   case object Bye extends Greeting
+    *      |   case object Hi      extends Greeting
+    *      |   case object Bye     extends Greeting
     *      | }
     *
     * scala> val form = Form("greeting" -> Forms.enum(Greeting))
@@ -55,10 +55,10 @@ object Forms {
     *
     * scala> object Greeting extends Enum[Greeting] {
     *      |   val values = findValues
-    *      |   case object Hello extends Greeting
+    *      |   case object Hello   extends Greeting
     *      |   case object GoodBye extends Greeting
-    *      |   case object Hi extends Greeting
-    *      |   case object Bye extends Greeting
+    *      |   case object Hi      extends Greeting
+    *      |   case object Bye     extends Greeting
     *      | }
     *
     * scala> val form = Form("greeting" -> Forms.enumLowerCaseOnly(Greeting))
@@ -87,10 +87,10 @@ object Forms {
     *
     * scala> object Greeting extends Enum[Greeting] {
     *      |   val values = findValues
-    *      |   case object Hello extends Greeting
+    *      |   case object Hello   extends Greeting
     *      |   case object GoodBye extends Greeting
-    *      |   case object Hi extends Greeting
-    *      |   case object Bye extends Greeting
+    *      |   case object Hi      extends Greeting
+    *      |   case object Bye     extends Greeting
     *      | }
     *
     * scala> val form = Form("greeting" -> Forms.enumUppercaseOnly(Greeting))

@@ -24,10 +24,10 @@ package enumeratum
   *
   * scala> object Greeting extends PlayEnum[Greeting] {
   *      |   val values = findValues
-  *      |   case object Hello extends Greeting
+  *      |   case object Hello   extends Greeting
   *      |   case object GoodBye extends Greeting
-  *      |   case object Hi extends Greeting
-  *      |   case object Bye extends Greeting
+  *      |   case object Hi      extends Greeting
+  *      |   case object Bye     extends Greeting
   *      | }
   *
   * scala> val form = Form("greeting" -> Greeting.formField)

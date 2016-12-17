@@ -15,10 +15,10 @@ import scala.language.experimental.macros
   *
   * scala> object Greeting extends IntEnum[Greeting] {
   *      |   val values = findValues
-  *      |   case object Hello extends Greeting(1)
+  *      |   case object Hello   extends Greeting(1)
   *      |   case object GoodBye extends Greeting(2)
-  *      |   case object Hi extends Greeting(3)
-  *      |   case object Bye extends Greeting(4)
+  *      |   case object Hi      extends Greeting(3)
+  *      |   case object Bye     extends Greeting(4)
   *      | }
   *
   * scala> Greeting.withValueOpt(1)

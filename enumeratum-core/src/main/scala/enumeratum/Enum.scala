@@ -19,9 +19,9 @@ import scala.collection.immutable._
   *
   * scala> object DummyEnum extends Enum[DummyEnum] {
   *      |   val values = findValues
-  *      |   case object Hello extends DummyEnum
+  *      |   case object Hello   extends DummyEnum
   *      |   case object GoodBye extends DummyEnum
-  *      |   case object Hi extends DummyEnum
+  *      |   case object Hi      extends DummyEnum
   *      | }
   *
   * scala> DummyEnum.withNameOption("Hello")

@@ -88,10 +88,10 @@ object Greeting extends Enum[Greeting] {
   */
   val values = findValues
 
-  case object Hello extends Greeting
+  case object Hello   extends Greeting
   case object GoodBye extends Greeting
-  case object Hi extends Greeting
-  case object Bye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
 
 }
 
@@ -127,9 +127,9 @@ Continuing from the enum declared in [the quick-start section](#usage):
 import Greeting._
 
 def tryMatching(v: Greeting): Unit = v match {
-  case Hello => println("Hello")
+  case Hello   => println("Hello")
   case GoodBye => println("GoodBye")
-  case Hi => println("Hi")
+  case Hi      => println("Hi")
 }
 
 /**
@@ -164,7 +164,7 @@ object State extends Enum[State] {
    val values = findValues
 
    case object Alabama extends State("AL")
-   case object Alaska extends State("AK")
+   case object Alaska  extends State("AK")
    // and so on and so forth.
 }
 
@@ -190,8 +190,8 @@ object Greeting extends Enum[Greeting] {
 
   val values = findValues
 
-  case object Hello extends Greeting
-  case object GoodBye extends Greeting
+  case object Hello        extends Greeting
+  case object GoodBye      extends Greeting
   case object ShoutGoodBye extends Greeting with Uppercase
 
 }
@@ -217,10 +217,10 @@ sealed abstract class LibraryItem(val value: Int, val name: String) extends IntE
 
 case object LibraryItem extends IntEnum[LibraryItem] {
 
-  case object Book extends LibraryItem(value = 1, name = "book")
-  case object Movie extends LibraryItem(name = "movie", value = 2)
+  case object Book     extends LibraryItem(value = 1, name = "book")
+  case object Movie    extends LibraryItem(name = "movie", value = 2)
   case object Magazine extends LibraryItem(3, "magazine")
-  case object CD extends LibraryItem(4, name = "cd")
+  case object CD       extends LibraryItem(4, name = "cd")
   // case object Newspaper extends LibraryItem(4, name = "newspaper") <-- will fail to compile because the value 4 is shared
 
   /*
@@ -291,10 +291,10 @@ object Greeting extends PlayEnum[Greeting] {
 
   val values = findValues
 
-  case object Hello extends Greeting
+  case object Hello   extends Greeting
   case object GoodBye extends Greeting
-  case object Hi extends Greeting
-  case object Bye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
 
 }
 
@@ -332,10 +332,10 @@ sealed abstract class PlayLibraryItem(val value: Int, val name: String) extends 
 case object PlayLibraryItem extends IntPlayEnum[PlayLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
-  case object Book extends PlayLibraryItem(value = 1, name = "book")
-  case object Movie extends PlayLibraryItem(name = "movie", value = 2)
+  case object Book     extends PlayLibraryItem(value = 1, name = "book")
+  case object Movie    extends PlayLibraryItem(name = "movie", value = 2)
   case object Magazine extends PlayLibraryItem(3, "magazine")
-  case object CD extends PlayLibraryItem(4, name = "cd")
+  case object CD       extends PlayLibraryItem(4, name = "cd")
 
   val values = findValues
 
@@ -357,7 +357,7 @@ import play.api.data.Forms._
 object GreetingForm {
   val form = Form(
     mapping(
-      "name" -> nonEmptyText,
+      "name"     -> nonEmptyText,
       "greeting" -> Greeting.formField
     )(Data.apply)(Data.unapply)
   )
@@ -384,7 +384,7 @@ object GreetingForm {
 
   val form = Form(
       mapping(
-        "name" -> nonEmptyText,
+        "name"     -> nonEmptyText,
         "greeting" -> of[Greeting]
       )(Data.apply)(Data.unapply)
     )
@@ -428,10 +428,10 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
   val values = findValues
 
-  case object Hello extends Greeting
+  case object Hello   extends Greeting
   case object GoodBye extends Greeting
-  case object Hi extends Greeting
-  case object Bye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
 
 }
 
@@ -450,9 +450,9 @@ sealed abstract class JsonDrinks(val value: Short, name: String) extends ShortEn
 case object JsonDrinks extends ShortEnum[JsonDrinks] with ShortPlayJsonValueEnum[JsonDrinks] {
 
   case object OrangeJuice extends JsonDrinks(value = 1, name = "oj")
-  case object AppleJuice extends JsonDrinks(value = 2, name = "aj")
-  case object Cola extends JsonDrinks(value = 3, name = "cola")
-  case object Beer extends JsonDrinks(value = 4, name = "beer")
+  case object AppleJuice  extends JsonDrinks(value = 2, name = "aj")
+  case object Cola        extends JsonDrinks(value = 3, name = "cola")
+  case object Beer        extends JsonDrinks(value = 4, name = "beer")
 
   val values = findValues
 
@@ -501,9 +501,9 @@ sealed trait ShirtSize extends EnumEntry
 
 case object ShirtSize extends CirceEnum[ShirtSize] with Enum[ShirtSize] {
 
-  case object Small extends ShirtSize
+  case object Small  extends ShirtSize
   case object Medium extends ShirtSize
-  case object Large extends ShirtSize
+  case object Large  extends ShirtSize
 
   val values = findValues
 
@@ -528,10 +528,10 @@ sealed abstract class CirceLibraryItem(val value: Int, val name: String) extends
 case object CirceLibraryItem extends IntEnum[CirceLibraryItem] with IntCirceEnum[CirceLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
-  case object Book extends CirceLibraryItem(value = 1, name = "book")
-  case object Movie extends CirceLibraryItem(name = "movie", value = 2)
+  case object Book     extends CirceLibraryItem(value = 1, name = "book")
+  case object Movie    extends CirceLibraryItem(name = "movie", value = 2)
   case object Magazine extends CirceLibraryItem(3, "magazine")
-  case object CD extends CirceLibraryItem(4, name = "cd")
+  case object CD       extends CirceLibraryItem(4, name = "cd")
 
   val values = findValues
 
@@ -583,7 +583,7 @@ case object ContentType
 
   val values = findValues
 
-  case object Text extends ContentType(value = 1L, name = "text")
+  case object Text  extends ContentType(value = 1L, name = "text")
   case object Image extends ContentType(value = 2L, name = "image")
   case object Video extends ContentType(value = 3L, name = "video")
   case object Audio extends ContentType(value = 4L, name = "audio")
@@ -627,10 +627,10 @@ object Greeting extends Enum[Greeting] with ReactiveMongoBsonEnum[Greeting] {
 
   val values = findValues
 
-  case object Hello extends Greeting
+  case object Hello   extends Greeting
   case object GoodBye extends Greeting
-  case object Hi extends Greeting
-  case object Bye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
 
 }
 
@@ -649,9 +649,9 @@ sealed abstract class BsonDrinks(val value: Short, name: String) extends ShortEn
 case object BsonDrinks extends ShortEnum[BsonDrinks] with ShortReactiveMongoBsonValueEnum[BsonDrinks] {
 
   case object OrangeJuice extends BsonDrinks(value = 1, name = "oj")
-  case object AppleJuice extends BsonDrinks(value = 2, name = "aj")
-  case object Cola extends BsonDrinks(value = 3, name = "cola")
-  case object Beer extends BsonDrinks(value = 4, name = "beer")
+  case object AppleJuice  extends BsonDrinks(value = 2, name = "aj")
+  case object Cola        extends BsonDrinks(value = 3, name = "cola")
+  case object Beer        extends BsonDrinks(value = 4, name = "beer")
 
   val values = findValues
 

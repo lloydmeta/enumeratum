@@ -331,7 +331,7 @@ val testSettings = {
         impl.ScalaJSGroupID
           .withCross("org.scalatest", "scalatest", crossVersion) % scalaTestVersion % Test,
         impl.ScalaJSGroupID
-          .withCross("org.scalacheck", "scalacheck", crossVersion) % scalacheckVersion % Test force()
+          .withCross("org.scalacheck", "scalacheck", crossVersion) % scalacheckVersion % Test force ()
       )
     },
     doctestGenTests := {
