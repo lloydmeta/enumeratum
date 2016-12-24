@@ -12,7 +12,7 @@ lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.4"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.12.0"
+lazy val reactiveMongoVersion = "0.12.1"
 lazy val circeVersion         = "0.6.1"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
@@ -69,7 +69,8 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumCirceJvm,
         enumeratumUPickleJs,
         enumeratumUPickleJvm,
-        enumeratumArgonaut
+        enumeratumArgonaut,
+        enumeratumReactiveMongoBson
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val core = crossProject
