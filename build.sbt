@@ -125,6 +125,8 @@ lazy val enumeratumReactiveMongoBson =
       )
     )
     .settings(testSettings: _*)
+    // TODO move the shared test models into their own subproject so we can
+    // share them without depending on Core, which will likely be on a snapshot version
     .dependsOn(coreJvm % "test->test;compile->compile")
 
 lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
@@ -178,7 +180,7 @@ lazy val enumeratumUPickle = crossProject
     }
   )
   .settings(testSettings: _*)
-  .dependsOn(core % "test->test;compile->compile")
+  .dependsOn(core)
 lazy val enumeratumUPickleJs  = enumeratumUPickle.js
 lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
@@ -200,7 +202,7 @@ lazy val enumeratumCirce = crossProject
     }
   )
   .settings(testSettings: _*)
-  .dependsOn(core % "test->test;compile->compile")
+  .dependsOn(core)
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
@@ -214,7 +216,7 @@ lazy val enumeratumArgonaut =
       )
     )
     .settings(testSettings: _*)
-    .dependsOn(coreJvm % "test->test;compile->compile")
+    .dependsOn(coreJvm)
 
 lazy val commonSettings = Seq(
     organization := "com.beachape",
