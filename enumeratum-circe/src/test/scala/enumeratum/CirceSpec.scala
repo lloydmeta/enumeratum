@@ -76,6 +76,15 @@ class CirceSpec extends FunSpec with Matchers {
       }
     }
 
+    it("should fail to parse to members when given improper JSON, even when ignoring case") {
+      val failures = Seq("123", "Jumbo").map(s =>
+        Json.fromString(s).as[ShirtSize](Circe.decodeCaseInsensitive(ShirtSize)))
+      failures.foreach { f =>
+        f.isLeft shouldBe true
+        f.leftMap(_.history shouldBe Nil)
+      }
+    }
+
     it("should fail to parse random JSON to members") {
       val failures = Seq(Json.fromString("XXL"), Json.fromInt(Int.MaxValue)).map(j =>
         j.as[ShirtSize](Circe.decoder(ShirtSize)))
