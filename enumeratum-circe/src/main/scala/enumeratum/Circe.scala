@@ -68,6 +68,18 @@ object Circe {
       }
     }
 
+  def decodeCaseInsensitive[A <: EnumEntry](enum: Enum[A]): Decoder[A] =
+    new Decoder[A] {
+      final def apply(c: HCursor): Result[A] = stringDecoder.apply(c).flatMap { s =>
+        val maybeMember = enum.withNameInsensitiveOption(s)
+        maybeMember match {
+          case Some(member) => Right(member)
+          case _ =>
+            Left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+        }
+      }
+    }
+
   private val stringEncoder = implicitly[Encoder[String]]
   private val stringDecoder = implicitly[Decoder[String]]
 
