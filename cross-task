@@ -22,7 +22,7 @@ do
         command="${command}++${scalaVersion} "
         for task in ${tasks}
         do
-          command="${command}${name}${platform}/${task} "
+          command="${command}+${name}${platform}/${task} "
         done
     done
 done

@@ -88,6 +88,7 @@ lazy val core = crossProject
     name := "enumeratum",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
+    crossVersion := CrossVersion.binary,
     version := Versions.Core.head
   )
   .dependsOn(macros)
@@ -104,6 +105,7 @@ lazy val enumeratumTest = crossProject
     name := "enumeratum-test",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
+    crossVersion := CrossVersion.binary,
     libraryDependencies += {
       import org.scalajs.sbtplugin._
       val crossVersion =
@@ -145,6 +147,7 @@ lazy val macros = crossProject
     name := "enumeratum-macros",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
+    crossVersion := CrossVersion.binary,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
@@ -206,6 +209,7 @@ lazy val enumeratumUPickle = crossProject
     name := "enumeratum-upickle",
     version := "1.5.5-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
+    crossVersion := CrossVersion.binary,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
