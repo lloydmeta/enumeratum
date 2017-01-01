@@ -54,14 +54,16 @@ lazy val root =
 lazy val scala_2_12 = Project(id = "scala_2_12",
                               base = file("scala_2_12"),
                               settings = commonSettings ++ publishSettings)
-  .settings(name := "enumeratum-scala_2_12",
-            scalaVersion := "2.12.1", // not sure if this and below are needed
-            crossScalaVersions := Seq("2.12.1"),
-            crossVersion := CrossVersion.binary,
-            // Do not publish this  project (it just serves as an aggregate)
-            publishArtifact := false,
-            publishLocal := {},
-            doctestWithDependencies := false)
+  .settings(
+    name := "enumeratum-scala_2_12",
+    scalaVersion := "2.12.1", // not sure if this and below are needed
+    crossScalaVersions := Seq("2.12.1"),
+    crossVersion := CrossVersion.binary,
+    // Do not publish this  project (it just serves as an aggregate)
+    publishArtifact := false,
+    publishLocal := {},
+    doctestWithDependencies := false
+  )
   .aggregate(
     baseProjectRefs ++
       Seq(
@@ -84,6 +86,28 @@ lazy val core = crossProject
   .dependsOn(macros)
 lazy val coreJs  = core.js
 lazy val coreJvm = core.jvm
+
+lazy val enumeratumTest = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-test"))
+  .settings(testSettings: _*)
+  .settings(commonWithPublishSettings: _*)
+  .settings(
+    name := "enumeratum-test",
+    version := Versions.Core.stable,
+    libraryDependencies += {
+      import org.scalajs.sbtplugin._
+      val crossVersion =
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      impl.ScalaJSGroupID
+        .withCross("com.beachape", "enumeratum", crossVersion) % Versions.Core.stable
+    }
+  )
+lazy val enumeratumTestJs  = enumeratumTest.js
+lazy val enumeratumTestJvm = enumeratumTest.jvm
 
 lazy val coreJVMTests = Project(id = "coreJVMTests",
                                 base = file("enumeratum-core-jvm-tests"),
