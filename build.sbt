@@ -1,6 +1,5 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theVersion      = "1.5.5-SNAPSHOT"
 lazy val theScalaVersion = "2.11.8"
 /*
   2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
@@ -83,15 +82,19 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
 lazy val core = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
-  .settings(
-    name := "enumeratum"
-  )
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
+  .settings(
+    name := "enumeratum",
+    version := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
+    version := Versions.Core.head
+  )
   .dependsOn(macros)
 lazy val coreJs  = core.js
 lazy val coreJvm = core.jvm
 
+// Project models used in test for some subprojects
 lazy val enumeratumTest = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-test"))
@@ -99,7 +102,7 @@ lazy val enumeratumTest = crossProject
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       import org.scalajs.sbtplugin._
@@ -118,14 +121,16 @@ lazy val enumeratumTestJvm = enumeratumTest.jvm
 lazy val coreJVMTests = Project(id = "coreJVMTests",
                                 base = file("enumeratum-core-jvm-tests"),
                                 settings = commonWithPublishSettings)
+  .settings(testSettings: _*)
   .settings(
     name := "coreJVMTests",
+    version := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
     publishArtifact := false
   )
-  .settings(testSettings: _*)
   .dependsOn(coreJvm)
 
 lazy val macros = crossProject
@@ -133,14 +138,17 @@ lazy val macros = crossProject
   .in(file("macros"))
   .settings(commonWithPublishSettings: _*)
   .settings(
+    withCompatUnmanagedSources(jsJvmCrossProject = true,
+                               include_210Dir = true,
+                               includeTestSrcs = false): _*)
+  .settings(
     name := "enumeratum-macros",
+    version := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
   )
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
-                                       include_210Dir = true,
-                                       includeTestSrcs = false): _*)
   .settings(testSettings: _*)
 lazy val macrosJs  = macros.js
 lazy val macrosJvm = macros.jvm
@@ -149,46 +157,55 @@ lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson",
           base = file("enumeratum-reactivemongo-bson"),
           settings = commonWithPublishSettings)
+    .settings(testSettings: _*)
     .settings(
+      crossScalaVersions := scalaVersionsAll,
+      version := "1.5.5-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
         "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
       )
     )
-    .settings(testSettings: _*)
 
 lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       base = file("enumeratum-play-json"),
                                       settings = commonWithPublishSettings)
+  .settings(testSettings: _*)
   .settings(
+    version := "1.5.5-SNAPSHOT",
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
       "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
     )
   )
-  .settings(testSettings: _*)
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   base = file("enumeratum-play"),
                                   settings = commonWithPublishSettings)
+  .settings(testSettings: _*)
   .settings(
+    version := "1.5.5-SNAPSHOT",
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
       "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
     )
   )
-  .settings(testSettings: _*)
   .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
 
 lazy val enumeratumUPickle = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-upickle"))
   .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
+    version := "1.5.5-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -214,7 +231,6 @@ lazy val enumeratumUPickle = crossProject
       additionalMacroDeps
     }
   )
-  .settings(testSettings: _*)
 lazy val enumeratumUPickleJs  = enumeratumUPickle.js
 lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
@@ -222,8 +238,11 @@ lazy val enumeratumCirce = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-circe"))
   .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
+    version := "1.5.5-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -237,7 +256,6 @@ lazy val enumeratumCirce = crossProject
         impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable)
     }
   )
-  .settings(testSettings: _*)
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
@@ -245,17 +263,18 @@ lazy val enumeratumArgonaut =
   Project(id = "enumeratum-argonaut",
           base = file("enumeratum-argonaut"),
           settings = commonWithPublishSettings)
+    .settings(testSettings: _*)
     .settings(
+      version := "1.5.5-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
         "com.beachape" %% "enumeratum" % Versions.Core.stable
       )
     )
-    .settings(testSettings: _*)
 
 lazy val commonSettings = Seq(
     organization := "com.beachape",
-    version := theVersion,
     incOptions := incOptions.value.withLogRecompileOnMacro(false),
     scalaVersion := theScalaVersion,
     scalafmtConfig := Some(file(".scalafmt.conf"))
