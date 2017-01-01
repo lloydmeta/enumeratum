@@ -36,9 +36,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonaut,
-  enumeratumTestJs,
-  enumeratumTestJvm
+  enumeratumArgonaut
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -149,35 +147,37 @@ lazy val enumeratumReactiveMongoBson =
           settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "org.reactivemongo" %% "reactivemongo" % reactiveMongoVersion
+        "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
+        "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
       )
     )
     .settings(testSettings: _*)
-    // TODO move the shared test models into their own subproject so we can
-    // share them without depending on Core, which will likely be on a snapshot version
-    .dependsOn(coreJvm % "test->test;compile->compile")
 
 lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       base = file("enumeratum-play-json"),
                                       settings = commonWithPublishSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json" % thePlayVersion(scalaVersion.value)
+      "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
+      "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
     )
   )
   .settings(testSettings: _*)
-  .dependsOn(coreJvm % "test->test;compile->compile")
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   base = file("enumeratum-play"),
                                   settings = commonWithPublishSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value)
+      "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
+      "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
     )
   )
   .settings(testSettings: _*)
-  .dependsOn(coreJvm, enumeratumPlayJson % "test->test;compile->compile")
+  .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
 
 lazy val enumeratumUPickle = crossProject
   .crossType(CrossType.Pure)
@@ -193,7 +193,10 @@ lazy val enumeratumUPickle = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross) % uPickleVersion)
+      Seq(
+        impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross)     % uPickleVersion,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+      )
     } ++ {
       val additionalMacroDeps =
         CrossVersion.partialVersion(scalaVersion.value) match {
@@ -208,7 +211,6 @@ lazy val enumeratumUPickle = crossProject
     }
   )
   .settings(testSettings: _*)
-  .dependsOn(core)
 lazy val enumeratumUPickleJs  = enumeratumUPickle.js
 lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
@@ -226,11 +228,12 @@ lazy val enumeratumCirce = crossProject
         else
           CrossVersion.binary
       }
-      Seq(impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % circeVersion)
+      Seq(
+        impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross)     % circeVersion,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable)
     }
   )
   .settings(testSettings: _*)
-  .dependsOn(core)
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
@@ -240,11 +243,11 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(
       libraryDependencies ++= Seq(
-        "io.argonaut" %% "argonaut" % argonautVersion
+        "io.argonaut"  %% "argonaut"   % argonautVersion,
+        "com.beachape" %% "enumeratum" % Versions.Core.stable
       )
     )
     .settings(testSettings: _*)
-    .dependsOn(coreJvm)
 
 lazy val commonSettings = Seq(
     organization := "com.beachape",
