@@ -253,7 +253,7 @@ libraryDependencies ++= Seq(
 
 As expected, usage is exactly the same as normal Scala.
 
-## Play Integration
+## Play Integration [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
@@ -263,7 +263,6 @@ to help you avoid boilerplate in your Play project.
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumVersion
 )
 ```
@@ -396,7 +395,7 @@ object GreetingForm {
 }
 ```
 
-## Play JSON
+## Play JSON [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11)
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
@@ -405,7 +404,6 @@ for JSON serialization in your Enum's.
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
 )
 ```
@@ -468,7 +466,7 @@ assert(PlayJson.fromJson[JsonDrinks](JsNumber(3)) == JsSuccess(JsonDrinks.Cola))
 assert(PlayJson.fromJson[JsonDrinks](JsNumber(19)).isError)
 ```
 
-## Circe
+## Circe [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11)
 
 ### SBT
 
@@ -476,7 +474,6 @@ To use enumeratum with [Circe](https://github.com/travisbrown/circe):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-circe" % enumeratumVersion
 )
 ```
@@ -485,7 +482,6 @@ To use with ScalaJS:
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % enumeratumVersion,
     "com.beachape" %%% "enumeratum-circe" % enumeratumVersion
 )
 ```
@@ -545,7 +541,7 @@ CirceLibraryItem.values.foreach { item =>
 }
 ```
 
-## UPickle
+## UPickle [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11)
 
 ### SBT
 
@@ -553,7 +549,6 @@ To use enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-upickle" % enumeratumVersion
 )
 ```
@@ -562,7 +557,6 @@ To use with ScalaJS:
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum" % enumeratumVersion,
     "com.beachape" %%% "enumeratum-upickle" % enumeratumVersion
 )
 ```
@@ -598,7 +592,7 @@ enum.values.foreach { entry =>
 
 ```
 
-## ReactiveMongo BSON
+## ReactiveMongo BSON [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11)
 
 The `enumeratum-reactivemongo-bson` project is published separately and gives you access to ReactiveMongo's auto-generated boilerplate
 for BSON serialization in your Enum's.
@@ -607,7 +601,6 @@ for BSON serialization in your Enum's.
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-reactivemongo-bson" % enumeratumVersion
 )
 ```
@@ -671,7 +664,7 @@ val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
-## Argonaut
+## Argonaut [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11)
 
 ### SBT
 
@@ -679,7 +672,6 @@ To use enumeratum with [Argonaut](http://www.argonaut.io):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum" % enumeratumVersion,
     "com.beachape" %% "enumeratum-argonaut" % enumeratumVersion
 )
 ```
