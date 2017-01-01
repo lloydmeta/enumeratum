@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 2 ]; then
+    cat << EOF
+$0: usage: ./cross-task [project-base-name] [task]
+
+                 eg: ./cross-task enumeratumCirce test
+EOF
+    exit 1
+fi
+
+platforms="JS JVM"
+
+name=$1
+tasks=$2
+command=""
+for platform in $platforms
+do
+    for task in ${tasks}
+    do
+      command="${command} +${name}${platform}/${task}"
+    done
+done
+
+echo "Running: sbt ${command}"
+
+sbt ${command}
