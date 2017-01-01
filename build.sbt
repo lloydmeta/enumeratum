@@ -6,7 +6,8 @@ lazy val theScalaVersion = "2.11.8"
   2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
   integration libraries are still gaining 2.12.0 support
  */
-lazy val scalaVersions = Seq("2.10.6", "2.11.8")
+lazy val scalaVersions    = Seq("2.10.6", "2.11.8")
+lazy val scalaVersionsAll = scalaVersions :+ "2.12.1"
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.4"
@@ -35,7 +36,9 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonaut
+  enumeratumArgonaut,
+  enumeratumTestJs,
+  enumeratumTestJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -95,6 +98,7 @@ lazy val enumeratumTest = crossProject
   .settings(
     name := "enumeratum-test",
     version := Versions.Core.stable,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       import org.scalajs.sbtplugin._
       val crossVersion =
