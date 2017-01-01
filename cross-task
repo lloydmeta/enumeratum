@@ -9,16 +9,21 @@ EOF
     exit 1
 fi
 
+scalaVersions="2.10.6 2.11.8 2.12.1"
 platforms="JS JVM"
 
 name=$1
 tasks=$2
 command=""
-for platform in $platforms
+for scalaVersion in $scalaVersions
 do
-    for task in ${tasks}
+    for platform in $platforms
     do
-      command="${command} +${name}${platform}/${task}"
+        command="${command}++${scalaVersion} "
+        for task in ${tasks}
+        do
+          command="${command}${name}${platform}/${task} "
+        done
     done
 done
 

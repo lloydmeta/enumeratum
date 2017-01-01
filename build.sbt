@@ -243,6 +243,7 @@ lazy val enumeratumCirce = crossProject
     name := "enumeratum-circe",
     version := "1.5.5-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
+    crossVersion := CrossVersion.binary,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
