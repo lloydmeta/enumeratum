@@ -9,10 +9,19 @@ EOF
     exit 1
 fi
 
-name=$1
-task=$2
-command="+${name}JS/$task +${name}JVM/$task"
+platforms="JS JVM"
 
-echo "Running: sbt $command"
+name=$1
+tasks=$2
+command=""
+for platform in $platforms
+do
+    for task in ${tasks}
+    do
+      command="${command} +${name}${platform}/${task}"
+    done
+done
+
+echo "Running: sbt ${command}"
 
 sbt ${command}
