@@ -48,7 +48,9 @@ lazy val root =
       git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git",
       // Do not publish the root project (it just serves as an aggregate)
       publishArtifact := false,
-      publishLocal := {}
+      publishLocal := {},
+      aggregate in publish := false,
+      aggregate in PgpKeys.publishSigned := false
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
@@ -63,7 +65,9 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
     // Do not publish this  project (it just serves as an aggregate)
     publishArtifact := false,
     publishLocal := {},
-    doctestWithDependencies := false
+    doctestWithDependencies := false,
+    aggregate in publish := false,
+    aggregate in PgpKeys.publishSigned := false
   )
   .aggregate(
     baseProjectRefs ++
