@@ -25,7 +25,7 @@ def thePlayVersion(scalaVersion: String) =
   }
 
 lazy val baseProjectRefs =
-  Seq(macrosJs, macrosJvm, coreJs, coreJvm, coreJVMTests).map(Project.projectToRef)
+  Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
@@ -64,7 +64,7 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
     // Do not publish this  project (it just serves as an aggregate)
     publishArtifact := false,
     publishLocal := {},
-    doctestWithDependencies := false,
+    doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.12
     aggregate in publish := false,
     aggregate in PgpKeys.publishSigned := false
   )
@@ -79,21 +79,21 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumReactiveMongoBson
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
+// Aggregates core and macro
+lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM)
 lazy val core = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
-  .settings(testSettings: _*)
-  .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
     version := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
-    crossVersion := CrossVersion.binary,
-    version := Versions.Core.head
+    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
+  .settings(testSettings: _*)
+  .settings(commonWithPublishSettings: _*)
   .dependsOn(macros)
-lazy val coreJs  = core.js
-lazy val coreJvm = core.jvm
+lazy val coreJS  = core.js
+lazy val coreJVM = core.jvm
 
 // Project models used in test for some subprojects
 lazy val enumeratumTest = crossProject
@@ -133,8 +133,9 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
     ),
     publishArtifact := false
   )
-  .dependsOn(coreJvm)
+  .dependsOn(coreJVM)
 
+lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
 lazy val macros = crossProject
   .crossType(CrossType.Pure)
   .in(file("macros"))
@@ -145,16 +146,14 @@ lazy val macros = crossProject
                                includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
-    crossVersion := CrossVersion.binary,
+    version := Versions.Macros.head,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
   )
   .settings(testSettings: _*)
-lazy val macrosJs  = macros.js
-lazy val macrosJvm = macros.jvm
+lazy val macrosJS  = macros.js
+lazy val macrosJVM = macros.jvm
 
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson",
@@ -200,6 +199,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
   )
   .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
 
+lazy val uPickleAggregate = aggregateProject("upickle", enumeratumUPickleJs, enumeratumUPickleJvm)
 lazy val enumeratumUPickle = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-upickle"))
@@ -208,8 +208,6 @@ lazy val enumeratumUPickle = crossProject
   .settings(
     name := "enumeratum-upickle",
     version := "1.5.5-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
-    crossVersion := CrossVersion.binary,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -238,6 +236,7 @@ lazy val enumeratumUPickle = crossProject
 lazy val enumeratumUPickleJs  = enumeratumUPickle.js
 lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
+lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-circe"))
@@ -246,8 +245,6 @@ lazy val enumeratumCirce = crossProject
   .settings(
     name := "enumeratum-circe",
     version := "1.5.5-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
-    crossVersion := CrossVersion.binary,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -258,7 +255,8 @@ lazy val enumeratumCirce = crossProject
       }
       Seq(
         impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross)     % circeVersion,
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable)
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+      )
     }
   )
 lazy val enumeratumCirceJs  = enumeratumCirce.js
@@ -440,6 +438,7 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
       case _ => Nil
     }
   }
+
   val unmanagedMainDirsSetting = Seq(
     unmanagedSourceDirectories in Compile ++= {
       compatDirs(projectbase = baseDirectory.value,
@@ -459,5 +458,30 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
     unmanagedMainDirsSetting
   }
 }
+
+/**
+  * Assumes that
+  *
+  *   - a corresponding directory exists under ./aggregates.
+  *   - publishing 2.10.x, 2.11.x, 2.12.x
+  */
+def aggregateProject(id: String, projects: ProjectReference*): Project =
+  Project(id = s"$id-aggregate",
+          base = file(s"./aggregates/$id"),
+          settings = commonWithPublishSettings)
+    .settings(
+      crossScalaVersions := scalaVersionsAll,
+      crossVersion := CrossVersion.binary,
+      // Do not publish the aggregate project (it just serves as an aggregate)
+      publishArtifact := false,
+      doctestWithDependencies := {
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, 12)) => false
+          case _             => true
+        }
+      },
+      publishLocal := {}
+    )
+    .aggregate(projects: _*)
 
 scalafmtConfig := Some(file(".scalafmt.conf"))

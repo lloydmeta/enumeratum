@@ -1,0 +1,5 @@
+This and the directories under it are all for the sole purpose of
+giving SBT homes for the aggregate projects.
+
+This is required so that ScalaJS and JVM libs can be published side
+by side with the proper platform suffices in their artefact names.
