@@ -50,6 +50,7 @@ Integrations are available for:
 8. [Argonaut integration](#argonaut)
 9. [Slick integration](#slick-integration)
 10. [Benchmarking](#benchmarking)
+11. [Publishing](#publishing)
 
 
 ## Quick start
@@ -831,3 +832,13 @@ is acceptable for almost all use-cases. PRs that promise to increase performance
 Also, Enumeratum's `withName` is faster than the standard library's `Enumeration`, by around 4x in the case where an entry exists with the given name.
 My guess is this is because Enumeratum doesn't use any `synchronized` calls or `volatile` annotations. It is also faster in the case where there is no
 corresponding name, but not by a significant amount, perhaps because the high cost of throwing an exception masks any benefits.
+
+## Publishing
+
+Projects are published independently of each other.
+
+JVM + ScalaJS projects should have an aggregate project to make it easy to publish them, e.g. for `enumeratum-circe`:
+
+`$ sbt "project circe-aggregate" +clean +publish-signed`
+
+Should publish all needed artefacts. Note that `sbt circe-aggregate/publish-signed` will not work (ScalaJS gets skipped).
