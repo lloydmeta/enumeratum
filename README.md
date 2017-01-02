@@ -254,7 +254,8 @@ libraryDependencies ++= Seq(
 
 As expected, usage is exactly the same as normal Scala.
 
-## Play Integration [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11)
+## Play Integration 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
@@ -396,8 +397,9 @@ object GreetingForm {
 }
 ```
 
-## Play JSON [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11)
-
+## Play JSON
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11)
+ 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
 
@@ -467,7 +469,8 @@ assert(PlayJson.fromJson[JsonDrinks](JsNumber(3)) == JsSuccess(JsonDrinks.Cola))
 assert(PlayJson.fromJson[JsonDrinks](JsNumber(19)).isError)
 ```
 
-## Circe [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11)
+## Circe
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11)
 
 ### SBT
 
@@ -542,7 +545,8 @@ CirceLibraryItem.values.foreach { item =>
 }
 ```
 
-## UPickle [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11)
+## UPickle
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11)
 
 ### SBT
 
@@ -593,7 +597,8 @@ enum.values.foreach { entry =>
 
 ```
 
-## ReactiveMongo BSON [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11)
+## ReactiveMongo BSON
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11)
 
 The `enumeratum-reactivemongo-bson` project is published separately and gives you access to ReactiveMongo's auto-generated boilerplate
 for BSON serialization in your Enum's.
@@ -665,7 +670,8 @@ val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
-## Argonaut [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11)
+## Argonaut
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11)
 
 ### SBT
 
