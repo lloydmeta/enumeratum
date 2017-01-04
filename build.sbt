@@ -243,7 +243,7 @@ lazy val enumeratumCirce = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.6-SNAPSHOT",
+    version := "1.5.6",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
