@@ -372,6 +372,7 @@ lazy val publishSettings = Seq(
   },
   publishMavenStyle := true,
   publishArtifact in Test := false,
+  PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   pomIncludeRepository := { _ =>
     false
   }
