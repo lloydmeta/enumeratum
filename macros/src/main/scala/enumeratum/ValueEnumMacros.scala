@@ -167,7 +167,17 @@ object ValueEnumMacros {
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
-      val directMemberTrees = declTree.children.flatMap(_.children)
+      val directMemberTrees = declTree.children.flatMap(_.children) // Things that are body-level, no lower
+      val constructorTrees = {
+        val immediate       = directMemberTrees // for 2.11+ this is enough
+        val constructorName = ContextUtils.constructorName(c)
+        val method =
+          directMemberTrees.collect { // for 2.10.x, we need to grab the body-level constructor method's trees
+            case t @ DefDef(_, `constructorName`, _, _, _, _) =>
+              t.collect { case t => t }
+          }.flatten
+        immediate ++ method
+      }.iterator
 
       val valuesFromMembers = directMemberTrees.iterator.collect {
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm =>
@@ -175,8 +185,7 @@ object ValueEnumMacros {
       }
 
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
-      val lazyTrees = declTree.collect { case t => t }.iterator
-      val valuesFromConstructors = lazyTrees.collect {
+      val valuesFromConstructors = constructorTrees.collect {
         // The tree has a method call
         case Apply(_, args) => {
           val valueArguments: List[Option[ValueType]] =

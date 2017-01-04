@@ -30,4 +30,11 @@ object ContextUtils {
     case m if m.isConstructor =>
       m.asMethod.paramLists.flatten.map(_.asTerm.name)
   }
+
+  /**
+    * Returns the reserved constructor name
+    */
+  def constructorName(c: Context): c.universe.TermName = {
+    c.universe.termNames.CONSTRUCTOR
+  }
 }
