@@ -206,7 +206,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := "1.5.5-SNAPSHOT",
+    version := "1.5.5",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
