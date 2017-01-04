@@ -16,8 +16,31 @@ object A extends IntEnum[A] {
   val values = findValues
 
   case object A1 extends A(1) {
-    val text = identity("something") // Error:(9, 16) object A1 has a value with the wrong type: something:class java.lang.String, instead of int.
-    //val text = "something"
+    val text = identity("something")
+  }
+
+  def identity(str: String) = str
+
+}
+
+class C
+object C {
+  def build: C = new C
+}
+
+sealed abstract class B private (val value: Int, val other: C) extends IntEnumEntry {
+  val text: String
+}
+
+object B extends IntEnum[B] {
+
+  val values = findValues
+
+  case object B1 extends B(1, new C) {
+    val text = identity("something")
+  }
+  case object B2 extends B(2, C.build) {
+    val text = identity("something")
   }
 
   def identity(str: String) = str

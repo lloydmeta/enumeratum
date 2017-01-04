@@ -1,6 +1,6 @@
 package enumeratum
 
-import enumeratum.ContextUtils.Context
+import scala.reflect.macros.blackbox.Context
 
 import scala.reflect.ClassTag
 import scala.collection.immutable._
@@ -240,9 +240,20 @@ object ValueEnumMacros {
     val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
       groupedByValue.partition(_._2.size <= 1)
     if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {
+      val formattedString = valuesWithMoreThanOneSymbol.toSeq.reverse.foldLeft("") {
+        case (acc, (k, v)) =>
+          acc ++ s"""$k has members [ ${v.mkString(", ")} ]\n  """
+      }
       c.abort(
         c.enclosingPosition,
-        s"It does not look like you have unique values. Each of the following values correspond to more than one member: $valuesWithMoreThanOneSymbol"
+        s"""
+           |
+           |  It does not look like you have unique values in your ValueEnum.
+           |  Each of the following values correspond to more than one member:
+           |
+           |  $formattedString
+           |  Please check to make sure members have unique values.
+           |  """.stripMargin
       )
     }
   }
