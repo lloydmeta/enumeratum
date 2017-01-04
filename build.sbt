@@ -267,7 +267,7 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.5",
+      version := "1.5.6-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
