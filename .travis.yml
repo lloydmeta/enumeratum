@@ -6,16 +6,21 @@ matrix:
   include:
     - scala: 2.10.6
       jdk: oraclejdk8
-      script: sbt ++$TRAVIS_SCALA_VERSION clean test:compile test
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile
+        - sbt ++$TRAVIS_SCALA_VERSION test
     - scala: 2.11.8
       jdk: oraclejdk8
       script:
-        - sbt ++$TRAVIS_SCALA_VERSION coverage test:compile test coverageReport
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile
+        - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
     - scala: 2.12.1
       jdk: oraclejdk8
-      script: sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test:compile scala_2_12/test
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test:compile
+        - sbt scala_2_12/test
 cache:
   directories:
   - $HOME/.sbt/0.13
