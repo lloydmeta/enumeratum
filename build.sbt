@@ -79,7 +79,27 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumReactiveMongoBson
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
-// Aggregates core and macro
+lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
+lazy val macros = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("macros"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(
+    withCompatUnmanagedSources(jsJvmCrossProject = true,
+                               include_210Dir = true,
+                               includeTestSrcs = false): _*)
+  .settings(
+    name := "enumeratum-macros",
+    version := Versions.Macros.head,
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value
+    )
+  )
+  .settings(testSettings: _*)
+lazy val macrosJS  = macros.js
+lazy val macrosJVM = macros.jvm
+
+// Aggregates core
 lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM)
 lazy val core = crossProject
   .crossType(CrossType.Pure)
@@ -91,7 +111,7 @@ lazy val core = crossProject
   )
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
-  .dependsOn(macros)
+  // .dependsOn(macros) used for testing macros
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 
@@ -134,26 +154,6 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
     publishArtifact := false
   )
   .dependsOn(coreJVM)
-
-lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
-lazy val macros = crossProject
-  .crossType(CrossType.Pure)
-  .in(file("macros"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(
-    withCompatUnmanagedSources(jsJvmCrossProject = true,
-                               include_210Dir = true,
-                               includeTestSrcs = false): _*)
-  .settings(
-    name := "enumeratum-macros",
-    version := Versions.Macros.head,
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
-  )
-  .settings(testSettings: _*)
-lazy val macrosJS  = macros.js
-lazy val macrosJVM = macros.jvm
 
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson",
