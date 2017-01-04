@@ -115,6 +115,7 @@ lazy val core = crossProject
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 
+lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
 // Project models used in test for some subprojects
 lazy val enumeratumTest = crossProject
   .crossType(CrossType.Pure)
@@ -123,9 +124,7 @@ lazy val enumeratumTest = crossProject
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
-    crossVersion := CrossVersion.binary,
+    version := Versions.Core.stable,
     libraryDependencies += {
       import org.scalajs.sbtplugin._
       val crossVersion =
