@@ -90,7 +90,7 @@ lazy val macros = crossProject
                                includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.head,
+    version := Versions.Macros.stable,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
@@ -106,7 +106,7 @@ lazy val core = crossProject
   .in(file("enumeratum-core"))
   .settings(
     name := "enumeratum",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
   .settings(testSettings: _*)
@@ -161,7 +161,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(testSettings: _*)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version := "1.5.6-SNAPSHOT",
+      version := "1.5.6",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -174,7 +174,7 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.6-SNAPSHOT",
+    version := "1.5.6",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
@@ -188,7 +188,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.6-SNAPSHOT",
+    version := "1.5.6",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
@@ -206,7 +206,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := "1.5.6-SNAPSHOT",
+    version := "1.5.6",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -243,7 +243,7 @@ lazy val enumeratumCirce = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.7-SNAPSHOT",
+    version := "1.5.7",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -267,7 +267,7 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.6-SNAPSHOT",
+      version := "1.5.6",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
