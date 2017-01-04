@@ -26,6 +26,7 @@ object A {
 
 }
 
+// Example with outside constructor call in constructor call
 class C
 object C {
   def build: C = new C
@@ -34,7 +35,6 @@ object C {
 sealed abstract class B private (val value: Int, val other: C) {
   val text: String
 }
-
 object B {
 
   val values = FindValEnums[B]
@@ -48,4 +48,27 @@ object B {
 
   def identity(str: String) = str
 
+}
+
+
+// Test case of traits with val member fulfilling the value contract
+sealed abstract trait D {
+  def value: Int
+}
+
+object D {
+  val values = FindValEnums[D]
+
+  case object D1 extends D {
+    val value = 1
+    val text  = identity("something")
+  }
+
+  // Out of order
+  case object D2 extends D {
+    val text  = identity("something")
+    val value = 2
+  }
+
+  def identity(str: String) = str
 }
