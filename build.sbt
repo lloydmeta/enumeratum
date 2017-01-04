@@ -111,7 +111,7 @@ lazy val core = crossProject
   )
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
-  // .dependsOn(macros) used for testing macros
+// .dependsOn(macros) used for testing macros
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 
