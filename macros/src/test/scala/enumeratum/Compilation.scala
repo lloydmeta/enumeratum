@@ -51,7 +51,7 @@ object B {
 }
 
 // Test case of traits with val member fulfilling the value contract
-sealed abstract trait D {
+sealed trait D {
   def value: Int
 }
 
