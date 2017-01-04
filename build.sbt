@@ -152,7 +152,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
     ),
     publishArtifact := false
   )
-  .dependsOn(coreJVM)
+  .dependsOn(coreJVM, macrosJVM)
 
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson",
