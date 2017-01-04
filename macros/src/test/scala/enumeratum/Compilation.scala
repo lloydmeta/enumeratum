@@ -50,7 +50,6 @@ object B {
 
 }
 
-
 // Test case of traits with val member fulfilling the value contract
 sealed abstract trait D {
   def value: Int
@@ -68,6 +67,17 @@ object D {
   case object D2 extends D {
     val text  = identity("something")
     val value = 2
+  }
+
+  // value in value
+  case object D3 extends D {
+
+    val text = {
+      val value = 2
+      identity("something")
+    }
+    val value = 3
+
   }
 
   def identity(str: String) = str

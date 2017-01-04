@@ -167,11 +167,16 @@ object ValueEnumMacros {
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
-      val trees = declTree.collect { case t => t }.iterator
-      val values = trees.collect {
-        // The tree has a value declaration with a constant value.
+      val directMemberTrees = declTree.children.flatMap(_.children)
+
+      val valuesFromMembers = directMemberTrees.iterator.collect {
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm =>
           Some(i)
+      }
+
+      // Sadly 2.10 has parent-class constructor calls nested inside a member..
+      val lazyTrees = declTree.collect { case t => t }.iterator
+      val valuesFromConstructors = lazyTrees.collect {
         // The tree has a method call
         case Apply(_, args) => {
           val valueArguments: List[Option[ValueType]] =
@@ -209,6 +214,8 @@ object ValueEnumMacros {
           valueArguments.collectFirst { case Some(v) => v }
         }
       }
+
+      val values = valuesFromMembers ++ valuesFromConstructors
       val processedValue = values.collectFirst {
         case Some(v) => processFoundValues(v)
       }
