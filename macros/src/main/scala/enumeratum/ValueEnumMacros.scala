@@ -167,12 +167,13 @@ object ValueEnumMacros {
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
-      val values = declTree.collect {
+      val trees = declTree.collect { case t => t }.iterator
+      val values = trees.collect {
         // The tree has a value declaration with a constant value.
         case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm =>
           Some(i)
         // The tree has a method call
-        case Apply(fun, args) => {
+        case Apply(_, args) => {
           val valueArguments: List[Option[ValueType]] =
             valueEntryCTorsParams.collect {
               // Find the constructor params list that matches the arguments list size of the method call
