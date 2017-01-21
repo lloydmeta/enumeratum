@@ -13,7 +13,7 @@ lazy val scalacheckVersion = "1.13.4"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.1"
-lazy val circeVersion         = "0.6.1"
+lazy val circeVersion         = "0.7.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
 def thePlayVersion(scalaVersion: String) =
