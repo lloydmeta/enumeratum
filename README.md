@@ -98,7 +98,6 @@ object Greeting extends Enum[Greeting] {
 
 // Object Greeting has a `withName(name: String)` method
 Greeting.withName("Hello")
-
 // => res0: Greeting = Hello
 
 Greeting.withName("Haro")
@@ -106,12 +105,31 @@ Greeting.withName("Haro")
 
 // A safer alternative would be to use `withNameOption(name: String)` method which returns an Option[Greeting]
 Greeting.withNameOption("Hello")
-
 // => res1: Option[Greeting] = Some(Hello)
 
 Greeting.withNameOption("Haro")
-
 // => res2: Option[Greeting] = None
+
+// It is also possible to use strings case insensitively
+Greeting.withNameInsensitive("HeLLo")
+// => res3: Greeting = Hello
+
+Greeting.withNameInsensitiveOption("HeLLo")
+// => res4: Option[Greeting] = Some(Hello)
+
+// Uppercase-only strings may also be used
+Greeting.withNameUppercaseOnly("HELLO")
+// => res5: Greeting = Hello
+
+Greeting.withNameUppercaseOnlyOption("HeLLo")
+// => res6: Option[Greeting] = None
+
+// Similarly, lowercase-only strings may also be used
+Greeting.withNameLowercaseOnly("hello")
+// => res7: Greeting = Hello
+
+Greeting.withNameLowercaseOnlyOption("hello")
+// => res8: Option[Greeting] = Some(Hello)
 ```
 
 Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
@@ -254,7 +272,7 @@ libraryDependencies ++= Seq(
 
 As expected, usage is exactly the same as normal Scala.
 
-## Play Integration 
+## Play Integration
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
@@ -399,7 +417,7 @@ object GreetingForm {
 
 ## Play JSON
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11)
- 
+
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
 
