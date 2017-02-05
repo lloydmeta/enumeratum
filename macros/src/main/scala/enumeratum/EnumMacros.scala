@@ -35,7 +35,7 @@ object EnumMacros {
            |  value you're trying to find the companion object for with a parent type (e.g. Light.Red: Light).
            |
            |  This error usually happens when trying to find the companion object of a hard-coded enum member, and
-           |  is caused by Scala inferring the type to be the member's single type (e.g. Light.Red.type instead of
+           |  is caused by Scala inferring the type to be the member's singleton type (e.g. Light.Red.type instead of
            |  Light).
          """.stripMargin)
     } else {
