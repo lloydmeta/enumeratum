@@ -414,15 +414,19 @@ class EnumSpec extends FunSpec with Matchers {
 
   describe("materializeEnum") {
     import DummyEnum._
+    def findEnum[A <: EnumEntry: Enum](v: A) = implicitly[Enum[A]]
 
     it("should return the proper Enum object") {
-      def findEnum[A <: EnumEntry: Enum](v: A) = implicitly[Enum[A]]
-
       val hello: DummyEnum = Hello
       val companion        = findEnum(hello)
       companion shouldBe DummyEnum
       companion.values should contain(Hello)
+    }
 
+    it("should fail to compile when passed a singleton object") {
+      """
+        | findEnum(Hello)
+      """ shouldNot compile
     }
   }
 }
