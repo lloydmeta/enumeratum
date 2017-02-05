@@ -370,6 +370,7 @@ lazy val publishSettings = Seq(
     else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
   },
+  pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   publishMavenStyle := true,
   publishArtifact in Test := false,
   PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
