@@ -37,6 +37,23 @@ object EnumMacros {
            |  This error usually happens when trying to find the companion object of a hard-coded enum member, and
            |  is caused by Scala inferring the type to be the member's singleton type (e.g. Light.Red.type instead of
            |  Light).
+           |
+           |  To illustrate, given an enum:
+           |
+           |  sealed abstract class Light extends EnumEntry
+           |  case object Light extends Enum[Light] {
+           |    val values = findValues
+           |    case object Red extends Light
+           |    case object Blue extends Light
+           |    case object Green extends Light
+           |  }
+           |
+           |  and a method:
+           |
+           |  def indexOf[A <: EnumEntry: Enum](entry: A): Int = implicitly[Enum[A]].indexOf(entry)
+           |
+           |  Instead of calling like so: indexOf(Light.Red)
+           |                Call like so: indexOf(Light.Red: Light)
          """.stripMargin)
     } else {
       c.Expr[A](Ident(companionSymbol))
