@@ -43,8 +43,8 @@ object EnumMacros {
            |  sealed abstract class Light extends EnumEntry
            |  case object Light extends Enum[Light] {
            |    val values = findValues
-           |    case object Red extends Light
-           |    case object Blue extends Light
+           |    case object Red   extends Light
+           |    case object Blue  extends Light
            |    case object Green extends Light
            |  }
            |
