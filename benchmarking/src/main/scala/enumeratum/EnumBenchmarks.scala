@@ -46,4 +46,14 @@ class EnumBenchmarks {
     AgeGroup.withNameOption("Pooper")
   }
 
+  @Benchmark
+  def entryNameStandard(bh: Blackhole): Unit = bh.consume {
+    AgeGroup.Adult.entryName
+  }
+
+  @Benchmark
+  def entryNameStacked(bh: Blackhole): Unit = bh.consume {
+    StackedEnum.SomethingBlueAndBig.entryName
+  }
+
 }
