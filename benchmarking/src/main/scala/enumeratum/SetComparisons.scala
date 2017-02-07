@@ -78,17 +78,17 @@ class SetComparisons {
   }
 
   @Benchmark
-  def enumeratumScalaSetSubsetOffSmall(bh: Blackhole): Unit = bh.consume {
+  def enumeratumScalaSetSubsetOfSmall(bh: Blackhole): Unit = bh.consume {
     enumeratumScalaSmall.subsetOf(enumeratumScalaSet)
   }
 
   @Benchmark
-  def enumeratumScalaSetSubsetOffMedium(bh: Blackhole): Unit = bh.consume {
+  def enumeratumScalaSetSubsetOfMedium(bh: Blackhole): Unit = bh.consume {
     enumeratumScalaMedium.subsetOf(enumeratumScalaSet)
   }
 
   @Benchmark
-  def enumeratumScalaSetSubsetOffAll(bh: Blackhole): Unit = bh.consume {
+  def enumeratumScalaSetSubsetOfAll(bh: Blackhole): Unit = bh.consume {
     enumeratumScalaSet.subsetOf(enumeratumScalaSet)
   }
 
