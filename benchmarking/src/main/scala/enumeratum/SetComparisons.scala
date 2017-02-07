@@ -21,10 +21,18 @@ import testing._
 @SuppressWarnings(Array("org.wartremover.warts.Var"))
 class SetComparisons {
 
-  private val jEnumEnumSet  = util.EnumSet.allOf(classOf[JAgeGroup])
+  private val jEnumEnumSet = util.EnumSet.allOf(classOf[JAgeGroup])
+
+  private val jEnumEnumsetSmall = util.EnumSet.of(JAgeGroup.Adult)
+  private val jEnumEnumsetMedium =
+    util.EnumSet.of(JAgeGroup.Adult, JAgeGroup.Baby, JAgeGroup.Senior)
+
   private val jEnumScalaSet = Set(JAgeGroup.values(): _*)
 
-  private val tinyAlphabetEnumScalaSet = Set(AgeGroup.values: _*)
+  private val enumeratumScalaSet                  = Set(AgeGroup.values: _*)
+  private val enumeratumScalaSmall: Set[AgeGroup] = Set(AgeGroup.Adult)
+  private val enumeratumScalaMedium: Set[AgeGroup] =
+    Set(AgeGroup.Adult, AgeGroup.Baby, AgeGroup.Senior)
 
   private def randomFrom[A](seq: Seq[A]): A = {
     seq(scala.util.Random.nextInt(seq.size))
@@ -45,13 +53,43 @@ class SetComparisons {
   }
 
   @Benchmark
+  def jEnumEnumSetContainsAllSmall(bh: Blackhole): Unit = bh.consume {
+    jEnumEnumSet.containsAll(jEnumEnumsetSmall)
+  }
+
+  @Benchmark
+  def jEnumEnumSetContainsAllMedium(bh: Blackhole): Unit = bh.consume {
+    jEnumEnumSet.containsAll(jEnumEnumsetMedium)
+  }
+
+  @Benchmark
+  def jEnumEnumSetContainsAllAll(bh: Blackhole): Unit = bh.consume {
+    jEnumEnumSet.containsAll(jEnumEnumSet)
+  }
+
+  @Benchmark
   def jEnumScalaSetContains(bh: Blackhole): Unit = bh.consume {
     jEnumScalaSet.contains(jAgeGroupEnum)
   }
 
   @Benchmark
   def enumeratumScalaSetContains(bh: Blackhole): Unit = bh.consume {
-    tinyAlphabetEnumScalaSet.contains(ageGroupEnum)
+    enumeratumScalaSet.contains(ageGroupEnum)
+  }
+
+  @Benchmark
+  def enumeratumScalaSetSubsetOffSmall(bh: Blackhole): Unit = bh.consume {
+    enumeratumScalaSmall.subsetOf(enumeratumScalaSet)
+  }
+
+  @Benchmark
+  def enumeratumScalaSetSubsetOffMedium(bh: Blackhole): Unit = bh.consume {
+    enumeratumScalaMedium.subsetOf(enumeratumScalaSet)
+  }
+
+  @Benchmark
+  def enumeratumScalaSetSubsetOffAll(bh: Blackhole): Unit = bh.consume {
+    enumeratumScalaSet.subsetOf(enumeratumScalaSet)
   }
 
 }
