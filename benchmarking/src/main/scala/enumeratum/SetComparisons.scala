@@ -30,6 +30,9 @@ class SetComparisons {
   private val jEnumScalaSet = Set(JAgeGroup.values(): _*)
 
   private val enumeratumScalaSet                  = Set(AgeGroup.values: _*)
+
+  // Don't reuse the previous set for All because subsetOf optimises w/ referential eq check :p
+  private val enumeratumScalaAll                  = Set(AgeGroup.values: _*)
   private val enumeratumScalaSmall: Set[AgeGroup] = Set(AgeGroup.Adult)
   private val enumeratumScalaMedium: Set[AgeGroup] =
     Set(AgeGroup.Adult, AgeGroup.Baby, AgeGroup.Senior)
@@ -89,7 +92,7 @@ class SetComparisons {
 
   @Benchmark
   def enumeratumScalaSetSubsetOfAll(bh: Blackhole): Unit = bh.consume {
-    enumeratumScalaSet.subsetOf(enumeratumScalaSet)
+    enumeratumScalaAll.subsetOf(enumeratumScalaSet)
   }
 
 }
