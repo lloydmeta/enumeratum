@@ -11,7 +11,7 @@ import java.util.regex.Pattern
   * Mix in the supplied stackable traits to convert the entryName to [[EnumEntry.Snakecase Snakecase]],
   * [[EnumEntry.Uppercase Uppercase]], [[EnumEntry.Lowercase Lowercase]] etc.
   */
-abstract class EnumEntry {
+trait EnumEntry {
 
   /**
     * String representation of this Enum Entry.
