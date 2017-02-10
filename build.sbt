@@ -18,8 +18,8 @@ lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.10"
-    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.8"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.12"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.10"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
