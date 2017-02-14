@@ -29,7 +29,7 @@ class SetComparisons {
 
   private val jEnumScalaSet = Set(JAgeGroup.values(): _*)
 
-  private val enumeratumScalaSet                  = Set(AgeGroup.values: _*)
+  private val enumeratumScalaSet = Set(AgeGroup.values: _*)
 
   // Don't reuse the previous set for All because subsetOf optimises w/ referential eq check :p
   private val enumeratumScalaAll                  = Set(AgeGroup.values: _*)
