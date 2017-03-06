@@ -31,6 +31,7 @@ Integrations are available for:
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 - [Argonaut](http://www.argonaut.io): JVM only
+- [Json4s](http://json4s.org): JVM only
 
 ### Table of Contents
 
@@ -748,6 +749,63 @@ import Argonaut._
 ArgonautDevice.values.foreach { item =>
     assert(item.asJson == item.value.asJson)
 }
+```
+
+## Json4s
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.11)
+
+### SBT
+
+To use enumeratum with [Json4s](http://json4s.org):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-json4s" % enumeratumVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait TrafficLight extends EnumEntry
+object TrafficLight extends Enum[TrafficLight] /* nothing extra here */ {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+  
+  val values = findValues
+}
+
+import org.json4s.DefaultFormats
+
+implicit val formats = DefaultFormats + Json4s.serializer(TrafficLight)
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class Device(val value: Short) extends ShortEnumEntry
+case object Device
+  extends ShortEnum[Device] /* nothing extra here */  {
+  case object Phone   extends Device(1)
+  case object Laptop  extends Device(2)
+  case object Desktop extends Device(3)
+  case object Tablet  extends Device(4)
+  
+  val values = findValues
+}
+
+import org.json4s.DefaultFormats
+
+implicit val formats = DefaultFormats + Json4s.serializer(Device)
+
 ```
 
 ## Slick integration

@@ -13,4 +13,6 @@ say "Done 4" &&
 sbt "project enumeratum-play" +clean +publish-signed &&
 say "Done 5" &&
 sbt "project enumeratum-argonaut" +clean +publish-signed &&
+say "Done 6" &&
+sbt "project enumeratum-json4s" +clean +publish-signed &&
 say "All done"
