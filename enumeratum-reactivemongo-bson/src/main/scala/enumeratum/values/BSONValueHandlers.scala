@@ -25,7 +25,8 @@ object BSONValueHandlers extends BSONValueReads with BSONValueWrites {
   implicit def anyBsonHandler[A](implicit reader: BSONReader[BSONValue, A],
                                  writer: BSONWriter[A, BSONValue]): BSONHandler[BSONValue, A] =
     new BSONHandler[BSONValue, A] {
-      def write(t: A): BSONValue   = writer.write(t)
+      def write(t: A): BSONValue = writer.write(t)
+
       def read(bson: BSONValue): A = reader.read(bson)
     }
 
@@ -74,8 +75,8 @@ trait BSONValueReads {
 
   implicit val bsonReaderByte: BSONReader[BSONValue, Byte] = new BSONReader[BSONValue, Byte] {
     def read(bson: BSONValue): Byte = bson match {
-      case BSONInteger(x) => x.toByte
-      case _              => throw new RuntimeException(s"Could not convert $bson to Byte")
+      case BSONInteger(x) if x.abs <= Short.MaxValue => x.toByte
+      case _                                         => throw new RuntimeException(s"Could not convert $bson to Byte")
     }
   }
 
