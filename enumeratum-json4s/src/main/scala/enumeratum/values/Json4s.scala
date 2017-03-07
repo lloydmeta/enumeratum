@@ -12,7 +12,7 @@ object Json4s {
       case JLong(i) if i <= Int.MaxValue && enum.withValueOpt(i.toInt).isDefined => enum.withValue(i.toInt)
     },
     {
-      case x: A => JLong(x.value)
+      case x: A => JLong(x.value.toLong)
     }
   ))
 
@@ -32,7 +32,7 @@ object Json4s {
       case JLong(i) if i <= Short.MaxValue && enum.withValueOpt(i.toShort).isDefined => enum.withValue(i.toShort)
     },
     {
-      case x: A => JLong(x.value)
+      case x: A => JLong(x.value.toLong)
     }
   ))
 
@@ -51,7 +51,7 @@ object Json4s {
       case JLong(i) if i <= Byte.MaxValue && enum.withValueOpt(i.toByte).isDefined => enum.withValue(i.toByte)
     },
     {
-      case x: A => JLong(x.value)
+      case x: A => JLong(x.value.toLong)
     }
   ))
 
