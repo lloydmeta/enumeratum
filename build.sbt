@@ -16,6 +16,7 @@ lazy val reactiveMongoVersion = "0.12.1"
 lazy val circeVersion         = "0.7.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
+lazy val json4sVersion        = "3.5.0"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.12"
@@ -35,7 +36,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonaut
+  enumeratumArgonaut,
+  enumeratumJson4s
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -76,6 +78,7 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumUPickleJs,
         enumeratumUPickleJvm,
         enumeratumArgonaut,
+        enumeratumJson4s,
         enumeratumReactiveMongoBson
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
@@ -272,6 +275,21 @@ lazy val enumeratumArgonaut =
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
         "com.beachape" %% "enumeratum" % Versions.Core.stable
+      )
+    )
+
+lazy val enumeratumJson4s =
+  Project(id = "enumeratum-json4s",
+          base = file("enumeratum-json4s"),
+          settings = commonWithPublishSettings)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.9-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAll,
+      libraryDependencies ++= Seq(
+        "org.json4s"   %% "json4s-core"   % json4sVersion,
+        "org.json4s"   %% "json4s-native" % json4sVersion        % "test",
+        "com.beachape" %% "enumeratum"    % Versions.Core.stable
       )
     )
 
