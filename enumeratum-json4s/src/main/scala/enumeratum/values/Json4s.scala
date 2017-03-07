@@ -3,7 +3,7 @@ package enumeratum.values
 import org.json4s.CustomSerializer
 import org.json4s.JsonAST.{JInt, JLong, JString}
 
-
+@SuppressWarnings(Array("org.wartremover.warts.Any"))
 object Json4s {
 
   def serializer[A <: IntEnumEntry: Manifest](enum: IntEnum[A]): CustomSerializer[A] = new CustomSerializer[A](_ => (
