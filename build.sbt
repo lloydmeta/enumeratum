@@ -164,7 +164,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(testSettings: _*)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version := "1.5.9-SNAPSHOT",
+      version := "1.5.10-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -284,11 +284,11 @@ lazy val enumeratumJson4s =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.9-SNAPSHOT",
+      version := "1.5.10-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
-        "org.json4s"   %% "json4s-native" % json4sVersion        % "test",
+        "org.json4s"   %% "json4s-native" % json4sVersion % Test,
         "com.beachape" %% "enumeratum"    % Versions.Core.stable
       )
     )

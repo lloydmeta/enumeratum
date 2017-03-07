@@ -38,7 +38,8 @@ class Json4sSpec extends FunSpec with Matchers {
 
     it("should parse enum members into optional values") {
       TrafficLight.values.foreach { value =>
-        Serialization.read[DataOpt]("""{"tr":"""" + value.entryName + """"}""").tr shouldBe Some(value)
+        Serialization.read[DataOpt]("""{"tr":"""" + value.entryName + """"}""").tr shouldBe Some(
+          value)
       }
     }
 
@@ -54,11 +55,11 @@ class Json4sSpec extends FunSpec with Matchers {
     }
 
     it("should fail to parse random JSON values to members") {
-      a [MappingException] shouldBe thrownBy (Serialization.read[Data]("""{"tr":"bogus"}"""))
-      a [MappingException] shouldBe thrownBy (Serialization.read[Data]("""{"tr":17}"""))
-      a [MappingException] shouldBe thrownBy (Serialization.read[Data]("""{"tr":true}"""))
-      a [MappingException] shouldBe thrownBy (Serialization.read[Data]("""{"tr":null}"""))
-      a [MappingException] shouldBe thrownBy (Serialization.read[Data]("""{}"""))
+      a[MappingException] shouldBe thrownBy(Serialization.read[Data]("""{"tr":"bogus"}"""))
+      a[MappingException] shouldBe thrownBy(Serialization.read[Data]("""{"tr":17}"""))
+      a[MappingException] shouldBe thrownBy(Serialization.read[Data]("""{"tr":true}"""))
+      a[MappingException] shouldBe thrownBy(Serialization.read[Data]("""{"tr":null}"""))
+      a[MappingException] shouldBe thrownBy(Serialization.read[Data]("""{}"""))
     }
   }
 

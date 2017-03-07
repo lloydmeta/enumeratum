@@ -8,12 +8,16 @@ import org.scalatest.{FunSpec, Matchers}
 class Json4sValueEnumSpec extends FunSpec with Matchers {
 
   implicit val formats = DefaultFormats +
-    Json4s.serializer(Json4sMediaType) + Json4s.serializer(Json4sJsonLibs) +
-    Json4s.serializer(Json4sDevice) + Json4s.serializer(Json4sHttpMethod) +
-    Json4s.serializer(Json4sBool) + Json4s.serializer(Json4sDigits)
+      Json4s.serializer(Json4sMediaType) + Json4s.serializer(Json4sJsonLibs) +
+      Json4s.serializer(Json4sDevice) + Json4s.serializer(Json4sHttpMethod) +
+      Json4s.serializer(Json4sBool) + Json4s.serializer(Json4sDigits)
 
-  val data = Data(Json4sMediaType.`application/jpeg`, Json4sJsonLibs.Json4s, Json4sDevice.Laptop,
-    Json4sHttpMethod.Put, Json4sBool.Maybe, Json4sDigits.Dos)
+  val data = Data(Json4sMediaType.`application/jpeg`,
+                  Json4sJsonLibs.Json4s,
+                  Json4sDevice.Laptop,
+                  Json4sHttpMethod.Put,
+                  Json4sBool.Maybe,
+                  Json4sDigits.Dos)
 
   describe("to JSON") {
     it("should serialize plain value") {
@@ -33,11 +37,13 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
 
   describe("from JSON") {
     it("should parse enum members when given proper encoding") {
-      Serialization.read[Data]("""{"mediaType":3,"jsonLib":2,"device":2,"httpMethod":"PUT","bool":"?","digits":2}""") shouldBe data
+      Serialization.read[Data](
+        """{"mediaType":3,"jsonLib":2,"device":2,"httpMethod":"PUT","bool":"?","digits":2}""") shouldBe data
     }
 
     it("should parse enum members into optional values") {
-      Serialization.read[DataOpt]("""{"mediaType":3}""") shouldBe DataOpt(Some(Json4sMediaType.`application/jpeg`))
+      Serialization.read[DataOpt]("""{"mediaType":3}""") shouldBe DataOpt(
+        Some(Json4sMediaType.`application/jpeg`))
     }
 
     it("should parse missing value into None") {
@@ -52,10 +58,13 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
     }
 
     it("should fail to parse random JSON values to members") {
-      a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{"mediaType":"bogus"}"""))
+      a[MappingException] shouldBe thrownBy(
+        Serialization.read[DataSingle]("""{"mediaType":"bogus"}"""))
       a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{"mediaType":17}"""))
-      a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{"mediaType":true}"""))
-      a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{"mediaType":null}"""))
+      a[MappingException] shouldBe thrownBy(
+        Serialization.read[DataSingle]("""{"mediaType":true}"""))
+      a[MappingException] shouldBe thrownBy(
+        Serialization.read[DataSingle]("""{"mediaType":null}"""))
       a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{}"""))
     }
   }
@@ -73,8 +82,7 @@ case class DataOpt(mediaType: Option[Json4sMediaType])
 case class DataSingle(mediaType: Json4sMediaType)
 
 sealed abstract class Json4sMediaType(val value: Long, name: String) extends LongEnumEntry
-case object Json4sMediaType
-  extends LongEnum[Json4sMediaType] {
+case object Json4sMediaType extends LongEnum[Json4sMediaType] {
   case object `text/json`        extends Json4sMediaType(1L, "text/json")
   case object `text/html`        extends Json4sMediaType(2L, "text/html")
   case object `application/jpeg` extends Json4sMediaType(3L, "application/jpeg")
@@ -83,8 +91,7 @@ case object Json4sMediaType
 }
 
 sealed abstract class Json4sJsonLibs(val value: Int) extends IntEnumEntry
-case object Json4sJsonLibs
-  extends IntEnum[Json4sJsonLibs] {
+case object Json4sJsonLibs extends IntEnum[Json4sJsonLibs] {
   case object Argonaut  extends Json4sJsonLibs(1)
   case object Json4s    extends Json4sJsonLibs(2)
   case object Circe     extends Json4sJsonLibs(3)
@@ -96,8 +103,7 @@ case object Json4sJsonLibs
 }
 
 sealed abstract class Json4sDevice(val value: Short) extends ShortEnumEntry
-case object Json4sDevice
-  extends ShortEnum[Json4sDevice] {
+case object Json4sDevice extends ShortEnum[Json4sDevice] {
   case object Phone   extends Json4sDevice(1)
   case object Laptop  extends Json4sDevice(2)
   case object Desktop extends Json4sDevice(3)
@@ -107,8 +113,7 @@ case object Json4sDevice
 }
 
 sealed abstract class Json4sHttpMethod(val value: String) extends StringEnumEntry
-case object Json4sHttpMethod
-  extends StringEnum[Json4sHttpMethod] {
+case object Json4sHttpMethod extends StringEnum[Json4sHttpMethod] {
   case object Get  extends Json4sHttpMethod("GET")
   case object Put  extends Json4sHttpMethod("PUT")
   case object Post extends Json4sHttpMethod("POST")
