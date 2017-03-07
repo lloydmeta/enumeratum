@@ -288,7 +288,7 @@ lazy val enumeratumJson4s =
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
-        "org.json4s"   %% "json4s-native" % json4sVersion        % "test",
+        "org.json4s"   %% "json4s-native" % json4sVersion % "test",
         "com.beachape" %% "enumeratum"    % Versions.Core.stable
       )
     )
