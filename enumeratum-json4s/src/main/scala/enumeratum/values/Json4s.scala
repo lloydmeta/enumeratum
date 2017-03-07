@@ -8,8 +8,8 @@ object Json4s {
 
   def serializer[A <: IntEnumEntry: Manifest](enum: IntEnum[A]): CustomSerializer[A] = new CustomSerializer[A](_ => (
     {
-      case JInt(i) if enum.withValueOpt(i.toInt).isDefined => enum.withValue(i.toInt)
-      case JLong(i) if enum.withValueOpt(i.toInt).isDefined => enum.withValue(i.toInt)
+      case JInt(i) if i <= Int.MaxValue && enum.withValueOpt(i.toInt).isDefined => enum.withValue(i.toInt)
+      case JLong(i) if i <= Int.MaxValue && enum.withValueOpt(i.toInt).isDefined => enum.withValue(i.toInt)
     },
     {
       case x: A => JLong(x.value)
@@ -28,8 +28,8 @@ object Json4s {
 
   def serializer[A <: ShortEnumEntry: Manifest](enum: ShortEnum[A]): CustomSerializer[A] = new CustomSerializer[A](_ => (
     {
-      case JInt(i) if enum.withValueOpt(i.toShort).isDefined => enum.withValue(i.toShort)
-      case JLong(i) if enum.withValueOpt(i.toShort).isDefined => enum.withValue(i.toShort)
+      case JInt(i) if i <= Short.MaxValue.toInt && enum.withValueOpt(i.toShort).isDefined => enum.withValue(i.toShort)
+      case JLong(i) if i <= Short.MaxValue && enum.withValueOpt(i.toShort).isDefined => enum.withValue(i.toShort)
     },
     {
       case x: A => JLong(x.value)
@@ -47,8 +47,8 @@ object Json4s {
 
   def serializer[A <: ByteEnumEntry: Manifest](enum: ByteEnum[A]): CustomSerializer[A] = new CustomSerializer[A](_ => (
     {
-      case JInt(i) if enum.withValueOpt(i.toByte).isDefined => enum.withValue(i.toByte)
-      case JLong(i) if enum.withValueOpt(i.toByte).isDefined => enum.withValue(i.toByte)
+      case JInt(i) if i <= Byte.MaxValue.toInt && enum.withValueOpt(i.toByte).isDefined => enum.withValue(i.toByte)
+      case JLong(i) if i <= Byte.MaxValue && enum.withValueOpt(i.toByte).isDefined => enum.withValue(i.toByte)
     },
     {
       case x: A => JLong(x.value)
