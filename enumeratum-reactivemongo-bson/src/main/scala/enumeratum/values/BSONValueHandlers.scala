@@ -37,9 +37,8 @@ trait BSONValueReads {
 
   implicit val bsonReaderShort: BSONReader[BSONValue, Short] = new BSONReader[BSONValue, Short] {
     def read(bson: BSONValue): Short = bson match {
-      case BSONInteger(x) if Short.MaxValue >= x && Short.MinValue <= x =>
-        x.toShort
-      case _ => throw new RuntimeException(s"Could not convert $bson to Short")
+      case BSONInteger(x) if x.abs <= Short.MaxValue => x.toShort
+      case _                                         => throw new RuntimeException(s"Could not convert $bson to Short")
     }
   }
 
@@ -75,8 +74,8 @@ trait BSONValueReads {
 
   implicit val bsonReaderByte: BSONReader[BSONValue, Byte] = new BSONReader[BSONValue, Byte] {
     def read(bson: BSONValue): Byte = bson match {
-      case BSONInteger(x) if x.abs <= Short.MaxValue => x.toByte
-      case _                                         => throw new RuntimeException(s"Could not convert $bson to Byte")
+      case BSONInteger(x) if x.abs <= Byte.MaxValue => x.toByte
+      case _                                        => throw new RuntimeException(s"Could not convert $bson to Byte")
     }
   }
 
