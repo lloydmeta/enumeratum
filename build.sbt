@@ -36,7 +36,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonaut
+  enumeratumArgonaut,
+  enumeratumJson4s
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -77,6 +78,7 @@ lazy val scala_2_12 = Project(id = "scala_2_12",
         enumeratumUPickleJs,
         enumeratumUPickleJvm,
         enumeratumArgonaut,
+        enumeratumJson4s,
         enumeratumReactiveMongoBson
       ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
