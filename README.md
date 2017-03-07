@@ -519,7 +519,7 @@ import enumeratum._
 
 sealed trait ShirtSize extends EnumEntry
 
-case object ShirtSize extends CirceEnum[ShirtSize] with Enum[ShirtSize] {
+case object ShirtSize extends Enum[ShirtSize] with CirceEnum[ShirtSize] {
 
   case object Small  extends ShirtSize
   case object Medium extends ShirtSize
