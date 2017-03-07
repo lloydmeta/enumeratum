@@ -49,9 +49,10 @@ Integrations are available for:
 6. [UPickle integration](#upickle)
 7. [ReactiveMongo BSON integration](#reactivemongo-bson)
 8. [Argonaut integration](#argonaut)
-9. [Slick integration](#slick-integration)
-10. [Benchmarking](#benchmarking)
-11. [Publishing](#publishing)
+9. [Json4s integration](#json4s)
+10. [Slick integration](#slick-integration)
+11. [Benchmarking](#benchmarking)
+12. [Publishing](#publishing)
 
 
 ## Quick start
