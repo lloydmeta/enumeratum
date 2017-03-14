@@ -3,6 +3,28 @@ package enumeratum.values
 import org.json4s.CustomSerializer
 import org.json4s.JsonAST.{JInt, JLong, JString}
 
+/**
+  * Holds overloaded Json4s CustomSerializer generators for various Enumeratum ValueEnums
+  *
+  * {{{
+  * scala> import enumeratum.values._
+  * scala> import org.json4s._
+  * scala> import org.json4s.native.Serialization
+  *
+  * scala> sealed abstract class ShirtSize(val value:Int) extends IntEnumEntry
+  * scala> case object ShirtSize extends IntEnum[ShirtSize] {
+  *      |  case object Small  extends ShirtSize(1)
+  *      |  case object Medium extends ShirtSize(2)
+  *      |  case object Large  extends ShirtSize(3)
+  *      |  val values = findValues
+  *      | }
+  *
+  * scala> implicit val formats = Serialization.formats(NoTypeHints) + Json4s.serializer(ShirtSize)
+  *
+  * scala> Serialization.write(ShirtSize.values)
+  * res0: String = [1,2,3]
+  * }}}
+  */
 @SuppressWarnings(Array("org.wartremover.warts.Any"))
 object Json4s {
 
