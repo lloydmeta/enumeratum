@@ -284,7 +284,7 @@ lazy val enumeratumJson4s =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.10-SNAPSHOT",
+      version := "1.5.10",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
