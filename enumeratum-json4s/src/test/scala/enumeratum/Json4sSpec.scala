@@ -6,10 +6,12 @@ import org.scalatest.{FunSpec, Matchers}
 
 class Json4sSpec extends FunSpec with Matchers {
 
-  implicit val formats = DefaultFormats + Json4s.serializer(TrafficLight)
+  implicit val formats = DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(
+      TrafficLight)
 
   case class Data(tr: TrafficLight)
   case class DataOpt(tr: Option[TrafficLight])
+  case class DataMap(tr: Map[TrafficLight, Int])
 
   describe("to JSON") {
     it("should serialize plain value to entryName") {
@@ -26,6 +28,13 @@ class Json4sSpec extends FunSpec with Matchers {
 
     it("should serialize None to nothing") {
       Serialization.write(DataOpt(tr = None)) shouldBe """{}"""
+    }
+
+    it("should serialize value to key") {
+      TrafficLight.values.foreach { value =>
+        val name = value.entryName
+        Serialization.write(DataMap(tr = Map(value -> 0))) shouldBe s"""{"tr":{"$name":0}}"""
+      }
     }
   }
 
@@ -45,6 +54,13 @@ class Json4sSpec extends FunSpec with Matchers {
 
     it("should parse missing value into None") {
       Serialization.read[DataOpt]("""{}""").tr shouldBe None
+    }
+
+    it("should parse enum members into keys") {
+      TrafficLight.values.foreach { value =>
+        val name = value.entryName
+        Serialization.read[DataMap](s"""{"tr":{"$name":0}}""").tr shouldBe Map(value -> 0)
+      }
     }
 
     it("should parse invalid value into None") {
