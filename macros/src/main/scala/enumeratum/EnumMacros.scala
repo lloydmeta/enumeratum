@@ -113,17 +113,17 @@ object EnumMacros {
     }
     if (isDocCompiler(c))
       enclosingBodySubClassTrees.flatMap {
-        case m: ModuleDef => List(m)
         /*
          DocDef isn't available without pulling in scala-compiler as a dependency.
 
          That said, DocDef *should* be the only thing that passes the prior filter
          */
-        case docDef => {
+        case docDef if isDocDef(c)(docDef) => {
           docDef.children.collect {
             case m: ModuleDef => m
           }
         }
+        case other => List(other)
       } else
       enclosingBodySubClassTrees
   }
@@ -169,5 +169,14 @@ object EnumMacros {
     */
   private[this] def isDocCompiler(c: Context): Boolean = {
     c.universe.getClass.toString.contains("doc.DocFactory")
+  }
+
+  /**
+    * Returns whether or not a given tree is a DocDef
+    *
+    * DocDefs are not part of the public API, so we try to hack around it here.
+    */
+  private[this] def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
+    t.getClass.toString.contains("DocDef")
   }
 }
