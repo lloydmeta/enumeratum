@@ -109,7 +109,7 @@ lazy val core = crossProject
   .in(file("enumeratum-core"))
   .settings(
     name := "enumeratum",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
   .settings(testSettings: _*)
