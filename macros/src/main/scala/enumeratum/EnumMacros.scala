@@ -111,7 +111,7 @@ object EnumMacros {
       case NonFatal(e) =>
         c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
     }
-    if (isDoCompiler(c))
+    if (isDocCompiler(c))
       enclosingBodySubClassTrees.flatMap {
         case m: ModuleDef => List(m)
         /*
@@ -161,8 +161,13 @@ object EnumMacros {
     }
   }
 
-  // Hack to figure out if we're in Doc mode or not
-  private[this] def isDoCompiler(c: Context): Boolean = {
+  /**
+    * Returns whether or not we are in doc mode.
+    *
+    * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler
+    * for the sake of getting access to this class and doing an `isInstanceOf`
+    */
+  private[this] def isDocCompiler(c: Context): Boolean = {
     c.universe.getClass.toString.contains("doc.DocFactory")
   }
 }
