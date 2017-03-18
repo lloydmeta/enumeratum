@@ -93,7 +93,7 @@ lazy val macros = crossProject
                                includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.head,
+    version := Versions.Macros.stable,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
