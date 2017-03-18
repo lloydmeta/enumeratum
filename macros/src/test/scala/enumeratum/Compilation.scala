@@ -82,3 +82,28 @@ object D {
 
   def identity(str: String) = str
 }
+
+// Test case for when there are scala docs
+
+sealed trait E {
+  def value: Int
+}
+
+/**
+  * The E
+  */
+object E {
+
+  /**
+    * What's up?
+    */
+  val values = FindValEnums[E]
+
+  /**
+    * Hello World
+    */
+  case object E1 extends E {
+    val value = 1
+  }
+
+}
