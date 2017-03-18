@@ -83,7 +83,7 @@ object EnumMacros {
     */
   private[enumeratum] def enclosedSubClassTrees(c: Context)(
       typeSymbol: c.universe.Symbol
-  ): Seq[c.universe.Tree] = {
+  ): Seq[c.universe.ModuleDef] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
       val enclosingModule = c.enclosingClass match {
@@ -123,9 +123,11 @@ object EnumMacros {
             case m: ModuleDef => m
           }
         }
-        case other => List(other)
+        case moduleDef: ModuleDef => List(moduleDef)
       } else
-      enclosingBodySubClassTrees
+      enclosingBodySubClassTrees.collect {
+        case m: ModuleDef => m
+      }
   }
 
   /**
