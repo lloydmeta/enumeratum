@@ -86,16 +86,6 @@ object EnumMacros {
   ): Seq[c.universe.Tree] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
-      /*
-          When moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
-
-          val enclosingModuleMembers = c.internal.enclosingOwner.owner.typeSignature.decls.toList
-          enclosingModuleMembers.filter { x =>
-            try (x.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
-          }
-
-          Unfortunately, 2.10.x does not support .enclosingOwner :P
-       */
       val enclosingModule = c.enclosingClass match {
         case md @ ModuleDef(_, _, _) => md
         case _ =>

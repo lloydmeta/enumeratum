@@ -167,7 +167,12 @@ object ValueEnumMacros {
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
-      val directMemberTrees = declTree.children.flatMap(_.children) // Things that are body-level, no lower
+      // Things that are body-level, no lower
+      val directMemberTrees = declTree.children.flatMap {
+        // Scaladoc case
+        case ModuleDef(_, _, template) => template.children
+        case other                     => other.children
+      }
       val constructorTrees = {
         val immediate       = directMemberTrees // for 2.11+ this is enough
         val constructorName = ContextUtils.constructorName(c)
