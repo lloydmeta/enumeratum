@@ -1,5 +1,21 @@
 package enumeratum
+
+import org.scalatest.{FunSpec, Matchers}
+
 import scala.language.experimental.macros
+
+class CompilationSpec extends FunSpec with Matchers {
+
+  describe("sanity check") {
+    it("should have proper members") {
+      A.values shouldBe Seq(A.A1)
+      B.values shouldBe Seq(B.B1, B.B2)
+      D.values shouldBe Seq(D.D1, D.D2, D.D3)
+      E.values shouldBe Seq(E.E1, E.E2)
+    }
+  }
+
+}
 
 /**
   * Created by Lloyd on 1/4/17.
@@ -28,6 +44,7 @@ object A {
 
 // Example with outside constructor call in constructor call
 class C
+
 object C {
   def build: C = new C
 }
@@ -35,6 +52,7 @@ object C {
 sealed abstract class B private (val value: Int, val other: C) {
   val text: String
 }
+
 object B {
 
   val values = FindValEnums[B]
@@ -42,6 +60,7 @@ object B {
   case object B1 extends B(1, new C) {
     val text = identity("something")
   }
+
   case object B2 extends B(2, C.build) {
     val text = identity("something")
   }
@@ -100,10 +119,17 @@ object E {
   val values = FindValEnums[E]
 
   /**
-    * Hello World
+    * E1
     */
   case object E1 extends E {
     val value = 1
+  }
+
+  /**
+    * E2
+    */
+  case object E2 extends E {
+    val value = 2
   }
 
 }
