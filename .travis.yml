@@ -7,19 +7,19 @@ matrix:
     - scala: 2.10.6
       jdk: oraclejdk8
       script:
-        - sbt ++$TRAVIS_SCALA_VERSION test:compile
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - sbt ++$TRAVIS_SCALA_VERSION test
     - scala: 2.11.8
       jdk: oraclejdk8
       script:
-        - sbt ++$TRAVIS_SCALA_VERSION test:compile
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
     - scala: 2.12.1
       jdk: oraclejdk8
       script:
-        - sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test:compile
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_12/test:compile scala_2_12/test:doc
         - sbt scala_2_12/test
 cache:
   directories:
