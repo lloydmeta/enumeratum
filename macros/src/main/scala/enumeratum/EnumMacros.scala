@@ -111,7 +111,21 @@ object EnumMacros {
       case NonFatal(e) =>
         c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
     }
-    enclosingBodySubClassTrees
+    if (isDoCompiler(c))
+      enclosingBodySubClassTrees.flatMap {
+        case m: ModuleDef => List(m)
+        /*
+         DocDef isn't available without pulling in scala-compiler as a dependency.
+
+         That said, DocDef *should* be the only thing that passes the prior filter
+         */
+        case docDef => {
+          docDef.children.collect {
+            case m: ModuleDef => m
+          }
+        }
+      } else
+      enclosingBodySubClassTrees
   }
 
   /**
@@ -145,5 +159,10 @@ object EnumMacros {
         )
       )
     }
+  }
+
+  // Hack to figure out if we're in Doc mode or not
+  private[this] def isDoCompiler(c: Context): Boolean = {
+    c.universe.getClass.toString.contains("doc.DocFactory")
   }
 }

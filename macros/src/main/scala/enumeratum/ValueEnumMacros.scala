@@ -1,6 +1,6 @@
 package enumeratum
 
-import enumeratum.ContextUtils.Context
+import ContextUtils.Context
 
 import scala.reflect.ClassTag
 import scala.collection.immutable._
@@ -168,14 +168,7 @@ object ValueEnumMacros {
     // go through all the trees
     memberTrees.map { declTree =>
       // Things that are body-level, no lower
-      val directMemberTrees = declTree.children.flatMap {
-        /*
-          In the case of "sbt doc", the module is actually a DocDef (which is itself a ModuleDef), which houses
-          a template, from which we want to extract children trees.
-         */
-        case ModuleDef(_, _, template) if isDocMode(c) => template.children
-        case other                                     => other.children
-      }
+      val directMemberTrees = declTree.children.flatMap(_.children)
       val constructorTrees = {
         val immediate       = directMemberTrees // for 2.11+ this is enough
         val constructorName = ContextUtils.constructorName(c)
@@ -285,11 +278,5 @@ object ValueEnumMacros {
   // Helper case classes
   private[this] case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
   private[this] case class TreeWithVal[CTree, T](tree: CTree, value: T)
-
-  // Hack to figure out if we're in Doc mode or not
-  private[this] def isDocMode(c: Context): Boolean = {
-    println(c.universe.getClass)
-    c.universe.getClass.toString.contains("DocFactory")
-  }
 
 }
