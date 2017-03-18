@@ -1,6 +1,6 @@
 package enumeratum
 
-import enumeratum.ContextUtils.Context
+import ContextUtils.Context
 
 import scala.reflect.ClassTag
 import scala.collection.immutable._
@@ -120,9 +120,9 @@ object ValueEnumMacros {
       c: Context
   )(
       valueEntryCTorsParams: List[List[c.universe.Name]],
-      memberTrees: Seq[c.universe.Tree],
+      memberTrees: Seq[c.universe.ModuleDef],
       processFoundValues: ValueType => ProcessedValueType
-  ): Seq[TreeWithVal[c.universe.Tree, ProcessedValueType]] = {
+  ): Seq[TreeWithVal[c.universe.ModuleDef, ProcessedValueType]] = {
     val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(
       valueEntryCTorsParams,
       memberTrees,
@@ -159,9 +159,9 @@ object ValueEnumMacros {
     */
   private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(
       valueEntryCTorsParams: List[List[c.universe.Name]],
-      memberTrees: Seq[c.universe.Tree],
+      memberTrees: Seq[c.universe.ModuleDef],
       processFoundValues: ValueType => ProcessedValueType
-  ): Seq[TreeWithMaybeVal[c.universe.Tree, ProcessedValueType]] = {
+  ): Seq[TreeWithMaybeVal[c.universe.ModuleDef, ProcessedValueType]] = {
     import c.universe._
     val classTag  = implicitly[ClassTag[ValueType]]
     val valueTerm = ContextUtils.termName(c)("value")
@@ -247,7 +247,7 @@ object ValueEnumMacros {
     * Ensures that we have unique values for trees, aborting otherwise with a message indicating which trees have the same symbol
     */
   private[this] def ensureUnique[A](c: Context)(
-      treeWithVals: Seq[TreeWithVal[c.universe.Tree, A]]
+      treeWithVals: Seq[TreeWithVal[c.universe.ModuleDef, A]]
   ): Unit = {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value

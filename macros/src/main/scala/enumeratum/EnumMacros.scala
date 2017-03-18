@@ -83,19 +83,9 @@ object EnumMacros {
     */
   private[enumeratum] def enclosedSubClassTrees(c: Context)(
       typeSymbol: c.universe.Symbol
-  ): Seq[c.universe.Tree] = {
+  ): Seq[c.universe.ModuleDef] = {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] = try {
-      /*
-          When moving beyond 2.11, we should use this instead, because enclosingClass will be deprecated.
-
-          val enclosingModuleMembers = c.internal.enclosingOwner.owner.typeSignature.decls.toList
-          enclosingModuleMembers.filter { x =>
-            try (x.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)) catch { case _: Throwable => false }
-          }
-
-          Unfortunately, 2.10.x does not support .enclosingOwner :P
-       */
       val enclosingModule = c.enclosingClass match {
         case md @ ModuleDef(_, _, _) => md
         case _ =>
@@ -121,7 +111,23 @@ object EnumMacros {
       case NonFatal(e) =>
         c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
     }
-    enclosingBodySubClassTrees
+    if (isDocCompiler(c))
+      enclosingBodySubClassTrees.flatMap {
+        /*
+         DocDef isn't available without pulling in scala-compiler as a dependency.
+
+         That said, DocDef *should* be the only thing that passes the prior filter
+         */
+        case docDef if isDocDef(c)(docDef) => {
+          docDef.children.collect {
+            case m: ModuleDef => m
+          }
+        }
+        case moduleDef: ModuleDef => List(moduleDef)
+      } else
+      enclosingBodySubClassTrees.collect {
+        case m: ModuleDef => m
+      }
   }
 
   /**
@@ -155,5 +161,24 @@ object EnumMacros {
         )
       )
     }
+  }
+
+  /**
+    * Returns whether or not we are in doc mode.
+    *
+    * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler
+    * for the sake of getting access to this class and doing an `isInstanceOf`
+    */
+  private[this] def isDocCompiler(c: Context): Boolean = {
+    c.universe.getClass.toString.contains("doc.DocFactory")
+  }
+
+  /**
+    * Returns whether or not a given tree is a DocDef
+    *
+    * DocDefs are not part of the public API, so we try to hack around it here.
+    */
+  private[this] def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
+    t.getClass.toString.contains("DocDef")
   }
 }
