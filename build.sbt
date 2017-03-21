@@ -296,10 +296,8 @@ lazy val enumeratumJson4s =
 lazy val commonSettings = Seq(
     organization := "com.beachape",
     incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion,
-    scalafmtConfig := Some(file(".scalafmt.conf"))
+    scalaVersion := theScalaVersion
   ) ++
-    reformatOnCompileSettings ++
     compilerSettings ++
     resolverSettings ++
     ideSettings
@@ -502,5 +500,3 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
       publishLocal := {}
     )
     .aggregate(projects: _*)
-
-scalafmtConfig := Some(file(".scalafmt.conf"))
