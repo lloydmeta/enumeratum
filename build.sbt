@@ -9,14 +9,14 @@ lazy val scalaVersions    = Seq("2.10.6", "2.11.8")
 lazy val scalaVersionsAll = scalaVersions :+ "2.12.1"
 
 lazy val scalaTestVersion  = "3.0.1"
-lazy val scalacheckVersion = "1.13.4"
+lazy val scalacheckVersion = "1.13.5"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.12.1"
 lazy val circeVersion         = "0.7.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
-lazy val json4sVersion        = "3.5.0"
+lazy val json4sVersion        = "3.5.1"
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.12"
