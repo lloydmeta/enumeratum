@@ -12,6 +12,7 @@ class CompilationSpec extends FunSpec with Matchers {
       B.values shouldBe Seq(B.B1, B.B2)
       D.values shouldBe Seq(D.D1, D.D2, D.D3)
       E.values shouldBe Seq(E.E1, E.E2)
+      F.values shouldBe Seq(F.F1, F.F2, F.F3, F.F4)
     }
   }
 
