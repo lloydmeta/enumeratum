@@ -8,9 +8,9 @@ import org.scalatest.{FunSpec, Matchers}
 class Json4sValueEnumSpec extends FunSpec with Matchers {
 
   implicit val formats = DefaultFormats +
-      Json4s.serializer(Json4sMediaType) + Json4s.serializer(Json4sJsonLibs) +
-      Json4s.serializer(Json4sDevice) + Json4s.serializer(Json4sHttpMethod) +
-      Json4s.serializer(Json4sBool) + Json4s.serializer(Json4sDigits)
+    Json4s.serializer(Json4sMediaType) + Json4s.serializer(Json4sJsonLibs) +
+    Json4s.serializer(Json4sDevice) + Json4s.serializer(Json4sHttpMethod) +
+    Json4s.serializer(Json4sBool) + Json4s.serializer(Json4sDigits)
 
   val data = Data(Json4sMediaType.`application/jpeg`,
                   Json4sJsonLibs.Json4s,

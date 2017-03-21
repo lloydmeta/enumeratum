@@ -13,9 +13,11 @@ class EnumJVMSpec extends FunSpec with Matchers {
         val members = Random.shuffle((1 to Random.nextInt(20)).map { m =>
           s"Member$m"
         })
-        val membersDefs = members.map { m =>
-          s"case object $m extends Enum$i"
-        }.mkString("\n\n")
+        val membersDefs = members
+          .map { m =>
+            s"case object $m extends Enum$i"
+          }
+          .mkString("\n\n")
         val objDefinition =
           s"""
               import enumeratum._
