@@ -6,8 +6,8 @@ object Versions {
   }
 
   object Macros {
-    val stable = "1.5.8"
-    val head   = "1.5.9-SNAPSHOT"
+    val stable = "1.5.9"
+    val head   = "1.5.10-SNAPSHOT"
   }
 
 }
