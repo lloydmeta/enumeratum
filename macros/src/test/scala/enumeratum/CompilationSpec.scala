@@ -133,3 +133,17 @@ object E {
   }
 
 }
+
+// Test case for default args
+sealed abstract class F(val value: Int, val name: String = "joe")
+
+object F {
+
+  val values = FindValEnums[F]
+
+  case object F1 extends F(1, "john")
+  case object F2 extends F(2)
+  case object F3 extends F(name = "mary", value = 3)
+  case object F4 extends F(value = 4, "mike")
+
+}

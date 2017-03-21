@@ -171,6 +171,7 @@ object ValueEnumMacros {
       val constructorTrees = {
         val immediate       = directMemberTrees // for 2.11+ this is enough
         val constructorName = ContextUtils.constructorName(c)
+        // Sadly 2.10 has parent-class constructor calls nested inside a member..
         val method =
           directMemberTrees.collect { // for 2.10.x, we need to grab the body-level constructor method's trees
             case t @ DefDef(_, `constructorName`, _, _, _, _) =>
@@ -190,8 +191,8 @@ object ValueEnumMacros {
         case Apply(_, args) => {
           val valueArguments: List[Option[ValueType]] =
             valueEntryCTorsParams.collect {
-              // Find the constructor params list that matches the arguments list size of the method call
-              case paramTermNames if paramTermNames.size == args.size => {
+              // Find non-empty constructor param lists
+              case paramTermNames if paramTermNames.nonEmpty => {
                 val paramsWithArg = paramTermNames.zip(args)
                 paramsWithArg.collectFirst {
                   // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
