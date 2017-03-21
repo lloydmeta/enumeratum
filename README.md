@@ -59,6 +59,8 @@ Integrations are available for:
 
 ### SBT
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11)
+
 In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you see
 in the Maven badge above).
 
@@ -266,6 +268,8 @@ LibraryItem.withValue(10) // => java.util.NoSuchElementException:
 
 In a ScalaJS project, add the following to `build.sbt`:
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11)
+
 ```scala
 libraryDependencies ++= Seq(
     "com.beachape" %%% "enumeratum" % enumeratumVersion
@@ -285,7 +289,7 @@ to help you avoid boilerplate in your Play project.
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-play" % enumeratumVersion
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion 
 )
 ```
 
@@ -427,7 +431,7 @@ for JSON serialization in your Enum's.
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-play-json" % enumeratumVersion
+    "com.beachape" %% "enumeratum-play-json" % enumeratumPlayJsonVersion
 )
 ```
 
@@ -498,7 +502,7 @@ To use enumeratum with [Circe](https://github.com/travisbrown/circe):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-circe" % enumeratumVersion
+    "com.beachape" %% "enumeratum-circe" % enumeratumCirceVersion
 )
 ```
 
@@ -506,7 +510,7 @@ To use with ScalaJS:
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum-circe" % enumeratumVersion
+    "com.beachape" %%% "enumeratum-circe" % enumeratumCirceVersion
 )
 ```
 
@@ -574,7 +578,7 @@ To use enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-upickle" % enumeratumVersion
+    "com.beachape" %% "enumeratum-upickle" % enumeratumUPickleVersion
 )
 ```
 
@@ -582,7 +586,7 @@ To use with ScalaJS:
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum-upickle" % enumeratumVersion
+    "com.beachape" %%% "enumeratum-upickle" % enumeratumUPickleVersion
 )
 ```
 
@@ -627,7 +631,7 @@ for BSON serialization in your Enum's.
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-reactivemongo-bson" % enumeratumVersion
+    "com.beachape" %% "enumeratum-reactivemongo-bson" % enumeratumReactiveMongoVersion
 )
 ```
 
@@ -699,7 +703,7 @@ To use enumeratum with [Argonaut](http://www.argonaut.io):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-argonaut" % enumeratumVersion
+    "com.beachape" %% "enumeratum-argonaut" % enumeratumArgonautVersion
 )
 ```
 
@@ -761,7 +765,7 @@ To use enumeratum with [Json4s](http://json4s.org):
 
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-json4s" % enumeratumVersion
+    "com.beachape" %% "enumeratum-json4s" % enumeratumJson4sVersion
 )
 ```
 
