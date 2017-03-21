@@ -67,9 +67,9 @@ class PlayEnumSpec extends FunSpec with Matchers {
     def testJson(): Unit = {
 
       val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(
-          JsString("AVADSGDSAFA"),
-          JsNumber(Int.MaxValue)
-        )
+        JsString("AVADSGDSAFA"),
+        JsNumber(Int.MaxValue)
+      )
 
       describe("JSON serdes") {
 

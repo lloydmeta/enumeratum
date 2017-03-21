@@ -2,7 +2,7 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.4.9")
+addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "0.6.5")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 
@@ -12,10 +12,12 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.5")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
 
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.21")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.24")
 
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "1.2.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.0.2")
 
-addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.4.1")
+addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.5.0")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
+
+addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.0-M15")

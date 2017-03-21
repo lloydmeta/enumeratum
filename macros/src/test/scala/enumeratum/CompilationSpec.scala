@@ -12,6 +12,7 @@ class CompilationSpec extends FunSpec with Matchers {
       B.values shouldBe Seq(B.B1, B.B2)
       D.values shouldBe Seq(D.D1, D.D2, D.D3)
       E.values shouldBe Seq(E.E1, E.E2)
+      F.values shouldBe Seq(F.F1, F.F2, F.F3, F.F4)
     }
   }
 
@@ -131,5 +132,19 @@ object E {
   case object E2 extends E {
     val value = 2
   }
+
+}
+
+// Test case for default args
+sealed abstract class F(val value: Int, val name: String = "joe")
+
+object F {
+
+  val values = FindValEnums[F]
+
+  case object F1 extends F(1, "john")
+  case object F2 extends F(2)
+  case object F3 extends F(name = "mary", value = 3)
+  case object F4 extends F(value = 4, "mike")
 
 }

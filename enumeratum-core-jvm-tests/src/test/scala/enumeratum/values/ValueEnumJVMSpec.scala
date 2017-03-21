@@ -53,9 +53,11 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
           val names         = stringGenerator.take(5)
           val values        = valuesGenerator.distinct.take(5)
           val namesToValues = names.zip(values)
-          val memberDefs = namesToValues.map {
-            case (n, v) => s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)"""
-          }.mkString("\n\n")
+          val memberDefs = namesToValues
+            .map {
+              case (n, v) => s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)"""
+            }
+            .mkString("\n\n")
           val objDef =
             s"""
                |import enumeratum.values._

@@ -7,7 +7,7 @@ import org.scalatest.{FunSpec, Matchers}
 class Json4sSpec extends FunSpec with Matchers {
 
   implicit val formats = DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(
-      TrafficLight)
+    TrafficLight)
 
   case class Data(tr: TrafficLight)
   case class DataOpt(tr: Option[TrafficLight])
