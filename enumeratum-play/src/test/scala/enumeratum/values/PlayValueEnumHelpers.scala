@@ -1,15 +1,11 @@
 package enumeratum.values
 
-import java.security.cert.X509Certificate
-
 import org.scalatest._
 import play.api.data.Form
 import play.api.http.HttpVerbs
-import play.api.mvc.{Headers, RequestHeader}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 import play.api.libs.json.{Format, JsNumber, JsValue}
-import org.scalatestplus.play._
 import play.api.test.FakeRequest
 
 /**

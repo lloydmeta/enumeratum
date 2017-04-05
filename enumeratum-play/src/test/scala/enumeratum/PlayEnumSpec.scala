@@ -1,16 +1,13 @@
 package enumeratum
 
-import java.security.cert.X509Certificate
-
 import org.scalatest.{FunSpec, Matchers}
 import play.api.data.{Form, Mapping}
 import play.api.http.HttpVerbs
 import play.api.libs.json.{Format, JsNumber, JsString, JsValue, Json => PlayJson}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.mvc.{Headers, PathBindable, QueryStringBindable, RequestHeader}
+import play.api.mvc.{PathBindable, QueryStringBindable}
 import play.api.routing.sird.PathBindableExtractor
-import org.scalatestplus.play._
 import play.api.test.FakeRequest
 
 class PlayEnumSpec extends FunSpec with Matchers {
