@@ -1,12 +1,8 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.11.8"
-/*
-  2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
-  integration libraries are still gaining 2.12.0 support
- */
-lazy val scalaVersions    = Seq("2.10.6", "2.11.8")
-lazy val scalaVersionsAll = scalaVersions :+ "2.12.1"
+
+lazy val scalaVersions    = Seq("2.10.6", "2.11.8", "2.12.1")
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.5"
@@ -139,7 +135,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
   .settings(
     name := "coreJVMTests",
     version := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
@@ -153,7 +149,7 @@ lazy val enumeratumReactiveMongoBson =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       version := "1.5.12-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
@@ -169,7 +165,7 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
   .settings(
     // TODO remove 2.6 suffix when Play 2.6 is officially released
     version := "1.5.11-2.6-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -185,7 +181,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
   .settings(
     // TODO remove 2.6 suffix when Play 2.6 is officially released
     version := "1.5.11-2.6-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -265,7 +261,7 @@ lazy val enumeratumArgonaut =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.11-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
         "com.beachape" %% "enumeratum" % Versions.Core.stable
@@ -279,7 +275,7 @@ lazy val enumeratumJson4s =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.13-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
@@ -481,7 +477,7 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
           base = file(s"./aggregates/$id"),
           settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       // Do not publish the aggregate project (it just serves as an aggregate)
       publishArtifact := false,
