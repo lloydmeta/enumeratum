@@ -17,6 +17,7 @@ lazy val circeVersion         = "0.7.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
 lazy val json4sVersion        = "3.5.1"
+
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0-M3"
@@ -31,13 +32,15 @@ def thePlayJsonVersion(scalaVersion: String) =
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
-def scalaTestPlay(scalaVersion: String) =   CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor >= 11 => "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M2" % Test
-  case Some((2, scalaMajor)) if scalaMajor == 10 => "org.scalatestplus" %% "play" % "1.5.0-SNAP1" % Test
+
+def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M2" % Test
+  case Some((2, scalaMajor)) if scalaMajor == 10 =>
+    "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
 }
-
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
