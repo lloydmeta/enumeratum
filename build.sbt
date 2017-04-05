@@ -24,6 +24,13 @@ def thePlayVersion(scalaVersion: String) =
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
+def thePlayJsonVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0-M6"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.10"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
@@ -180,10 +187,10 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
     version := "1.5.11-SNAPSHOT",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
+      "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
       "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
-      "org.joda"          % "joda-convert"     % "1.8.1" % Provided 
+      "org.joda"          % "joda-convert"     % "1.8.1" % Provided
     )
   )
 
@@ -325,7 +332,23 @@ lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
   scalacOptions in (Compile, compile) ++= {
-    val base = baseScalacOptions
+    val base = Seq(
+      "-Xlog-free-terms",
+      "-encoding",
+      "UTF-8", // yes, this is 2 args
+      "-feature",
+      "-language:existentials",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-unchecked",
+      "-Xfatal-warnings",
+      "-Xlint",
+      "-Yno-adapted-args",
+      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Xfuture"
+    )
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) =>
         base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
@@ -335,24 +358,6 @@ lazy val compilerSettings = Seq(
   },
   wartremoverErrors in (Compile, compile) ++= Warts.unsafe
     .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
-)
-
-lazy val baseScalacOptions = Seq(
-  "-Xlog-free-terms",
-  "-encoding",
-  "UTF-8", // yes, this is 2 args
-  "-feature",
-  "-language:existentials",
-  "-language:higherKinds",
-  "-language:implicitConversions",
-  "-unchecked",
-  "-Xfatal-warnings",
-  "-Xlint",
-  "-Yno-adapted-args",
-  "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
-  "-Ywarn-numeric-widen",
-  "-Ywarn-value-discard",
-  "-Xfuture"
 )
 
 lazy val scoverageSettings = Seq(
