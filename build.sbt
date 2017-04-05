@@ -182,7 +182,8 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+      "org.joda"          % "joda-convert"     % "1.8.1" % Provided 
     )
   )
 
@@ -294,13 +295,13 @@ lazy val enumeratumJson4s =
     )
 
 lazy val commonSettings = Seq(
-    organization := "com.beachape",
-    incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion
-  ) ++
-    compilerSettings ++
-    resolverSettings ++
-    ideSettings
+  organization := "com.beachape",
+  incOptions := incOptions.value.withLogRecompileOnMacro(false),
+  scalaVersion := theScalaVersion
+) ++
+  compilerSettings ++
+  resolverSettings ++
+  ideSettings
 
 lazy val commonSettingsWithTrimmings =
   commonSettings ++
@@ -324,23 +325,7 @@ lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
   scalacOptions in (Compile, compile) ++= {
-    val base = Seq(
-      "-Xlog-free-terms",
-      "-encoding",
-      "UTF-8", // yes, this is 2 args
-      "-feature",
-      "-language:existentials",
-      "-language:higherKinds",
-      "-language:implicitConversions",
-      "-unchecked",
-      "-Xfatal-warnings",
-      "-Xlint",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Xfuture"
-    )
+    val base = baseScalacOptions
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) =>
         base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
@@ -350,6 +335,24 @@ lazy val compilerSettings = Seq(
   },
   wartremoverErrors in (Compile, compile) ++= Warts.unsafe
     .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
+)
+
+lazy val baseScalacOptions = Seq(
+  "-Xlog-free-terms",
+  "-encoding",
+  "UTF-8", // yes, this is 2 args
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
+  "-unchecked",
+  "-Xfatal-warnings",
+  "-Xlint",
+  "-Yno-adapted-args",
+  "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+  "-Ywarn-numeric-widen",
+  "-Ywarn-value-discard",
+  "-Xfuture"
 )
 
 lazy val scoverageSettings = Seq(
