@@ -194,6 +194,7 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
+    // TODO remove 2.6 suffix when Play 2.6 is officially released
     version := "1.5.11-2.6-SNAPSHOT",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
@@ -209,6 +210,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
+    // TODO remove 2.6 suffix when Play 2.6 is officially released
     version := "1.5.11-2.6-SNAPSHOT",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
