@@ -31,6 +31,13 @@ def thePlayJsonVersion(scalaVersion: String) =
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
+def scalaTestPlay(scalaVersion: String) =   CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 11 => "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M2" % Test
+  case Some((2, scalaMajor)) if scalaMajor == 10 => "org.scalatestplus" %% "play" % "1.5.0-SNAP1" % Test
+  case _ =>
+    throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+}
+
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
@@ -204,7 +211,8 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+      scalaTestPlay(scalaVersion.value)
     )
   )
   .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
