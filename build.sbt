@@ -72,33 +72,6 @@ lazy val root =
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
-lazy val scala_2_12 = Project(id = "scala_2_12",
-                              base = file("scala_2_12"),
-                              settings = commonSettings ++ publishSettings)
-  .settings(
-    name := "enumeratum-scala_2_12",
-    scalaVersion := "2.12.1", // not sure if this and below are needed
-    crossScalaVersions := Seq("2.12.1"),
-    crossVersion := CrossVersion.binary,
-    // Do not publish this  project (it just serves as an aggregate)
-    publishArtifact := false,
-    publishLocal := {},
-    doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.12
-    aggregate in publish := false,
-    aggregate in PgpKeys.publishSigned := false
-  )
-  .aggregate(
-    baseProjectRefs ++
-      Seq(
-        enumeratumCirceJs,
-        enumeratumCirceJvm,
-        enumeratumUPickleJs,
-        enumeratumUPickleJvm,
-        enumeratumArgonaut,
-        enumeratumJson4s,
-        enumeratumReactiveMongoBson
-      ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
-
 lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
 lazy val macros = crossProject
   .crossType(CrossType.Pure)
