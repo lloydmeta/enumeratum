@@ -40,7 +40,8 @@ Integrations are available for:
   2. [Usage](#usage)
 2. [More examples](#more-examples)
   1. [Enum](#enum)
-    1. [Mixins](#mixins)
+    1. [Manual override of name](#manual-override-of-name)
+    2. [Mixins to override the name](#mixins-to-override-the-name)
   2. [ValueEnum](#valueenum)
 2. [ScalaJS](#scalajs)
 3. [Play integration](#play-integration)
@@ -289,7 +290,7 @@ to help you avoid boilerplate in your Play project.
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion 
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
 )
 ```
 
@@ -781,7 +782,7 @@ object TrafficLight extends Enum[TrafficLight] /* nothing extra here */ {
   case object Red    extends TrafficLight
   case object Yellow extends TrafficLight
   case object Green  extends TrafficLight
-  
+
   val values = findValues
 }
 
@@ -803,7 +804,7 @@ case object Device
   case object Laptop  extends Device(2)
   case object Desktop extends Device(3)
   case object Tablet  extends Device(4)
-  
+
   val values = findValues
 }
 
