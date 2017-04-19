@@ -1,12 +1,12 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theScalaVersion = "2.11.8"
+lazy val theScalaVersion = "2.11.10"
 /*
   2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
   integration libraries are still gaining 2.12.0 support
  */
-lazy val scalaVersions    = Seq("2.10.6", "2.11.8")
-lazy val scalaVersionsAll = scalaVersions :+ "2.12.1"
+lazy val scalaVersions    = Seq("2.10.6", "2.11.10")
+lazy val scalaVersionsAll = scalaVersions :+ "2.12.2"
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.5"
@@ -109,7 +109,7 @@ lazy val core = crossProject
   .in(file("enumeratum-core"))
   .settings(
     name := "enumeratum",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
   .settings(testSettings: _*)

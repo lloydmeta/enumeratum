@@ -10,7 +10,7 @@ addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.1.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.5")
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.15")
 
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.24")
 
