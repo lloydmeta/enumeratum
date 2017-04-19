@@ -294,13 +294,13 @@ lazy val enumeratumJson4s =
     )
 
 lazy val commonSettings = Seq(
-    organization := "com.beachape",
-    incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion
-  ) ++
-    compilerSettings ++
-    resolverSettings ++
-    ideSettings
+  organization := "com.beachape",
+  incOptions := incOptions.value.withLogRecompileOnMacro(false),
+  scalaVersion := theScalaVersion
+) ++
+  compilerSettings ++
+  resolverSettings ++
+  ideSettings
 
 lazy val commonSettingsWithTrimmings =
   commonSettings ++
@@ -323,6 +323,8 @@ lazy val ideSettings = Seq(
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
+    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
     val base = Seq(
       "-Xlog-free-terms",
@@ -334,7 +336,6 @@ lazy val compilerSettings = Seq(
       "-language:implicitConversions",
       "-unchecked",
       "-Xfatal-warnings",
-      "-Xlint",
       "-Yno-adapted-args",
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
@@ -343,13 +344,11 @@ lazy val compilerSettings = Seq(
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) =>
-        base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
-      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
-      case _             => base
+        base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
+      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
+      case _             => base ++ Seq("-Xlint")
     }
-  },
-  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
-    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
+  }
 )
 
 lazy val scoverageSettings = Seq(
