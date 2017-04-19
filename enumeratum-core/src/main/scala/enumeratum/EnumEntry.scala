@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 /**
   * Base type for an enum entry for [[Enum]]
   *
-  * By default, the entryName method used for serialising and deseralising Enum values uses
+  * By default, the entryName method used for serialising and deserialising Enum values uses
   * toString, but feel free to override to fit your needs.
   *
   * Mix in the supplied stackable traits to convert the entryName to [[EnumEntry.Snakecase Snakecase]],
@@ -36,13 +36,22 @@ object EnumEntry {
   private val replacement: String = "$1_$2"
 
   // Adapted from Lift's StringHelpers#snakify https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
-  private def camel2WordArray(name: String) = {
+  private def camel2WordArray(name: String): Array[String] = {
     val first = regexp1.matcher(name).replaceAll(replacement)
     regexp2.matcher(first).replaceAll(replacement).split("_")
   }
 
+  private def capitalise(str: String): String = {
+    if (str.isEmpty) str
+    else str.take(1).toUpperCase + str.tail
+  }
+
+  private def uncapitalise(str: String): String = {
+    str.take(1).toLowerCase + str.tail
+  }
+
   /*
-    A bunch of helpful traits for manipulating entry names with minimial boilerplate.
+    A bunch of helpful traits for manipulating entry names with minimal boilerplate.
 
     Note that each override is followed by a lazy val that holds the name. This is an optimisation
     that has been shown to improve speeds by several hundred times when calling entryName
@@ -82,6 +91,14 @@ object EnumEntry {
   }
 
   /**
+    * Stackable trait to convert the entryName to CamelCase.
+    */
+  trait Camelcase extends EnumEntry {
+    override def entryName: String                 = stableEntryName
+    private[this] lazy val stableEntryName: String = super.entryName.split("_+").map(s => capitalise(s.toLowerCase)).mkString
+  }
+
+  /**
     * Stackable trait to convert the entryName to UPPERCASE.
     */
   trait Uppercase extends EnumEntry {
@@ -95,6 +112,14 @@ object EnumEntry {
   trait Lowercase extends EnumEntry {
     override def entryName: String                 = stableEntryName
     private[this] lazy val stableEntryName: String = super.entryName.toLowerCase
+  }
+
+  /**
+    * Stackable trait to uncapitalise the first letter of the entryName.
+    */
+  trait Uncapitalised extends EnumEntry {
+    override def entryName: String                 = stableEntryName
+    private[this] lazy val stableEntryName: String = uncapitalise(super.entryName)
   }
 
   /**
@@ -136,6 +161,11 @@ object EnumEntry {
     * Stackable trait to convert the entryName to UPPER WORDS.
     */
   trait UpperWords extends EnumEntry with CapitalWords with Uppercase
+
+  /**
+    * Stackable trait to convert the entryName to lowerCamelCase.
+    */
+  trait LowerCamelcase extends EnumEntry with Camelcase with Uncapitalised
 
   /**
     * Helper implicit class that holds enrichment methods

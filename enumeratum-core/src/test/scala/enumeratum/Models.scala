@@ -38,9 +38,9 @@ object UpperSnakeEnum extends Enum[UpperSnakeEnum] {
 
   val values = findValues
 
-  case object Hello           extends UpperSnakeEnum
-  case object GoodBye         extends UpperSnakeEnum
-  case object WhispherGoodBye extends UpperSnakeEnum with Lowercase
+  case object Hello          extends UpperSnakeEnum
+  case object GoodBye        extends UpperSnakeEnum
+  case object WhisperGoodBye extends UpperSnakeEnum with Lowercase
 
 }
 
@@ -50,9 +50,9 @@ object CapitalSnakeEnum extends Enum[CapitalSnakeEnum] {
 
   val values = findValues
 
-  case object Hello           extends CapitalSnakeEnum
-  case object GoodBye         extends CapitalSnakeEnum
-  case object WhispherGoodBye extends CapitalSnakeEnum with Lowercase
+  case object Hello          extends CapitalSnakeEnum
+  case object GoodBye        extends CapitalSnakeEnum
+  case object WhisperGoodBye extends CapitalSnakeEnum with Lowercase
 
 }
 
@@ -74,9 +74,9 @@ object UpperHyphenEnum extends Enum[UpperHyphenEnum] {
 
   val values = findValues
 
-  case object Hello           extends UpperHyphenEnum
-  case object GoodBye         extends UpperHyphenEnum
-  case object WhispherGoodBye extends UpperHyphenEnum with Lowercase
+  case object Hello          extends UpperHyphenEnum
+  case object GoodBye        extends UpperHyphenEnum
+  case object WhisperGoodBye extends UpperHyphenEnum with Lowercase
 
 }
 
@@ -86,9 +86,9 @@ object CapitalHyphenEnum extends Enum[CapitalHyphenEnum] {
 
   val values = findValues
 
-  case object Hello           extends CapitalHyphenEnum
-  case object GoodBye         extends CapitalHyphenEnum
-  case object WhispherGoodBye extends CapitalHyphenEnum with Lowercase
+  case object Hello          extends CapitalHyphenEnum
+  case object GoodBye        extends CapitalHyphenEnum
+  case object WhisperGoodBye extends CapitalHyphenEnum with Lowercase
 
 }
 
@@ -110,9 +110,9 @@ object UpperDotEnum extends Enum[UpperDotEnum] {
 
   val values = findValues
 
-  case object Hello           extends UpperDotEnum
-  case object GoodBye         extends UpperDotEnum
-  case object WhispherGoodBye extends UpperDotEnum with Lowercase
+  case object Hello          extends UpperDotEnum
+  case object GoodBye        extends UpperDotEnum
+  case object WhisperGoodBye extends UpperDotEnum with Lowercase
 
 }
 
@@ -122,9 +122,9 @@ object CapitalDotEnum extends Enum[CapitalDotEnum] {
 
   val values = findValues
 
-  case object Hello           extends CapitalDotEnum
-  case object GoodBye         extends CapitalDotEnum
-  case object WhispherGoodBye extends CapitalDotEnum with Lowercase
+  case object Hello          extends CapitalDotEnum
+  case object GoodBye        extends CapitalDotEnum
+  case object WhisperGoodBye extends CapitalDotEnum with Lowercase
 
 }
 
@@ -146,9 +146,9 @@ object UpperWordsEnum extends Enum[UpperWordsEnum] {
 
   val values = findValues
 
-  case object Hello           extends UpperWordsEnum
-  case object GoodBye         extends UpperWordsEnum
-  case object WhispherGoodBye extends UpperWordsEnum with Lowercase
+  case object Hello          extends UpperWordsEnum
+  case object GoodBye        extends UpperWordsEnum
+  case object WhisperGoodBye extends UpperWordsEnum with Lowercase
 
 }
 
@@ -158,9 +158,9 @@ object CapitalWordsEnum extends Enum[CapitalWordsEnum] {
 
   val values = findValues
 
-  case object Hello           extends CapitalWordsEnum
-  case object GoodBye         extends CapitalWordsEnum
-  case object WhispherGoodBye extends CapitalWordsEnum with Lowercase
+  case object Hello          extends CapitalWordsEnum
+  case object GoodBye        extends CapitalWordsEnum
+  case object WhisperGoodBye extends CapitalWordsEnum with Lowercase
 
 }
 
@@ -185,6 +185,45 @@ object LowerEnum extends Enum[LowerEnum] {
   case object Hello   extends LowerEnum
   case object GoodBye extends LowerEnum
   case object Sike    extends LowerEnum with Uppercase
+
+}
+
+sealed trait CamelcaseEnum extends EnumEntry with Camelcase
+
+object CamelcaseEnum extends Enum[CamelcaseEnum] {
+
+  val values = findValues
+
+  case object HELLO      extends CamelcaseEnum
+  case object GOOD_BYE   extends CamelcaseEnum
+  case object SIKE_AGAIN extends CamelcaseEnum with Lowercase
+  case object _PRIVATE   extends CamelcaseEnum
+
+}
+
+sealed trait LowerCamelcaseEnum extends EnumEntry with LowerCamelcase
+
+object LowerCamelcaseEnum extends Enum[LowerCamelcaseEnum] {
+
+  val values = findValues
+
+  case object HELLO      extends LowerCamelcaseEnum
+  case object GOOD_BYE   extends LowerCamelcaseEnum
+  case object SIKE_AGAIN extends LowerCamelcaseEnum with Uppercase
+  case object _PRIVATE   extends LowerCamelcaseEnum
+
+}
+
+sealed trait UncapitalisedEnum extends EnumEntry with Uncapitalised
+
+object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
+
+  val values = findValues
+
+  case object Hello   extends UncapitalisedEnum
+  case object GoodBye extends UncapitalisedEnum
+  case object Sike    extends UncapitalisedEnum with Uppercase
+  case object a       extends UncapitalisedEnum
 
 }
 
