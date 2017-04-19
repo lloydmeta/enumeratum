@@ -40,19 +40,20 @@ Integrations are available for:
   2. [Usage](#usage)
 2. [More examples](#more-examples)
   1. [Enum](#enum)
-    1. [Mixins](#mixins)
+    1. [Manual override of name](#manual-override-of-name)
+    2. [Mixins to override the name](#mixins-to-override-the-name)
   2. [ValueEnum](#valueenum)
-2. [ScalaJS](#scalajs)
-3. [Play integration](#play-integration)
-4. [Play JSON integration](#play-json)
-5. [Circe integration](#circe)
-6. [UPickle integration](#upickle)
-7. [ReactiveMongo BSON integration](#reactivemongo-bson)
-8. [Argonaut integration](#argonaut)
-9. [Json4s integration](#json4s)
-10. [Slick integration](#slick-integration)
-11. [Benchmarking](#benchmarking)
-12. [Publishing](#publishing)
+3. [ScalaJS](#scalajs)
+4. [Play integration](#play-integration)
+5. [Play JSON integration](#play-json)
+6. [Circe integration](#circe)
+7. [UPickle integration](#upickle)
+8. [ReactiveMongo BSON integration](#reactivemongo-bson)
+9. [Argonaut integration](#argonaut)
+10. [Json4s integration](#json4s)
+11. [Slick integration](#slick-integration)
+12. [Benchmarking](#benchmarking)
+13. [Publishing](#publishing)
 
 
 ## Quick start
@@ -200,7 +201,7 @@ State.withName("AL")
 #### Mixins to override the name
 
 The second way to override the name behaviour is to mixin the stackable traits provided for common string
-conversions, `Snakecase`, `UpperSnakecase`, `CapitalSnakecase`, `Hyphencase`, `UpperHyphencase`, `CapitalHyphencase`, `Dotcase`, `UpperDotcase`, `CapitalDotcase`, `Words`, `UpperWords`, `CapitalWords`, `Uppercase`, and `Lowercase`.
+conversions, `Snakecase`, `UpperSnakecase`, `CapitalSnakecase`, `Hyphencase`, `UpperHyphencase`, `CapitalHyphencase`, `Dotcase`, `UpperDotcase`, `CapitalDotcase`, `Words`, `UpperWords`, `CapitalWords`, `Camelcase`, `LowerCamelcase`, `Uppercase`, `Lowercase`, and `Uncapitalised`.
 
 ```scala
 
@@ -289,7 +290,7 @@ to help you avoid boilerplate in your Play project.
 For enumeratum with full Play support:
 ```scala
 libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion 
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion
 )
 ```
 
@@ -781,7 +782,7 @@ object TrafficLight extends Enum[TrafficLight] /* nothing extra here */ {
   case object Red    extends TrafficLight
   case object Yellow extends TrafficLight
   case object Green  extends TrafficLight
-  
+
   val values = findValues
 }
 
@@ -803,7 +804,7 @@ case object Device
   case object Laptop  extends Device(2)
   case object Desktop extends Device(3)
   case object Tablet  extends Device(4)
-  
+
   val values = findValues
 }
 

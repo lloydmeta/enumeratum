@@ -253,11 +253,11 @@ class EnumSpec extends FunSpec with Matchers {
 
         UpperSnakeEnum.withName("HELLO") shouldBe UpperSnakeEnum.Hello
         UpperSnakeEnum.withName("GOOD_BYE") shouldBe UpperSnakeEnum.GoodBye
-        UpperSnakeEnum.withName("whispher_good_bye") shouldBe UpperSnakeEnum.WhispherGoodBye
+        UpperSnakeEnum.withName("whisper_good_bye") shouldBe UpperSnakeEnum.WhisperGoodBye
 
         CapitalSnakeEnum.withName("Hello") shouldBe CapitalSnakeEnum.Hello
         CapitalSnakeEnum.withName("Good_Bye") shouldBe CapitalSnakeEnum.GoodBye
-        CapitalSnakeEnum.withName("whispher_good_bye") shouldBe CapitalSnakeEnum.WhispherGoodBye
+        CapitalSnakeEnum.withName("whisper_good_bye") shouldBe CapitalSnakeEnum.WhisperGoodBye
 
         HyphenEnum.withName("hello") shouldBe HyphenEnum.Hello
         HyphenEnum.withName("good-bye") shouldBe HyphenEnum.GoodBye
@@ -265,11 +265,11 @@ class EnumSpec extends FunSpec with Matchers {
 
         UpperHyphenEnum.withName("HELLO") shouldBe UpperHyphenEnum.Hello
         UpperHyphenEnum.withName("GOOD-BYE") shouldBe UpperHyphenEnum.GoodBye
-        UpperHyphenEnum.withName("whispher-good-bye") shouldBe UpperHyphenEnum.WhispherGoodBye
+        UpperHyphenEnum.withName("whisper-good-bye") shouldBe UpperHyphenEnum.WhisperGoodBye
 
         CapitalHyphenEnum.withName("Hello") shouldBe CapitalHyphenEnum.Hello
         CapitalHyphenEnum.withName("Good-Bye") shouldBe CapitalHyphenEnum.GoodBye
-        CapitalHyphenEnum.withName("whispher-good-bye") shouldBe CapitalHyphenEnum.WhispherGoodBye
+        CapitalHyphenEnum.withName("whisper-good-bye") shouldBe CapitalHyphenEnum.WhisperGoodBye
 
         DotEnum.withName("hello") shouldBe DotEnum.Hello
         DotEnum.withName("good.bye") shouldBe DotEnum.GoodBye
@@ -277,11 +277,11 @@ class EnumSpec extends FunSpec with Matchers {
 
         UpperDotEnum.withName("HELLO") shouldBe UpperDotEnum.Hello
         UpperDotEnum.withName("GOOD.BYE") shouldBe UpperDotEnum.GoodBye
-        UpperDotEnum.withName("whispher.good.bye") shouldBe UpperDotEnum.WhispherGoodBye
+        UpperDotEnum.withName("whisper.good.bye") shouldBe UpperDotEnum.WhisperGoodBye
 
         CapitalDotEnum.withName("Hello") shouldBe CapitalDotEnum.Hello
         CapitalDotEnum.withName("Good.Bye") shouldBe CapitalDotEnum.GoodBye
-        CapitalDotEnum.withName("whispher.good.bye") shouldBe CapitalDotEnum.WhispherGoodBye
+        CapitalDotEnum.withName("whisper.good.bye") shouldBe CapitalDotEnum.WhisperGoodBye
 
         WordsEnum.withName("hello") shouldBe WordsEnum.Hello
         WordsEnum.withName("good bye") shouldBe WordsEnum.GoodBye
@@ -289,11 +289,11 @@ class EnumSpec extends FunSpec with Matchers {
 
         UpperWordsEnum.withName("HELLO") shouldBe UpperWordsEnum.Hello
         UpperWordsEnum.withName("GOOD BYE") shouldBe UpperWordsEnum.GoodBye
-        UpperWordsEnum.withName("whispher good bye") shouldBe UpperWordsEnum.WhispherGoodBye
+        UpperWordsEnum.withName("whisper good bye") shouldBe UpperWordsEnum.WhisperGoodBye
 
         CapitalWordsEnum.withName("Hello") shouldBe CapitalWordsEnum.Hello
         CapitalWordsEnum.withName("Good Bye") shouldBe CapitalWordsEnum.GoodBye
-        CapitalWordsEnum.withName("whispher good bye") shouldBe CapitalWordsEnum.WhispherGoodBye
+        CapitalWordsEnum.withName("whisper good bye") shouldBe CapitalWordsEnum.WhisperGoodBye
 
         UpperEnum.withName("HELLO") shouldBe UpperEnum.Hello
         UpperEnum.withName("GOODBYE") shouldBe UpperEnum.GoodBye
@@ -302,6 +302,21 @@ class EnumSpec extends FunSpec with Matchers {
         LowerEnum.withName("hello") shouldBe LowerEnum.Hello
         LowerEnum.withName("goodbye") shouldBe LowerEnum.GoodBye
         LowerEnum.withName("SIKE") shouldBe LowerEnum.Sike
+
+        CamelcaseEnum.withName("Hello") shouldBe CamelcaseEnum.HELLO
+        CamelcaseEnum.withName("GoodBye") shouldBe CamelcaseEnum.GOOD_BYE
+        CamelcaseEnum.withName("sikeagain") shouldBe CamelcaseEnum.SIKE_AGAIN
+        CamelcaseEnum.withName("Private") shouldBe CamelcaseEnum._PRIVATE
+
+        LowerCamelcaseEnum.withName("hello") shouldBe LowerCamelcaseEnum.HELLO
+        LowerCamelcaseEnum.withName("goodBye") shouldBe LowerCamelcaseEnum.GOOD_BYE
+        LowerCamelcaseEnum.withName("SIKEAGAIN") shouldBe LowerCamelcaseEnum.SIKE_AGAIN
+        LowerCamelcaseEnum.withName("private") shouldBe LowerCamelcaseEnum._PRIVATE
+
+        UncapitalisedEnum.withName("hello") shouldBe UncapitalisedEnum.Hello
+        UncapitalisedEnum.withName("goodBye") shouldBe UncapitalisedEnum.GoodBye
+        UncapitalisedEnum.withName("SIKE") shouldBe UncapitalisedEnum.Sike
+        UncapitalisedEnum.withName("a") shouldBe UncapitalisedEnum.a
       }
     }
   }

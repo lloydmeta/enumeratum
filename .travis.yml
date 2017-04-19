@@ -9,14 +9,14 @@ matrix:
       script:
         - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - sbt ++$TRAVIS_SCALA_VERSION test
-    - scala: 2.11.8
+    - scala: 2.11.11
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
-    - scala: 2.12.1
+    - scala: 2.12.2
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
