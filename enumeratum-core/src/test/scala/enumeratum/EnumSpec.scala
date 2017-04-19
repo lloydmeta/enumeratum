@@ -306,14 +306,17 @@ class EnumSpec extends FunSpec with Matchers {
         CamelcaseEnum.withName("Hello") shouldBe CamelcaseEnum.HELLO
         CamelcaseEnum.withName("GoodBye") shouldBe CamelcaseEnum.GOOD_BYE
         CamelcaseEnum.withName("sikeagain") shouldBe CamelcaseEnum.SIKE_AGAIN
+        CamelcaseEnum.withName("Private") shouldBe CamelcaseEnum._PRIVATE
 
         LowerCamelcaseEnum.withName("hello") shouldBe LowerCamelcaseEnum.HELLO
         LowerCamelcaseEnum.withName("goodBye") shouldBe LowerCamelcaseEnum.GOOD_BYE
         LowerCamelcaseEnum.withName("SIKEAGAIN") shouldBe LowerCamelcaseEnum.SIKE_AGAIN
+        LowerCamelcaseEnum.withName("private") shouldBe LowerCamelcaseEnum._PRIVATE
 
         UncapitalisedEnum.withName("hello") shouldBe UncapitalisedEnum.Hello
         UncapitalisedEnum.withName("goodBye") shouldBe UncapitalisedEnum.GoodBye
         UncapitalisedEnum.withName("SIKE") shouldBe UncapitalisedEnum.Sike
+        UncapitalisedEnum.withName("a") shouldBe UncapitalisedEnum.a
       }
     }
   }

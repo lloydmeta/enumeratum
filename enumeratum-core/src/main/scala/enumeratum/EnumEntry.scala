@@ -42,13 +42,12 @@ object EnumEntry {
   }
 
   private def capitalise(str: String): String = {
-    if (str.isEmpty || str.head.isUpper) str
+    if (str.isEmpty) str
     else str.take(1).toUpperCase + str.tail
   }
 
   private def uncapitalise(str: String): String = {
-    if (str.isEmpty || str.head.isLower) str
-    else str.take(1).toLowerCase + str.tail
+    str.take(1).toLowerCase + str.tail
   }
 
   /*

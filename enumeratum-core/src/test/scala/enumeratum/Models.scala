@@ -197,6 +197,7 @@ object CamelcaseEnum extends Enum[CamelcaseEnum] {
   case object HELLO      extends CamelcaseEnum
   case object GOOD_BYE   extends CamelcaseEnum
   case object SIKE_AGAIN extends CamelcaseEnum with Lowercase
+  case object _PRIVATE   extends CamelcaseEnum
 
 }
 
@@ -209,6 +210,7 @@ object LowerCamelcaseEnum extends Enum[LowerCamelcaseEnum] {
   case object HELLO      extends LowerCamelcaseEnum
   case object GOOD_BYE   extends LowerCamelcaseEnum
   case object SIKE_AGAIN extends LowerCamelcaseEnum with Uppercase
+  case object _PRIVATE   extends LowerCamelcaseEnum
 
 }
 
@@ -221,6 +223,7 @@ object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
   case object Hello   extends UncapitalisedEnum
   case object GoodBye extends UncapitalisedEnum
   case object Sike    extends UncapitalisedEnum with Uppercase
+  case object a       extends UncapitalisedEnum
 
 }
 
