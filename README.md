@@ -201,7 +201,7 @@ State.withName("AL")
 #### Mixins to override the name
 
 The second way to override the name behaviour is to mixin the stackable traits provided for common string
-conversions, `Snakecase`, `UpperSnakecase`, `CapitalSnakecase`, `Hyphencase`, `UpperHyphencase`, `CapitalHyphencase`, `Dotcase`, `UpperDotcase`, `CapitalDotcase`, `Words`, `UpperWords`, `CapitalWords`, `Uppercase`, and `Lowercase`.
+conversions, `Snakecase`, `UpperSnakecase`, `CapitalSnakecase`, `Hyphencase`, `UpperHyphencase`, `CapitalHyphencase`, `Dotcase`, `UpperDotcase`, `CapitalDotcase`, `Words`, `UpperWords`, `CapitalWords`, `Camelcase`, `LowerCamelcase`, `Uppercase`, `Lowercase`, and `Uncapitalised`.
 
 ```scala
 
