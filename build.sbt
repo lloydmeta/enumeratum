@@ -1,12 +1,12 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theScalaVersion = "2.11.8"
+lazy val theScalaVersion = "2.11.11"
 /*
   2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
   integration libraries are still gaining 2.12.0 support
  */
-lazy val scalaVersions    = Seq("2.10.6", "2.11.8")
-lazy val scalaVersionsAll = scalaVersions :+ "2.12.1"
+lazy val scalaVersions    = Seq("2.10.6", "2.11.11")
+lazy val scalaVersionsAll = scalaVersions :+ "2.12.2"
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.5"
@@ -164,7 +164,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(testSettings: _*)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version := "1.5.12-SNAPSHOT",
+      version := "1.5.13-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -177,7 +177,7 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.11-SNAPSHOT",
+    version := "1.5.12-SNAPSHOT",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
@@ -191,7 +191,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.11-SNAPSHOT",
+    version := "1.5.12-SNAPSHOT",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
@@ -209,7 +209,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := "1.5.11-SNAPSHOT",
+    version := "1.5.12-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -246,7 +246,7 @@ lazy val enumeratumCirce = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.13-SNAPSHOT",
+    version := "1.5.14-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -270,7 +270,7 @@ lazy val enumeratumArgonaut =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.11-SNAPSHOT",
+      version := "1.5.12-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
@@ -284,7 +284,7 @@ lazy val enumeratumJson4s =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13-SNAPSHOT",
+      version := "1.5.14-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
@@ -294,13 +294,13 @@ lazy val enumeratumJson4s =
     )
 
 lazy val commonSettings = Seq(
-    organization := "com.beachape",
-    incOptions := incOptions.value.withLogRecompileOnMacro(false),
-    scalaVersion := theScalaVersion
-  ) ++
-    compilerSettings ++
-    resolverSettings ++
-    ideSettings
+  organization := "com.beachape",
+  incOptions := incOptions.value.withLogRecompileOnMacro(false),
+  scalaVersion := theScalaVersion
+) ++
+  compilerSettings ++
+  resolverSettings ++
+  ideSettings
 
 lazy val commonSettingsWithTrimmings =
   commonSettings ++
@@ -323,6 +323,8 @@ lazy val ideSettings = Seq(
 lazy val compilerSettings = Seq(
   // the name-hashing algorithm for the incremental compiler.
   incOptions := incOptions.value.withNameHashing(nameHashing = true),
+  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
+    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
     val base = Seq(
       "-Xlog-free-terms",
@@ -334,7 +336,6 @@ lazy val compilerSettings = Seq(
       "-language:implicitConversions",
       "-unchecked",
       "-Xfatal-warnings",
-      "-Xlint",
       "-Yno-adapted-args",
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
@@ -343,13 +344,11 @@ lazy val compilerSettings = Seq(
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) =>
-        base ++ Seq("-deprecation:false") // unused-import breaks Circe Either shim
-      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Ywarn-unused-import")
-      case _             => base
+        base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
+      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
+      case _             => base ++ Seq("-Xlint")
     }
-  },
-  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
-    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes
+  }
 )
 
 lazy val scoverageSettings = Seq(
