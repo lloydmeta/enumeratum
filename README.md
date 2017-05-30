@@ -884,7 +884,7 @@ implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Gre
 
 implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
   override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setStringOption(value.map(v => value.entryName))
+    positionedParameter.setStringOption(value.map(v => v.entryName))
 }
 ```
 
