@@ -1,14 +1,12 @@
 package enumeratum.values
 
-import java.security.cert.X509Certificate
-
 import org.scalatest._
 import play.api.data.Form
 import play.api.http.HttpVerbs
-import play.api.mvc.{Headers, RequestHeader}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 import play.api.libs.json.{Format, JsNumber, JsValue}
+import play.api.test.FakeRequest
 
 /**
   * Created by Lloyd on 4/13/16.
@@ -123,8 +121,8 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
                     Results.Ok(s"$greeting")
                   }
               }
-              router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/${entry.value}")) shouldBe true
-              router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/${Int.MaxValue}")) shouldBe false
+              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/${entry.value}")) shouldBe true
+              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/${Int.MaxValue}")) shouldBe false
             }
           }
 
@@ -167,28 +165,4 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
 
   }
 
-  def reqHeaderAt(theMethod: String, theUri: String) =
-    new RequestHeader {
-      def clientCertificateChain: Option[Seq[X509Certificate]] = ???
-
-      def secure: Boolean = ???
-
-      def uri: String = theUri
-
-      def remoteAddress: String = ???
-
-      def queryString: Map[String, Seq[String]] = ???
-
-      def method: String = theMethod
-
-      def headers: Headers = ???
-
-      def path: String = uri
-
-      def version: String = ???
-
-      def tags: Map[String, String] = ???
-
-      def id: Long = ???
-    }
 }

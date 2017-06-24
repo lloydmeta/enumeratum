@@ -1,12 +1,8 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theScalaVersion = "2.11.11"
-/*
-  2.12.0 support is currently defined as a separate project (scala_2_12) for convenience while
-  integration libraries are still gaining 2.12.0 support
- */
-lazy val scalaVersions    = Seq("2.10.6", "2.11.11")
-lazy val scalaVersionsAll = scalaVersions :+ "2.12.2"
+lazy val theScalaVersion = "2.11.8"
+
+lazy val scalaVersions    = Seq("2.10.6", "2.11.11", "2.12.2")
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.5"
@@ -17,13 +13,30 @@ lazy val circeVersion         = "0.8.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2-RC2"
 lazy val json4sVersion        = "3.5.1"
+
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.5.13"
-    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.10"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
+def thePlayJsonVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
+def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M2" % Test
+  case Some((2, scalaMajor)) if scalaMajor == 10 =>
+    "org.scalatestplus" %% "play" % "1.4.0" % Test
+  case _ =>
+    throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+}
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
@@ -54,33 +67,6 @@ lazy val root =
       aggregate in PgpKeys.publishSigned := false
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
-
-lazy val scala_2_12 = Project(id = "scala_2_12",
-                              base = file("scala_2_12"),
-                              settings = commonSettings ++ publishSettings)
-  .settings(
-    name := "enumeratum-scala_2_12",
-    scalaVersion := "2.12.1", // not sure if this and below are needed
-    crossScalaVersions := Seq("2.12.1"),
-    crossVersion := CrossVersion.binary,
-    // Do not publish this  project (it just serves as an aggregate)
-    publishArtifact := false,
-    publishLocal := {},
-    doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.12
-    aggregate in publish := false,
-    aggregate in PgpKeys.publishSigned := false
-  )
-  .aggregate(
-    baseProjectRefs ++
-      Seq(
-        enumeratumCirceJs,
-        enumeratumCirceJvm,
-        enumeratumUPickleJs,
-        enumeratumUPickleJvm,
-        enumeratumArgonaut,
-        enumeratumJson4s,
-        enumeratumReactiveMongoBson
-      ).map(Project.projectToRef): _*) // base plus known 2.12 friendly libs
 
 lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
 lazy val macros = crossProject
@@ -149,7 +135,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests",
   .settings(
     name := "coreJVMTests",
     version := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
@@ -163,7 +149,7 @@ lazy val enumeratumReactiveMongoBson =
           settings = commonWithPublishSettings)
     .settings(testSettings: _*)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       version := "1.5.13-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
@@ -177,12 +163,13 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.12-SNAPSHOT",
+    version := s"1.5.12",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json"       % thePlayVersion(scalaVersion.value),
+      "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+      "org.joda"          % "joda-convert"     % "1.8.1" % Provided
     )
   )
 
@@ -191,12 +178,13 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    version := "1.5.12-SNAPSHOT",
+    version := s"1.5.12",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test
+      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+      scalaTestPlay(scalaVersion.value)
     )
   )
   .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
@@ -271,7 +259,7 @@ lazy val enumeratumArgonaut =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.12-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       libraryDependencies ++= Seq(
         "io.argonaut"  %% "argonaut"   % argonautVersion,
         "com.beachape" %% "enumeratum" % Versions.Core.stable
@@ -285,7 +273,7 @@ lazy val enumeratumJson4s =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.14-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
@@ -486,7 +474,7 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
           base = file(s"./aggregates/$id"),
           settings = commonWithPublishSettings)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersions,
       crossVersion := CrossVersion.binary,
       // Do not publish the aggregate project (it just serves as an aggregate)
       publishArtifact := false,

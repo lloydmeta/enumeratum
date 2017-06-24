@@ -1,15 +1,14 @@
 package enumeratum
 
-import java.security.cert.X509Certificate
-
 import org.scalatest.{FunSpec, Matchers}
 import play.api.data.{Form, Mapping}
 import play.api.http.HttpVerbs
 import play.api.libs.json.{Format, JsNumber, JsString, JsValue, Json => PlayJson}
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
-import play.api.mvc.{Headers, PathBindable, QueryStringBindable, RequestHeader}
+import play.api.mvc.{PathBindable, QueryStringBindable}
 import play.api.routing.sird.PathBindableExtractor
+import play.api.test.FakeRequest
 
 class PlayEnumSpec extends FunSpec with Matchers {
 
@@ -181,10 +180,10 @@ class PlayEnumSpec extends FunSpec with Matchers {
             }
             validTransforms.foreach {
               case (k, v) =>
-                router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/$k")) shouldBe true
+                router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$k")) shouldBe true
             }
             expectedErrors.foreach { v =>
-              router.routes.isDefinedAt(reqHeaderAt(HttpVerbs.GET, s"/$v")) shouldBe false
+              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$v")) shouldBe false
             }
           }
 
@@ -220,31 +219,6 @@ class PlayEnumSpec extends FunSpec with Matchers {
         }
 
       }
-    }
-
-    def reqHeaderAt(theMethod: String, theUri: String) = new RequestHeader {
-
-      def clientCertificateChain: Option[Seq[X509Certificate]] = ???
-
-      def secure: Boolean = ???
-
-      def uri: String = theUri
-
-      def remoteAddress: String = ???
-
-      def queryString: Map[String, Seq[String]] = ???
-
-      def method: String = theMethod
-
-      def headers: Headers = ???
-
-      def path: String = uri
-
-      def version: String = ???
-
-      def tags: Map[String, String] = ???
-
-      def id: Long = ???
     }
 
   }
