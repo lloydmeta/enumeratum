@@ -16,14 +16,14 @@ lazy val json4sVersion        = "3.5.1"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0-M5"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0-M7"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -163,8 +163,7 @@ lazy val enumeratumPlayJson = Project(id = "enumeratum-play-json",
                                       settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    // TODO remove 2.6 suffix when Play 2.6 is officially released
-    version := s"1.5.12-${thePlayJsonVersion(scalaVersion.value)}",
+    version := s"1.5.12",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
@@ -179,8 +178,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play",
                                   settings = commonWithPublishSettings)
   .settings(testSettings: _*)
   .settings(
-    // TODO remove 2.6 suffix when Play 2.6 is officially released
-    version := s"1.5.12-${thePlayVersion(scalaVersion.value)}",
+    version := s"1.5.12",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
