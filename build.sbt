@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.11.11"
 
-lazy val scalaVersions    = Seq("2.10.6", "2.11.11", "2.12.2")
+lazy val scalaVersions = Seq("2.10.6", "2.11.11", "2.12.2")
 
 lazy val scalaTestVersion  = "3.0.1"
 lazy val scalacheckVersion = "1.13.5"
@@ -284,6 +284,7 @@ lazy val enumeratumJson4s =
 lazy val commonSettings = Seq(
   organization := "com.beachape",
   incOptions := incOptions.value.withLogRecompileOnMacro(false),
+  scalafmtOnCompile := true,
   scalaVersion := theScalaVersion
 ) ++
   compilerSettings ++
