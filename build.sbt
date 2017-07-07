@@ -11,7 +11,7 @@ lazy val scalacheckVersion = "1.13.5"
 lazy val reactiveMongoVersion = "0.12.1"
 lazy val circeVersion         = "0.8.0"
 lazy val uPickleVersion       = "0.4.4"
-lazy val argonautVersion      = "6.2-RC2"
+lazy val argonautVersion      = "6.2"
 lazy val json4sVersion        = "3.5.1"
 
 def thePlayVersion(scalaVersion: String) =
@@ -49,7 +49,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonaut,
+  enumeratumArgonautJs,
+  enumeratumArgonautJvm,
   enumeratumJson4s
 ).map(Project.projectToRef)
 
@@ -252,19 +253,34 @@ lazy val enumeratumCirce = crossProject
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
-lazy val enumeratumArgonaut =
-  Project(id = "enumeratum-argonaut",
-          base = file("enumeratum-argonaut"),
-          settings = commonWithPublishSettings)
-    .settings(testSettings: _*)
-    .settings(
-      version := "1.5.12-SNAPSHOT",
-      crossScalaVersions := scalaVersions,
-      libraryDependencies ++= Seq(
-        "io.argonaut"  %% "argonaut"   % argonautVersion,
-        "com.beachape" %% "enumeratum" % Versions.Core.stable
+lazy val argonautAggregate =
+  aggregateProject("argonaut", enumeratumArgonautJs, enumeratumArgonautJvm)
+lazy val enumeratumArgonaut = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-argonaut"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-argonaut",
+    version := "1.5.12-SNAPSHOT",
+    crossScalaVersions := scalaVersions,
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("io.argonaut", "argonaut", cross)    % argonautVersion,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
       )
-    )
+    }
+  )
+
+lazy val enumeratumArgonautJs  = enumeratumArgonaut.js
+lazy val enumeratumArgonautJvm = enumeratumArgonaut.jvm
 
 lazy val enumeratumJson4s =
   Project(id = "enumeratum-json4s",
