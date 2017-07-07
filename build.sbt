@@ -262,7 +262,7 @@ lazy val enumeratumArgonaut = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
-    version := "1.5.12-SNAPSHOT",
+    version := "1.5.12",
     crossScalaVersions := scalaVersions,
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
