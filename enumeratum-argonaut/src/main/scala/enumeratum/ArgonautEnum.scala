@@ -32,7 +32,7 @@ import argonaut._
   *  res1: DecodeResult[TrafficLight] = DecodeResult(Right(Red))
   *
   *  scala> Json.jString("Purple").as[TrafficLight]
-  *  res1: DecodeResult[TrafficLight] = DecodeResult(Left((Purple' is not a member of enum TrafficLight,CursorHistory(List()))))
+  *  res1: DecodeResult[TrafficLight] = DecodeResult(Left(('Purple' is not a member of enum TrafficLight,CursorHistory(List()))))
   * }}}
   * @tparam A
   */

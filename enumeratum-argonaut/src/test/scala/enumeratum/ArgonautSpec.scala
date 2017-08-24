@@ -53,6 +53,7 @@ class ArgonautSpec extends FunSpec with Matchers {
 
     it("should fail to parse random JSON values to members") {
       val results = Seq("XXL".asJson, Int.MaxValue.asJson).map(_.as[TrafficLight])
+      info(results.head.leftSide.toString)
       results.foreach { res =>
         res.result.isLeft shouldBe true
         res.history.map(_.toList) shouldBe Some(Nil)
