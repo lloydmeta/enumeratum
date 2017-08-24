@@ -79,7 +79,6 @@ class CirceSpec extends FunSpec with Matchers {
     it("should fail to parse to members when given improper JSON, even when ignoring case") {
       val failures = Seq("123", "Jumbo").map(s =>
         Json.fromString(s).as[ShirtSize](Circe.decodeCaseInsensitive(ShirtSize)))
-      info(failures.head.leftSide.toString)
       failures.foreach { f =>
         f.isLeft shouldBe true
         f.leftMap(_.history shouldBe Nil)
@@ -89,7 +88,6 @@ class CirceSpec extends FunSpec with Matchers {
     it("should fail to parse random JSON to members") {
       val failures = Seq(Json.fromString("XXL"), Json.fromInt(Int.MaxValue)).map(j =>
         j.as[ShirtSize](Circe.decoder(ShirtSize)))
-      info(failures.head.leftSide.toString)
       failures.foreach { f =>
         f.isLeft shouldBe true
         f.leftMap(_.history shouldBe Nil)
@@ -99,7 +97,6 @@ class CirceSpec extends FunSpec with Matchers {
     it("should fail to parse mixed but not upper case") {
       val failures = Seq("Small", "Medium", "Large").map(s =>
         Json.fromString(s).as[ShirtSize](Circe.decoderUppercaseOnly(ShirtSize)))
-      info(failures.head.leftSide.toString)
       failures.foreach { f =>
         f.isLeft shouldBe true
         f.leftMap(_.history shouldBe Nil)
@@ -109,7 +106,6 @@ class CirceSpec extends FunSpec with Matchers {
     it("should fail to parse mixed but not lower case") {
       val failures = Seq("Small", "Medium", "Large").map(s =>
         Json.fromString(s).as[ShirtSize](Circe.decoderLowercaseOnly(ShirtSize)))
-      info(failures.head.leftSide.toString)
       failures.foreach { f =>
         f.isLeft shouldBe true
         f.leftMap(_.history shouldBe Nil)
