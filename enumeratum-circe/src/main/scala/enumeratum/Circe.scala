@@ -39,7 +39,7 @@ object Circe {
       maybeMember match {
         case Some(member) => Right(member)
         case _ =>
-          Left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+          Left(DecodingFailure(s"'$s' is not a member of enum $enum", c.history))
       }
     }
   }
@@ -51,7 +51,7 @@ object Circe {
         maybeMember match {
           case Some(member) => Right(member)
           case _ =>
-            Left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+            Left(DecodingFailure(s"'$s' is not a member of enum $enum", c.history))
         }
       }
     }
@@ -63,7 +63,7 @@ object Circe {
         maybeMember match {
           case Some(member) => Right(member)
           case _ =>
-            Left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+            Left(DecodingFailure(s"'$s' is not a member of enum $enum", c.history))
         }
       }
     }
@@ -75,7 +75,7 @@ object Circe {
         maybeMember match {
           case Some(member) => Right(member)
           case _ =>
-            Left(DecodingFailure(s"$s' is not a member of enum $enum", c.history))
+            Left(DecodingFailure(s"'$s' is not a member of enum $enum", c.history))
         }
       }
     }

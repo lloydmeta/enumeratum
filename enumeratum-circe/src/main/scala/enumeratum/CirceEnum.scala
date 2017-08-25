@@ -35,7 +35,7 @@ import io.circe.{Decoder, Encoder}
   *
   *
   * scala> Json.fromString("XLarge").as[ShirtSize]
-  * res2: Decoder.Result[ShirtSize] = Left(DecodingFailure(XLarge' is not a member of enum ShirtSize, List()))
+  * res2: Decoder.Result[ShirtSize] = Left(DecodingFailure('XLarge' is not a member of enum ShirtSize, List()))
   * }}}
   */
 trait CirceEnum[A <: EnumEntry] { this: Enum[A] =>

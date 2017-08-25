@@ -25,7 +25,7 @@ object Argonauter {
       stringDecoder(cursor).flatMap { enumStr =>
         f(enumStr) match {
           case Some(a) => okResult(a)
-          case _       => failResult(s"$enumStr' is not a member of enum $enum", cursor.history)
+          case _       => failResult(s"'$enumStr' is not a member of enum $enum", cursor.history)
         }
       }
     }
