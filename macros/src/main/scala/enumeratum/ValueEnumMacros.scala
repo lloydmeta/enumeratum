@@ -217,6 +217,14 @@ object ValueEnumMacros {
                       c.enclosingPosition,
                       s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
                     )
+
+                  case (_, AssignOrNamedArg(Ident(`valueTerm`), expr)) =>
+                    try {
+                      ContextUtils.evalTree(c)(expr)
+                    } catch {
+                      case t: Throwable =>
+                        c.abort(c.enclosingPosition, s"$expr could not be evaluated at compile time as a ${classTag.runtimeClass}.")
+                    }
                 }
               }
             }

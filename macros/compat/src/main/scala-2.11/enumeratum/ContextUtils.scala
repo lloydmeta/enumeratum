@@ -37,4 +37,10 @@ object ContextUtils {
   def constructorName(c: Context): c.universe.TermName = {
     c.universe.termNames.CONSTRUCTOR
   }
+
+  def evalTree[ValueType](c: Context)(expr: c.universe.Tree): ValueType = {
+    @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements")) // false positive bug in WartRemover?
+    val evaluated = c.eval(c.Expr[ValueType](c.untypecheck(c.typecheck(expr))))
+    evaluated
+  }
 }
