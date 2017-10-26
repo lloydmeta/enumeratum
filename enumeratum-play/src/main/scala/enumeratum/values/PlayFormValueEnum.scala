@@ -36,8 +36,8 @@ trait IntPlayFormValueEnum[EntryType <: IntEnumEntry] extends PlayFormValueEnum[
 /**
   * Form Bindable implicits for LongEnum
   */
-trait LongPlayFormValueEnum[EntryType <: LongEnumEntry]
-    extends PlayFormValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
+trait LongPlayFormValueEnum[EntryType <: LongEnumEntry] extends PlayFormValueEnum[Long, EntryType] {
+  this: LongEnum[EntryType] =>
   protected val baseFormatter: Formatter[Long] = Formats.longFormat
 }
 
@@ -60,15 +60,15 @@ trait StringPlayFormValueEnum[EntryType <: StringEnumEntry]
 /**
   * Form Bindable implicits for CharEnum
   */
-trait CharPlayFormValueEnum[EntryType <: CharEnumEntry]
-    extends PlayFormValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
+trait CharPlayFormValueEnum[EntryType <: CharEnumEntry] extends PlayFormValueEnum[Char, EntryType] {
+  this: CharEnum[EntryType] =>
   protected val baseFormatter: Formatter[Char] = Forms.charFormatter
 }
 
 /**
   * Form Bindable implicits for ByteEnum
   */
-trait BytePlayFormValueEnum[EntryType <: ByteEnumEntry]
-    extends PlayFormValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>
+trait BytePlayFormValueEnum[EntryType <: ByteEnumEntry] extends PlayFormValueEnum[Byte, EntryType] {
+  this: ByteEnum[EntryType] =>
   protected val baseFormatter: Formatter[Byte] = Formats.byteFormat
 }

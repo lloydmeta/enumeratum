@@ -1,6 +1,7 @@
 package enumeratum
 
 import ContextUtils.Context
+import scala.reflect.macros.blackbox.Context
 
 import scala.reflect.ClassTag
 import scala.collection.immutable._

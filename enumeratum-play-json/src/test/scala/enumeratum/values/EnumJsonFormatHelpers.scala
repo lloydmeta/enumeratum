@@ -39,8 +39,7 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
     }
   }
 
-  def testNumericReads[EntryType <: ValueEnumEntry[ValueType],
-                       ValueType <: AnyVal: Numeric: Reads](
+  def testNumericReads[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads](
       enumKind: String,
       enum: ValueEnum[ValueType, EntryType],
       providedReads: Option[Reads[EntryType]] = None
