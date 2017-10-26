@@ -60,8 +60,7 @@ object Json4s {
       _ =>
         (
           {
-            case JInt(i)
-                if inBounds(i, Short.MaxValue) && enum.withValueOpt(i.toShort).isDefined =>
+            case JInt(i) if inBounds(i, Short.MaxValue) && enum.withValueOpt(i.toShort).isDefined =>
               enum.withValue(i.toShort)
             case JLong(i)
                 if inBounds(i, Short.MaxValue) && enum.withValueOpt(i.toShort).isDefined =>
