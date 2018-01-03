@@ -360,10 +360,6 @@ lazy val publishSettings = Seq(
           <distribution>repo</distribution>
         </license>
       </licenses>
-      <scm>
-        <url>git@github.com:lloydmeta/enumeratum.git</url>
-        <connection>scm:git:git@github.com:lloydmeta/enumeratum.git</connection>
-      </scm>
       <developers>
         <developer>
           <id>lloydmeta</id>
