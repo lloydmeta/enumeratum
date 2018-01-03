@@ -228,7 +228,7 @@ lazy val enumeratumCirce = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.15-SNAPSHOT",
+    version := "1.5.16-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -360,10 +360,6 @@ lazy val publishSettings = Seq(
           <distribution>repo</distribution>
         </license>
       </licenses>
-      <scm>
-        <url>git@github.com:lloydmeta/enumeratum.git</url>
-        <connection>scm:git:git@github.com:lloydmeta/enumeratum.git</connection>
-      </scm>
       <developers>
         <developer>
           <id>lloydmeta</id>
