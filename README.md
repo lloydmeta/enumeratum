@@ -30,7 +30,7 @@ Integrations are available for:
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
-- [Argonaut](argonaut.io): JVM and ScalaJS
+- [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 
 ### Table of Contents
