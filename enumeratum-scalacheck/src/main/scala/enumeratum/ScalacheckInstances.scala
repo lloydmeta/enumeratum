@@ -1,0 +1,3 @@
+package enumeratum
+
+trait ScalacheckInstances extends ArbitraryInstances with CogenInstances
