@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.12.4"
 
-lazy val scalaVersions = Seq("2.10.6", "2.11.11", "2.12.4")
+lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.4")
 
 lazy val scalaTestVersion  = "3.0.4"
 lazy val scalacheckVersion = "1.13.5"
@@ -293,7 +293,7 @@ lazy val enumeratumScalacheck =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13-SNAPSHOT",
+      version := "1.5.13",
       libraryDependencies ++= Seq(
         "org.scalacheck" %% "scalacheck"      % scalacheckVersion,
         "com.beachape"   %% "enumeratum"      % Versions.Core.stable,
