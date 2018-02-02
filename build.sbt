@@ -293,7 +293,7 @@ lazy val enumeratumScalacheck =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13",
+      version := "1.5.14-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.scalacheck" %% "scalacheck"      % scalacheckVersion,
         "com.beachape"   %% "enumeratum"      % Versions.Core.stable,
