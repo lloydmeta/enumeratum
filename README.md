@@ -32,6 +32,7 @@ Integrations are available for:
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
+- [ScalaCheck](https://www.scalacheck.org): JVM only
 
 ### Table of Contents
 
@@ -52,8 +53,9 @@ Integrations are available for:
 9. [Argonaut integration](#argonaut)
 10. [Json4s integration](#json4s)
 11. [Slick integration](#slick-integration)
-12. [Benchmarking](#benchmarking)
-13. [Publishing](#publishing)
+12. [ScalaCheck](#scalacheck)
+13. [Benchmarking](#benchmarking)
+14. [Publishing](#publishing)
 
 
 ## Quick start
@@ -813,6 +815,37 @@ import org.json4s.DefaultFormats
 
 implicit val formats = DefaultFormats + Json4s.serializer(Device)
 
+```
+
+## ScalaCheck
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.11)
+
+### SBT
+
+To use enumeratum with [ScalaCheck](https://www.scalacheck.org):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-scalacheck" % enumeratumScalacheckVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+Given the enum declared in [the quick-start section](#usage), you can get an `Arbitrary[Greeting]` (to generate instances of `Greeting`) and a `Cogen[Greeting]` (to generate instances of `Greeting => (A: Arbitrary)`) by importing generators in the scope of your tests:
+
+```scala
+import enumeratum.scalacheck._
+```
+
+#### ValueEnum
+
+Similarly, you can get `Arbitrary` and `Cogen` instances for every `ValueEnum` subtype by importing generators in the scope of your tests:
+
+```scala
+import enumeratum.values.scalacheck._
 ```
 
 ## Slick integration

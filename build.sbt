@@ -51,7 +51,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumReactiveMongoBson,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
-  enumeratumJson4s
+  enumeratumJson4s,
+  enumeratumScalacheck
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -284,6 +285,19 @@ lazy val enumeratumJson4s =
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
         "com.beachape" %% "enumeratum"    % Versions.Core.stable
+      )
+    )
+
+lazy val enumeratumScalacheck =
+  Project(id = "enumeratum-scalacheck", base = file("enumeratum-scalacheck"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.13-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        "org.scalacheck" %% "scalacheck"      % scalacheckVersion,
+        "com.beachape"   %% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"   %% "enumeratum-test" % Versions.Core.stable % Test
       )
     )
 
