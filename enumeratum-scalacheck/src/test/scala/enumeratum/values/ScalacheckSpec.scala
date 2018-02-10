@@ -12,11 +12,11 @@ class ScalacheckSpec
 
   import scalacheck._
 
-  test[ByteEnumEntry, Bites]
-  test[CharEnumEntry, Alphabet]
-  test[IntEnumEntry, LibraryItem]
-  test[LongEnumEntry, ContentType]
-  test[ShortEnumEntry, Drinks]
-  test[StringEnumEntry, OperatingSystem]
+  test[ByteEnumEntry, Bites]("ByteEnumEntry")
+  test[CharEnumEntry, Alphabet]("CharEnumEntry")
+  test[IntEnumEntry, LibraryItem]("IntEnumEntry")
+  test[LongEnumEntry, ContentType]("LongEnumEntry")
+  test[ShortEnumEntry, Drinks]("ShortEnumEntry")
+  test[StringEnumEntry, OperatingSystem]("StringEnumEntry")
 
 }
