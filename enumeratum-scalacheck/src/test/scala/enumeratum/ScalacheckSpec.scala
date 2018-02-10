@@ -11,6 +11,6 @@ class ScalacheckSpec
 
   import scalacheck._
 
-  test[EnumEntry, InTheWoods.Mushroom]
+  test[EnumEntry, InTheWoods.Mushroom]("EnumEntry")
 
 }

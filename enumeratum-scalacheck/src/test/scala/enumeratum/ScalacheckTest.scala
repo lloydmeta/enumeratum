@@ -11,8 +11,8 @@ trait ScalacheckTest {
   private implicit val arbSeed: Arbitrary[Seed] = Arbitrary(
     Arbitrary.arbitrary[Long].map(Seed.apply))
 
-  def test[BaseType: Manifest, EnumType <: BaseType: Arbitrary: Cogen]: Unit =
-    describe(s"Cogen[${manifest[BaseType].runtimeClass.getSimpleName}]") {
+  def test[BaseType, EnumType <: BaseType: Arbitrary: Cogen](label: String): Unit =
+    describe(s"Cogen[$label]") {
 
       // Cogen must follow the four laws defined in Scalacheck's CogenSpecification, but they are
       // not published, so test that we did not break them. Incidentally, this also tests Arbitrary.
