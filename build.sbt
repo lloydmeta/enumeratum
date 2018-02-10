@@ -298,6 +298,7 @@ lazy val enumeratumScalacheck = crossProject
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
+    name := "enumeratum-scalacheck",
     version := "1.5.14-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
