@@ -932,6 +932,8 @@ ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
 ctx.run(query[Shirt]).foreach(println)
 ```
 - Note that an explicit cast to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+- `quill-cassandra` currently does not support `ShortEnum` and `ByteEnum` (see getquill/quill#1009)
+- `quill-orientdb` currently does not support `ByteEnum` (see getquill/quill#1029)
 
 ## Slick integration
 
