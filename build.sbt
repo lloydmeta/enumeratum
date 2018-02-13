@@ -13,6 +13,7 @@ lazy val circeVersion         = "0.9.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2"
 lazy val json4sVersion        = "3.5.1"
+lazy val quillVersion         = "2.3.2"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -319,6 +320,33 @@ lazy val enumeratumScalacheck = crossProject
 
 lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
+
+lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm)
+lazy val enumeratumQuill = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-quill"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-quill",
+    version := "0.1.0-SNAPSHOT",
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("io.getquill", "quill-core", cross)  % quillVersion,
+        impl.ScalaJSGroupID.withCross("io.getquill", "quill-sql", cross)   % quillVersion % Test,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+      )
+    }
+  )
+lazy val enumeratumQuillJs  = enumeratumQuill.js
+lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",

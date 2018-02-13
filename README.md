@@ -33,6 +33,7 @@ Integrations are available for:
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
+- [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents
 
@@ -54,8 +55,9 @@ Integrations are available for:
 10. [Json4s integration](#json4s)
 11. [Slick integration](#slick-integration)
 12. [ScalaCheck](#scalacheck)
-13. [Benchmarking](#benchmarking)
-14. [Publishing](#publishing)
+13. [Quill integration](#quill)
+14. [Benchmarking](#benchmarking)
+15. [Publishing](#publishing)
 
 
 ## Quick start
@@ -847,6 +849,91 @@ Similarly, you can get `Arbitrary` and `Cogen` instances for every `ValueEnum` s
 ```scala
 import enumeratum.values.scalacheck._
 ```
+
+## Quill
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.11)
+
+### SBT
+
+To use enumeratum with [Quill](http://getquill.io):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-quill" % enumeratumQuillVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum-quill" % enumeratumQuillVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with QuillEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large  extends ShirtSize
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import io.getquill._
+
+lazy val ctx = new PostgresJdbcContext(SnakeCase, "ctx")
+import ctx._
+
+ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+
+ctx.run(query[Shirt]).foreach(println)
+```
+- Note that an explicit cast to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
+
+#### ValueEnum
+
+```scala
+import enumeratum._
+
+sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+
+case object ShirtSize extends IntEnum[ShirtSize] with IntQuillEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize(1)
+  case object Medium extends ShirtSize(2)
+  case object Large  extends ShirtSize(3)
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import io.getquill._
+
+lazy val ctx = new PostgresJdbcContext(SnakeCase, "ctx")
+import ctx._
+
+ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+
+ctx.run(query[Shirt]).foreach(println)
+```
+- Note that an explicit cast to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+- `quill-cassandra` currently does not support `ShortEnum` and `ByteEnum` (see [getquill/quill#1009](https://github.com/getquill/quill/issues/1009))
+- `quill-orientdb` currently does not support `ByteEnum` (see [getquill/quill#1029](https://github.com/getquill/quill/issues/1029))
 
 ## Slick integration
 
