@@ -6,45 +6,46 @@ import scala.collection.immutable
 
 class QuillValueEnumSpec extends FunSpec with Matchers {
 
-  describe("to SQL String") {
+  describe("An IntQuillEnum") {
 
-    // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
-    it("should compile") {
+    it("should encode to Int") {
+      // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
         | import io.getquill._
         | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
         | import ctx._
-        | ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+        | ctx.run(query[QuillBorrowerToLibraryItem].insert(_.borrower -> "Foo", _.item -> lift(QuillLibraryItem.Book: QuillLibraryItem)))
+      """.stripMargin should compile
+    }
+
+    it("should decode from Int") {
+      // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
+      """
+        | import io.getquill._
+        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+        | import ctx._
+        | ctx.run(query[QuillBorrowerToLibraryItem])
       """.stripMargin should compile
     }
 
   }
 
-  describe("from SQL String") {
-
-    // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
-    it("should compile") {
-      """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[Shirt])
-      """.stripMargin should compile
-    }
-
-  }
 }
 
-sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+sealed abstract class QuillLibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object ShirtSize extends IntEnum[ShirtSize] with IntQuillEnum[ShirtSize] {
+case object QuillLibraryItem
+  extends IntEnum[QuillLibraryItem]
+    with IntQuillEnum[QuillLibraryItem] {
 
-  case object Small  extends ShirtSize(1)
-  case object Medium extends ShirtSize(2)
-  case object Large  extends ShirtSize(3)
+  // A good mix of named, unnamed, named + unordered args
+  case object Book     extends QuillLibraryItem(value = 1, name = "book")
+  case object Movie    extends QuillLibraryItem(name = "movie", value = 2)
+  case object Magazine extends QuillLibraryItem(3, "magazine")
+  case object CD       extends QuillLibraryItem(4, name = "cd")
 
-  override val values: immutable.IndexedSeq[ShirtSize] = findValues
+  override val values: immutable.IndexedSeq[QuillLibraryItem] = findValues
 
 }
 
-case class Shirt(size: ShirtSize)
+case class QuillBorrowerToLibraryItem(borrower: String, item: QuillLibraryItem)

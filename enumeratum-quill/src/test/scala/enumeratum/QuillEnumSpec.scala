@@ -6,45 +6,42 @@ import scala.collection.immutable
 
 class QuillEnumSpec extends FunSpec with Matchers {
 
-  describe("to SQL String") {
+  describe("A QuillEnum") {
 
     // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
-    it("should compile") {
+    it("should encode to String") {
       """
         | import io.getquill._
         | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
         | import ctx._
-        | ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+        | ctx.run(query[QuillShirt].insert(_.size -> lift(QuillShirtSize.Small: QuillShirtSize)))
       """.stripMargin should compile
     }
-
-  }
-
-  describe("from SQL String") {
 
     // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
-    it("should compile") {
+    it("should decode from String") {
       """
         | import io.getquill._
         | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
         | import ctx._
-        | ctx.run(query[Shirt])
+        | ctx.run(query[QuillShirt])
       """.stripMargin should compile
     }
 
   }
-}
-
-sealed trait ShirtSize extends EnumEntry
-
-case object ShirtSize extends Enum[ShirtSize] with QuillEnum[ShirtSize] {
-
-  case object Small  extends ShirtSize
-  case object Medium extends ShirtSize
-  case object Large  extends ShirtSize
-
-  override val values: immutable.IndexedSeq[ShirtSize] = findValues
 
 }
 
-case class Shirt(size: ShirtSize)
+sealed trait QuillShirtSize extends EnumEntry
+
+case object QuillShirtSize extends Enum[QuillShirtSize] with QuillEnum[QuillShirtSize] {
+
+  case object Small  extends QuillShirtSize
+  case object Medium extends QuillShirtSize
+  case object Large  extends QuillShirtSize
+
+  override val values: immutable.IndexedSeq[QuillShirtSize] = findValues
+
+}
+
+case class QuillShirt(size: QuillShirtSize)
