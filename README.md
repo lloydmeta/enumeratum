@@ -894,12 +894,14 @@ case class Shirt(size: ShirtSize)
 
 import io.getquill._
 
-val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+lazy val ctx = new PostgresJdbcContext(SnakeCase, "ctx")
 import ctx._
 
-val sql = ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize))).string
-assert(sql == "INSERT INTO Shirt (size) VALUES (?)")
+ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+
+ctx.run(query[Shirt]).foreach(println)
 ```
+- Note that an explicit cast to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
 
 #### ValueEnum
 
@@ -922,12 +924,14 @@ case class Shirt(size: ShirtSize)
 
 import io.getquill._
 
-val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+lazy val ctx = new PostgresJdbcContext(SnakeCase, "ctx")
 import ctx._
 
-val sql = ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize))).string
-assert(sql == "INSERT INTO Shirt (size) VALUES (?)")
+ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
+
+ctx.run(query[Shirt]).foreach(println)
 ```
+- Note that an explicit cast to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
 
 ## Slick integration
 
