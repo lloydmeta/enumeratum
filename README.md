@@ -32,7 +32,7 @@ Integrations are available for:
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
-- [ScalaCheck](https://www.scalacheck.org): JVM only
+- [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
 - [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents

@@ -53,7 +53,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumJson4s,
-  enumeratumScalacheck
+  enumeratumScalacheckJs,
+  enumeratumScalacheckJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -289,18 +290,36 @@ lazy val enumeratumJson4s =
       )
     )
 
-lazy val enumeratumScalacheck =
-  Project(id = "enumeratum-scalacheck", base = file("enumeratum-scalacheck"))
-    .settings(commonWithPublishSettings: _*)
-    .settings(testSettings: _*)
-    .settings(
-      version := "1.5.14-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        "org.scalacheck" %% "scalacheck"      % scalacheckVersion,
-        "com.beachape"   %% "enumeratum"      % Versions.Core.stable,
-        "com.beachape"   %% "enumeratum-test" % Versions.Core.stable % Test
+lazy val scalacheckAggregate =
+  aggregateProject("scalacheck", enumeratumScalacheckJs, enumeratumScalacheckJvm)
+
+lazy val enumeratumScalacheck = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-scalacheck"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-scalacheck",
+    version := "1.5.14-SNAPSHOT",
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("org.scalacheck", "scalacheck", cross) % circeVersion,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross)   % Versions.Core.stable,
+        impl.ScalaJSGroupID
+          .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
       )
-    )
+    }
+  )
+
+lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
+lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
 lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm)
 lazy val enumeratumQuill = crossProject
