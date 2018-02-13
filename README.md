@@ -901,7 +901,7 @@ ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
 
 ctx.run(query[Shirt]).foreach(println)
 ```
-- Note that an explicit cast to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
+- Note that an explicit annotation to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
 
 #### ValueEnum
 
