@@ -54,7 +54,9 @@ lazy val integrationProjectRefs = Seq(
   enumeratumArgonautJvm,
   enumeratumJson4s,
   enumeratumScalacheckJs,
-  enumeratumScalacheckJvm
+  enumeratumScalacheckJvm,
+  enumeratumQuillJs,
+  enumeratumQuillJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -321,7 +323,9 @@ lazy val enumeratumScalacheck = crossProject
 lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
-lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm)
+lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
+  crossScalaVersions := post210Only(crossScalaVersions.value)
+)
 lazy val enumeratumQuill = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-quill"))
@@ -329,7 +333,8 @@ lazy val enumeratumQuill = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "0.1.0-SNAPSHOT",
+    version := "1.5.12",
+    crossScalaVersions := post210Only(crossScalaVersions.value),
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -545,3 +550,11 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
       publishLocal := {}
     )
     .aggregate(projects: _*)
+
+def post210Only(versions: Seq[String]): Seq[String] =
+  versions.filter { vString =>
+    CrossVersion.partialVersion(vString) match {
+      case Some((major, minor)) if major >= 2 && minor >= 11 => true
+      case _                                                 => false
+    }
+  }
