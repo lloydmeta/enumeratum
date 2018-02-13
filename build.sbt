@@ -333,7 +333,7 @@ lazy val enumeratumQuill = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "1.5.12-SNAPSHOT",
+    version := "1.5.12",
     crossScalaVersions := post210Only(crossScalaVersions.value),
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._

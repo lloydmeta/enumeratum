@@ -4,12 +4,12 @@ language: scala
 # Only run aggregation 2.12
 matrix:
   include:
-    - scala: 2.10.6
+    - scala: 2.10.7
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - sbt ++$TRAVIS_SCALA_VERSION test
-    - scala: 2.11.11
+    - scala: 2.11.12
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
