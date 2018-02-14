@@ -901,7 +901,7 @@ ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
 
 ctx.run(query[Shirt]).foreach(println)
 ```
-- Note that an explicit annotation to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
+- Note that a type ascription to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
 
 #### ValueEnum
 
@@ -931,7 +931,7 @@ ctx.run(query[Shirt].insert(_.size -> lift(ShirtSize.Small: ShirtSize)))
 
 ctx.run(query[Shirt]).foreach(println)
 ```
-- Note that an explicit cast to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+- Note that a type ascription to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
 - `quill-cassandra` currently does not support `ShortEnum` and `ByteEnum` (see [getquill/quill#1009](https://github.com/getquill/quill/issues/1009))
 - `quill-orientdb` currently does not support `ByteEnum` (see [getquill/quill#1029](https://github.com/getquill/quill/issues/1029))
 
