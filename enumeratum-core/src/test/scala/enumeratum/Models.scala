@@ -227,6 +227,19 @@ object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
 
 }
 
+case object MultiEnum extends Enum[MultiEnum] {
+  import scala.collection.breakOut
+  val values = findValues
+
+  override val namesToValuesMap: Map[String, MultiEnum] =
+    values.flatMap { n =>
+      (n.entryName -> n) +: n.alternateNames.map(name => name -> n)
+    }(breakOut)
+
+  case object One   extends MultiEnum("one", "1", "eins")
+  case object Two   extends MultiEnum("two", "2", "zwei")
+}
+
 object Wrapper {
 
   sealed trait SmartEnum extends EnumEntry
