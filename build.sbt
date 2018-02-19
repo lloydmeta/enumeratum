@@ -13,6 +13,7 @@ lazy val circeVersion         = "0.9.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2"
 lazy val json4sVersion        = "3.5.1"
+lazy val quillVersion         = "2.3.2"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -52,7 +53,10 @@ lazy val integrationProjectRefs = Seq(
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumJson4s,
-  enumeratumScalacheck
+  enumeratumScalacheckJs,
+  enumeratumScalacheckJvm,
+  enumeratumQuillJs,
+  enumeratumQuillJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -288,18 +292,66 @@ lazy val enumeratumJson4s =
       )
     )
 
-lazy val enumeratumScalacheck =
-  Project(id = "enumeratum-scalacheck", base = file("enumeratum-scalacheck"))
-    .settings(commonWithPublishSettings: _*)
-    .settings(testSettings: _*)
-    .settings(
-      version := "1.5.14-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        "org.scalacheck" %% "scalacheck"      % scalacheckVersion,
-        "com.beachape"   %% "enumeratum"      % Versions.Core.stable,
-        "com.beachape"   %% "enumeratum-test" % Versions.Core.stable % Test
+lazy val scalacheckAggregate =
+  aggregateProject("scalacheck", enumeratumScalacheckJs, enumeratumScalacheckJvm)
+
+lazy val enumeratumScalacheck = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-scalacheck"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-scalacheck",
+    version := "1.5.14-SNAPSHOT",
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("org.scalacheck", "scalacheck", cross) % circeVersion,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross)   % Versions.Core.stable,
+        impl.ScalaJSGroupID
+          .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
       )
-    )
+    }
+  )
+
+lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
+lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
+
+lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
+  crossScalaVersions := post210Only(crossScalaVersions.value)
+)
+lazy val enumeratumQuill = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-quill"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-quill",
+    version := "1.5.12",
+    crossScalaVersions := post210Only(crossScalaVersions.value),
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("io.getquill", "quill-core", cross)  % quillVersion,
+        impl.ScalaJSGroupID.withCross("io.getquill", "quill-sql", cross)   % quillVersion % Test,
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+      )
+    }
+  )
+lazy val enumeratumQuillJs  = enumeratumQuill.js
+lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",
@@ -498,3 +550,11 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
       publishLocal := {}
     )
     .aggregate(projects: _*)
+
+def post210Only(versions: Seq[String]): Seq[String] =
+  versions.filter { vString =>
+    CrossVersion.partialVersion(vString) match {
+      case Some((major, minor)) if major >= 2 && minor >= 11 => true
+      case _                                                 => false
+    }
+  }
