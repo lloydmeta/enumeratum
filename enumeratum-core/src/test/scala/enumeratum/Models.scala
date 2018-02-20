@@ -227,14 +227,17 @@ object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
 
 }
 
+sealed class MultiEnum(override val entryName: String,
+                       val alternateNames: String*) extends EnumEntry
+
+
 case object MultiEnum extends Enum[MultiEnum] {
-  import scala.collection.breakOut
   val values = findValues
 
-  override val namesToValuesMap: Map[String, MultiEnum] =
+  override lazy val namesToValuesMap: Map[String, MultiEnum] =
     values.flatMap { n =>
       (n.entryName -> n) +: n.alternateNames.map(name => name -> n)
-    }(breakOut)
+    }.toMap
 
   case object One   extends MultiEnum("one", "1", "eins")
   case object Two   extends MultiEnum("two", "2", "zwei")
