@@ -31,8 +31,8 @@ object EnumEntry {
    *
    * http://stackoverflow.com/a/19832063/1814775
    */
-  private val regexp1: Pattern = Pattern.compile("([A-Z]+)([A-Z][a-z])")
-  private val regexp2: Pattern = Pattern.compile("([a-z\\d])([A-Z])")
+  private val regexp1: Pattern    = Pattern.compile("([A-Z]+)([A-Z][a-z])")
+  private val regexp2: Pattern    = Pattern.compile("([a-z\\d])([A-Z])")
   private val replacement: String = "$1_$2"
 
   // Adapted from Lift's StringHelpers#snakify https://github.com/lift/framework/blob/a3075e0676d60861425281427aa5f57c02c3b0bc/core/util/src/main/scala/net/liftweb/util/StringHelpers.scala#L91
@@ -174,9 +174,6 @@ object EnumEntry {
     * Stackable trait to convert the entryName to lowerCamelCase.
     */
   trait LowerCamelcase extends EnumEntry with Camelcase with Uncapitalised
-
-  abstract class MultiEnum(override val entryName: String,
-                           val alternateNames: String*) extends EnumEntry
 
   /**
     * Helper implicit class that holds enrichment methods
