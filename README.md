@@ -32,6 +32,7 @@ Integrations are available for:
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
+- [Jsoniter-scala](http://github.com/plokhotnyuk/jsoniter-scala): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
 - [Quill](http://getquill.io): JVM and ScalaJS
 
@@ -53,11 +54,12 @@ Integrations are available for:
 8. [ReactiveMongo BSON integration](#reactivemongo-bson)
 9. [Argonaut integration](#argonaut)
 10. [Json4s integration](#json4s)
-11. [Slick integration](#slick-integration)
-12. [ScalaCheck](#scalacheck)
-13. [Quill integration](#quill)
-14. [Benchmarking](#benchmarking)
-15. [Publishing](#publishing)
+11. [Jsoniter-scala integration](#jsoniter-scala)
+12. [Slick integration](#slick-integration)
+13. [ScalaCheck](#scalacheck)
+14. [Quill integration](#quill)
+15. [Benchmarking](#benchmarking)
+16. [Publishing](#publishing)
 
 
 ## Quick start
@@ -816,6 +818,65 @@ case object Device
 import org.json4s.DefaultFormats
 
 implicit val formats = DefaultFormats + Json4s.serializer(Device)
+
+```
+
+## Jsoniter-scala
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-jsoniter-scala_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-jsoniter-scala_2.11)
+
+### SBT
+
+To use enumeratum with [Jsoniter-scala](http://github.com/plokhotnyuk/jsoniter-scala):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-jsoniter-scala" % enumeratumJsoniterScalaVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait TrafficLight extends EnumEntry
+object TrafficLight extends Enum[TrafficLight] /* nothing extra here */ {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+
+  val values = findValues
+}
+
+import com.github.plokhotnyuk.jsoniter_scala.macros._
+import com.github.plokhotnyuk.jsoniter_scala.core._
+
+implicit val trafficLightCodec: JsonCodec[TrafficLight] = JsoniterScala.codec(TrafficLight)
+
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class Device(val value: Short) extends ShortEnumEntry
+case object Device
+  extends ShortEnum[Device] /* nothing extra here */  {
+  case object Phone   extends Device(1)
+  case object Laptop  extends Device(2)
+  case object Desktop extends Device(3)
+  case object Tablet  extends Device(4)
+
+  val values = findValues
+}
+
+import com.github.plokhotnyuk.jsoniter_scala.macros._
+import com.github.plokhotnyuk.jsoniter_scala.core._
+
+implicit val trafficLightCodec: JsonCodec[Device] = JsoniterScala.codec(Device)
 
 ```
 

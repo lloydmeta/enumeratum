@@ -13,6 +13,7 @@ lazy val circeVersion         = "0.9.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2"
 lazy val json4sVersion        = "3.5.1"
+lazy val jsoniterScalaVersion = "0.14.0"
 lazy val quillVersion         = "2.3.2"
 
 def thePlayVersion(scalaVersion: String) =
@@ -53,6 +54,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumJson4s,
+  enumeratumJsoniterScala,
   enumeratumScalacheckJs,
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
@@ -289,6 +291,19 @@ lazy val enumeratumJson4s =
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
         "com.beachape" %% "enumeratum"    % Versions.Core.stable
+      )
+    )
+
+lazy val enumeratumJsoniterScala =
+  Project(id = "enumeratum-jsoniter-scala", base = file("enumeratum-jsoniter-scala"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.14-SNAPSHOT",
+      crossScalaVersions := post210Only(crossScalaVersions.value),
+      libraryDependencies ++= Seq(
+        "com.github.plokhotnyuk.jsoniter-scala" %% "macros"     % jsoniterScalaVersion,
+        "com.beachape"                          %% "enumeratum" % Versions.Core.stable
       )
     )
 

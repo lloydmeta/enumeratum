@@ -16,7 +16,9 @@ sbt "project enumeratum-argonaut" +clean +publishSigned &&
 say "Done 6" &&
 sbt "project enumeratum-json4s" +clean +publishSigned &&
 say "Done 7" &&
-sbt "project enumeratum-scalacheck" +clean +publishSigned &&
+sbt "project enumeratum-jsoniter-scala" +clean +publishSigned &&
 say "Done 8" &&
+sbt "project enumeratum-scalacheck" +clean +publishSigned &&
+say "Done 9" &&
 sbt "project quill-aggregate" +clean +publishSigned &&
 say "All done"
