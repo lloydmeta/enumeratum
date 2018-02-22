@@ -236,7 +236,7 @@ case object MultiEnum extends Enum[MultiEnum] {
 
   override lazy val namesToValuesMap: Map[String, MultiEnum] =
     values.flatMap { n =>
-      (n.entryName -> n) +: n.alternateNames.map(name => name -> n)
+      (n.entryName -> n) +: n.alternateNames.map(_ -> n)
     }.toMap
 
   case object One   extends MultiEnum("one", "1", "eins")
