@@ -42,8 +42,15 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsInt()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toInt) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toInt)
     }
 
   def codec[A <: LongEnumEntry: Manifest](enum: LongEnum[A]): JsonCodec[A] =
@@ -60,8 +67,15 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsLong()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toLong) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toLong)
     }
 
   def codec[A <: ShortEnumEntry: Manifest](enum: ShortEnum[A]): JsonCodec[A] =
@@ -78,8 +92,15 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsShort()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toShort) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toShort)
     }
 
   def codec[A <: StringEnumEntry: Manifest](enum: StringEnum[A]): JsonCodec[A] =
@@ -96,8 +117,15 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsString()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toString) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toString)
     }
 
   def codec[A <: ByteEnumEntry: Manifest](enum: ByteEnum[A]): JsonCodec[A] =
@@ -114,8 +142,15 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsByte()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toByte) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toByte)
     }
 
   def codec[A <: CharEnumEntry: Manifest](enum: CharEnum[A]): JsonCodec[A] =
@@ -132,7 +167,14 @@ object JsoniterScala {
           enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
         }
 
+      def decodeKey(in: JsonReader): A = {
+        val v = in.readKeyAsChar()
+        enum.withValueOpt(v).getOrElse(in.enumValueError(v.toString))
+      }
+
       def encode(x: A, out: JsonWriter): Unit =
         if (x ne null) out.writeVal(x.value.toString) else out.writeNull()
+
+      def encodeKey(x: A, out: JsonWriter): Unit = out.writeKey(x.value.toChar)
     }
 }

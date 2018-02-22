@@ -8,14 +8,15 @@ class JsoniterScalaSpec extends FunSpec with Matchers {
 
   case class Data(tr: TrafficLight)
   case class DataOpt(tr: Option[TrafficLight])
-  // TODO: uncomment DataMap tests after implementation of the following improvement:
-  // https://github.com/plokhotnyuk/jsoniter-scala/issues/14
-  // case class DataMap(tr: Map[TrafficLight, Int])
+  case class DataMap(tr: Map[TrafficLight, Int])
 
-  implicit val trafficLightCodec: JsonCodec[TrafficLight] = JsoniterScala.codec(TrafficLight)
-  implicit val dataCodec: JsonCodec[Data]                 = JsonCodecMaker.make[Data](CodecMakerConfig())
-  implicit val dataOptCodec: JsonCodec[DataOpt]           = JsonCodecMaker.make[DataOpt](CodecMakerConfig())
-  //implicit val dataMapCodec: JsonCodec[DataMap] = JsonCodecMaker.make[DataMap](CodecMakerConfig())
+  implicit val trafficLightCodec: JsonCodec[TrafficLight] =
+    JsoniterScala.codec(TrafficLight)
+  implicit val dataCodec: JsonValueCodec[Data] = JsonCodecMaker.make[Data](CodecMakerConfig())
+  implicit val dataOptCodec: JsonValueCodec[DataOpt] =
+    JsonCodecMaker.make[DataOpt](CodecMakerConfig())
+  implicit val dataMapCodec: JsonValueCodec[DataMap] =
+    JsonCodecMaker.make[DataMap](CodecMakerConfig())
 
   describe("to JSON") {
     it("should serialize plain value to entryName") {
@@ -35,14 +36,12 @@ class JsoniterScalaSpec extends FunSpec with Matchers {
       new String(write(DataOpt(tr = null))) shouldBe """{}"""
     }
 
-    /*
     it("should serialize value to key") {
       TrafficLight.values.foreach { value =>
         val name = value.entryName
         new String(write(DataMap(tr = Map(value -> 0)))) shouldBe s"""{"tr":{"$name":0}}"""
       }
     }
-   */
   }
 
   describe("from JSON") {
@@ -64,14 +63,12 @@ class JsoniterScalaSpec extends FunSpec with Matchers {
       read[DataOpt]("""{"tr":null}""".getBytes).tr shouldBe None
     }
 
-    /*
     it("should parse enum members into keys") {
       TrafficLight.values.foreach { value =>
         val name = value.entryName
         read[DataMap](s"""{"tr":{"$name":0}}""".getBytes).tr shouldBe Map(value -> 0)
       }
     }
-     */
 
     it("should fail to parse random JSON values to members") {
       a[JsonParseException] shouldBe thrownBy(read[Data]("""{"tr":"bogus"}""".getBytes))

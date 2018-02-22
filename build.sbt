@@ -13,7 +13,7 @@ lazy val circeVersion         = "0.9.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2"
 lazy val json4sVersion        = "3.5.1"
-lazy val jsoniterScalaVersion = "0.12.0"
+lazy val jsoniterScalaVersion = "0.14.0"
 lazy val quillVersion         = "2.3.2"
 
 def thePlayVersion(scalaVersion: String) =

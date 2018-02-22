@@ -26,10 +26,24 @@ class JsoniterScalaValueEnumSpec extends FunSpec with Matchers {
   implicit val boolCodec: JsonCodec[JsoniterScalaBool] = JsoniterScala.codec(JsoniterScalaBool)
   implicit val digitsCodec: JsonCodec[JsoniterScalaDigits] =
     JsoniterScala.codec(JsoniterScalaDigits)
-  implicit val dataCodec: JsonCodec[Data]       = JsonCodecMaker.make[Data](CodecMakerConfig())
-  implicit val dataOptCodec: JsonCodec[DataOpt] = JsonCodecMaker.make[DataOpt](CodecMakerConfig())
-  implicit val dataSingleCodec: JsonCodec[DataSingle] =
+
+  implicit val dataCodec: JsonValueCodec[Data] = JsonCodecMaker.make[Data](CodecMakerConfig())
+  implicit val dataOptCodec: JsonValueCodec[DataOpt] =
+    JsonCodecMaker.make[DataOpt](CodecMakerConfig())
+  implicit val dataSingleCodec: JsonValueCodec[DataSingle] =
     JsonCodecMaker.make[DataSingle](CodecMakerConfig())
+  implicit val mediaTypeMapCodec: JsonValueCodec[Map[JsoniterScalaMediaType, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaMediaType, Int]](CodecMakerConfig())
+  implicit val jsonLibsMapCodec: JsonValueCodec[Map[JsoniterScalaJsonLibs, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaJsonLibs, Int]](CodecMakerConfig())
+  implicit val deviceMapCodec: JsonValueCodec[Map[JsoniterScalaDevice, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaDevice, Int]](CodecMakerConfig())
+  implicit val httpMethodMapCodec: JsonValueCodec[Map[JsoniterScalaHttpMethod, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaHttpMethod, Int]](CodecMakerConfig())
+  implicit val boolMapCodec: JsonValueCodec[Map[JsoniterScalaBool, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaBool, Int]](CodecMakerConfig())
+  implicit val digitsMapCodec: JsonValueCodec[Map[JsoniterScalaDigits, Int]] =
+    JsonCodecMaker.make[Map[JsoniterScalaDigits, Int]](CodecMakerConfig())
 
   describe("to JSON") {
     it("should serialize plain value") {
@@ -45,6 +59,14 @@ class JsoniterScalaValueEnumSpec extends FunSpec with Matchers {
       new String(write(DataOpt(null))) shouldBe """{}"""
     }
 
+    it("should serialize values to keys") {
+      new String(write(Map[JsoniterScalaMediaType, Int](JsoniterScalaMediaType.`text/json` -> 0))) shouldBe """{"1":0}"""
+      new String(write(Map[JsoniterScalaJsonLibs, Int](JsoniterScalaJsonLibs.JsoniterScala -> 0))) shouldBe """{"7":0}"""
+      new String(write(Map[JsoniterScalaDevice, Int](JsoniterScalaDevice.Phone             -> 0))) shouldBe """{"1":0}"""
+      new String(write(Map[JsoniterScalaHttpMethod, Int](JsoniterScalaHttpMethod.Get       -> 0))) shouldBe """{"GET":0}"""
+      new String(write(Map[JsoniterScalaBool, Int](JsoniterScalaBool.True                  -> 0))) shouldBe """{"T":0}"""
+      new String(write(Map[JsoniterScalaDigits, Int](JsoniterScalaDigits.Uno               -> 0))) shouldBe """{"1":0}"""
+    }
   }
 
   describe("from JSON") {
@@ -61,6 +83,27 @@ class JsoniterScalaValueEnumSpec extends FunSpec with Matchers {
     it("should parse missing value or null into None") {
       read[DataOpt]("""{}""".getBytes) shouldBe DataOpt(None)
       read[DataOpt]("""{"mediaType":null}""".getBytes) shouldBe DataOpt(None)
+    }
+
+    it("should parse enum values to keys") {
+      read[Map[JsoniterScalaMediaType, Int]]("""{"1":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaMediaType, Int](JsoniterScalaMediaType.`text/json` -> 0)
+      }
+      read[Map[JsoniterScalaJsonLibs, Int]]("""{"7":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaJsonLibs, Int](JsoniterScalaJsonLibs.JsoniterScala -> 0)
+      }
+      read[Map[JsoniterScalaDevice, Int]]("""{"1":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaDevice, Int](JsoniterScalaDevice.Phone -> 0)
+      }
+      read[Map[JsoniterScalaHttpMethod, Int]]("""{"GET":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaHttpMethod, Int](JsoniterScalaHttpMethod.Get -> 0)
+      }
+      read[Map[JsoniterScalaBool, Int]]("""{"T":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaBool, Int](JsoniterScalaBool.True -> 0)
+      }
+      read[Map[JsoniterScalaDigits, Int]]("""{"1":0}""".getBytes) shouldBe {
+        Map[JsoniterScalaDigits, Int](JsoniterScalaDigits.Uno -> 0)
+      }
     }
 
     it("should fail to parse random JSON values to members") {
