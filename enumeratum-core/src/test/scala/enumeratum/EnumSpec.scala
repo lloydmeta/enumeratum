@@ -318,10 +318,10 @@ class EnumSpec extends FunSpec with Matchers {
         UncapitalisedEnum.withName("SIKE") shouldBe UncapitalisedEnum.Sike
         UncapitalisedEnum.withName("a") shouldBe UncapitalisedEnum.a
 
-        MultiEnum.withName("One") shouldBe MultiEnum.One
+        MultiEnum.withName("one") shouldBe MultiEnum.One
         MultiEnum.withName("1") shouldBe MultiEnum.One
         MultiEnum.withName("eins") shouldBe MultiEnum.One
-        MultiEnum.withName("Two") shouldBe MultiEnum.Two
+        MultiEnum.withName("two") shouldBe MultiEnum.Two
       }
     }
   }
