@@ -11,39 +11,37 @@ jdk:
 
 env:
   matrix:
-    - PROJECT_SCOPE="core-aggregate/"
-    - PROJECT_SCOPE="macros-aggregate/"
-    - PROJECT_SCOPE="argonaut-aggregate/"
-    - PROJECT_SCOPE="test-aggregate/"
-    - PROJECT_SCOPE="circe-aggregate/"
-    - PROJECT_SCOPE="quill-aggregate/"
-    - PROJECT_SCOPE="circe-aggregate/"
-    - PROJECT_SCOPE="scalacheck-aggregate/"
-    - PROJECT_SCOPE="upickle-aggregate/"
-    - PROJECT_SCOPE="enumeratum-json4s/"
-    - PROJECT_SCOPE="enumeratum-play/"
-    - PROJECT_SCOPE="enumeratum-play-json/"
-    - PROJECT_SCOPE="enumeratum-reactivemongo-bson/"
+    - PROJECT_SCOPE="core-aggregate"
+    - PROJECT_SCOPE="macros-aggregate"
+    - PROJECT_SCOPE="argonaut-aggregate"
+    - PROJECT_SCOPE="test-aggregate"
+    - PROJECT_SCOPE="circe-aggregate"
+    - PROJECT_SCOPE="quill-aggregate"
+    - PROJECT_SCOPE="circe-aggregate"
+    - PROJECT_SCOPE="scalacheck-aggregate"
+    - PROJECT_SCOPE="upickle-aggregate"
+    - PROJECT_SCOPE="enumeratum-json4s"
+    - PROJECT_SCOPE="enumeratum-play"
+    - PROJECT_SCOPE="enumeratum-play-json"
+    - PROJECT_SCOPE="enumeratum-reactivemongo-bson"
 
 
 # Only run aggregation 2.12
 matrix:
   # let's see if this acts as an override...
   include:
-    - scala: 2.10.7
-      script:
-        - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}test:compile ${PROJECT_SCOPE}test:doc"
-        - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}test"
     - scala: 2.12.4
+      env:
+        - PROJECTS="core-aggregate macros-aggregate argonaut-aggregate test-aggregate circe-aggregate quill-aggregate circe-aggregate upickle-aggregate enumeratum-json4s enumeratum-play enumeratum-play-json enumeratum-reactivemongo-bson"
       script:
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+        - ./travis-coverage.sh
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
 
 script:
-  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test ${PROJECT_SCOPE}test:compile ${PROJECT_SCOPE}test:doc"
-  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}test"
+  - >
+    travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test "project ${PROJECT_SCOPE}" test:compile test:doc
+  - >
+    travis_wait sbt ++$TRAVIS_SCALA_VERSION "project ${PROJECT_SCOPE}" test
 
 
 cache:
