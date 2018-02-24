@@ -2,20 +2,21 @@ sudo: false
 language: scala
 
 env:
+  matrix:
 #  - PROJECT_SCOPE="" # root -> all projects
-  - PROJECT_SCOPE="core-aggregate/"
-  - PROJECT_SCOPE="macros-aggregate/"
-  - PROJECT_SCOPE="argonaut-aggregate/"
-  - PROJECT_SCOPE="test-aggregate/"
-  - PROJECT_SCOPE="circe-aggregate/"
-  - PROJECT_SCOPE="quill-aggregate/"
-  - PROJECT_SCOPE="circe-aggregate/"
-  - PROJECT_SCOPE="scalacheck-aggregate/"
-  - PROJECT_SCOPE="upickle-aggregate/"
-  - PROJECT_SCOPE="enumeratum-json4s/"
-  - PROJECT_SCOPE="enumeratum-play/"
-  - PROJECT_SCOPE="enumeratum-play-json/"
-  - PROJECT_SCOPE="enumeratum-reactivemongo-bson/"
+    - PROJECT_SCOPE="core-aggregate/"
+    - PROJECT_SCOPE="macros-aggregate/"
+    - PROJECT_SCOPE="argonaut-aggregate/"
+    - PROJECT_SCOPE="test-aggregate/"
+    - PROJECT_SCOPE="circe-aggregate/"
+    - PROJECT_SCOPE="quill-aggregate/"
+    - PROJECT_SCOPE="circe-aggregate/"
+    - PROJECT_SCOPE="scalacheck-aggregate/"
+    - PROJECT_SCOPE="upickle-aggregate/"
+    - PROJECT_SCOPE="enumeratum-json4s/"
+    - PROJECT_SCOPE="enumeratum-play/"
+    - PROJECT_SCOPE="enumeratum-play-json/"
+    - PROJECT_SCOPE="enumeratum-reactivemongo-bson/"
 
 
 # Only run aggregation 2.12
