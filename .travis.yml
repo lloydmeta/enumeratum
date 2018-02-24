@@ -31,10 +31,11 @@ matrix:
   # let's see if this acts as an override...
   include:
     - scala: 2.12.4
-      env:
-        - PROJECTS="core-aggregate macros-aggregate argonaut-aggregate test-aggregate circe-aggregate quill-aggregate circe-aggregate upickle-aggregate enumeratum-json4s enumeratum-play enumeratum-play-json enumeratum-reactivemongo-bson"
-      script:
-        - ./travis-coverage.sh
+    - env: []
+    - script:
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
 
 script:
