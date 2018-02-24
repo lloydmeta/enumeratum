@@ -2,7 +2,6 @@ sudo: false
 language: scala
 
 scala:
-  - 2.10.7
   - 2.11.12
   - 2.12.4
 
@@ -11,7 +10,6 @@ jdk:
 
 env:
   matrix:
-    - PROJECT_SCOPE="" # root -> all projects
     - PROJECT_SCOPE="core-aggregate/"
     - PROJECT_SCOPE="macros-aggregate/"
     - PROJECT_SCOPE="argonaut-aggregate/"
@@ -36,12 +34,10 @@ matrix:
         - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}test:compile ${PROJECT_SCOPE}test:doc"
         - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}test"
     - scala: 2.12.4
-      env:
-        - PROJECT_SCOPE=""
       script:
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
 
 script:
