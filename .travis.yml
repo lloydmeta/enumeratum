@@ -38,10 +38,8 @@ matrix:
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
 
 script:
-  - >
-    travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test \"project ${PROJECT_SCOPE}\" test:compile test:doc
-  - >
-    travis_wait sbt ++$TRAVIS_SCALA_VERSION \"project ${PROJECT_SCOPE}\" test
+  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test ${PROJECT_SCOPE}/test:compile ${PROJECT_SCOPE}/test:doc"
+  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}/test"
 
 
 cache:
