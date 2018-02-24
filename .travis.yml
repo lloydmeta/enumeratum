@@ -39,9 +39,9 @@ matrix:
 
 script:
   - >
-    travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test "project ${PROJECT_SCOPE}" test:compile test:doc
+    travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test \"project ${PROJECT_SCOPE}\" test:compile test:doc
   - >
-    travis_wait sbt ++$TRAVIS_SCALA_VERSION "project ${PROJECT_SCOPE}" test
+    travis_wait sbt ++$TRAVIS_SCALA_VERSION \"project ${PROJECT_SCOPE}\" test
 
 
 cache:
