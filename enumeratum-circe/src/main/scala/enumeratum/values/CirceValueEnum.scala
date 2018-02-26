@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder}
 
 /**
   * Created by Lloyd on 4/14/16.
@@ -81,6 +81,9 @@ trait StringCirceEnum[EntryType <: StringEnumEntry] extends CirceValueEnum[Strin
   this: ValueEnum[String, EntryType] =>
   implicit val circeEncoder: Encoder[EntryType] = Circe.encoder(this)
   implicit val circeDecoder: Decoder[EntryType] = Circe.decoder(this)
+
+  implicit val circeKeyEncoder: KeyEncoder[EntryType] = Circe.keyEncoder(this)
+  implicit val circeKeyDecoder: KeyDecoder[EntryType] = Circe.keyDecoder(this)
 }
 
 /**

@@ -2,7 +2,7 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-lazy val neoScalafmtVersion = "1.14"
+lazy val neoScalafmtVersion = "1.15"
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % neoScalafmtVersion)
 
