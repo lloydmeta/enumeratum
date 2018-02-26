@@ -66,7 +66,19 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
     enum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
   ): Unit = {
     describe(s"$enumKind as Key") {
-      
+      describe("to JSON") {
+        it("should work") {
+          val map = enum.values.toStream.zip(Stream.from(1)).toMap
+          map.asJson.as[Map[EntryType, Int]] shouldBe Right(map)
+        }
+      }
+
+      describe("from JSON") {
+        it("should fail to parse random JSON into a map") {
+          val invalidJsonMap = Stream.from(1).map(_.toString).take(10).toStream.zip(Stream.from(1)).toMap.asJson
+          invalidJsonMap.as[Map[EntryType, Int]].isLeft shouldBe true
+        }
+      }
     }
   }
 
