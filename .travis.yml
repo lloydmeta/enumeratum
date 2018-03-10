@@ -1,46 +1,26 @@
 sudo: false
-
 language: scala
-
-scala:
-  - 2.10.7
-  - 2.11.12
-  - 2.12.4
-
-jdk:
-  - oraclejdk8
-
-env:
-  matrix:
-    - PROJECT_SCOPE="core-aggregate"
-    - PROJECT_SCOPE="macros-aggregate"
-    - PROJECT_SCOPE="argonaut-aggregate"
-    - PROJECT_SCOPE="test-aggregate"
-    - PROJECT_SCOPE="circe-aggregate"
-    - PROJECT_SCOPE="quill-aggregate"
-    - PROJECT_SCOPE="circe-aggregate"
-    - PROJECT_SCOPE="scalacheck-aggregate"
-    - PROJECT_SCOPE="upickle-aggregate"
-    - PROJECT_SCOPE="enumeratum-json4s"
-    - PROJECT_SCOPE="enumeratum-play"
-    - PROJECT_SCOPE="enumeratum-play-json"
-    - PROJECT_SCOPE="enumeratum-reactivemongo-bson"
-
-script:
-  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test ${PROJECT_SCOPE}/test:compile ${PROJECT_SCOPE}/test:doc"
-  - "travis_wait sbt ++$TRAVIS_SCALA_VERSION ${PROJECT_SCOPE}/test"
 
 # Only run aggregation 2.12
 matrix:
-  # let's see if this acts as an override...
   include:
-    - scala: 2.12.4
+    - scala: 2.10.7
+      jdk: oraclejdk8
       script:
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - sbt ++$TRAVIS_SCALA_VERSION test
+    - scala: 2.11.12
+      jdk: oraclejdk8
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
+        - sbt ++$TRAVIS_SCALA_VERSION test
+    - scala: 2.12.4
+      jdk: oraclejdk8
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+        - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
-
 cache:
   directories:
   - $HOME/.sbt/0.13
