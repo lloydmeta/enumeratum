@@ -4,7 +4,7 @@ lazy val theScalaVersion = "2.12.4"
 
 lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.4")
 
-lazy val scalaTestVersion  = "3.0.4"
+lazy val scalaTestVersion  = "3.0.5"
 lazy val scalacheckVersion = "1.13.5"
 
 // Library versions
