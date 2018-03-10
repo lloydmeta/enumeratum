@@ -7,20 +7,20 @@ matrix:
     - scala: 2.10.7
       jdk: oraclejdk8
       script:
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts test:compile test:doc
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts test
     - scala: 2.11.12
       jdk: oraclejdk8
       script:
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts scalafmt::test test:compile test:doc
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts test
     - scala: 2.12.4
       jdk: oraclejdk8
       script:
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - travis_wait sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
-      after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts test:compile test:doc
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts coverage test coverageReport
+        - travis_wait sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts coverageAggregate
+      after_success: sbt ++$TRAVIS_SCALA_VERSION -jvm-opts .travis-jvmopts coveralls
 cache:
   directories:
   - $HOME/.sbt/0.13
