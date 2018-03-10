@@ -22,6 +22,6 @@ addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.27")
 
 addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.2.0")
 
-addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.7.0")
+addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.7.1")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.0")
