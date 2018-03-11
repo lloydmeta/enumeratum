@@ -8,17 +8,20 @@ matrix:
       jdk: oraclejdk8
       script:
         - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION  test:compile test:doc
-        - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' test
+        - >
+          travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' test
     - scala: 2.11.12
       jdk: oraclejdk8
       script:
         - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
-        - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' test
+        - >
+          travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' test
     - scala: 2.12.4
       jdk: oraclejdk8
       script:
         - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' coverage test coverageReport
+        - >
+          travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION 'set parallelExecution in ThisBuild := false' coverage test coverageReport
         - travis_wait sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
 cache:
