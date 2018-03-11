@@ -382,6 +382,12 @@ lazy val ideSettings = Seq(
 )
 
 lazy val compilerSettings = Seq(
+  scalaJSStage in ThisBuild := {
+    sys.props.get("sbt.scalajs.testOpt").orElse(sys.env.get("SCALAJS_TEST_OPT")) match {
+      case Some("full") => FullOptStage
+      case _            => FastOptStage
+    }
+  },
   wartremoverErrors in (Compile, compile) ++= Warts.unsafe
     .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
