@@ -478,8 +478,7 @@ val testSettings = {
       else
         originalValue
     },
-    doctestTestFramework := DoctestTestFramework.ScalaTest,
-    scalaJSStage in Test := FastOptStage
+    doctestTestFramework := DoctestTestFramework.ScalaTest
   )
 }
 
