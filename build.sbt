@@ -4,7 +4,7 @@ lazy val theScalaVersion = "2.12.4"
 
 lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.4")
 
-lazy val scalaTestVersion  = "3.0.4"
+lazy val scalaTestVersion  = "3.0.5"
 lazy val scalacheckVersion = "1.13.5"
 
 // Library versions
@@ -382,6 +382,12 @@ lazy val ideSettings = Seq(
 )
 
 lazy val compilerSettings = Seq(
+  scalaJSStage in ThisBuild := {
+    sys.props.get("sbt.scalajs.testOpt").orElse(sys.env.get("SCALAJS_TEST_OPT")) match {
+      case Some("full") => FullOptStage
+      case _            => FastOptStage
+    }
+  },
   wartremoverErrors in (Compile, compile) ++= Warts.unsafe
     .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
@@ -472,8 +478,7 @@ val testSettings = {
       else
         originalValue
     },
-    doctestTestFramework := DoctestTestFramework.ScalaTest,
-    scalaJSStage in Test := FastOptStage
+    doctestTestFramework := DoctestTestFramework.ScalaTest
   )
 }
 
