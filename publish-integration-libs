@@ -12,11 +12,11 @@ sbt "project enumeratum-play-json" +clean +publishSigned &&
 say "Done 4" &&
 sbt "project enumeratum-play" +clean +publishSigned &&
 say "Done 5" &&
-sbt "project enumeratum-argonaut" +clean +publishSigned &&
+sbt "project argonaut-aggregate" +clean +publishSigned &&
 say "Done 6" &&
 sbt "project enumeratum-json4s" +clean +publishSigned &&
 say "Done 7" &&
-sbt "project enumeratum-scalacheck" +clean +publishSigned &&
+sbt "project scalacheck-aggregate" +clean +publishSigned &&
 say "Done 8" &&
 sbt "project quill-aggregate" +clean +publishSigned &&
 say "All done"

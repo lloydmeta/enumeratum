@@ -153,7 +153,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.13-SNAPSHOT",
+      version := "1.5.14-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -166,7 +166,7 @@ lazy val enumeratumPlayJson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := s"1.5.13-SNAPSHOT",
+      version := s"1.5.14-SNAPSHOT",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -179,7 +179,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := s"1.5.13-SNAPSHOT",
+    version := s"1.5.14-SNAPSHOT",
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -197,7 +197,7 @@ lazy val enumeratumUPickle = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-upickle",
-    version := "1.5.12-SNAPSHOT",
+    version := "1.5.13-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -234,7 +234,7 @@ lazy val enumeratumCirce = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.16-SNAPSHOT",
+    version := "1.5.17-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -261,7 +261,7 @@ lazy val enumeratumArgonaut = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
-    version := "1.5.13-SNAPSHOT",
+    version := "1.5.14-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -285,7 +285,7 @@ lazy val enumeratumJson4s =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.14-SNAPSHOT",
+      version := "1.5.15-SNAPSHOT",
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
@@ -303,7 +303,7 @@ lazy val enumeratumScalacheck = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.5.14-SNAPSHOT",
+    version := "1.5.15-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
@@ -334,7 +334,7 @@ lazy val enumeratumQuill = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "1.5.13-SNAPSHOT",
+    version := "1.5.14-SNAPSHOT",
     crossScalaVersions := post210Only(crossScalaVersions.value),
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
@@ -373,8 +373,11 @@ lazy val commonWithPublishSettings =
     publishSettings
 
 lazy val resolverSettings = Seq(
-  resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
-  resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  resolvers ++= Seq(
+    "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
+    "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
+    "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+  )
 )
 
 lazy val ideSettings = Seq(
