@@ -42,4 +42,15 @@ object Circe {
         }
     }
   }
+
+  def keyEncoder[EntryType <: ValueEnumEntry[String]](
+    enum: ValueEnum[String, EntryType]
+  ): KeyEncoder[EntryType] =
+    KeyEncoder.instance(_.value)
+
+  def keyDecoder[EntryType <: ValueEnumEntry[String]](
+    enum: ValueEnum[String, EntryType]
+  ): KeyDecoder[EntryType] =
+    KeyDecoder.instance(enum.withValueOpt)
+
 }

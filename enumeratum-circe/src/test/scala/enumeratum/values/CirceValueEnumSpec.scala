@@ -2,7 +2,7 @@ package enumeratum.values
 
 import org.scalatest.{FunSpec, Matchers}
 import cats.syntax.either._
-import io.circe.{Decoder, Encoder, Json}
+import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder, Json}
 import io.circe.syntax._
 
 /**
@@ -16,6 +16,7 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("ShortCirceEnum", CirceDrinks)
   testCirceEnum("IntCirceEnum", CirceLibraryItem)
   testCirceEnum("StringCirceEnum", CirceOperatingSystem)
+  testCirceKeyEnum("StringCirceEnum", CirceOperatingSystem)
   testCirceEnum("CharEnum", CirceAlphabet)
   testCirceEnum("ByteEnum", CirceBites)
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
@@ -57,6 +58,27 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
 
       }
 
+    }
+  }
+
+  private def testCirceKeyEnum[EntryType <: ValueEnumEntry[String]: KeyEncoder: KeyDecoder](
+    enumKind: String,
+    enum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
+  ): Unit = {
+    describe(s"$enumKind as Key") {
+      describe("to JSON") {
+        it("should work") {
+          val map = enum.values.toStream.zip(Stream.from(1)).toMap
+          map.asJson.as[Map[EntryType, Int]] shouldBe Right(map)
+        }
+      }
+
+      describe("from JSON") {
+        it("should fail to parse random JSON into a map") {
+          val invalidJsonMap = Stream.from(1).map(_.toString).take(10).toStream.zip(Stream.from(1)).toMap.asJson
+          invalidJsonMap.as[Map[EntryType, Int]].isLeft shouldBe true
+        }
+      }
     }
   }
 
