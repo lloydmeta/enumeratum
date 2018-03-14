@@ -8,23 +8,23 @@ lazy val scalaTestVersion  = "3.0.5"
 lazy val scalacheckVersion = "1.13.5"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.12.1"
+lazy val reactiveMongoVersion = "0.13.0"
 lazy val circeVersion         = "0.9.2"
 lazy val uPickleVersion       = "0.4.4"
-lazy val argonautVersion      = "6.2"
-lazy val json4sVersion        = "3.5.1"
-lazy val quillVersion         = "2.3.2"
+lazy val argonautVersion      = "6.2.1"
+lazy val json4sVersion        = "3.5.3"
+lazy val quillVersion         = "2.3.3"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.6"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.6"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
