@@ -1,26 +1,32 @@
 sudo: false
 language: scala
 
+env:
+  - SCALAJS_TEST_OPT=full
+
 # Only run aggregation 2.12
 matrix:
   include:
     - scala: 2.10.7
       jdk: oraclejdk8
       script:
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION  test:compile test:doc
+        - travis_wait 30 sleep 1800 &
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
     - scala: 2.11.12
       jdk: oraclejdk8
       script:
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
+        - travis_wait 30 sleep 1800 &
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
     - scala: 2.12.4
       jdk: oraclejdk8
       script:
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - travis_wait travis_retry sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
-      after_success: sbt ++$TRAVIS_SCALA_VERSION coveralls
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - travis_wait 30 sleep 1800 &
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
+      after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
 cache:
   directories:
   - $HOME/.sbt/0.13
