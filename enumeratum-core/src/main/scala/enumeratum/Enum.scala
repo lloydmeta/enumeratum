@@ -44,13 +44,13 @@ trait Enum[A <: EnumEntry] {
     * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
     */
   lazy final val lowerCaseNamesToValuesMap: Map[String, A] =
-    values.map(v => v.entryName.toLowerCase -> v).toMap
+    namesToValuesMap.map{ case (k, v) => k.toLowerCase -> v }
 
   /**
     * Map of [[A]] object names in upper case to [[A]]s for case-insensitive comparison
     */
   lazy final val upperCaseNameValuesToMap: Map[String, A] =
-    values.map(v => v.entryName.toUpperCase -> v).toMap
+    namesToValuesMap.map{ case (k, v) => k.toUpperCase() -> v }
 
   /**
     * Map of [[A]] to their index in the values sequence.
