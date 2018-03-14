@@ -22,9 +22,10 @@ def thePlayVersion(scalaVersion: String) =
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
+
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.9"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -32,7 +33,7 @@ def thePlayJsonVersion(scalaVersion: String) =
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M2" % Test
+    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
     "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
