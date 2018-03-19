@@ -313,7 +313,7 @@ lazy val enumeratumScalacheck = crossProject
           CrossVersion.binary
       }
       Seq(
-        impl.ScalaJSGroupID.withCross("org.scalacheck", "scalacheck", cross) % circeVersion,
+        impl.ScalaJSGroupID.withCross("org.scalacheck", "scalacheck", cross) % scalacheckVersion,
         impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross)   % Versions.Core.stable,
         impl.ScalaJSGroupID
           .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
