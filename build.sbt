@@ -166,7 +166,7 @@ lazy val enumeratumPlayJson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := s"1.5.14-SNAPSHOT",
+      version := s"1.5.15-SNAPSHOT",
       libraryDependencies ++= Seq(
         "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -179,7 +179,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := s"1.5.14-SNAPSHOT",
+    version := s"1.5.15-SNAPSHOT",
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
