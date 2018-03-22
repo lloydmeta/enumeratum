@@ -10,3 +10,16 @@ object Dummy extends Enum[Dummy] with PlayJsonEnum[Dummy] {
   case object c extends Dummy
   val values = findValues
 }
+
+/**
+  * Created by dbuschman on 03/20/2018
+  */
+sealed trait InsensitiveDummy extends EnumEntry
+object InsensitiveDummy
+    extends Enum[InsensitiveDummy]
+    with PlayInsensitiveJsonEnum[InsensitiveDummy] {
+  case object A extends InsensitiveDummy
+  case object B extends InsensitiveDummy
+  case object c extends InsensitiveDummy
+  val values = findValues
+}

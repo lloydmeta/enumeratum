@@ -448,7 +448,7 @@ Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
 
 #### PlayJsonEnum
 
-For example:
+There are also `PlayInsensitiveJsonEnum`, `PlayLowercaseJsonEnum`, and `PlayUppercaseJsonEnum` traits for use. For example:
 
 ```scala
 import enumeratum.{ PlayJsonEnum, Enum, EnumEntry }
