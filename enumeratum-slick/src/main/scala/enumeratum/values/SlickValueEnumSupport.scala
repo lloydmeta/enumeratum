@@ -6,7 +6,7 @@ import slick.jdbc.{PositionedParameters, SetParameter}
 
 trait SlickValueEnumSupport {
 
-  val profile: slick.relational.RelationalProfile
+  val profile: slick.profile.RelationalProfile
 
   def mappedColumnTypeForValueEnum[V, E <: ValueEnumEntry[V]](
       enum: ValueEnum[V, E]

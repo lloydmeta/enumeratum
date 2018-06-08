@@ -47,9 +47,9 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
     }
     val lights = TableQuery[TrafficLightTable]
   }
-  class ConcreteRepository(val profile: slick.jdbc.H2Profile) extends TrafficLightRepository
+  class ConcreteRepository(val profile: slick.driver.H2Driver) extends TrafficLightRepository
 
-  val repo = new ConcreteRepository(slick.jdbc.H2Profile)
+  val repo = new ConcreteRepository(slick.driver.H2Driver)
   import repo.profile.api._
   import repo.lights
   val db = Database.forURL(

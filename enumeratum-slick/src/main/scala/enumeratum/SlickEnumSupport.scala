@@ -24,7 +24,7 @@ import slick.jdbc.{PositionedParameters, SetParameter}
   */
 trait SlickEnumSupport {
 
-  val profile: slick.relational.RelationalProfile
+  val profile: slick.profile.RelationalProfile
 
   private def _setParameterTypeForEnum[E <: EnumEntry](
       nameFn: (String => String) = identity): SetParameter[E] = {
