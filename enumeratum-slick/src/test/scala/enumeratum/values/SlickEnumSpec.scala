@@ -21,18 +21,20 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
     val trafficLightSetParamName  = setParameterForEnum(TrafficLight)
     val trafficLightSetParamUpper = setParameterForUppercaseEnum(TrafficLight)
     val trafficLightSetParamLower = setParameterForLowercaseEnum(TrafficLight)
-    val trafficLightSetParamNumber: SetParameter[TrafficLightByInt] =
-      setParameterForIntEnum(TrafficLightByInt)
+    val trafficLightSetParamNumber = setParameterForIntEnum(TrafficLightByInt)
 
     type TrafficLightRow = (String, TrafficLight, TrafficLight, TrafficLight, TrafficLightByInt)
     class TrafficLightTable(tag: Tag) extends Table[TrafficLightRow](tag, "traffic_light") {
-      def id                 = column[String]("id", O.PrimaryKey)
-      def trafficLightByName = column[TrafficLight]("traffic_light_name")
+      def id =
+        column[String]("id", O.PrimaryKey)
+      def trafficLightByName =
+        column[TrafficLight]("traffic_light_name")
       def trafficLightByNameUpper =
         column[TrafficLight]("traffic_light_name_upper")(trafficLightUpperColumnType)
       def trafficLightByNameLower =
         column[TrafficLight]("traffic_light_name_lower")(trafficLightLowerColumnType)
-      def trafficLightByNum = column[TrafficLightByInt]("traffic_light_number")
+      def trafficLightByNum =
+        column[TrafficLightByInt]("traffic_light_number")
 
       def * = (
         id,

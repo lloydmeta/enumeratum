@@ -58,7 +58,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumScalacheckJs,
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
-  enumeratumQuillJvm
+  enumeratumQuillJvm,
+  enumeratumSlick
 ).map(Project.projectToRef)
 
 lazy val root =
