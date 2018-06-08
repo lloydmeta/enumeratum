@@ -14,6 +14,7 @@ lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2.1"
 lazy val json4sVersion        = "3.5.3"
 lazy val quillVersion         = "2.3.3"
+lazy val slickVersion         = "3.2.1"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -353,6 +354,19 @@ lazy val enumeratumQuill = crossProject
   )
 lazy val enumeratumQuillJs  = enumeratumQuill.js
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
+
+lazy val enumeratumSlick =
+  Project(id = "enumeratum-slick", base = file("enumeratum-slick"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.15-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        "com.typesafe.slick" %% "slick"      % slickVersion,
+        "com.beachape"       %% "enumeratum" % Versions.Core.stable,
+        "com.h2database"     % "h2"          % "1.4.197" % Test
+      )
+    )
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",
