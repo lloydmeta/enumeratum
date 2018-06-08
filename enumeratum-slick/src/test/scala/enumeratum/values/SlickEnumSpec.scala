@@ -4,7 +4,7 @@ import enumeratum.{SlickEnumSupport, TrafficLight, TrafficLightByInt}
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{Millis, Span}
+import org.scalatest.time._
 import slick.jdbc.SetParameter
 
 class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
@@ -18,9 +18,9 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
     val trafficLightUpperColumnType          = mappedColumnTypeForUppercaseEnum(TrafficLight)
     val trafficLightLowerColumnType          = mappedColumnTypeForLowercaseEnum(TrafficLight)
 
-    val trafficLightSetParamName  = setParameterForEnum(TrafficLight)
-    val trafficLightSetParamUpper = setParameterForUppercaseEnum(TrafficLight)
-    val trafficLightSetParamLower = setParameterForLowercaseEnum(TrafficLight)
+    val trafficLightSetParamName   = setParameterForEnum(TrafficLight)
+    val trafficLightSetParamUpper  = setParameterForUppercaseEnum(TrafficLight)
+    val trafficLightSetParamLower  = setParameterForLowercaseEnum(TrafficLight)
     val trafficLightSetParamNumber = setParameterForIntEnum(TrafficLightByInt)
 
     type TrafficLightRow = (String, TrafficLight, TrafficLight, TrafficLight, TrafficLightByInt)
@@ -59,7 +59,7 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
   )
 
   override def beforeAll(): Unit = {
-    db.run(lights.schema.create).futureValue(Timeout(Span(500, Millis)))
+    db.run(lights.schema.create).futureValue(Timeout(Span(1, Second)))
   }
 
   override def afterAll(): Unit = {
@@ -75,7 +75,6 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
       }
       "Querying works" in {
         db.run(lights.result.head).futureValue shouldBe redLight
-        import repo.trafficLightColumnType
         db.run(lights.filter(_.trafficLightByName === (TrafficLight.Red: TrafficLight)).result.head)
           .futureValue shouldBe redLight
       }
