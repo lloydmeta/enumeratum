@@ -74,6 +74,7 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
         db.run(lights += redLight).futureValue shouldBe 1
       }
       "Querying works" in {
+        import repo.trafficLightColumnType
         db.run(lights.result.head).futureValue shouldBe redLight
         db.run(lights.filter(_.trafficLightByName === (TrafficLight.Red: TrafficLight)).result.head)
           .futureValue shouldBe redLight

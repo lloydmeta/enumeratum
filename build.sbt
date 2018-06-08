@@ -14,12 +14,19 @@ lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2.1"
 lazy val json4sVersion        = "3.5.3"
 lazy val quillVersion         = "2.3.3"
-lazy val slickVersion         = "3.2.1"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
+def theSlickVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "3.2.3"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "3.1.1"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
@@ -363,7 +370,7 @@ lazy val enumeratumSlick =
     .settings(
       version := "1.5.15-SNAPSHOT",
       libraryDependencies ++= Seq(
-        "com.typesafe.slick" %% "slick"      % slickVersion,
+        "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
         "com.beachape"       %% "enumeratum" % Versions.Core.stable,
         "com.h2database"     % "h2"          % "1.4.197" % Test
       )
