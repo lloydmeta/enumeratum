@@ -22,19 +22,11 @@ import slick.jdbc.{PositionedParameters, SetParameter}
   *      | }
   * }}}
   */
-trait SlickEnumSupport {
+trait SlickEnumSupport extends SlickEnum {
 
   val profile: slick.profile.RelationalProfile
 
-  private def _setParameterTypeForEnum[E <: EnumEntry](
-      nameFn: (String => String) = identity): SetParameter[E] = {
-    new SetParameter[E] {
-      override def apply(e: E, pp: PositionedParameters): Unit = {
-        val transformedName = nameFn(e.entryName)
-        pp.setString(transformedName)
-      }
-    }
-  }
+  import profile.api._
 
   /**
     * Usage:
@@ -42,42 +34,33 @@ trait SlickEnumSupport {
     *   implicit val trafficLightSetParameter = setParameterForEnum(TrafficLight)
     * }}}
     */
-  def setParameterForEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] = {
-    _setParameterTypeForEnum(identity)
-  }
+  def setParameterForEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] =
+    buildSetParameterTypeForEnum(identity)
 
-  def setParameterForLowercaseEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] = {
-    _setParameterTypeForEnum(_.toLowerCase)
-  }
+  def setParameterForLowercaseEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] =
+    buildSetParameterTypeForEnum(_.toLowerCase)
 
-  def setParameterForUppercaseEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] = {
-    _setParameterTypeForEnum(_.toUpperCase)
-  }
+  def setParameterForUppercaseEnum[E <: EnumEntry](enum: Enum[E]): SetParameter[E] =
+    buildSetParameterTypeForEnum(_.toUpperCase)
 
   def mappedColumnTypeForEnum[E <: EnumEntry](enum: Enum[E])(
-      implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
-    import profile.api._
-    profile.MappedColumnType.base[E, String](
-      { _.entryName },
-      { enum.namesToValuesMap }
-    )
-  }
+      implicit tag: ClassTag[E]): profile.BaseColumnType[E] =
+    buildMappedColumnTypeForEnum(enum = enum,
+                                 eToString = _.entryName,
+                                 stringToE = enum.namesToValuesMap,
+                                 profile = profile)
 
   def mappedColumnTypeForLowercaseEnum[E <: EnumEntry](enum: Enum[E])(
-      implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
-    import profile.api._
-    profile.MappedColumnType.base[E, String](
-      { _.entryName.toLowerCase },
-      { enum.lowerCaseNamesToValuesMap }
-    )
-  }
+      implicit tag: ClassTag[E]): profile.BaseColumnType[E] =
+    buildMappedColumnTypeForEnum(enum = enum,
+                                 eToString = _.entryName.toLowerCase,
+                                 stringToE = enum.lowerCaseNamesToValuesMap,
+                                 profile = profile)
 
   def mappedColumnTypeForUppercaseEnum[E <: EnumEntry](enum: Enum[E])(
-      implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
-    import profile.api._
-    profile.MappedColumnType.base[E, String](
-      { _.entryName.toUpperCase },
-      { enum.upperCaseNameValuesToMap }
-    )
-  }
+      implicit tag: ClassTag[E]): profile.BaseColumnType[E] =
+    buildMappedColumnTypeForEnum(enum = enum,
+                                 eToString = _.entryName.toUpperCase,
+                                 stringToE = enum.upperCaseNameValuesToMap,
+                                 profile = profile)
 }
