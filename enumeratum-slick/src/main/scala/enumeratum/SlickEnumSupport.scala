@@ -2,7 +2,7 @@ package enumeratum
 
 import scala.reflect.ClassTag
 
-import slick.jdbc.{PositionedParameters, SetParameter}
+import slick.jdbc.SetParameter
 
 /**
   * When mixed in, allows creation of Slick mapped column types for enumeratum.Enum instances
