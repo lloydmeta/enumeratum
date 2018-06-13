@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import enumeratum.{SlickEnumSupport, TrafficLight, TrafficLightByInt}
+import enumeratum._
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
 import org.scalatest.concurrent.ScalaFutures
@@ -109,6 +109,18 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
         val selectRedAsInteger =
           sql"""select "traffic_light_number" from "traffic_light" where "id" = '1'""".as[Int]
         db.run(selectRedAsInteger).futureValue.head shouldBe TrafficLightByInt.Red.value
+      }
+    }
+    "allows creation of column mappers and setparameters for various value enums" in {
+      new SlickValueEnumSupport {
+        override val profile = slick.jdbc.H2Profile
+        """
+          |val shortExampleColumn = mappedColumnTypeForValueEnum(ShortValueExample)
+        """.stripMargin should compile
+
+        """
+          |val stringExampleColumn = mappedColumnTypeForValueEnum(StringValueExample)
+        """.stripMargin should compile
       }
     }
     "allows creation of working SetParameters for standard enums" - {
