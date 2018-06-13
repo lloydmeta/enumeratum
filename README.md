@@ -33,6 +33,7 @@ Integrations are available for:
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
+- [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents
@@ -937,56 +938,65 @@ ctx.run(query[Shirt]).foreach(println)
 
 ## Slick integration
 
-[Slick](http://slick.lightbend.com) doesn't have a separate integration at the moment. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
-
-For example when you want the `Enum[Greeting]` defined in the introduction as a database column, you can use the following code
-
+In order to use your enumeratum Enums in Slick tables as columns, you will
+ need to construct instances of `MappedColumnType` and make them available
+ where you define and query your slick tables. In order to more easily
+ construct these instances, the enumeratum-slick integration provides a trait
+ `enumeratum.SlickEnumSupport`. This trait provides a method `mappedColumnTypeForEnum`
+ (and variants) for constructing a mapped column type for your enum. For example
+ if you want to use `Enum[Greeting]` in your slick table, mix in `SlickEnumSupport`,
+ which requires a slick `profile` to be in scope, and construct a mapper
 ```scala
-  implicit lazy val greetingMapper = MappedColumnType.base[Greeting, String](
-    greeting => greeting.entryName,
-    string => Greeting.withName(string)
-  )
+implicit lazy val greetingMapper = mappedColumnTypeForEnum(Greeting)
+```
+You can then make use of this mapper to define your table as follows
+```scala
+def greeting = column[Greeting]("GREETING") // Maps to a varchar/text column
 ```
 
-You can then define the following line in your ```Table[...]``` class
-
+If you want to represent a `ValueEnum` by its `value` rather than its string
+name, simply mix in `SlickValueEnumSupport` and proceed mostly as above:
 ```scala
-  // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]]
-  def greeting = column[Greeting]("GREETING")
+implicit lazy val libraryItemMapper = mappedColumnTypeForIntEnum(LibraryItem)
+...
+def item = column[LibraryItem]("LIBRARY_ITEM") // Maps to a numeric column
 ```
-
 If you want to represent your enum in the database with numeric IDs, just provide a different mapping. This example uses the enum of type `LibraryItem` defined in the introduction:
-
-```scala
-  implicit lazy val libraryItemMapper = MappedColumnType.base[LibraryItem, Int](
-    item => item.value,
-    id => LibraryItem.withValue(id)
-  )
-```
-
-Again you can now simply use `LibraryItem` in your `Table` class:
-
-```scala
-  // This maps a column of type NUMBER to enums of type [[LibaryItem]]
-  def item = column[LibraryItem]("LIBRARY_ITEM")
-```
 
 Note that because your enum values are singleton objects, you may get errors when you try to use them in Slick queries like
 the following:
 
-
 ```scala
-.filter(_.productType === ProductType.Foo)`
+.filter(_.trafficLight === TrafficLight.Red)`
 ```
 
-This is because `ProductType.Foo` in the above example is inferred to be of its unique type (`ProductType.Foo`) rather than `ProductType`,
-thus causing a failure to find your mapping. In order to fix this, simply assist the compiler by ascribing the type to be `ProductType`:
+This is because `TrafficLight.Red` in the above example is inferred to
+be of its unique type (`TrafficLight.Red`) rather than `TrafficLight`,
+thus causing a failure to find your mapping. In order to fix this,
+simply assist the compiler by ascribing the type to be `TrafficLight`:
 
 ```scala
-.filter(_.productType === (ProductType.Foo: ProductType))`
+.filter(_.trafficLight === (TrafficLight.Red: TrafficLight))`
+```
+
+A way around this if you find the type expansion offensive is to define
+val accessors for your enum entries that are typed as the parent type.
+You can do this inside your Enums companion object or more locally:
+```scala
+val red: TrafficLight = Red // Not red: TrafficLight.Red = Red
+val yellow: TrafficLight = Yellow
+val green: TrafficLight = Green
+...
+.filter(_.trafficLight === red)`
 ```
 
 If you want to use slick interpolated SQL queries you need a few additional implicits.
+
+TODO: Provide constructors for
+GetResult[_],
+Option[GetResult[_]],
+Option[SetParameter[_]] instances
+then document here
 
 ``` scala
 implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
