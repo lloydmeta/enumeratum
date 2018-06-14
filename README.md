@@ -247,6 +247,7 @@ sealed abstract class LibraryItem(val value: Int, val name: String) extends IntE
 
 case object LibraryItem extends IntEnum[LibraryItem] {
 
+
   case object Book     extends LibraryItem(value = 1, name = "book")
   case object Movie    extends LibraryItem(name = "movie", value = 2)
   case object Magazine extends LibraryItem(3, "magazine")
@@ -990,32 +991,15 @@ val green: TrafficLight = Green
 .filter(_.trafficLight === red)`
 ```
 
-If you want to use slick interpolated SQL queries you need a few additional implicits.
-
-TODO: Provide constructors for
-GetResult[_],
-Option[GetResult[_]],
-Option[SetParameter[_]] instances
-then document here
-
+If you want to use slick interpolated SQL queries you can use the provided
+constructors to instantiate instances of GetResult[_] and SetParameter[_]
+for your enum:
 ``` scala
-implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
-  override def apply(positionedResult: PositionedResult): Greeting = Greeting.withName(positionedResult.nextString())
-}
-
-implicit val greetingOptionGetResult: GetResult[Option[Greeting]] = new GetResult[Option[Greeting]] {
-  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().flatMap(Greeting.withNameOption)
-}
-
-implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Greeting] {
-  override def apply(value: Greeting, positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setString(value.toString)
-}
-
-implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
-  override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setStringOption(value.map(v => v.entryName))
-}
+import SlickEnumPlainSqlSupport._
+implicit val greetingGetResult = getResultForEnum(Greeting)
+implicit val greetingOptionGetResult = optionalGetResultForEnum(Greeting)
+implicit val greetingSetParameter = setParameterForEnum(Greeting)
+implicit val greetingOptionSetParameter = optionalSetParameterForEnum(Greeting)
 ```
 
 ## Benchmarking

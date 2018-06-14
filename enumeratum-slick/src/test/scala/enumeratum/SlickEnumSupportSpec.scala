@@ -1,29 +1,29 @@
-package enumeratum.values
+package enumeratum
 
-import enumeratum._
+import enumeratum.values.SlickValueEnumSupport
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
-import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time._
-import slick.jdbc.SetParameter
+import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
 
-class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
+class SlickEnumSupportSpec extends FreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
 
   trait TrafficLightRepository extends SlickEnumSupport with SlickValueEnumSupport {
 
     import profile.api._
 
-    implicit val trafficLightColumnType      = mappedColumnTypeForEnum(TrafficLight)
-    implicit val trafficLightByNumColumnType = mappedColumnTypeForValueEnum(TrafficLightByInt)
-    val trafficLightUpperColumnType          = mappedColumnTypeForUppercaseEnum(TrafficLight)
-    val trafficLightLowerColumnType          = mappedColumnTypeForLowercaseEnum(TrafficLight)
+    implicit val trafficLightColumnType = mappedColumnTypeForEnum(TrafficLight)
+    val trafficLightUpperColumnType     = mappedColumnTypeForUppercaseEnum(TrafficLight)
+    val trafficLightLowerColumnType     = mappedColumnTypeForLowercaseEnum(TrafficLight)
 
     val trafficLightSetParamName   = setParameterForEnum(TrafficLight)
-    val trafficLightSetParamUpper  = setParameterForUppercaseEnum(TrafficLight)
-    val trafficLightSetParamLower  = setParameterForLowercaseEnum(TrafficLight)
-    val trafficLightSetParamNumber = setParameterForIntEnum(TrafficLightByInt)
+    val trafficLightGetResultName  = getResultForEnum(TrafficLight)
+    val trafficLightSetParamUpper  = setParameterForEnumUppercase(TrafficLight)
+    val trafficLightGetResultUpper = getResultForEnumUppercase(TrafficLight)
+    val trafficLightSetParamLower  = setParameterForEnumLowercase(TrafficLight)
+    val trafficLightGetResultLower = getResultForEnumLowercase(TrafficLight)
 
-    type TrafficLightRow = (String, TrafficLight, TrafficLight, TrafficLight, TrafficLightByInt)
+    type TrafficLightRow = (String, TrafficLight, TrafficLight, TrafficLight)
     class TrafficLightTable(tag: Tag) extends Table[TrafficLightRow](tag, "traffic_light") {
       def id =
         column[String]("id", O.PrimaryKey)
@@ -33,15 +33,12 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
         column[TrafficLight]("traffic_light_name_upper")(trafficLightUpperColumnType)
       def trafficLightByNameLower =
         column[TrafficLight]("traffic_light_name_lower")(trafficLightLowerColumnType)
-      def trafficLightByNum =
-        column[TrafficLightByInt]("traffic_light_number")
 
       def * = (
         id,
         trafficLightByName,
         trafficLightByNameUpper,
-        trafficLightByNameLower,
-        trafficLightByNum
+        trafficLightByNameLower
       )
 
     }
@@ -50,8 +47,8 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
   class ConcreteRepository(val profile: slick.driver.H2Driver) extends TrafficLightRepository
 
   val repo = new ConcreteRepository(slick.driver.H2Driver)
-  import repo.profile.api._
   import repo.lights
+  import repo.profile.api._
   val db = Database.forURL(
     url = "jdbc:h2:mem:test",
     driver = "org.h2.Driver",
@@ -69,7 +66,7 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
   "SlickEnumSupport" - {
     "allows creation of working column mappers for standard and value enums" - {
       val redLight =
-        ("1", TrafficLight.Red, TrafficLight.Red, TrafficLight.Red, TrafficLightByInt.Red)
+        ("1", TrafficLight.Red, TrafficLight.Red, TrafficLight.Red)
       "Insertion works" in {
         db.run(lights += redLight).futureValue shouldBe 1
       }
@@ -105,65 +102,47 @@ class SlickEnumSpec extends FreeSpec with ScalaFutures with Matchers with Before
           result shouldBe TrafficLight.Red.entryName.toLowerCase
         }
       }
-      "Value columns are actually mapped as specified" in {
-        val selectRedAsInteger =
-          sql"""select "traffic_light_number" from "traffic_light" where "id" = '1'""".as[Int]
-        db.run(selectRedAsInteger).futureValue.head shouldBe TrafficLightByInt.Red.value
-      }
     }
-    "allows creation of column mappers and setparameters for various value enums" in {
-      new SlickValueEnumSupport {
-        override val profile = slick.jdbc.H2Profile
-        """
-          |val shortExampleColumn = mappedColumnTypeForValueEnum(ShortValueExample)
-        """.stripMargin should compile
-
-        """
-          |val stringExampleColumn = mappedColumnTypeForValueEnum(StringValueExample)
-        """.stripMargin should compile
-      }
-    }
-    "allows creation of working SetParameters for standard enums" - {
+    "allows creation of working SetParameter[_] and GetResult[_] for standard enums" - {
       "exact name" in {
-        implicit val setParam = repo.trafficLightSetParamName
+        implicit val setParam  = repo.trafficLightSetParamName
+        implicit val getResult = repo.trafficLightGetResultName
         val selectRedByName =
           sql"""
               select "traffic_light_name" from "traffic_light"
               where "traffic_light_name" = ${TrafficLight.Red}
-            """.as[String]
-        db.run(selectRedByName).futureValue.head shouldBe TrafficLight.Red.entryName
+            """.as[TrafficLight]
+        db.run(selectRedByName).futureValue.head shouldBe TrafficLight.Red
       }
       "uppercase" in {
-        implicit val setParam = repo.trafficLightSetParamUpper
+        implicit val setParam  = repo.trafficLightSetParamUpper
+        implicit val getResult = repo.trafficLightGetResultUpper
         val selectRedByUppercaseName =
           sql"""
               select "traffic_light_name_upper" from "traffic_light"
               where "traffic_light_name_upper" = ${TrafficLight.Red}
-            """.as[String]
-        db.run(selectRedByUppercaseName)
-          .futureValue
-          .head shouldBe TrafficLight.Red.entryName.toUpperCase
+            """.as[TrafficLight]
+        db.run(selectRedByUppercaseName).futureValue.head shouldBe TrafficLight.Red
       }
       "lowercase" in {
-        implicit val setParam = repo.trafficLightSetParamLower
+        implicit val setParam  = repo.trafficLightSetParamLower
+        implicit val getResult = repo.trafficLightGetResultLower
         val selectRedByLowercaseName =
           sql"""
               select "traffic_light_name_lower" from "traffic_light"
               where "traffic_light_name_lower" = ${TrafficLight.Red}
-            """.as[String]
-        db.run(selectRedByLowercaseName)
-          .futureValue
-          .head shouldBe TrafficLight.Red.entryName.toLowerCase
+            """.as[TrafficLight]
+        db.run(selectRedByLowercaseName).futureValue.head shouldBe TrafficLight.Red
       }
     }
-    "allows creation of working SetParameters for value enums" in {
-      implicit val setParam = repo.trafficLightSetParamNumber
-      val selectRedByNumber =
-        sql"""
-          select "traffic_light_number" from "traffic_light"
-          where "traffic_light_number" = ${TrafficLightByInt.Red}
-        """.as[Int]
-      db.run(selectRedByNumber).futureValue.head shouldBe TrafficLightByInt.Red.value
-    }
   }
+}
+
+sealed trait TrafficLight extends EnumEntry
+object TrafficLight extends Enum[TrafficLight] {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+
+  val values = findValues
 }
