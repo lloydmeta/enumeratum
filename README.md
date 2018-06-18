@@ -962,7 +962,6 @@ implicit lazy val libraryItemMapper = mappedColumnTypeForIntEnum(LibraryItem)
 ...
 def item = column[LibraryItem]("LIBRARY_ITEM") // Maps to a numeric column
 ```
-If you want to represent your enum in the database with numeric IDs, just provide a different mapping. This example uses the enum of type `LibraryItem` defined in the introduction:
 
 Note that because your enum values are singleton objects, you may get errors when you try to use them in Slick queries like
 the following:
@@ -992,7 +991,7 @@ val green: TrafficLight = Green
 ```
 
 If you want to use slick interpolated SQL queries you can use the provided
-constructors to instantiate instances of GetResult[_] and SetParameter[_]
+constructors to instantiate instances of `GetResult[_]` and `SetParameter[_]`
 for your enum:
 ``` scala
 import SlickEnumPlainSqlSupport._
