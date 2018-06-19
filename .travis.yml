@@ -19,7 +19,7 @@ matrix:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmt::test test:compile test:doc
         - travis_wait 30 sleep 1800 &
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
-    - scala: 2.12.4
+    - scala: 2.12.6
       jdk: oraclejdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
