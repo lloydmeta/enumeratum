@@ -939,21 +939,29 @@ ctx.run(query[Shirt]).foreach(println)
 
 ## Slick integration
 
+### Column Mappings
 In order to use your enumeratum Enums in Slick tables as columns, you will
  need to construct instances of `MappedColumnType` and make them available
  where you define and query your slick tables. In order to more easily
  construct these instances, the enumeratum-slick integration provides a trait
  `enumeratum.SlickEnumSupport`. This trait provides a method `mappedColumnTypeForEnum`
  (and variants) for constructing a mapped column type for your enum. For example
- if you want to use `Enum[Greeting]` in your slick table, mix in `SlickEnumSupport`,
- which requires a slick `profile` to be in scope, and construct a mapper
+ if you want to use `Enum[Greeting]` in your slick table, mix in `SlickEnumSupport`
+ where you define your table.
 ```scala
-implicit lazy val greetingMapper = mappedColumnTypeForEnum(Greeting)
+trait GreetingRepository extends SlickEnumSupport {
+  val profile: slick.jdbc.Profile
+  implicit lazy val greetingMapper = mappedColumnTypeForEnum(Greeting)
+  class GreetingTable(tag: Tag) extends Table[(String, Greeting)](tag, "greeting") {
+    def id = column[String]("id", O.PrimaryKey)
+    def greeting = column[Greeting]("greeting") // Maps to a varchar/text column
+
+    def * = (id, greeting)
+  }
+
 ```
-You can then make use of this mapper to define your table as follows
-```scala
-def greeting = column[Greeting]("GREETING") // Maps to a varchar/text column
-```
+
+### ValueEnum Mappings
 
 If you want to represent a `ValueEnum` by its `value` rather than its string
 name, simply mix in `SlickValueEnumSupport` and proceed mostly as above:
@@ -962,6 +970,29 @@ implicit lazy val libraryItemMapper = mappedColumnTypeForIntEnum(LibraryItem)
 ...
 def item = column[LibraryItem]("LIBRARY_ITEM") // Maps to a numeric column
 ```
+
+### Common Mappers
+
+An alternate approach which is useful when mappers need to be shared across
+repositories (perhaps for something common like a "Status" enum) is to define
+your mappers in a module on their own, then make use of them in your repositories:
+```scala
+trait CommonMappers extends SlickEnumSupport {
+  val profile: Profile
+  implicit lazy val statusMapper = mappedColumnTypeForEnum(Status)
+  ...
+}
+trait UserRepository extends CommonMappers {
+  val profile: Profile
+  class UserTable(tag: Tag) extends Table[UserRow](tag, "user") {
+    ...
+    def status = column[Status]("status")
+    ...
+  }
+}
+```
+
+### Querying by enum column types
 
 Note that because your enum values are singleton objects, you may get errors when you try to use them in Slick queries like
 the following:
@@ -990,11 +1021,22 @@ val green: TrafficLight = Green
 .filter(_.trafficLight === red)`
 ```
 
+### Interpolated / Plain SQL integration
+
 If you want to use slick interpolated SQL queries you can use the provided
 constructors to instantiate instances of `GetResult[_]` and `SetParameter[_]`
 for your enum:
-``` scala
+```scala
 import SlickEnumPlainSqlSupport._
+```
+Or mix it in...
+```scala
+trait Foo extends SlickEnumPlainSqlSupport {
+  ...
+}
+```
+Then define your instances:
+```scala
 implicit val greetingGetResult = getResultForEnum(Greeting)
 implicit val greetingOptionGetResult = optionalGetResultForEnum(Greeting)
 implicit val greetingSetParameter = setParameterForEnum(Greeting)
