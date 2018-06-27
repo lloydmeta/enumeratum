@@ -1,8 +1,8 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theScalaVersion = "2.12.4"
+lazy val theScalaVersion = "2.12.6"
 
-lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.4")
+lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6")
 
 lazy val scalaTestVersion  = "3.0.5"
 lazy val scalacheckVersion = "1.13.5"
@@ -19,6 +19,14 @@ def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
+def theSlickVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "3.2.3"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "3.1.1"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
@@ -57,7 +65,8 @@ lazy val integrationProjectRefs = Seq(
   enumeratumScalacheckJs,
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
-  enumeratumQuillJvm
+  enumeratumQuillJvm,
+  enumeratumSlick
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -353,6 +362,19 @@ lazy val enumeratumQuill = crossProject
   )
 lazy val enumeratumQuillJs  = enumeratumQuill.js
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
+
+lazy val enumeratumSlick =
+  Project(id = "enumeratum-slick", base = file("enumeratum-slick"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.15-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
+        "com.beachape"       %% "enumeratum" % Versions.Core.stable,
+        "com.h2database"     % "h2"          % "1.4.197" % Test
+      )
+    )
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",

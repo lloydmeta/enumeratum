@@ -33,6 +33,7 @@ Integrations are available for:
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
+- [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents
@@ -245,6 +246,7 @@ import enumeratum.values._
 sealed abstract class LibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
 case object LibraryItem extends IntEnum[LibraryItem] {
+
 
   case object Book     extends LibraryItem(value = 1, name = "book")
   case object Movie    extends LibraryItem(name = "movie", value = 2)
@@ -937,75 +939,108 @@ ctx.run(query[Shirt]).foreach(println)
 
 ## Slick integration
 
-[Slick](http://slick.lightbend.com) doesn't have a separate integration at the moment. You just have to provide a `MappedColumnType` for each database column that should be represented as an enum on the Scala side.
-
-For example when you want the `Enum[Greeting]` defined in the introduction as a database column, you can use the following code
-
+### Column Mappings
+In order to use your enumeratum Enums in Slick tables as columns, you will
+ need to construct instances of `MappedColumnType` and make them available
+ where you define and query your slick tables. In order to more easily
+ construct these instances, the enumeratum-slick integration provides a trait
+ `enumeratum.SlickEnumSupport`. This trait provides a method `mappedColumnTypeForEnum`
+ (and variants) for constructing a mapped column type for your enum. For example
+ if you want to use `Enum[Greeting]` in your slick table, mix in `SlickEnumSupport`
+ where you define your table.
 ```scala
-  implicit lazy val greetingMapper = MappedColumnType.base[Greeting, String](
-    greeting => greeting.entryName,
-    string => Greeting.withName(string)
-  )
+trait GreetingRepository extends SlickEnumSupport {
+  val profile: slick.jdbc.Profile
+  implicit lazy val greetingMapper = mappedColumnTypeForEnum(Greeting)
+  class GreetingTable(tag: Tag) extends Table[(String, Greeting)](tag, "greeting") {
+    def id = column[String]("id", O.PrimaryKey)
+    def greeting = column[Greeting]("greeting") // Maps to a varchar/text column
+
+    def * = (id, greeting)
+  }
+
 ```
 
-You can then define the following line in your ```Table[...]``` class
+### ValueEnum Mappings
 
+If you want to represent a `ValueEnum` by its `value` rather than its string
+name, simply mix in `SlickValueEnumSupport` and proceed mostly as above:
 ```scala
-  // This maps a column of type VARCHAR/TEXT to enums of type [[Greeting]]
-  def greeting = column[Greeting]("GREETING")
+implicit lazy val libraryItemMapper = mappedColumnTypeForIntEnum(LibraryItem)
+...
+def item = column[LibraryItem]("LIBRARY_ITEM") // Maps to a numeric column
 ```
 
-If you want to represent your enum in the database with numeric IDs, just provide a different mapping. This example uses the enum of type `LibraryItem` defined in the introduction:
+### Common Mappers
 
+An alternate approach which is useful when mappers need to be shared across
+repositories (perhaps for something common like a "Status" enum) is to define
+your mappers in a module on their own, then make use of them in your repositories:
 ```scala
-  implicit lazy val libraryItemMapper = MappedColumnType.base[LibraryItem, Int](
-    item => item.value,
-    id => LibraryItem.withValue(id)
-  )
+trait CommonMappers extends SlickEnumSupport {
+  val profile: Profile
+  implicit lazy val statusMapper = mappedColumnTypeForEnum(Status)
+  ...
+}
+trait UserRepository extends CommonMappers {
+  val profile: Profile
+  class UserTable(tag: Tag) extends Table[UserRow](tag, "user") {
+    ...
+    def status = column[Status]("status")
+    ...
+  }
+}
 ```
 
-Again you can now simply use `LibraryItem` in your `Table` class:
-
-```scala
-  // This maps a column of type NUMBER to enums of type [[LibaryItem]]
-  def item = column[LibraryItem]("LIBRARY_ITEM")
-```
+### Querying by enum column types
 
 Note that because your enum values are singleton objects, you may get errors when you try to use them in Slick queries like
 the following:
 
-
 ```scala
-.filter(_.productType === ProductType.Foo)`
+.filter(_.trafficLight === TrafficLight.Red)`
 ```
 
-This is because `ProductType.Foo` in the above example is inferred to be of its unique type (`ProductType.Foo`) rather than `ProductType`,
-thus causing a failure to find your mapping. In order to fix this, simply assist the compiler by ascribing the type to be `ProductType`:
+This is because `TrafficLight.Red` in the above example is inferred to
+be of its unique type (`TrafficLight.Red`) rather than `TrafficLight`,
+thus causing a failure to find your mapping. In order to fix this,
+simply assist the compiler by ascribing the type to be `TrafficLight`:
 
 ```scala
-.filter(_.productType === (ProductType.Foo: ProductType))`
+.filter(_.trafficLight === (TrafficLight.Red: TrafficLight))`
 ```
 
-If you want to use slick interpolated SQL queries you need a few additional implicits.
+A way around this if you find the type expansion offensive is to define
+val accessors for your enum entries that are typed as the parent type.
+You can do this inside your Enums companion object or more locally:
+```scala
+val red: TrafficLight = Red // Not red: TrafficLight.Red = Red
+val yellow: TrafficLight = Yellow
+val green: TrafficLight = Green
+...
+.filter(_.trafficLight === red)`
+```
 
-``` scala
-implicit val greetingGetResult: GetResult[Greeting] = new GetResult[Greeting] {
-  override def apply(positionedResult: PositionedResult): Greeting = Greeting.withName(positionedResult.nextString())
-}
+### Interpolated / Plain SQL integration
 
-implicit val greetingOptionGetResult: GetResult[Option[Greeting]] = new GetResult[Option[Greeting]] {
-  override def apply(positionedResult: PositionedResult): Option[Greeting] = positionedResult.nextStringOption().flatMap(Greeting.withNameOption)
+If you want to use slick interpolated SQL queries you can use the provided
+constructors to instantiate instances of `GetResult[_]` and `SetParameter[_]`
+for your enum:
+```scala
+import SlickEnumPlainSqlSupport._
+```
+Or mix it in...
+```scala
+trait Foo extends SlickEnumPlainSqlSupport {
+  ...
 }
-
-implicit val greetingSetParameter: SetParameter[Greeting] = new SetParameter[Greeting] {
-  override def apply(value: Greeting, positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setString(value.toString)
-}
-
-implicit val greetingOptionSetParameter: SetParameter[Option[Greeting]] = new SetParameter[Option[Greeting]] {
-  override def apply(value: Option[Greeting], positionedParameter: PositionedParameters): Unit =
-    positionedParameter.setStringOption(value.map(v => v.entryName))
-}
+```
+Then define your instances:
+```scala
+implicit val greetingGetResult = getResultForEnum(Greeting)
+implicit val greetingOptionGetResult = optionalGetResultForEnum(Greeting)
+implicit val greetingSetParameter = setParameterForEnum(Greeting)
+implicit val greetingOptionSetParameter = optionalSetParameterForEnum(Greeting)
 ```
 
 ## Benchmarking

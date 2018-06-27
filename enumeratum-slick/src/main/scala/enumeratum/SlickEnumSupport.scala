@@ -1,0 +1,3 @@
+package enumeratum
+
+trait SlickEnumSupport extends SlickEnumColumnSupport with SlickEnumPlainSqlSupport
