@@ -368,7 +368,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.15",
+      version := "1.5.16-SNAPSHOT",
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
         "com.beachape"       %% "enumeratum" % Versions.Core.stable,
