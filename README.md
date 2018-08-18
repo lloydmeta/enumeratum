@@ -33,8 +33,7 @@ Integrations are available for:
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
-- [
-](http://slick.lightbend.com/): JVM only
+- [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents
