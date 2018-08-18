@@ -33,7 +33,8 @@ Integrations are available for:
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
-- [Slick](http://slick.lightbend.com/): JVM only
+- [
+](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
 
 ### Table of Contents
@@ -998,7 +999,7 @@ Note that because your enum values are singleton objects, you may get errors whe
 the following:
 
 ```scala
-.filter(_.trafficLight === TrafficLight.Red)`
+.filter(_.trafficLight === TrafficLight.Red)
 ```
 
 This is because `TrafficLight.Red` in the above example is inferred to
