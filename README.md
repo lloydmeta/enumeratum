@@ -998,7 +998,7 @@ Note that because your enum values are singleton objects, you may get errors whe
 the following:
 
 ```scala
-.filter(_.trafficLight === TrafficLight.Red)`
+.filter(_.trafficLight === TrafficLight.Red)
 ```
 
 This is because `TrafficLight.Red` in the above example is inferred to
@@ -1007,7 +1007,7 @@ thus causing a failure to find your mapping. In order to fix this,
 simply assist the compiler by ascribing the type to be `TrafficLight`:
 
 ```scala
-.filter(_.trafficLight === (TrafficLight.Red: TrafficLight))`
+.filter(_.trafficLight === (TrafficLight.Red: TrafficLight))
 ```
 
 A way around this if you find the type expansion offensive is to define
@@ -1018,7 +1018,7 @@ val red: TrafficLight = Red // Not red: TrafficLight.Red = Red
 val yellow: TrafficLight = Yellow
 val green: TrafficLight = Green
 ...
-.filter(_.trafficLight === red)`
+.filter(_.trafficLight === red)
 ```
 
 ### Interpolated / Plain SQL integration
