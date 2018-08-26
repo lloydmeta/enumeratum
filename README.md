@@ -26,7 +26,7 @@ Enumeratum is published for Scala 2.10.x, 2.11.x, and 2.12.x as well as ScalaJS.
 Integrations are available for:
 
 - [Play](https://www.playframework.com/): JVM only
-- [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM only (included in Play integration but also available separately)
+- [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
