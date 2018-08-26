@@ -171,8 +171,8 @@ lazy val enumeratumReactiveMongoBson =
       )
     )
 
-lazy val enumeratumPlayJsonAggregate =
-  aggregateProject("enumeratumPlayJson", enumeratumPlayJsonJs, enumeratumPlayJsonJvm).settings(
+lazy val playJsonAggregate =
+  aggregateProject("play-json", enumeratumPlayJsonJs, enumeratumPlayJsonJvm).settings(
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
@@ -190,7 +190,7 @@ lazy val enumeratumPlayJson = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-play-json",
-    version := s"1.5.15-SNAPSHOT",
+    version := s"1.5.14",
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
