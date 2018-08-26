@@ -8,7 +8,7 @@ sbt "project upickle-aggregate" +clean +publishSigned &&
 say "Done 2" &&
 sbt "project enumeratum-reactivemongo-bson" +clean +publishSigned &&
 say "Done 3" &&
-sbt "project enumeratum-play-json" +clean +publishSigned &&
+sbt "project play-json-aggregate" +clean +publishSigned &&
 say "Done 4" &&
 sbt "project enumeratum-play" +clean +publishSigned &&
 say "Done 5" &&

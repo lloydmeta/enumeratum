@@ -33,7 +33,7 @@ def theSlickVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.9"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.10"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -53,7 +53,8 @@ lazy val baseProjectRefs =
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
-  enumeratumPlayJson,
+  enumeratumPlayJsonJs,
+  enumeratumPlayJsonJvm,
   enumeratumUPickleJs,
   enumeratumUPickleJvm,
   enumeratumCirceJs,
@@ -170,19 +171,54 @@ lazy val enumeratumReactiveMongoBson =
       )
     )
 
-lazy val enumeratumPlayJson =
-  Project(id = "enumeratum-play-json", base = file("enumeratum-play-json"))
-    .settings(commonWithPublishSettings: _*)
-    .settings(testSettings: _*)
-    .settings(
-      version := s"1.5.15-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        "com.typesafe.play" %% "play-json"       % thePlayJsonVersion(scalaVersion.value),
-        "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-        "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
-        "org.joda"          % "joda-convert"     % "1.8.1" % Provided
+lazy val playJsonAggregate =
+  aggregateProject("play-json", enumeratumPlayJsonJs, enumeratumPlayJsonJvm).settings(
+    crossScalaVersions := {
+      val versions = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          post210Only(crossScalaVersions.value)
+        else
+          crossScalaVersions.value
+      }
+      versions
+    }
+  )
+lazy val enumeratumPlayJson = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-play-json"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-play-json",
+    version := s"1.5.14",
+    crossScalaVersions := {
+      val versions = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          post210Only(crossScalaVersions.value)
+        else
+          crossScalaVersions.value
+      }
+      versions
+    },
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("com.typesafe.play", "play-json", cross) % thePlayJsonVersion(
+          scalaVersion.value),
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable,
+        impl.ScalaJSGroupID
+          .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
       )
-    )
+    }
+  )
+lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js
+lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
   .settings(commonWithPublishSettings: _*)
@@ -196,7 +232,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
       scalaTestPlay(scalaVersion.value)
     )
   )
-  .dependsOn(enumeratumPlayJson % "test->test;compile->compile")
+  .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
 
 lazy val uPickleAggregate = aggregateProject("upickle", enumeratumUPickleJs, enumeratumUPickleJvm)
 lazy val enumeratumUPickle = crossProject

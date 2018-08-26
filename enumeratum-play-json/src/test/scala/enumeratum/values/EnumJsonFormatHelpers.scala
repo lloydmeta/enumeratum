@@ -64,8 +64,8 @@ trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
         }
       }
       it("should fail to read with invalid values") {
-        reads.reads(JsNumber(Int.MaxValue)) shouldBe 'error
-        reads.reads(JsString("boon")) shouldBe 'error
+        reads.reads(JsNumber(Int.MaxValue)).isError shouldBe true
+        reads.reads(JsString("boon")).isError shouldBe true
       }
     }
   }
