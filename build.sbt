@@ -172,7 +172,17 @@ lazy val enumeratumReactiveMongoBson =
     )
 
 lazy val enumeratumPlayJsonAggregate =
-  aggregateProject("enumeratumPlayJson", enumeratumPlayJsonJs, enumeratumPlayJsonJvm)
+  aggregateProject("enumeratumPlayJson", enumeratumPlayJsonJs, enumeratumPlayJsonJvm).settings(
+    crossScalaVersions := {
+      val versions = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          post210Only(crossScalaVersions.value)
+        else
+          crossScalaVersions.value
+      }
+      versions
+    }
+  )
 lazy val enumeratumPlayJson = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-play-json"))
@@ -181,6 +191,15 @@ lazy val enumeratumPlayJson = crossProject
   .settings(
     name := "enumeratum-play-json",
     version := s"1.5.15-SNAPSHOT",
+    crossScalaVersions := {
+      val versions = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          post210Only(crossScalaVersions.value)
+        else
+          crossScalaVersions.value
+      }
+      versions
+    },
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
