@@ -75,7 +75,9 @@ lazy val integrationProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
   enumeratumQuillJvm,
-  enumeratumSlick
+  enumeratumSlick,
+  enumeratumCatsJs,
+  enumeratumCatsJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -420,17 +422,32 @@ lazy val enumeratumSlick =
       )
     )
 
-lazy val enumeratumCats =
-  Project(id = "enumeratum-cats", base = file("enumeratum-cats"))
-    .settings(commonWithPublishSettings: _*)
-    .settings(testSettings: _*)
-    .settings(
-      version := "1.5.16-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        "org.typelevel" %% "cats-core"  % theCatsVersion(scalaVersion.value),
-        "com.beachape"  %% "enumeratum" % Versions.Core.stable
+lazy val catsAggregate = aggregateProject("circe", enumeratumCatsJs, enumeratumCatsJvm)
+lazy val enumeratumCats = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-cats"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-cats",
+    version := "1.5.14-SNAPSHOT",
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("org.typelevel", "cats-core", cross) % theCatsVersion(
+          scalaVersion.value),
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
       )
-    )
+    }
+  )
+lazy val enumeratumCatsJs  = enumeratumCats.js
+lazy val enumeratumCatsJvm = enumeratumCats.jvm
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",
