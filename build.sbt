@@ -1,8 +1,8 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
-lazy val theScalaVersion = "2.12.6"
+lazy val theScalaVersion = "2.12.7"
 
-lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6")
+lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.7")
 
 lazy val scalaTestVersion  = "3.0.5"
 lazy val scalacheckVersion = "1.13.5"
