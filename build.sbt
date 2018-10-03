@@ -438,7 +438,7 @@ lazy val enumeratumCats = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.5.14",
+    version := "1.5.15-SNAPSHOT",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
