@@ -57,8 +57,9 @@ Integrations are available for:
 11. [Slick integration](#slick-integration)
 12. [ScalaCheck](#scalacheck)
 13. [Quill integration](#quill)
-14. [Benchmarking](#benchmarking)
-15. [Publishing](#publishing)
+14. [Cats integration](#cats)
+15. [Benchmarking](#benchmarking)
+16. [Publishing](#publishing)
 
 
 ## Quick start
@@ -1042,6 +1043,99 @@ implicit val greetingOptionGetResult = optionalGetResultForEnum(Greeting)
 implicit val greetingSetParameter = setParameterForEnum(Greeting)
 implicit val greetingOptionSetParameter = optionalSetParameterForEnum(Greeting)
 ```
+
+## Cats
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats.11)
+
+### SBT
+
+To use enumeratum with [Cats](https://github.com/typelevel/cats):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-cats" % enumeratumCatsVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum-cats" % enumeratumCatsVersion
+)
+```
+
+### Usage
+
+This enumeratum module is mostly useful for generic derivation - providing instances for `Eq`, `Show` and `Hash`. So if you have structures (for example case classes) which
+contain enum values, you get the instances for the enum itself "for free". But it can be useful for standalone usage as,
+providing type-safe comparison and hashing.
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with CatsEnum[ShirtSize] {
+
+  case object Small   extends ShirtSize
+  case object Medium  extends ShirtSize
+  case object Large   extends ShirtSize
+
+  val values = findValues
+
+}
+
+import cats.syntax.eq._
+import cats.syntax.show._
+
+val shirtSizeOne: ShirtSize = ...
+val shirtSizeTwo: ShirtSize = ...
+
+if(shirtSizeOne === shirtSizeTwo) { // note the third equals
+    printf("We got the same size, its hash is: %i", implicitly[Hash[TrafficLight]].hash(shirtSizeOne))
+} else {
+    printf("Shirt sizes mismatch: %s =!= %s", shirtSizeOne.show, shirtSizeTwo.show)
+}
+```
+
+#### ValueEnum
+
+There are two implementations for `ValueEnum`:
+* `CatsValueEnum` provides the same functionality as `CatsEnum` (except `Hash`)
+* `CatsOrderValueEnum` provides the same functionality as `CatsValueEnum` plus an instance of `cats.Order` (due to Scala 2 trait limitations, it's an `abstract class`, check out `CatsCustomOrderValueEnum` if you need a `trait`)
+
+```scala
+import enumeratum.values._
+
+sealed abstract class CatsPriority(val value: Int, val name: String) extends IntEnumEntry
+
+case object CatsPriority extends IntEnum[CatsPriority] with CatsOrderValueEnum[Int, CatsPriority] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Low         extends CatsPriority(value = 1, name = "low")
+  case object Medium      extends CatsPriority(name = "medium", value = 2)
+  case object High        extends CatsPriority(3, "high")
+  case object SuperHigh   extends CatsPriority(4, name = "super_high")
+
+  val values = findValues
+
+}
+
+import cats.instances.int._
+import cats.instances.list._
+import cats.syntax.order._
+import cats.syntax.foldable._
+
+val items: List[CatsPriority] = List(High, Low, SuperHigh)
+
+items.maximumOption // Some(SuperHigh)
+```
+
+#### Inheritance-free usage
+If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
 
 ## Benchmarking
 

@@ -30,6 +30,14 @@ def theSlickVersion(scalaVersion: String) =
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
 
+def theCatsVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "1.4.0"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "1.2.0"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.10"
@@ -74,7 +82,9 @@ lazy val integrationProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
   enumeratumQuillJvm,
-  enumeratumSlick
+  enumeratumSlick,
+  enumeratumCatsJs,
+  enumeratumCatsJvm
 ).map(Project.projectToRef)
 
 lazy val root =
@@ -419,6 +429,33 @@ lazy val enumeratumSlick =
         "com.h2database"     % "h2"          % "1.4.197" % Test
       )
     )
+
+lazy val catsAggregate = aggregateProject("circe", enumeratumCatsJs, enumeratumCatsJvm)
+lazy val enumeratumCats = crossProject
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-cats"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-cats",
+    version := "1.5.14-SNAPSHOT",
+    libraryDependencies ++= {
+      import org.scalajs.sbtplugin._
+      val cross = {
+        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
+          ScalaJSCrossVersion.binary
+        else
+          CrossVersion.binary
+      }
+      Seq(
+        impl.ScalaJSGroupID.withCross("org.typelevel", "cats-core", cross) % theCatsVersion(
+          scalaVersion.value),
+        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+      )
+    }
+  )
+lazy val enumeratumCatsJs  = enumeratumCats.js
+lazy val enumeratumCatsJvm = enumeratumCats.jvm
 
 lazy val commonSettings = Seq(
   organization := "com.beachape",
