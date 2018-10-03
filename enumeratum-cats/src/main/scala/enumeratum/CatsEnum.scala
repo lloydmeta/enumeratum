@@ -1,14 +1,22 @@
 package enumeratum
 
-import cats.instances.string._
 import cats.{Eq, Hash, Show}
 
 trait CatsEnum[A <: EnumEntry] { this: Enum[A] =>
 
-  implicit val eqInstance: Eq[A] = Eq.fromUniversalEquals[A]
+  /**
+    * `Eq` instance for the enum entries - treats all enum values as distinct.
+    */
+  implicit val eqInstance: Eq[A] = Cats.eqForEnum[A]
 
-  implicit val showInstance: Show[A] = Show.show(_.entryName)
+  /**
+    * `Show` instance for the enum entries - returns the (transformed) entry name.
+    */
+  implicit val showInstance: Show[A] = Cats.showForEnum[A]
 
-  implicit val hashInstance: Hash[A] = Hash.by(_.entryName)
+  /**
+    * `Hash` instance for the enum entries - based on entry name.
+    */
+  implicit val hashInstance: Hash[A] = Cats.hashForEnum[A]
 
 }

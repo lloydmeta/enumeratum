@@ -1057,6 +1057,14 @@ libraryDependencies ++= Seq(
 )
 ```
 
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum-cats" % enumeratumCatsVersion
+)
+```
+
 ### Usage
 
 This enumeratum module is mostly useful for generic derivation - providing instances for `Eq`, `Show` and `Hash`. So if you have structures (for example case classes) which
@@ -1125,6 +1133,9 @@ val items: List[CatsPriority] = List(High, Low, SuperHigh)
 
 items.maximumOption // Some(SuperHigh)
 ```
+
+#### Inheritance-free usage
+If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
 
 ## Benchmarking
 

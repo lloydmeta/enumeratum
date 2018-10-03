@@ -5,18 +5,30 @@ import cats.{Eq, Order, Show}
 trait CatsValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
 
-  implicit val eqInstance: Eq[EntryType] = Eq.fromUniversalEquals[EntryType]
+  /**
+    * `Eq` instance for the enum entries - treats all enum values as distinct.
+    */
+  implicit val eqInstance: Eq[EntryType] = Cats.eqForEnum[EntryType]
 
-  implicit val showInstance: Show[EntryType] = Show.fromToString[EntryType]
+  /**
+    * Builds a `Show` instance based on `toString`.
+    */
+  implicit val showInstance: Show[EntryType] = Cats.showForEnum[EntryType]
 
 }
 
 trait CatsCustomOrderValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
 
+  /**
+    * Order for the enum's value type - used to derive [[orderInstance]].
+    */
   implicit val valueTypeOrder: Order[ValueType]
 
-  implicit val orderInstance: Order[EntryType] = Order.by(_.value)
+  /**
+    * Builds a `Order` instance from the given `Order` (see [[valueTypeOrder]] on the value type.
+    */
+  implicit val orderInstance: Order[EntryType] = Cats.valueOrderForEnum[EntryType, ValueType](valueTypeOrder)
 
 }
 
