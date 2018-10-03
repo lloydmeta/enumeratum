@@ -430,7 +430,7 @@ lazy val enumeratumSlick =
       )
     )
 
-lazy val catsAggregate = aggregateProject("circe", enumeratumCatsJs, enumeratumCatsJvm)
+lazy val catsAggregate = aggregateProject("cats", enumeratumCatsJs, enumeratumCatsJvm)
 lazy val enumeratumCats = crossProject
   .crossType(CrossType.Pure)
   .in(file("enumeratum-cats"))
@@ -438,7 +438,7 @@ lazy val enumeratumCats = crossProject
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.5.14-SNAPSHOT",
+    version := "1.5.14",
     libraryDependencies ++= {
       import org.scalajs.sbtplugin._
       val cross = {
