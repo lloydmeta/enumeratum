@@ -2,10 +2,10 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.12.6"
 
-lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6")
+lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6", "2.13.0-M5")
 
-lazy val scalaTestVersion  = "3.0.5"
-lazy val scalacheckVersion = "1.13.5"
+lazy val scalaTestVersion  = "3.0.6-SNAP3"
+lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.13.0"
