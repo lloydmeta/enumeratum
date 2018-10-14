@@ -20,7 +20,7 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
 
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.2.27")
 
-addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.2.0")
+addSbtPlugin("org.wartremover" % "sbt-wartremover" % "2.3.5")
 
 addSbtPlugin("com.github.tkawachi" % "sbt-doctest" % "0.7.1")
 
