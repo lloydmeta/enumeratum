@@ -15,7 +15,7 @@ lazy val scalacheckVersion = "1.14.0"
 lazy val reactiveMongoVersion = "0.13.0"
 lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2.1"
-lazy val json4sVersion        = "3.5.3"
+lazy val json4sVersion        = "3.6.1"
 lazy val quillVersion         = "2.3.3"
 
 def thePlayVersion(scalaVersion: String) =
@@ -70,6 +70,9 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
 
+lazy val scala213ProjectRefs =
+  Seq(enumeratumJson4s, enumeratumScalacheckJvm).map(Project.projectToRef)
+
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   .settings(
     commonSettings ++ publishSettings,
@@ -84,7 +87,7 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
     aggregate in publish := false,
     aggregate in PgpKeys.publishSigned := false
   )
-  .aggregate(baseProjectRefs: _*)
+  .aggregate((baseProjectRefs ++ scala213ProjectRefs): _*)
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
