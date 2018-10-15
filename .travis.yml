@@ -30,10 +30,8 @@ matrix:
     - scala: 2.13.0-M5
       jdk: oraclejdk8
       script:
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
-        - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test:compile scala_2_13/test:doc
+        - sbt scala_2_13/test
 cache:
   directories:
   - $HOME/.sbt/0.13

@@ -2,7 +2,11 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 
 lazy val theScalaVersion = "2.12.6"
 
-lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6", "2.13.0-M5")
+/*
+  2.13.0-M5 support is currently defined as a separate project (scala_2_13) for convenience while
+  integration libraries are still gaining 2.13 support
+ */
+lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6")
 
 lazy val scalaTestVersion  = "3.0.6-SNAP3"
 lazy val scalacheckVersion = "1.14.0"
@@ -65,6 +69,22 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
+
+lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
+  .settings(
+    commonSettings ++ publishSettings,
+    name := "enumeratum-scala_2_13",
+    scalaVersion := "2.13.0-M5", // not sure if this and below are needed
+    crossScalaVersions := Seq("2.13.0-M5"),
+    crossVersion := CrossVersion.binary,
+    // Do not publish this  project (it just serves as an aggregate)
+    publishArtifact := false,
+    publishLocal := {},
+    //doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
+    aggregate in publish := false,
+    aggregate in PgpKeys.publishSigned := false
+  )
+  .aggregate(baseProjectRefs: _*)
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
