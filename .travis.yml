@@ -27,6 +27,11 @@ matrix:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
+    - scala: 2.13.0-M5
+      jdk: oraclejdk8
+      script:
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test:compile scala_2_13/test:doc
+        - sbt scala_2_13/test
 cache:
   directories:
   - $HOME/.sbt/0.13
