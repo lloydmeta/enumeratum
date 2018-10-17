@@ -7,7 +7,9 @@ lazy val theScalaVersion = "2.12.6"
   2.13.0-M5 support is currently defined as a separate project (scala_2_13) for convenience while
   integration libraries are still gaining 2.13 support
  */
-lazy val scalaVersions = Seq("2.10.7", "2.11.12", "2.12.6")
+lazy val scalaVersions     = Seq("2.10.7", "2.11.12", "2.12.6")
+lazy val scala_2_13Version = "2.13.0-M5"
+lazy val scalaVersionsAll  = scalaVersions :+ scala_2_13Version
 
 lazy val scalaTestVersion  = "3.0.6-SNAP3"
 lazy val scalacheckVersion = "1.14.0"
@@ -78,8 +80,8 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   .settings(
     commonSettings ++ publishSettings,
     name := "enumeratum-scala_2_13",
-    scalaVersion := "2.13.0-M5", // not sure if this and below are needed
-    crossScalaVersions := Seq("2.13.0-M5"),
+    scalaVersion := scala_2_13Version, // not sure if this and below are needed
+    crossScalaVersions := Seq(scala_2_13Version),
     crossVersion := CrossVersion.binary,
     // Do not publish this  project (it just serves as an aggregate)
     publishArtifact := false,
@@ -130,18 +132,20 @@ lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
 lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("macros"))
+  .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
                                        include_210Dir = true,
                                        includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.head,
+    version := Versions.Macros.stable,
+    crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
   )
-  .settings(testSettings: _*)
+
 lazy val macrosJS  = macros.js
 lazy val macrosJVM = macros.jvm
 
@@ -150,13 +154,14 @@ lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM)
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
-  .settings(
-    name := "enumeratum",
-    version := Versions.Core.head,
-    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
-  )
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
+  .settings(
+    name := "enumeratum",
+    version := Versions.Core.stable,
+    crossScalaVersions := scalaVersionsAll,
+    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+  )
 //  .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
@@ -171,6 +176,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-test",
     version := Versions.Core.stable,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
     }
@@ -183,7 +189,8 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
   .settings(testSettings: _*)
   .settings(
     name := "coreJVMTests",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
@@ -341,7 +348,8 @@ lazy val enumeratumJson4s =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.15-SNAPSHOT",
+      version := "1.5.15",
+      crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
@@ -359,7 +367,8 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.5.16-SNAPSHOT",
+    version := "1.5.16",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
@@ -573,6 +582,9 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
   def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
     val base = if (jsJvmCrossProject) projectbase / ".." else projectbase
     CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+        Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.13")
+          .map(_.getCanonicalFile)
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.11")
           .map(_.getCanonicalFile)
