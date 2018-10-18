@@ -25,7 +25,7 @@ object ContextUtils {
     * Returns a PartialFunction for turning symbols into names
     */
   def constructorsToParamNamesPF(
-    c: Context
+      c: Context
   ): PartialFunction[c.universe.Symbol, List[c.universe.Name]] = {
     case m if m.isConstructor =>
       m.asMethod.paramLists.flatten.map(_.asTerm.name)
@@ -41,5 +41,5 @@ object ContextUtils {
   /**
     * Returns a named arg extractor
     */
-  def namedArg(c:Context) = c.universe.NamedArg
+  def namedArg(c: Context) = c.universe.NamedArg
 }

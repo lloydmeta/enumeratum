@@ -41,5 +41,5 @@ object ContextUtils {
   /**
     * Returns a named arg extractor
     */
-  def namedArg(c:Context) = c.universe.AssignOrNamedArg
+  def namedArg(c: Context) = c.universe.AssignOrNamedArg
 }

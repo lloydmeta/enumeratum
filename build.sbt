@@ -1,13 +1,13 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-lazy val theScalaVersion = "2.12.6"
+lazy val theScalaVersion = "2.12.7"
 
 /*
   2.13.0-M5 support is currently defined as a separate project (scala_2_13) for convenience while
   integration libraries are still gaining 2.13 support
  */
-lazy val scalaVersions     = Seq("2.10.7", "2.11.12", "2.12.6")
+lazy val scalaVersions     = Seq("2.10.7", "2.11.12", "2.12.7")
 lazy val scala_2_13Version = "2.13.0-M5"
 lazy val scalaVersionsAll  = scalaVersions :+ scala_2_13Version
 
@@ -487,14 +487,14 @@ lazy val compilerSettings = Seq(
       "-language:implicitConversions",
       "-unchecked",
       "-Xfatal-warnings",
-      "-Yno-adapted-args",
+//      "-Ywarn-adapted-args",
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard",
       "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) =>
+      case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
       case _             => base ++ Seq("-Xlint")
