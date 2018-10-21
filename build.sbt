@@ -131,10 +131,9 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("macros"))
   .settings(commonWithPublishSettings: _*)
-  .settings(
-    withCompatUnmanagedSources(jsJvmCrossProject = true,
-                               include_210Dir = true,
-                               includeTestSrcs = false): _*)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
+                                       include_210Dir = true,
+                                       includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
     version := Versions.Macros.head,
