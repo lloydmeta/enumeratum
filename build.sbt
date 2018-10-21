@@ -188,7 +188,8 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
-    publishArtifact := false
+    publishArtifact := false,
+    publishLocal := {}
   )
   .dependsOn(coreJVM, macrosJVM)
 
