@@ -13,7 +13,7 @@ object Cats {
     * Builds an `Eq` instance which acts accordingly to the given `Eq` on the value type. Allows to implement different
     * behaviour than [[eqForEnum]], for example grouping several enum values in special contexts.
     */
-  def valueEqForEnum[A <: ValueEnumEntry[V], V : Eq]: Eq[A] = Eq.by[A, V](_.value)
+  def valueEqForEnum[A <: ValueEnumEntry[V], V: Eq]: Eq[A] = Eq.by[A, V](_.value)
 
   /**
     * Builds a `Show` instance based on `toString`.

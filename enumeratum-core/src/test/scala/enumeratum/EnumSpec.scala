@@ -320,7 +320,7 @@ class EnumSpec extends FunSpec with Matchers {
 
         MultiEnum.withName("one") shouldBe MultiEnum.One
         MultiEnum.withName("1") shouldBe MultiEnum.One
-        a [NoSuchElementException] should be thrownBy MultiEnum.withName("One")
+        a[NoSuchElementException] should be thrownBy MultiEnum.withName("One")
         MultiEnum.withName("eins") shouldBe MultiEnum.One
         MultiEnum.withName("two") shouldBe MultiEnum.Two
       }

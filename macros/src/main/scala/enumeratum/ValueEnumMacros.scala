@@ -206,8 +206,7 @@ object ValueEnumMacros {
                   /*
                    * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
                    */
-                  case (_,
-                        AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
+                  case (_, AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
                     i
                   /*
                    * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type

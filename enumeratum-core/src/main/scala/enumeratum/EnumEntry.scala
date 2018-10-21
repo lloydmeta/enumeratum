@@ -100,7 +100,8 @@ object EnumEntry {
   trait Camelcase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private[this] lazy val stableEntryName: String = super.entryName.split("_+").map(s => capitalise(s.toLowerCase)).mkString
+    private[this] lazy val stableEntryName: String =
+      super.entryName.split("_+").map(s => capitalise(s.toLowerCase)).mkString
   }
 
   /**

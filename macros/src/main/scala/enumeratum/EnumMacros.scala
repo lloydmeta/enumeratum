@@ -26,8 +26,9 @@ object EnumMacros {
     val symbol          = weakTypeOf[A].typeSymbol
     val companionSymbol = ContextUtils.companion(c)(symbol)
     if (companionSymbol == NoSymbol) {
-      c.abort(c.enclosingPosition,
-              s"""
+      c.abort(
+        c.enclosingPosition,
+        s"""
            |
            |  Could not find the companion object for type $symbol.
            |
@@ -54,7 +55,8 @@ object EnumMacros {
            |
            |  Instead of calling like so: indexOf(Light.Red)
            |                Call like so: indexOf(Light.Red: Light)
-         """.stripMargin)
+         """.stripMargin
+      )
     } else {
       c.Expr[A](Ident(companionSymbol))
     }

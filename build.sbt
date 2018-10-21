@@ -1,4 +1,5 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val theScalaVersion = "2.12.6"
 
@@ -126,14 +127,13 @@ lazy val root =
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
 lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
-lazy val macros = crossProject
+lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("macros"))
   .settings(commonWithPublishSettings: _*)
-  .settings(
-    withCompatUnmanagedSources(jsJvmCrossProject = true,
-                               include_210Dir = true,
-                               includeTestSrcs = false): _*)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
+                                       include_210Dir = true,
+                                       includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
     version := Versions.Macros.head,
@@ -147,7 +147,7 @@ lazy val macrosJVM = macros.jvm
 
 // Aggregates core
 lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM)
-lazy val core = crossProject
+lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
   .settings(
@@ -163,7 +163,7 @@ lazy val coreJVM = core.jvm
 
 lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
 // Project models used in test for some subprojects
-lazy val enumeratumTest = crossProject
+lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-test"))
   .settings(testSettings: _*)
@@ -172,14 +172,7 @@ lazy val enumeratumTest = crossProject
     name := "enumeratum-test",
     version := Versions.Core.stable,
     libraryDependencies += {
-      import org.scalajs.sbtplugin._
-      val crossVersion =
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      impl.ScalaJSGroupID
-        .withCross("com.beachape", "enumeratum", crossVersion) % Versions.Core.stable
+      "com.beachape" %%% "enumeratum" % Versions.Core.stable
     }
   )
 lazy val enumeratumTestJs  = enumeratumTest.js
@@ -194,7 +187,8 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
-    publishArtifact := false
+    publishArtifact := false,
+    publishLocal := {}
   )
   .dependsOn(coreJVM, macrosJVM)
 
@@ -223,7 +217,7 @@ lazy val playJsonAggregate =
       versions
     }
   )
-lazy val enumeratumPlayJson = crossProject
+lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-play-json"))
   .settings(commonWithPublishSettings: _*)
@@ -249,11 +243,9 @@ lazy val enumeratumPlayJson = crossProject
           CrossVersion.binary
       }
       Seq(
-        impl.ScalaJSGroupID.withCross("com.typesafe.play", "play-json", cross) % thePlayJsonVersion(
-          scalaVersion.value),
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable,
-        impl.ScalaJSGroupID
-          .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
+        "com.typesafe.play" %%% "play-json"       % thePlayJsonVersion(scalaVersion.value),
+        "com.beachape"      %%% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"      %%% "enumeratum-test" % Versions.Core.stable % Test
       )
     }
   )
@@ -275,7 +267,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
 
 lazy val uPickleAggregate = aggregateProject("upickle", enumeratumUPickleJs, enumeratumUPickleJvm)
-lazy val enumeratumUPickle = crossProject
+lazy val enumeratumUPickle = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-upickle"))
   .settings(commonWithPublishSettings: _*)
@@ -284,16 +276,9 @@ lazy val enumeratumUPickle = crossProject
     name := "enumeratum-upickle",
     version := "1.5.13-SNAPSHOT",
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("com.lihaoyi", "upickle", cross)     % uPickleVersion,
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+        "com.lihaoyi"  %%% "upickle"    % uPickleVersion
       )
     } ++ {
       val additionalMacroDeps =
@@ -312,7 +297,7 @@ lazy val enumeratumUPickleJs  = enumeratumUPickle.js
 lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
-lazy val enumeratumCirce = crossProject
+lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-circe"))
   .settings(commonWithPublishSettings: _*)
@@ -321,17 +306,9 @@ lazy val enumeratumCirce = crossProject
     name := "enumeratum-circe",
     version := "1.5.19-SNAPSHOT",
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("io.circe", "circe-core", cross) % theCirceVersion(
-          scalaVersion.value),
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+        "io.circe"     %%% "circe-core" % theCirceVersion(scalaVersion.value)
       )
     }
   )
@@ -340,7 +317,7 @@ lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
 lazy val argonautAggregate =
   aggregateProject("argonaut", enumeratumArgonautJs, enumeratumArgonautJvm)
-lazy val enumeratumArgonaut = crossProject
+lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-argonaut"))
   .settings(commonWithPublishSettings: _*)
@@ -349,16 +326,9 @@ lazy val enumeratumArgonaut = crossProject
     name := "enumeratum-argonaut",
     version := "1.5.14-SNAPSHOT",
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("io.argonaut", "argonaut", cross)    % argonautVersion,
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+        "io.argonaut"  %%% "argonaut"   % argonautVersion
       )
     }
   )
@@ -382,7 +352,7 @@ lazy val enumeratumJson4s =
 lazy val scalacheckAggregate =
   aggregateProject("scalacheck", enumeratumScalacheckJs, enumeratumScalacheckJvm)
 
-lazy val enumeratumScalacheck = crossProject
+lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-scalacheck"))
   .settings(commonWithPublishSettings: _*)
@@ -391,18 +361,10 @@ lazy val enumeratumScalacheck = crossProject
     name := "enumeratum-scalacheck",
     version := "1.5.16-SNAPSHOT",
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("org.scalacheck", "scalacheck", cross) % scalacheckVersion,
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross)   % Versions.Core.stable,
-        impl.ScalaJSGroupID
-          .withCross("com.beachape", "enumeratum-test", cross) % Versions.Core.stable % Test
+        "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
+        "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
+        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test,
       )
     }
   )
@@ -413,7 +375,7 @@ lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
   crossScalaVersions := post210Only(crossScalaVersions.value)
 )
-lazy val enumeratumQuill = crossProject
+lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-quill"))
   .settings(commonWithPublishSettings: _*)
@@ -423,17 +385,10 @@ lazy val enumeratumQuill = crossProject
     version := "1.5.14-SNAPSHOT",
     crossScalaVersions := post210Only(crossScalaVersions.value),
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("io.getquill", "quill-core", cross)  % quillVersion,
-        impl.ScalaJSGroupID.withCross("io.getquill", "quill-sql", cross)   % quillVersion % Test,
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+        "io.getquill"  %%% "quill-core" % quillVersion,
+        "io.getquill"  %%% "quill-sql"  % quillVersion % Test
       )
     }
   )
@@ -454,7 +409,7 @@ lazy val enumeratumSlick =
     )
 
 lazy val catsAggregate = aggregateProject("cats", enumeratumCatsJs, enumeratumCatsJvm)
-lazy val enumeratumCats = crossProject
+lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-cats"))
   .settings(commonWithPublishSettings: _*)
@@ -463,17 +418,9 @@ lazy val enumeratumCats = crossProject
     name := "enumeratum-cats",
     version := "1.5.15-SNAPSHOT",
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
-        impl.ScalaJSGroupID.withCross("org.typelevel", "cats-core", cross) % theCatsVersion(
-          scalaVersion.value),
-        impl.ScalaJSGroupID.withCross("com.beachape", "enumeratum", cross) % Versions.Core.stable
+        "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
+        "org.typelevel" %%% "cats-core"  % theCatsVersion(scalaVersion.value)
       )
     }
   )
@@ -588,17 +535,8 @@ lazy val publishSettings = Seq(
 val testSettings = {
   Seq(
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val crossVersion =
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
       Seq(
-        impl.ScalaJSGroupID
-          .withCross("org.scalatest", "scalatest", crossVersion) % scalaTestVersion % Test,
-        impl.ScalaJSGroupID
-          .withCross("org.scalacheck", "scalacheck", crossVersion) % scalacheckVersion % Test force ()
+        "org.scalatest" %%% "scalatest" % scalaTestVersion % Test
       )
     },
     doctestGenTests := {
