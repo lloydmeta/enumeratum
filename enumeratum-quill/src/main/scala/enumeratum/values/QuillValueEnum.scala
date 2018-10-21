@@ -69,7 +69,8 @@ trait ShortQuillEnum[EntryType <: ShortEnumEntry] extends QuillValueEnum[Short, 
 /**
   * QuillEnum for StringEnumEntry
   */
-trait StringQuillEnum[EntryType <: StringEnumEntry] extends QuillValueEnum[String, EntryType, String] {
+trait StringQuillEnum[EntryType <: StringEnumEntry]
+    extends QuillValueEnum[String, EntryType, String] {
   this: ValueEnum[String, EntryType] =>
   implicit val quillEncoder: MappedEncoding[EntryType, String] = Quill.encoder(this)
   implicit val quillDecoder: MappedEncoding[String, EntryType] = Quill.decoder(this)
@@ -84,12 +85,14 @@ trait CharQuillEnum[EntryType <: CharEnumEntry] extends QuillValueEnum[Char, Ent
   /**
     * Because all existing Quill contexts do not have built-in Encoders for Char, convert it to a String instead.
     */
-  implicit val quillEncoder: MappedEncoding[EntryType, String] = MappedEncoding(enum => String.valueOf(enum.value))
+  implicit val quillEncoder: MappedEncoding[EntryType, String] = MappedEncoding(
+    enum => String.valueOf(enum.value))
 
   /**
     * Because all existing Quill contexts do not have built-in Decoders for Char, convert it from a String instead.
     */
-  implicit val quillDecoder: MappedEncoding[String, EntryType] = MappedEncoding(str => withValue(str.charAt(0)))
+  implicit val quillDecoder: MappedEncoding[String, EntryType] = MappedEncoding(
+    str => withValue(str.charAt(0)))
 }
 
 /**

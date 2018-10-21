@@ -62,8 +62,8 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   }
 
   private def testCirceKeyEnum[EntryType <: ValueEnumEntry[String]: KeyEncoder: KeyDecoder](
-    enumKind: String,
-    enum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
+      enumKind: String,
+      enum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
   ): Unit = {
     describe(s"$enumKind as Key") {
       describe("to JSON") {
@@ -75,7 +75,8 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
 
       describe("from JSON") {
         it("should fail to parse random JSON into a map") {
-          val invalidJsonMap = Stream.from(1).map(_.toString).take(10).toStream.zip(Stream.from(1)).toMap.asJson
+          val invalidJsonMap =
+            Stream.from(1).map(_.toString).take(10).toStream.zip(Stream.from(1)).toMap.asJson
           invalidJsonMap.as[Map[EntryType, Int]].isLeft shouldBe true
         }
       }
@@ -114,9 +115,7 @@ case object CirceDrinks extends ShortEnum[CirceDrinks] with ShortCirceEnum[Circe
 
 sealed abstract class CirceLibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object CirceLibraryItem
-    extends IntEnum[CirceLibraryItem]
-    with IntCirceEnum[CirceLibraryItem] {
+case object CirceLibraryItem extends IntEnum[CirceLibraryItem] with IntCirceEnum[CirceLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
   case object Book     extends CirceLibraryItem(value = 1, name = "book")

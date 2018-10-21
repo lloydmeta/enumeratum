@@ -227,9 +227,8 @@ object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
 
 }
 
-sealed class MultiEnum(override val entryName: String,
-                       val alternateNames: String*) extends EnumEntry
-
+sealed class MultiEnum(override val entryName: String, val alternateNames: String*)
+    extends EnumEntry
 
 case object MultiEnum extends Enum[MultiEnum] {
   val values = findValues
@@ -239,8 +238,8 @@ case object MultiEnum extends Enum[MultiEnum] {
       (n.entryName -> n) +: n.alternateNames.map(_ -> n)
     }.toMap
 
-  case object One   extends MultiEnum("one", "1", "eins")
-  case object Two   extends MultiEnum("two", "2", "zwei")
+  case object One extends MultiEnum("one", "1", "eins")
+  case object Two extends MultiEnum("two", "2", "zwei")
 }
 
 object Wrapper {

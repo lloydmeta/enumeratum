@@ -28,7 +28,8 @@ trait CatsCustomOrderValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]
   /**
     * Builds a `Order` instance from the given `Order` (see [[valueTypeOrder]] on the value type.
     */
-  implicit val orderInstance: Order[EntryType] = Cats.valueOrderForEnum[EntryType, ValueType](valueTypeOrder)
+  implicit val orderInstance: Order[EntryType] =
+    Cats.valueOrderForEnum[EntryType, ValueType](valueTypeOrder)
 
 }
 

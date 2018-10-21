@@ -154,9 +154,7 @@ class QuillValueEnumSpec extends FunSpec with Matchers {
 
 sealed abstract class QuillLibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object QuillLibraryItem
-  extends IntEnum[QuillLibraryItem]
-    with IntQuillEnum[QuillLibraryItem] {
+case object QuillLibraryItem extends IntEnum[QuillLibraryItem] with IntQuillEnum[QuillLibraryItem] {
 
   // A good mix of named, unnamed, named + unordered args
   case object Book     extends QuillLibraryItem(value = 1, name = "book")
@@ -173,7 +171,7 @@ case class QuillBorrowerToLibraryItem(borrower: String, item: QuillLibraryItem)
 sealed abstract class QuillContentType(val value: Long, name: String) extends LongEnumEntry
 
 case object QuillContentType
-  extends LongEnum[QuillContentType]
+    extends LongEnum[QuillContentType]
     with LongQuillEnum[QuillContentType] {
 
   override val values: immutable.IndexedSeq[QuillContentType] = findValues
@@ -205,7 +203,7 @@ case class QuillDrinkManufacturer(name: String, drink: QuillDrink)
 sealed abstract class QuillOperatingSystem(val value: String) extends StringEnumEntry
 
 case object QuillOperatingSystem
-  extends StringEnum[QuillOperatingSystem]
+    extends StringEnum[QuillOperatingSystem]
     with StringQuillEnum[QuillOperatingSystem] {
 
   case object Linux   extends QuillOperatingSystem("linux")
