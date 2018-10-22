@@ -553,7 +553,7 @@ val testSettings = {
       if (isScalaJSProject.value)
         Seq.empty
       else
-        originalValue
+        Seq.empty // TODO: re-enable originalValue
     },
     doctestTestFramework := DoctestTestFramework.ScalaTest
   )
