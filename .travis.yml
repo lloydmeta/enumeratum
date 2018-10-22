@@ -31,7 +31,7 @@ matrix:
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test:compile scala_2_13/test:doc
-        - sbt scala_2_13/test
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test
 cache:
   directories:
   - $HOME/.sbt/0.13
