@@ -11,7 +11,7 @@ lazy val scalaVersions     = Seq("2.10.7", "2.11.12", "2.12.7")
 lazy val scala_2_13Version = "2.13.0-M5"
 lazy val scalaVersionsAll  = scalaVersions :+ scala_2_13Version
 
-lazy val scalaTestVersion  = "3.0.6-SNAP3"
+lazy val scalaTestVersion  = "3.0.6-SNAP4"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
