@@ -37,4 +37,9 @@ object ContextUtils {
   def constructorName(c: Context): c.universe.TermName = {
     c.universe.termNames.CONSTRUCTOR
   }
+
+  /**
+    * Returns a named arg extractor
+    */
+  def namedArg(c: Context) = c.universe.AssignOrNamedArg
 }

@@ -2,24 +2,24 @@ package enumeratum
 
 object ContextUtils {
 
-  type Context = scala.reflect.macros.Context
+  type Context = scala.reflect.macros.blackbox.Context
 
-  // In 2.10, the constants have Java boxed types at compile time for some reason
-  type CTLong = java.lang.Long
-  type CTInt  = java.lang.Integer
-  type CTChar = java.lang.Character
+  // Constant types
+  type CTLong = Long
+  type CTInt  = Int
+  type CTChar = Char
 
   /**
     * Returns a TermName
     */
   def termName(c: Context)(name: String): c.universe.TermName = {
-    c.universe.newTermName(name)
+    c.universe.TermName(name)
   }
 
   /**
     * Returns a companion symbol
     */
-  def companion(c: Context)(sym: c.Symbol): c.universe.Symbol = sym.companionSymbol
+  def companion(c: Context)(sym: c.Symbol): c.universe.Symbol = sym.companion
 
   /**
     * Returns a PartialFunction for turning symbols into names
@@ -27,19 +27,19 @@ object ContextUtils {
   def constructorsToParamNamesPF(
       c: Context
   ): PartialFunction[c.universe.Symbol, List[c.universe.Name]] = {
-    case m if m.isMethod && m.asMethod.isConstructor =>
-      m.asMethod.paramss.flatten.map(_.asTerm.name)
+    case m if m.isConstructor =>
+      m.asMethod.paramLists.flatten.map(_.asTerm.name)
   }
 
   /**
     * Returns the reserved constructor name
     */
   def constructorName(c: Context): c.universe.TermName = {
-    c.universe.nme.CONSTRUCTOR
+    c.universe.termNames.CONSTRUCTOR
   }
 
   /**
     * Returns a named arg extractor
     */
-  def namedArg(c: Context) = c.universe.AssignOrNamedArg
+  def namedArg(c: Context) = c.universe.NamedArg
 }

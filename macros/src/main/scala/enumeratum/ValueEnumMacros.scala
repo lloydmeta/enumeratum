@@ -185,6 +185,8 @@ object ValueEnumMacros {
           Some(i)
       }
 
+      val NamedArg = ContextUtils.namedArg(c)
+
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
       val valuesFromConstructors = constructorTrees.collect {
         // The tree has a method call
@@ -206,12 +208,12 @@ object ValueEnumMacros {
                   /*
                    * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
                    */
-                  case (_, AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
+                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
                     i
                   /*
                    * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
                    */
-                  case (_, AssignOrNamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
+                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
                     c.abort(
                       c.enclosingPosition,
                       s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
