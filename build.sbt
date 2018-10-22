@@ -139,7 +139,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
                                        includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.stable,
+    version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -158,7 +158,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
@@ -175,7 +175,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
@@ -348,7 +348,7 @@ lazy val enumeratumJson4s =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.15",
+      version := "1.5.16-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
@@ -367,7 +367,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.5.16",
+    version := "1.5.17-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
