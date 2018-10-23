@@ -74,7 +74,7 @@ lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
 
 lazy val scala213ProjectRefs =
-  Seq(enumeratumJson4s, enumeratumScalacheckJvm).map(Project.projectToRef)
+  Seq(enumeratumJson4s, enumeratumScalacheckJvm, enumeratumScalacheckJs, enumeratumPlayJsonJvm, enumeratumPlayJsonJs).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   .settings(
