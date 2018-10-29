@@ -222,9 +222,9 @@ lazy val playJsonAggregate =
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          post210Only(crossScalaVersions.value)
+          post210Only(scalaVersionsAll)
         else
-          crossScalaVersions.value
+          scalaVersionsAll
       }
       versions
     }
