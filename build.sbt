@@ -240,20 +240,13 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          post210Only(crossScalaVersions.value)
+          post210Only(crossScalaVersions.value) // make this scalaVersionsAll eventually (https://github.com/lloydmeta/enumeratum/pull/204#issuecomment-434302823)
         else
-          crossScalaVersions.value
+          crossScalaVersions.value // make this scalaVersionsAll eventually (https://github.com/lloydmeta/enumeratum/pull/204#issuecomment-434302823)
       }
       versions
     },
     libraryDependencies ++= {
-      import org.scalajs.sbtplugin._
-      val cross = {
-        if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          ScalaJSCrossVersion.binary
-        else
-          CrossVersion.binary
-      }
       Seq(
         "com.typesafe.play" %%% "play-json"       % thePlayJsonVersion(scalaVersion.value),
         "com.beachape"      %%% "enumeratum"      % Versions.Core.stable,
