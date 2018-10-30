@@ -73,8 +73,13 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, coreJS, coreJVM, coreJVMTests).map(Project.projectToRef)
 
-lazy val scala213ProjectRefs =
-  Seq(enumeratumJson4s, enumeratumScalacheckJvm).map(Project.projectToRef)
+lazy val scala213ProjectRefs = Seq(
+  enumeratumJson4s,
+  enumeratumScalacheckJvm,
+  enumeratumScalacheckJs,
+  enumeratumPlayJsonJvm,
+  enumeratumPlayJsonJs
+).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   .settings(
@@ -217,9 +222,9 @@ lazy val playJsonAggregate =
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          post210Only(crossScalaVersions.value)
+          post210Only(scalaVersionsAll)
         else
-          crossScalaVersions.value
+          scalaVersionsAll
       }
       versions
     }
