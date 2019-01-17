@@ -31,7 +31,9 @@ object Eval {
     val PreReleasePattern = """.*-(M|RC).*""".r
     val Pattern           = """(\d+\.\d+)\..*""".r
     val SnapshotPattern   = """(\d+\.\d+\.\d+)-\d+-\d+-.*""".r
+    val PRSnapshotPattern = """(\d+\.\d+)\.\d+-[a-zA-Z0-9]+-[a-fA-F0-9]+-.*""".r
     scala.util.Properties.versionNumberString match {
+      case PRSnapshotPattern(v)     => v
       case s @ PreReleasePattern(_) => s
       case SnapshotPattern(v)       => v + "-SNAPSHOT"
       case Pattern(v)               => v
