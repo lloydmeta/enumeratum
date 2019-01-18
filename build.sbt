@@ -1,5 +1,6 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+import sbtbuildinfo.BuildInfoPlugin.autoImport._
 
 lazy val theScalaVersion = "2.12.7"
 
@@ -190,6 +191,17 @@ lazy val enumeratumTestJs  = enumeratumTest.js
 lazy val enumeratumTestJvm = enumeratumTest.jvm
 
 lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](name,
+                                       version,
+                                       scalaVersion,
+                                       sbtVersion,
+                                       BuildInfoKey.action("macrosJVMClassesDir") {
+                                         ((macrosJVM / classDirectory) in Compile).value
+                                       }),
+    buildInfoPackage := "enumeratum"
+  )
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
