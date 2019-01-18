@@ -19,24 +19,8 @@ object Eval {
 
   def macroToolboxClassPath = {
     val paths = Seq(
-      new java.io.File(s"macros/.jvm/target/scala-$scalaBinaryVersion/classes")
+      BuildInfo.macrosJVMClassesDir
     )
-    paths.foreach { p =>
-      if (!p.exists) sys.error(s"output directory ${p.getAbsolutePath} does not exist.")
-    }
     paths.map(_.getAbsolutePath)
   }
-
-  def scalaBinaryVersion: String = {
-    val PreReleasePattern = """.*-(M|RC).*""".r
-    val Pattern           = """(\d+\.\d+)\..*""".r
-    val SnapshotPattern   = """(\d+\.\d+\.\d+)-\d+-\d+-.*""".r
-    scala.util.Properties.versionNumberString match {
-      case s @ PreReleasePattern(_) => s
-      case SnapshotPattern(v)       => v + "-SNAPSHOT"
-      case Pattern(v)               => v
-      case _                        => ""
-    }
-  }
-
 }
