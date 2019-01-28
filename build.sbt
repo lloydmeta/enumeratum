@@ -17,7 +17,6 @@ lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.13.0"
-lazy val uPickleVersion       = "0.4.4"
 lazy val argonautVersion      = "6.2.1"
 lazy val json4sVersion        = "3.6.1"
 lazy val quillVersion         = "2.3.3"
@@ -102,8 +101,6 @@ lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
   enumeratumPlayJsonJs,
   enumeratumPlayJsonJvm,
-  enumeratumUPickleJs,
-  enumeratumUPickleJvm,
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
@@ -282,36 +279,6 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
     )
   )
   .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
-
-lazy val uPickleAggregate = aggregateProject("upickle", enumeratumUPickleJs, enumeratumUPickleJvm)
-lazy val enumeratumUPickle = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("enumeratum-upickle"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(testSettings: _*)
-  .settings(
-    name := "enumeratum-upickle",
-    version := "1.5.13-SNAPSHOT",
-    libraryDependencies ++= {
-      Seq(
-        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-        "com.lihaoyi"  %%% "upickle"    % uPickleVersion
-      )
-    } ++ {
-      val additionalMacroDeps =
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          // if scala 2.11+ is used, quasiquotes are merged into scala-reflect
-          case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-            Nil
-          // in Scala 2.10, quasiquotes are provided by macro paradise
-          case Some((2, 10)) =>
-            Seq("org.scalamacros" %% "quasiquotes" % "2.0.1" cross CrossVersion.binary)
-        }
-      additionalMacroDeps
-    }
-  )
-lazy val enumeratumUPickleJs  = enumeratumUPickle.js
-lazy val enumeratumUPickleJvm = enumeratumUPickle.jvm
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
