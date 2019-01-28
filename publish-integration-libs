@@ -4,7 +4,6 @@
 # SBT dies if we try to do them all in one go...
 sbt "project circe-aggregate" +clean +publishSigned &&
 say "Done 1" &&
-sbt "project upickle-aggregate" +clean +publishSigned &&
 say "Done 2" &&
 sbt "project enumeratum-reactivemongo-bson" +clean +publishSigned &&
 say "Done 3" &&

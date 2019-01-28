@@ -28,7 +28,6 @@ Integrations are available for:
 - [Play](https://www.playframework.com/): JVM only
 - [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
-- [UPickle](http://www.lihaoyi.com/upickle-pprint/upickle/): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
@@ -50,7 +49,6 @@ Integrations are available for:
 4. [Play integration](#play-integration)
 5. [Play JSON integration](#play-json)
 6. [Circe integration](#circe)
-7. [UPickle integration](#upickle)
 8. [ReactiveMongo BSON integration](#reactivemongo-bson)
 9. [Argonaut integration](#argonaut)
 10. [Json4s integration](#json4s)
@@ -576,58 +574,6 @@ import io.circe.syntax._
 CirceLibraryItem.values.foreach { item =>
     assert(item.asJson == Json.fromInt(item.value))
 }
-```
-
-## UPickle
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-upickle_2.11)
-
-### SBT
-
-To use enumeratum with [uPickle](http://lihaoyi.github.io/upickle/):
-
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %% "enumeratum-upickle" % enumeratumUPickleVersion
-)
-```
-
-To use with ScalaJS:
-
-```scala
-libraryDependencies ++= Seq(
-    "com.beachape" %%% "enumeratum-upickle" % enumeratumUPickleVersion
-)
-```
-
-### Usage
-
-`UPickleEnum` works pretty much the same as `CirceEnum` and `PlayJsonEnum` variants, so we'll skip straight to the
-`ValueEnum` integration.
-
-```scala
-import enumeratum.values._
-
-sealed abstract class ContentType(val value: Long, name: String) extends LongEnumEntry
-
-case object ContentType
-    extends LongEnum[ContentType]
-    with LongUPickleEnum[ContentType] {
-
-  val values = findValues
-
-  case object Text  extends ContentType(value = 1L, name = "text")
-  case object Image extends ContentType(value = 2L, name = "image")
-  case object Video extends ContentType(value = 3L, name = "video")
-  case object Audio extends ContentType(value = 4L, name = "audio")
-
-}
-
-import upickle.default.{ readJs, writeJs, Reader, Writer }
-enum.values.foreach { entry =>
-  val written = writeJs(entry)
-  assert(readJs(written) == entry)
-}
-
 ```
 
 ## ReactiveMongo BSON
