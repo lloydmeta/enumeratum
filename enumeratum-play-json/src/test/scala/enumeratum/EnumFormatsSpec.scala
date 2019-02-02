@@ -60,7 +60,7 @@ class EnumFormatsSpec extends FunSpec with Matchers {
 
   // Bunch of shared testing methods
 
-  private def errorMessages(jsResult: JsResult[_]): Seq[String] =
+  private def errorMessages(jsResult: JsResult[_]): scala.collection.Seq[String] =
     jsResult.fold(
       _.collect {
         case (path, errors) => errors.map(_.message).mkString
@@ -93,10 +93,10 @@ class EnumFormatsSpec extends FunSpec with Matchers {
     val expectedFails: Map[JsValue, Seq[String]] = {
       val withJsValueKeys = expectedErrors.map { case (k, v) => JsString(k) -> v }
       // Add standard errors
-      withJsValueKeys ++ Map(
+      (withJsValueKeys ++ Map(
         JsNumber(2)   -> Seq("error.expected.enumstring"),
         JsString("D") -> Seq("error.expected.validenumvalue")
-      )
+      )).toMap
     }
 
     it("should create a reads that works with valid values") {

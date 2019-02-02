@@ -23,6 +23,7 @@ lazy val quillVersion         = "2.3.3"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -47,6 +48,7 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.10"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -63,7 +65,7 @@ def theCirceVersion(scalaVersion: String) =
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
+    "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
     "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
@@ -78,7 +80,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
-  enumeratumPlayJsonJs
+  enumeratumPlayJsonJs,
+  enumeratumPlay
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -249,9 +252,9 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
     crossScalaVersions := {
       val versions = {
         if (ScalaJSPlugin.autoImport.jsDependencies.?.value.isDefined)
-          post210Only(crossScalaVersions.value) // make this scalaVersionsAll eventually (https://github.com/lloydmeta/enumeratum/pull/204#issuecomment-434302823)
+          post210Only(scalaVersionsAll)
         else
-          crossScalaVersions.value // make this scalaVersionsAll eventually (https://github.com/lloydmeta/enumeratum/pull/204#issuecomment-434302823)
+          scalaVersionsAll
       }
       versions
     },
@@ -271,6 +274,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(testSettings: _*)
   .settings(
     version := s"1.5.15-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
       "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
