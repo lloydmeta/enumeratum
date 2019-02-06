@@ -23,8 +23,7 @@ lazy val quillVersion         = "2.3.3"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.0"
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.12"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -48,8 +47,7 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.1"
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.6.10"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.1"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
