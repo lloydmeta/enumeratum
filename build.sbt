@@ -290,7 +290,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.20-SNAPSHOT",
+    version := "1.5.20",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
