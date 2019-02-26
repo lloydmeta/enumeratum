@@ -39,7 +39,7 @@ def theSlickVersion(scalaVersion: String) =
 
 def theCatsVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "1.4.0"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "1.5.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "1.2.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
