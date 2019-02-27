@@ -405,7 +405,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.5.15-SNAPSHOT",
+    version := "1.5.16-SNAPSHOT",
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
