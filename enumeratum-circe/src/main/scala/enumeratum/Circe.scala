@@ -2,7 +2,7 @@ package enumeratum
 
 import cats.syntax.either._
 import io.circe.Decoder.Result
-import io.circe.{Encoder, Decoder, Json, HCursor, DecodingFailure}
+import io.circe.{Encoder, Decoder, Json, HCursor, DecodingFailure, KeyEncoder, KeyDecoder}
 
 /**
   * Created by Lloyd on 4/14/16.
@@ -79,6 +79,17 @@ object Circe {
         }
       }
     }
+
+  /**
+    * Returns a KeyEncoder for the given enum
+    */
+  def keyEncoder[A <: EnumEntry](enum: Enum[A]): KeyEncoder[A] = KeyEncoder.instance(_.entryName)
+
+  /**
+    * Returns a KeyDecoder for the given enum
+    */
+  def keyDecoder[A <: EnumEntry](enum: Enum[A]): KeyDecoder[A] =
+    KeyDecoder.instance(enum.withNameOption)
 
   private val stringEncoder = implicitly[Encoder[String]]
   private val stringDecoder = implicitly[Decoder[String]]
