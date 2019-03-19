@@ -34,6 +34,7 @@ Integrations are available for:
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
 - [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
+- [Anorm](https://playframework.github.io/anorm/): JVM only
 
 ### Table of Contents
 
@@ -56,8 +57,9 @@ Integrations are available for:
 12. [ScalaCheck](#scalacheck)
 13. [Quill integration](#quill)
 14. [Cats integration](#cats)
-15. [Benchmarking](#benchmarking)
-16. [Publishing](#publishing)
+15. [Anorm integration](#anorm)
+16. [Benchmarking](#benchmarking)
+17. [Publishing](#publishing)
 
 
 ## Quick start
@@ -1082,6 +1084,71 @@ items.maximumOption // Some(SuperHigh)
 
 #### Inheritance-free usage
 If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
+
+## Anorm
+
+### SBT
+
+To use enumeratum with [Anorm](https://playframework.github.io/anorm/):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-anorm" % enumeratumAnormVersion
+)
+```
+
+### Usage
+
+To use enums in Anorm query interpolation and/or to parse enums from sql results you need to define `ToStatement[_]` and/or `Column[_]` type class instances for them.
+You can either import or mix in `AnormEnumToStatementSupport` and/or `AnormEnumColumnSupport` or mix in `AnormEnumSupport` trait.
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait TrafficLight extends EnumEntry
+
+object TrafficLight extends Enum[TrafficLight] {
+  case object Red    extends TrafficLight
+  case object Yellow extends TrafficLight
+  case object Green  extends TrafficLight
+
+  val values = findValues
+}
+
+import AnormEnumColumnSupport._
+import AnormEnumToStatementSupport._        
+
+implicit val trafficLightToStatement = toStatementForEnum(TrafficLight)
+implicit val trafficLightColumn      = columnForEnum(TrafficLight)
+        
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum._
+
+sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+
+case object ShirtSize extends IntEnum[ShirtSize] {
+  case object Small  extends ShirtSize(1)
+  case object Medium extends ShirtSize(2)
+  case object Large  extends ShirtSize(3)
+
+  val values = findValues
+}
+
+trait Foo extends AnormValueEnumSupport {
+  implicit val toStatementShirtSize = toStatementForValueEnum(ShirtSize)
+  implicit val columnShirtSize = columnForValueEnum(ShirtSize)
+  
+  ...
+}
+```
+Note that `enumeratum-anorm` for Scala 2.11 and Scala 2.12 is compatible with Anorm 2.6+ while 2.10 is compatible with
+Anorm 2.5+.
 
 ## Benchmarking
 

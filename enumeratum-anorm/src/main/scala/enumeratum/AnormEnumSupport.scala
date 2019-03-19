@@ -1,0 +1,3 @@
+package enumeratum
+
+trait AnormEnumSupport extends AnormEnumColumnSupport with AnormEnumToStatementSupport

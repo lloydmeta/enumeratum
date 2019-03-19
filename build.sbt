@@ -37,6 +37,15 @@ def theSlickVersion(scalaVersion: String) =
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
 
+def theAnorm(scalaVersion: String) =
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+        "org.playframework.anorm" %% "anorm" % "2.6.2"
+      case Some((2, scalaMajor)) if scalaMajor == 10 => "com.typesafe.play" %% "anorm" % "2.5.0"
+      case _ =>
+        throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+    }
+
 def theCatsVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "1.5.0"
@@ -113,6 +122,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumQuillJs,
   enumeratumQuillJvm,
   enumeratumSlick,
+  enumeratumAnorm,
   enumeratumCatsJs,
   enumeratumCatsJvm
 ).map(Project.projectToRef)
@@ -396,6 +406,22 @@ lazy val enumeratumSlick =
         "com.h2database"     % "h2"          % "1.4.197" % Test
       )
     )
+
+lazy val enumeratumAnorm =
+    Project(id = "enumeratum-anorm", base = file("enumeratum-anorm"))
+      .settings(commonWithPublishSettings: _*)
+      .settings(testSettings: _*)
+      .settings(
+        version := "1.5.16-SNAPSHOT",
+        libraryDependencies ++= Seq(
+          theAnorm(scalaVersion.value),
+          "com.beachape"      %% "enumeratum"     % Versions.Core.stable,
+          "com.h2database"    % "h2"              % "1.4.199" % Test,
+          "com.typesafe.play" %% "play-jdbc"      % thePlayVersion(scalaVersion.value) % Test,
+          "ch.qos.logback"    % "logback-classic" % "1.2.3" % Test,
+          "ch.qos.logback"    % "logback-core"    % "1.2.3" % Test
+        )
+      )
 
 lazy val catsAggregate = aggregateProject("cats", enumeratumCatsJs, enumeratumCatsJvm)
 lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
