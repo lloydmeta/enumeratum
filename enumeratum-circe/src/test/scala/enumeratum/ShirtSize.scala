@@ -5,9 +5,12 @@ package enumeratum
   *
   * Copyright 2016
   */
-sealed trait ShirtSize extends EnumEntry
+sealed trait ShirtSize extends EnumEntry with Product with Serializable
 
-case object ShirtSize extends CirceEnum[ShirtSize] with Enum[ShirtSize] {
+case object ShirtSize
+    extends CirceEnum[ShirtSize]
+    with CirceKeyEnum[ShirtSize]
+    with Enum[ShirtSize] {
 
   case object Small  extends ShirtSize
   case object Medium extends ShirtSize
