@@ -194,11 +194,14 @@ object CamelcaseEnum extends Enum[CamelcaseEnum] {
 
   val values = findValues
 
-  case object HELLO      extends CamelcaseEnum
-  case object GOOD_BYE   extends CamelcaseEnum
-  case object SIKE_AGAIN extends CamelcaseEnum with Lowercase
-  case object _PRIVATE   extends CamelcaseEnum
-
+  case object HELLO            extends CamelcaseEnum
+  case object GOOD_BYE         extends CamelcaseEnum
+  case object SIKE_AGAIN       extends CamelcaseEnum with Lowercase
+  case object _PRIVATE         extends CamelcaseEnum
+  case object FromUpper        extends CamelcaseEnum
+  case object fromLower        extends CamelcaseEnum
+  case object FromUPPERtoLOWER extends CamelcaseEnum
+  case object lower            extends CamelcaseEnum
 }
 
 sealed trait LowerCamelcaseEnum extends EnumEntry with LowerCamelcase
@@ -207,11 +210,14 @@ object LowerCamelcaseEnum extends Enum[LowerCamelcaseEnum] {
 
   val values = findValues
 
-  case object HELLO      extends LowerCamelcaseEnum
-  case object GOOD_BYE   extends LowerCamelcaseEnum
-  case object SIKE_AGAIN extends LowerCamelcaseEnum with Uppercase
-  case object _PRIVATE   extends LowerCamelcaseEnum
-
+  case object HELLO            extends LowerCamelcaseEnum
+  case object GOOD_BYE         extends LowerCamelcaseEnum
+  case object SIKE_AGAIN       extends LowerCamelcaseEnum with Uppercase
+  case object _PRIVATE         extends LowerCamelcaseEnum
+  case object FromUpper        extends LowerCamelcaseEnum
+  case object fromLower        extends LowerCamelcaseEnum
+  case object FromUPPERtoLOWER extends LowerCamelcaseEnum
+  case object lower            extends LowerCamelcaseEnum
 }
 
 sealed trait UncapitalisedEnum extends EnumEntry with Uncapitalised

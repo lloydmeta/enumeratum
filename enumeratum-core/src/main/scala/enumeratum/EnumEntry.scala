@@ -41,6 +41,20 @@ object EnumEntry {
     regexp2.matcher(first).replaceAll(replacement).split("_")
   }
 
+  private def word2Camel(str: String): String = {
+    capitalise(
+      str
+        .foldLeft(("", false, false)) {
+          case ((acc, prevUpper, twoPrevUpper), char) =>
+            val isUpper = char.isUpper
+            val newChar =
+              if (twoPrevUpper && !isUpper) char.toUpper else if (prevUpper) char.toLower else char
+            (acc + newChar.toString, isUpper, isUpper && prevUpper)
+        }
+        ._1
+    )
+  }
+
   private def capitalise(str: String): String = {
     if (str.isEmpty) str
     else str.take(1).toUpperCase + str.tail
@@ -101,7 +115,10 @@ object EnumEntry {
     override def entryName: String = stableEntryName
 
     private[this] lazy val stableEntryName: String =
-      super.entryName.split("_+").map(s => capitalise(s.toLowerCase)).mkString
+      super.entryName.split("_+") match {
+        case Array(single) => word2Camel(single)
+        case many          => many.map(s => capitalise(s.toLowerCase)).mkString
+      }
   }
 
   /**
