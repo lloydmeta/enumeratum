@@ -313,7 +313,7 @@ of built-in implicits like Json formats, Path bindables, Query string bindables,
 For example:
 
 ```scala
-package enums._
+package enums
 
 import enumeratum._
 
