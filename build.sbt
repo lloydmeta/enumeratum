@@ -10,10 +10,10 @@ lazy val theScalaVersion = "2.12.7"
  */
 lazy val scalaVersions           = Seq("2.10.7", "2.11.12", "2.12.7")
 lazy val scalaVersionsAbove_2_11 = Seq("2.11.12", "2.12.7")
-lazy val scala_2_13Version       = "2.13.0-M5"
+lazy val scala_2_13Version       = "2.13.0-RC1"
 lazy val scalaVersionsAll        = scalaVersions :+ scala_2_13Version
 
-lazy val scalaTestVersion  = "3.0.6-SNAP4"
+lazy val scalaTestVersion  = "3.0.8-RC2"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
@@ -489,9 +489,12 @@ lazy val compilerSettings = Seq(
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard",
-      "-Xfuture"
+//      "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, m)) if m >= 13 =>
+        base.filterNot(_ == "-Xfatal-warnings") ++ // todo see how to disable deprecations in 2.13.x
+          Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")

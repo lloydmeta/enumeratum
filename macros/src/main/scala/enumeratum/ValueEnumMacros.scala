@@ -5,6 +5,7 @@ import ContextUtils.Context
 import scala.reflect.ClassTag
 import scala.collection.immutable._
 
+@SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object ValueEnumMacros {
 
   /**
@@ -254,7 +255,7 @@ object ValueEnumMacros {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value
     }
-    val groupedByValue = membersWithValues.groupBy(_._2).mapValues(_.map(_._1))
+    val groupedByValue = membersWithValues.groupBy(_._2).view.mapValues(_.map(_._1))
     val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
       groupedByValue.partition(_._2.size <= 1)
     if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {
