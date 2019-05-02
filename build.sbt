@@ -113,6 +113,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumQuillJs,
   enumeratumQuillJvm,
+  enumeratumDoobie,
   enumeratumSlick,
   enumeratumCatsJs,
   enumeratumCatsJvm
@@ -385,26 +386,19 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
 lazy val enumeratumQuillJs  = enumeratumQuill.js
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
-lazy val doobieAggregate = aggregateProject("doobie", enumeratumDoobieJvm).settings(
-  crossScalaVersions := post210Only(crossScalaVersions.value)
-)
-lazy val enumeratumDoobie = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("enumeratum-doobie"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(testSettings: _*)
-  .settings(
-    name := "enumeratum-doobie",
-    version := "1.5.14-SNAPSHOT",
-    crossScalaVersions := post210Only(crossScalaVersions.value),
-    libraryDependencies ++= {
-      Seq(
-        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-        "org.tpolecat" %% "doobie-core" % doobieVersion
-      )
-    }
-  )
-lazy val enumeratumDoobieJvm = enumeratumDoobie.jvm
+lazy val enumeratumDoobie =
+  Project(id = "enumeratum-doobie", base = file("enumeratum-doobie"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      version := "1.5.14-SNAPSHOT",
+      libraryDependencies ++= {
+        Seq(
+          "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+          "org.tpolecat" %% "doobie-core" % doobieVersion
+        )
+      }
+    )
 
 lazy val enumeratumSlick =
   Project(id = "enumeratum-slick", base = file("enumeratum-slick"))
