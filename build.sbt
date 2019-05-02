@@ -20,6 +20,7 @@ lazy val reactiveMongoVersion = "0.13.0"
 lazy val argonautVersion      = "6.2.1"
 lazy val json4sVersion        = "3.6.1"
 lazy val quillVersion         = "2.3.3"
+lazy val doobieVersion        = "0.6.0"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -383,6 +384,27 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   )
 lazy val enumeratumQuillJs  = enumeratumQuill.js
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
+
+lazy val doobieAggregate = aggregateProject("doobie", enumeratumDoobieJvm).settings(
+  crossScalaVersions := post210Only(crossScalaVersions.value)
+)
+lazy val enumeratumDoobie = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-doobie"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    name := "enumeratum-doobie",
+    version := "1.5.14-SNAPSHOT",
+    crossScalaVersions := post210Only(crossScalaVersions.value),
+    libraryDependencies ++= {
+      Seq(
+        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+        "org.tpolecat" %% "doobie-core" % doobieVersion
+      )
+    }
+  )
+lazy val enumeratumDoobieJvm = enumeratumDoobie.jvm
 
 lazy val enumeratumSlick =
   Project(id = "enumeratum-slick", base = file("enumeratum-slick"))
