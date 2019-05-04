@@ -34,7 +34,7 @@ matrix:
         - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test
 cache:
   directories:
-  - $HOME/.sbt/0.13
+  - $HOME/.sbt/1.0
   - $HOME/.sbt/boot/scala*
   - $HOME/.sbt/cache
   - $HOME/.sbt/launchers
