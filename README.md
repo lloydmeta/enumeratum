@@ -56,8 +56,9 @@ Integrations are available for:
 12. [ScalaCheck](#scalacheck)
 13. [Quill integration](#quill)
 14. [Cats integration](#cats)
-15. [Benchmarking](#benchmarking)
-16. [Publishing](#publishing)
+15. [Doobie integration](#doobie)
+16. [Benchmarking](#benchmarking)
+17. [Publishing](#publishing)
 
 
 ## Quick start
@@ -991,7 +992,7 @@ implicit val greetingOptionSetParameter = optionalSetParameterForEnum(Greeting)
 ```
 
 ## Cats
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.11)
 
 ### SBT
 
@@ -1082,6 +1083,27 @@ items.maximumOption // Some(SuperHigh)
 
 #### Inheritance-free usage
 If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
+
+## Doobie
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.11)
+
+### SBT
+
+To use enumeratum with [Doobie](https://github.com/tpolecat/doobie):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-doobie" % enumeratumDoobieVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum-doobie" % enumeratumDoobieVersion
+)
+```
 
 ## Benchmarking
 
