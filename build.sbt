@@ -49,7 +49,8 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.1"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -167,7 +168,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     name := "enumeratum",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.head
   )
 //  .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
@@ -185,7 +186,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
-      "com.beachape" %%% "enumeratum" % Versions.Core.stable
+      "com.beachape" %%% "enumeratum" % Versions.Core.head
     }
   )
 lazy val enumeratumTestJs  = enumeratumTest.js
@@ -262,8 +263,8 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= {
       Seq(
         "com.typesafe.play" %%% "play-json"       % thePlayJsonVersion(scalaVersion.value),
-        "com.beachape"      %%% "enumeratum"      % Versions.Core.stable,
-        "com.beachape"      %%% "enumeratum-test" % Versions.Core.stable % Test
+        "com.beachape"      %%% "enumeratum"      % Versions.Core.head,
+        "com.beachape"      %%% "enumeratum-test" % Versions.Core.head % Test
       )
     }
   )
@@ -336,7 +337,7 @@ lazy val enumeratumJson4s =
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
         "org.json4s"   %% "json4s-native" % json4sVersion % Test,
-        "com.beachape" %% "enumeratum"    % Versions.Core.stable
+        "com.beachape" %% "enumeratum"    % Versions.Core.head
       )
     )
 
@@ -354,9 +355,9 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
-        "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"   %%% "enumeratum"      % Versions.Core.head,
         "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
-        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test,
+        "com.beachape"   %%% "enumeratum-test" % Versions.Core.head % Test,
       )
     }
   )
@@ -494,7 +495,7 @@ lazy val compilerSettings = Seq(
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, m)) if m >= 13 =>
         base.filterNot(_ == "-Xfatal-warnings") ++ // todo see how to disable deprecations in 2.13.x
-          Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
+          Seq(/*"-deprecation:false", */"-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
