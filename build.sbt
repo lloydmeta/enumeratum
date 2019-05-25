@@ -25,6 +25,7 @@ lazy val doobieVersion        = "0.6.0"
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -65,12 +66,23 @@ def theCirceVersion(scalaVersion: String) =
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0-M1" % Test
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
     "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+}
+
+/** Temporary fix for Play 5.0.0-M1. */
+def akkaHttp(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq(
+    ("com.typesafe.play" %% "play-akka-http-server" % thePlayVersion(scalaVersion)) excludeAll ("com.typesafe.akka" %% "akka-http-core"),
+    "com.typesafe.akka" %% "akka-http-core" % "10.1.8"
+  )
+  case _ => Seq.empty
 }
 
 lazy val baseProjectRefs =
@@ -277,12 +289,13 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(
     version := s"1.5.17-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
-      "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+    libraryDependencies ++= akkaHttp(scalaVersion.value) ++ Seq(
+      "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value),
+      "com.beachape" %% "enumeratum" % Versions.Core.stable,
+      "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test,
       scalaTestPlay(scalaVersion.value)
     )
+      // Temporary fix for Play 5.0.0-M1
   )
   .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
 
@@ -490,11 +503,11 @@ lazy val compilerSettings = Seq(
       "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard",
-//      "-Xfuture"
+      "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, m)) if m >= 13 =>
-        base.filterNot(_ == "-Xfatal-warnings") ++ // todo see how to disable deprecations in 2.13.x
+        base.filterNot(flag => flag == "-Xfatal-warnings" || flag == "-Xfuture") ++ // todo see how to disable deprecations in 2.13.x
           Seq(/*"-deprecation:false", */"-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim

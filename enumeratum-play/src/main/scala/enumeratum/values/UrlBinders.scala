@@ -24,7 +24,7 @@ object UrlBinders {
           maybeBound match {
             case Some(obj) => Right(obj)
             case None =>
-              Left(s"Unknown value supplied for $enum '" + value + "'")
+              Left(s"Unknown value supplied for ${enum.toString} '" + value + "'")
           }
         }
 
@@ -48,7 +48,7 @@ object UrlBinders {
             val maybeBound = enum.withValueOpt(s)
             maybeBound match {
               case Some(obj) => Right(obj)
-              case None      => Left(s"Unknown value supplied for $enum '$s'")
+              case None      => Left(s"Unknown value supplied for ${enum.toString} '${s.toString}'")
             }
           })
       }
