@@ -78,10 +78,11 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
 
 /** Temporary fix for Play 5.0.0-M1. */
 def akkaHttp(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq(
-    ("com.typesafe.play" %% "play-akka-http-server" % thePlayVersion(scalaVersion)) excludeAll ("com.typesafe.akka" %% "akka-http-core"),
-    "com.typesafe.akka" %% "akka-http-core" % "10.1.8"
-  )
+  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+    Seq(
+      ("com.typesafe.play" %% "play-akka-http-server" % thePlayVersion(scalaVersion)) excludeAll ("com.typesafe.akka" %% "akka-http-core"),
+      "com.typesafe.akka"  %% "akka-http-core"        % "10.1.8"
+    )
   case _ => Seq.empty
 }
 
@@ -289,13 +290,13 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(
     version := s"1.5.17-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies ++= akkaHttp(scalaVersion.value) ++ Seq(
-      "com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value),
-      "com.beachape" %% "enumeratum" % Versions.Core.stable,
-      "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test,
-      scalaTestPlay(scalaVersion.value)
-    )
-      // Temporary fix for Play 5.0.0-M1
+    libraryDependencies ++= akkaHttp(scalaVersion.value) ++ // Temporary fix for Play 5.0.0-M1
+      Seq(
+        "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
+        "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+        scalaTestPlay(scalaVersion.value)
+      )
   )
   .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
 
@@ -370,7 +371,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
       Seq(
         "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
         "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
-        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test,
+        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test
       )
     }
   )
@@ -508,7 +509,7 @@ lazy val compilerSettings = Seq(
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, m)) if m >= 13 =>
         base.filterNot(flag => flag == "-Xfatal-warnings" || flag == "-Xfuture") ++ // todo see how to disable deprecations in 2.13.x
-          Seq(/*"-deprecation:false", */"-Xlint:-unused,_") // unused-import breaks Circe Either shim
+          Seq( /*"-deprecation:false", */ "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
