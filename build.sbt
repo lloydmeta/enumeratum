@@ -299,7 +299,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(testSettings: _*)
   .settings(
     version := s"1.5.17-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
     libraryDependencies ++= akkaHttp(scalaVersion.value) ++ // Temporary fix for Play 5.0.0-M1
       Seq(
         "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
