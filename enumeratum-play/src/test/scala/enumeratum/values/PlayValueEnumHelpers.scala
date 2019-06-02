@@ -114,10 +114,11 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
+            import scala.concurrent.ExecutionContext.Implicits.global
             enum.values.foreach { entry =>
               val router = Router.from {
                 case GET(p"/${enum.fromPath(greeting)}") =>
-                  Action {
+                  new ActionBuilder.IgnoringBody().apply {
                     Results.Ok(s"$greeting")
                   }
               }

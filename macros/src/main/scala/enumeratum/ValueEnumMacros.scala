@@ -255,7 +255,9 @@ object ValueEnumMacros {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value
     }
-    val groupedByValue = membersWithValues.groupBy(_._2).view.mapValues(_.map(_._1))
+    val groupedByValue = membersWithValues.groupBy(_._2).map {
+      case (k, v) => (k, v.map(_._1))
+    }
     val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
       groupedByValue.partition(_._2.size <= 1)
     if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {

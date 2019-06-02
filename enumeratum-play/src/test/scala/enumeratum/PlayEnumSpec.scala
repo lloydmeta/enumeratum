@@ -172,9 +172,10 @@ class PlayEnumSpec extends FunSpec with Matchers {
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
+            import scala.concurrent.ExecutionContext.Implicits.global
             val router = Router.from {
               case GET(p"/${pathBindableExtractor(greeting)}") =>
-                Action {
+                new ActionBuilder.IgnoringBody().apply {
                   Results.Ok(s"$greeting")
                 }
             }

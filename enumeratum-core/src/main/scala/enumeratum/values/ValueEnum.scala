@@ -65,7 +65,7 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
   private def buildNotFoundMessage(i: ValueType): String = {
-    s"$i is not a member of ValueEnum ($existingEntriesString)"
+    s"${i.toString} is not a member of ValueEnum ($existingEntriesString)"
   }
 
 }
