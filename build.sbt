@@ -160,7 +160,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
                                        includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.stable,
+    version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -179,9 +179,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.head
   )
 //  .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
@@ -196,7 +196,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
@@ -487,8 +487,6 @@ lazy val compilerSettings = Seq(
       case _            => FastOptStage
     }
   },
-  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
-    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
     val base = Seq(
       "-Xlog-free-terms",
