@@ -23,6 +23,14 @@ lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "2.3.3"
 lazy val doobieVersion        = "0.6.0"
 
+def theArgonautVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.3"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "6.2.2"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
@@ -95,6 +103,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
   enumeratumPlayJsonJs,
+  enumeratumArgonautJs,
+  enumeratumArgonautJvm,
   enumeratumPlay
 ).map(Project.projectToRef)
 
@@ -330,10 +340,11 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-argonaut",
     version := "1.5.14-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-        "io.argonaut"  %%% "argonaut"   % argonautVersion
+        "io.argonaut"  %%% "argonaut"   % theArgonautVersion(scalaVersion.value)
       )
     }
   )
