@@ -19,7 +19,7 @@ matrix:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmtCheck scalafmtSbtCheck test:compile test:doc
         - travis_wait 30 sleep 1800 &
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
-    - scala: 2.12.7
+    - scala: 2.12.8
       jdk: oraclejdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
@@ -27,7 +27,7 @@ matrix:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
-    - scala: 2.13.0-M5
+    - scala: 2.13.0-RC2
       jdk: oraclejdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test:compile scala_2_13/test:doc

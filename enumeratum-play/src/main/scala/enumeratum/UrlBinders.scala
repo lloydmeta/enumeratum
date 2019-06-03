@@ -23,7 +23,7 @@ object UrlBinders {
           else enum.withNameOption(value)
         maybeBound match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for $enum '$value'")
+          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
         }
       }
     }
@@ -39,7 +39,7 @@ object UrlBinders {
       def bind(key: String, value: String): Either[String, A] = {
         enum.withNameLowercaseOnlyOption(value) match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for $enum '$value'")
+          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
         }
       }
     }
@@ -55,7 +55,7 @@ object UrlBinders {
       def bind(key: String, value: String): Either[String, A] = {
         enum.withNameUppercaseOnlyOption(value) match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for $enum '$value'")
+          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
         }
       }
     }
@@ -81,7 +81,7 @@ object UrlBinders {
             else enum.withNameOption(p)
           maybeBound match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: $this")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
           }
         }
       }
@@ -102,7 +102,7 @@ object UrlBinders {
         params.get(key).flatMap(_.headOption).map { p =>
           enum.withNameLowercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: $this")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
           }
         }
       }
@@ -123,7 +123,7 @@ object UrlBinders {
         params.get(key).flatMap(_.headOption).map { p =>
           enum.withNameUppercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: $this")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
           }
         }
       }

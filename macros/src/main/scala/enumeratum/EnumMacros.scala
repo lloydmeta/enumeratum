@@ -5,6 +5,7 @@ import ContextUtils.Context
 import scala.collection.immutable._
 import scala.util.control.NonFatal
 
+@SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object EnumMacros {
 
   /**

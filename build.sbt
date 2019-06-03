@@ -2,29 +2,38 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 
-lazy val theScalaVersion = "2.12.7"
+lazy val theScalaVersion = "2.12.8"
 
 /*
-  2.13.0-M5 support is currently defined as a separate project (scala_2_13) for convenience while
+  2.13.0-RC2 support is currently defined as a separate project (scala_2_13) for convenience while
   integration libraries are still gaining 2.13 support
  */
-lazy val scalaVersions           = Seq("2.10.7", "2.11.12", "2.12.7")
-lazy val scalaVersionsAbove_2_11 = Seq("2.11.12", "2.12.7")
-lazy val scala_2_13Version       = "2.13.0-M5"
+lazy val scalaVersions           = Seq("2.10.7", "2.11.12", "2.12.8")
+lazy val scalaVersionsAbove_2_11 = Seq("2.11.12", "2.12.8")
+lazy val scala_2_13Version       = "2.13.0-RC2"
 lazy val scalaVersionsAll        = scalaVersions :+ scala_2_13Version
 
-lazy val scalaTestVersion  = "3.0.6-SNAP4"
+lazy val scalaTestVersion  = "3.0.8-RC4"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.13.0"
-lazy val argonautVersion      = "6.2.1"
-lazy val json4sVersion        = "3.6.1"
+lazy val argonautVersion      = "6.2.3"
+lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "2.3.3"
 lazy val doobieVersion        = "0.6.0"
 
+def theArgonautVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.3"
+    case Some((2, scalaMajor)) if scalaMajor == 10 => "6.2.2"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -49,7 +58,8 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.1"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -64,12 +74,24 @@ def theCirceVersion(scalaVersion: String) =
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0-M1" % Test
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
     "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+}
+
+/** Temporary fix for Play 5.0.0-M1. */
+def akkaHttp(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+    Seq(
+      ("com.typesafe.play" %% "play-akka-http-server" % thePlayVersion(scalaVersion)) excludeAll ("com.typesafe.akka" %% "akka-http-core"),
+      "com.typesafe.akka"  %% "akka-http-core"        % "10.1.8"
+    )
+  case _ => Seq.empty
 }
 
 lazy val baseProjectRefs =
@@ -81,6 +103,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
   enumeratumPlayJsonJs,
+  enumeratumArgonautJs,
+  enumeratumArgonautJvm,
   enumeratumPlay
 ).map(Project.projectToRef)
 
@@ -276,14 +300,18 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(
     version := s"1.5.17-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
-      "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
-      "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
-      scalaTestPlay(scalaVersion.value)
-    )
+    libraryDependencies ++= akkaHttp(scalaVersion.value) ++ // Temporary fix for Play 5.0.0-M1
+      Seq(
+        "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
+        "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
+        "com.beachape"      %% "enumeratum-test" % Versions.Core.stable % Test,
+        scalaTestPlay(scalaVersion.value)
+      )
   )
-  .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = false,
+                                       include_210Dir = true,
+                                       includeTestSrcs = true): _*)
+  .dependsOn(enumeratumPlayJsonJvm % "compile->compile;test->test")
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
@@ -315,10 +343,11 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-argonaut",
     version := "1.5.14-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-        "io.argonaut"  %%% "argonaut"   % argonautVersion
+        "io.argonaut"  %%% "argonaut"   % theArgonautVersion(scalaVersion.value)
       )
     }
   )
@@ -356,7 +385,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
       Seq(
         "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
         "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
-        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test,
+        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test
       )
     }
   )
@@ -472,8 +501,6 @@ lazy val compilerSettings = Seq(
       case _            => FastOptStage
     }
   },
-  wartremoverErrors in (Compile, compile) ++= Warts.unsafe
-    .filterNot(_ == Wart.DefaultArguments) :+ Wart.ExplicitImplicitTypes,
   scalacOptions in (Compile, compile) ++= {
     val base = Seq(
       "-Xlog-free-terms",
@@ -492,6 +519,9 @@ lazy val compilerSettings = Seq(
       "-Xfuture"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, m)) if m >= 13 =>
+        base.filterNot(flag => flag == "-Xfatal-warnings" || flag == "-Xfuture") ++ // todo see how to disable deprecations in 2.13.x
+          Seq( /*"-deprecation:false", */ "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, m)) if m >= 12 =>
         base ++ Seq("-deprecation:false", "-Xlint:-unused,_") // unused-import breaks Circe Either shim
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
