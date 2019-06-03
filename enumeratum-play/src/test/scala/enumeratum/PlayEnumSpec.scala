@@ -9,6 +9,7 @@ import org.scalatest.EitherValues._
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import play.api.routing.sird.PathBindableExtractor
 import play.api.test.FakeRequest
+import enumeratum.helpers.ActionHelper
 
 class PlayEnumSpec extends FunSpec with Matchers {
 
@@ -172,10 +173,9 @@ class PlayEnumSpec extends FunSpec with Matchers {
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
-            import scala.concurrent.ExecutionContext.Implicits.global
             val router = Router.from {
               case GET(p"/${pathBindableExtractor(greeting)}") =>
-                new ActionBuilder.IgnoringBody().apply {
+                ActionHelper {
                   Results.Ok(s"$greeting")
                 }
             }

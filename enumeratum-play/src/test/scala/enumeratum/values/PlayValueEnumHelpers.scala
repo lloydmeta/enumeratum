@@ -7,6 +7,7 @@ import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 import play.api.libs.json.{Format, JsNumber, JsValue}
 import play.api.test.FakeRequest
+import enumeratum.helpers.ActionHelper
 
 /**
   * Created by Lloyd on 4/13/16.
@@ -114,11 +115,10 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
-            import scala.concurrent.ExecutionContext.Implicits.global
             enum.values.foreach { entry =>
               val router = Router.from {
                 case GET(p"/${enum.fromPath(greeting)}") =>
-                  new ActionBuilder.IgnoringBody().apply {
+                  ActionHelper {
                     Results.Ok(s"$greeting")
                   }
               }

@@ -299,7 +299,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(testSettings: _*)
   .settings(
     version := s"1.5.17-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= akkaHttp(scalaVersion.value) ++ // Temporary fix for Play 5.0.0-M1
       Seq(
         "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
@@ -308,7 +308,10 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
         scalaTestPlay(scalaVersion.value)
       )
   )
-  .dependsOn(enumeratumPlayJsonJvm % "test->test;compile->compile")
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = false,
+                                       include_210Dir = true,
+                                       includeTestSrcs = true): _*)
+  .dependsOn(enumeratumPlayJsonJvm % "compile->compile;test->test")
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
