@@ -8,12 +8,12 @@ lazy val theScalaVersion = "2.12.8"
   2.13.0-RC2 support is currently defined as a separate project (scala_2_13) for convenience while
   integration libraries are still gaining 2.13 support
  */
-lazy val scalaVersions           = Seq("2.10.7", "2.11.12", "2.12.8")
+lazy val scalaVersions           = Seq(theScalaVersion, "2.10.7", "2.11.12")
 lazy val scalaVersionsAbove_2_11 = Seq("2.11.12", "2.12.8")
-lazy val scala_2_13Version       = "2.13.0-RC2"
+lazy val scala_2_13Version       = "2.13.0"
 lazy val scalaVersionsAll        = scalaVersions :+ scala_2_13Version
 
-lazy val scalaTestVersion  = "3.0.8-RC4"
+lazy val scalaTestVersion  = "3.0.8"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
