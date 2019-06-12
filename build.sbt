@@ -403,7 +403,7 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "1.5.14-SNAPSHOT",
+    version := "1.5.14",
     crossScalaVersions := post210Only(crossScalaVersions.value),
     libraryDependencies ++= {
       Seq(
