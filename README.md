@@ -886,6 +886,7 @@ ctx.run(query[Shirt]).foreach(println)
 - `quill-orientdb` currently does not support `ByteEnum` (see [getquill/quill#1029](https://github.com/getquill/quill/issues/1029))
 
 ## Slick integration
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.11)
 
 ### Column Mappings
 In order to use your enumeratum Enums in Slick tables as columns, you will
