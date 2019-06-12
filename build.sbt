@@ -20,7 +20,7 @@ lazy val scalacheckVersion = "1.14.0"
 lazy val reactiveMongoVersion = "0.13.0"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
-lazy val quillVersion         = "2.3.3"
+lazy val quillVersion         = "3.2.1"
 lazy val doobieVersion        = "0.6.0"
 
 def theArgonautVersion(scalaVersion: String) =
