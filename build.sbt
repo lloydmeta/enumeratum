@@ -33,7 +33,7 @@ def theArgonautVersion(scalaVersion: String) =
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.3"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -58,7 +58,7 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0-M1"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.4"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -74,10 +74,8 @@ def theCirceVersion(scalaVersion: String) =
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0-M1" % Test
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
+    "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
     "org.scalatestplus" %% "play" % "1.4.0" % Test
   case _ =>
@@ -101,11 +99,11 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumJson4s,
   enumeratumScalacheckJvm,
   enumeratumScalacheckJs,
-  // enumeratumPlayJsonJvm,
-  // enumeratumPlayJsonJs,
+  enumeratumPlayJsonJvm,
+  enumeratumPlayJsonJs,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
-  // enumeratumPlay
+  enumeratumPlay
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
