@@ -67,6 +67,7 @@ def thePlayJsonVersion(scalaVersion: String) =
 
 def theCirceVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "0.12.0-M4"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "0.11.1"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "0.9.3"
     case _ =>
@@ -103,7 +104,9 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumPlayJsonJs,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
-  enumeratumPlay
+  enumeratumPlay,
+  enumeratumCirceJvm,
+  enumeratumCirceJs
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
