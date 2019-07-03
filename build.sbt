@@ -42,7 +42,7 @@ def thePlayVersion(scalaVersion: String) =
 
 def theSlickVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "3.2.3"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "3.3.2"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "3.1.1"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -103,6 +103,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumPlayJsonJs,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
+  enumeratumSlick,
   enumeratumPlay
 ).map(Project.projectToRef)
 
@@ -435,6 +436,7 @@ lazy val enumeratumSlick =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.16-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
         "com.beachape"       %% "enumeratum" % Versions.Core.stable,
