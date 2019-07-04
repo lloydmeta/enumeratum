@@ -106,7 +106,6 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumArgonautJvm,
   enumeratumPlay,
   enumeratumCirceJvm,
-  enumeratumCirceJs
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
