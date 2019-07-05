@@ -106,6 +106,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumArgonautJvm,
   enumeratumPlay,
   enumeratumCirceJvm,
+  enumeratumCirceJs,
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -330,6 +331,14 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
+  .jsSettings(
+    libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq(
+        "io.circe" %%% "not-java-time" % "0.2.0" % Test
+      )
+      case _ => Seq()
+    }
+  ))
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
