@@ -431,7 +431,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings: _*)
     .settings(
       crossScalaVersions := scalaVersionsAbove_2_11,
-      version := "1.5.14",
+      version := "1.5.15",
       libraryDependencies ++= {
         Seq(
           "com.beachape" %%% "enumeratum" % Versions.Core.stable,
