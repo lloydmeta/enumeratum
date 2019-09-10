@@ -50,7 +50,7 @@ def theSlickVersion(scalaVersion: String) =
 
 def theCatsVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "1.5.0"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.0.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "1.2.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -108,6 +108,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumPlay,
   enumeratumCirceJvm,
   enumeratumCirceJs,
+  enumeratumCatsJvm,
+  enumeratumCatsJs
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -463,6 +465,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-cats",
     version := "1.5.16-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
