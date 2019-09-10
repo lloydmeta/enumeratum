@@ -464,7 +464,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.5.16",
+    version := "1.5.17-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
