@@ -108,7 +108,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumPlay,
   enumeratumCirceJvm,
   enumeratumCirceJs,
-  enumeratumReactiveMongoBson
+  enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
   enumeratumCatsJs
 ).map(Project.projectToRef)
