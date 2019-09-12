@@ -67,7 +67,7 @@ def thePlayJsonVersion(scalaVersion: String) =
 
 def theCirceVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "0.12.0-M4"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "0.12.1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "0.11.1"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "0.9.3"
     case _ =>
