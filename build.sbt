@@ -17,7 +17,7 @@ lazy val scalaTestVersion  = "3.0.8"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.13.0"
+lazy val reactiveMongoVersion = "0.18.6"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.2.1"
@@ -108,6 +108,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumPlay,
   enumeratumCirceJvm,
   enumeratumCirceJs,
+  enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
   enumeratumCatsJs
 ).map(Project.projectToRef)
@@ -251,6 +252,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.14-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
