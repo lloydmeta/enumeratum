@@ -336,13 +336,6 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-  .jsSettings(libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-      Seq(
-        "io.circe" %%% "not-java-time" % "0.2.0" % Test
-      )
-    case _ => Seq()
-  }))
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
