@@ -111,7 +111,7 @@ Greeting.withName("Hello")
 // => res0: Greeting = Hello
 
 Greeting.withName("Haro")
-// => java.lang.IllegalArgumentException: Haro is not a member of Enum (Hello, GoodBye, Hi, Bye)
+// => java.lang.NoSuchElementException: Haro is not a member of Enum (Hello, GoodBye, Hi, Bye)
 
 // A safer alternative would be to use `withNameOption(name: String)` method which returns an Option[Greeting]
 Greeting.withNameOption("Hello")
