@@ -144,6 +144,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumQuillJs,
   enumeratumQuillJvm,
   enumeratumDoobie,
+  enumeratumDoobiePg,
   enumeratumSlick,
   enumeratumCatsJs,
   enumeratumCatsJvm
@@ -433,6 +434,21 @@ lazy val enumeratumDoobie =
         Seq(
           "com.beachape" %%% "enumeratum" % Versions.Core.stable,
           "org.tpolecat" %% "doobie-core" % doobieVersion
+        )
+      }
+    )
+
+lazy val enumeratumDoobiePg =
+  Project(id = "enumeratum-doobie-postgres", base = file("enumeratum-doobie-postgres"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    .settings(
+      crossScalaVersions := scalaVersionsAbove_2_11,
+      version := "1.5.16-SNAPSHOT",
+      libraryDependencies ++= {
+        Seq(
+          "com.beachape" %%% "enumeratum"     % Versions.Core.stable,
+          "org.tpolecat" %% "doobie-postgres" % doobieVersion,
         )
       }
     )
