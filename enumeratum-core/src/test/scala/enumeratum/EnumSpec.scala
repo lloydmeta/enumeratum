@@ -100,7 +100,7 @@ class EnumSpec extends FunSpec with Matchers {
         DummyEnum.withNameUppercaseOnly("HI") should be(Hi)
       }
 
-      it("should return None for not uppercase but case insensitive values") {
+      it("should throw an error for not uppercase but case insensitive values") {
         intercept[NoSuchElementException] {
           DummyEnum.withNameUppercaseOnly("Hello")
         }
@@ -144,7 +144,7 @@ class EnumSpec extends FunSpec with Matchers {
         DummyEnum.withNameLowercaseOnly("hi") should be(Hi)
       }
 
-      it("should return None for not uppercase but case insensitive values") {
+      it("should throw an error for not lowercase but case insensitive values") {
         intercept[NoSuchElementException] {
           DummyEnum.withNameLowercaseOnly("Hello")
         }
@@ -170,13 +170,13 @@ class EnumSpec extends FunSpec with Matchers {
         DummyEnum.withNameLowercaseOnlyOption("hi").value should be(Hi)
       }
 
-      it("should return None for not uppercase but case insensitive values") {
+      it("should return None for not lowercase but case insensitive values") {
         DummyEnum.withNameLowercaseOnlyOption("Hello") should be(None)
         DummyEnum.withNameLowercaseOnlyOption("GoodBye") should be(None)
         DummyEnum.withNameLowercaseOnlyOption("Hi") should be(None)
       }
 
-      it("should throw an error otherwise") {
+      it("should return None otherwise") {
         DummyEnum.withNameLowercaseOnlyOption("bbeeeech") should be(None)
       }
     }
