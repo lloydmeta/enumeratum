@@ -55,6 +55,20 @@ class EnumSpec extends FunSpec with Matchers {
 
     }
 
+    describe("#withNameEither") {
+
+      it("should return the proper object when passed the proper string") {
+        DummyEnum.withNameEither("Hello") should be(Right(Hello))
+        DummyEnum.withNameEither("GoodBye") should be(Right(GoodBye))
+        DummyEnum.withNameEither("Hi") should be(Right(Hi))
+      }
+
+      it("should return Left otherwise") {
+        DummyEnum.withNameEither("hello") shouldBe Left(NoSuchMember("hello", DummyEnum.values))
+      }
+
+    }
+
     describe("#withNameInsensitive") {
 
       it("should return the proper object when passed the proper string, disregarding cases") {
@@ -89,6 +103,25 @@ class EnumSpec extends FunSpec with Matchers {
 
       it("should return None otherwise") {
         DummyEnum.withNameInsensitiveOption("bbeeeech") shouldBe None
+      }
+
+    }
+
+    describe("#withNameInsensitiveEither") {
+
+      it("should return the proper object when passed the proper string, disregarding cases") {
+        DummyEnum.withNameInsensitiveEither("Hello") should be(Right(Hello))
+        DummyEnum.withNameInsensitiveEither("hello") should be(Right(Hello))
+        DummyEnum.withNameInsensitiveEither("GoodBye") should be(Right(GoodBye))
+        DummyEnum.withNameInsensitiveEither("goodBye") should be(Right(GoodBye))
+        DummyEnum.withNameInsensitiveEither("gOodbye") should be(Right(GoodBye))
+        DummyEnum.withNameInsensitiveEither("Hi") should be(Right(Hi))
+        DummyEnum.withNameInsensitiveEither("hI") should be(Right(Hi))
+      }
+
+      it("should return Left otherwise") {
+        DummyEnum.withNameInsensitiveEither("bbeeeech") shouldBe Left(
+          NoSuchMember("bbeeeech", DummyEnum.values))
       }
 
     }
@@ -137,6 +170,28 @@ class EnumSpec extends FunSpec with Matchers {
       }
     }
 
+    describe("#withNameUppercaseOnlyEither") {
+      it("should return the proper object when passed the proper string, transforming to upper case first") {
+        DummyEnum.withNameUppercaseOnlyEither("HELLO") should be(Right(Hello))
+        DummyEnum.withNameUppercaseOnlyEither("GOODBYE") should be(Right(GoodBye))
+        DummyEnum.withNameUppercaseOnlyEither("HI") should be(Right(Hi))
+      }
+
+      it("should return Left for not uppercase but case insensitive values") {
+        DummyEnum.withNameUppercaseOnlyEither("Hello") should be(
+          Left(NoSuchMember("Hello", DummyEnum.values)))
+        DummyEnum.withNameUppercaseOnlyEither("GoodBye") should be(
+          Left(NoSuchMember("GoodBye", DummyEnum.values)))
+        DummyEnum.withNameUppercaseOnlyEither("Hi") should be(
+          Left(NoSuchMember("Hi", DummyEnum.values)))
+      }
+
+      it("should return Left otherwise") {
+        DummyEnum.withNameUppercaseOnlyEither("bbeeeech") should be(
+          Left(NoSuchMember("bbeeeech", DummyEnum.values)))
+      }
+    }
+
     describe("#withNameLowercaseOnly") {
       it("should return the proper object when passed the proper string, transforming to lower case first") {
         DummyEnum.withNameLowercaseOnly("hello") should be(Hello)
@@ -178,6 +233,28 @@ class EnumSpec extends FunSpec with Matchers {
 
       it("should return None otherwise") {
         DummyEnum.withNameLowercaseOnlyOption("bbeeeech") should be(None)
+      }
+    }
+
+    describe("#withNameLowercaseOnlyEither") {
+      it("should return the proper object when passed the proper string, transforming to lower case first") {
+        DummyEnum.withNameLowercaseOnlyEither("hello") should be(Right(Hello))
+        DummyEnum.withNameLowercaseOnlyEither("goodbye") should be(Right(GoodBye))
+        DummyEnum.withNameLowercaseOnlyEither("hi") should be(Right(Hi))
+      }
+
+      it("should return Left for not lowercase but case insensitive values") {
+        DummyEnum.withNameLowercaseOnlyEither("Hello") should be(
+          Left(NoSuchMember("Hello", DummyEnum.values)))
+        DummyEnum.withNameLowercaseOnlyEither("GoodBye") should be(
+          Left(NoSuchMember("GoodBye", DummyEnum.values)))
+        DummyEnum.withNameLowercaseOnlyEither("Hi") should be(
+          Left(NoSuchMember("Hi", DummyEnum.values)))
+      }
+
+      it("should return Left otherwise") {
+        DummyEnum.withNameLowercaseOnlyEither("bbeeeech") should be(
+          Left(NoSuchMember("bbeeeech", DummyEnum.values)))
       }
     }
   }

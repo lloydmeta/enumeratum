@@ -86,6 +86,13 @@ trait Enum[A <: EnumEntry] {
   def withNameOption(name: String): Option[A] = namesToValuesMap.get(name)
 
   /**
+    * Returns an [[Right[A]]] for a given name, or a [[Left[NoSuchMember]]] if the name does not match any of the values'
+    * .entryName values.
+    */
+  def withNameEither(name: String): Either[NoSuchMember[A], A] =
+    namesToValuesMap.get(name).toRight(NoSuchMember(name, values))
+
+  /**
     * Tries to get an [[A]] by the supplied name. The name corresponds to the .name
     * of the case objects implementing [[A]], disregarding case
     *
@@ -138,6 +145,27 @@ trait Enum[A <: EnumEntry] {
     */
   def withNameLowercaseOnlyOption(name: String): Option[A] =
     lowerCaseNamesToValuesMap.get(name)
+
+  /**
+    * Returns an [[Right[A]]] for a given name, or a [[Left[NoSuchMember]]] if the name does not match any of the values'
+    * .entryName values, disregarding case.
+    */
+  def withNameInsensitiveEither(name: String): Either[NoSuchMember[A], A] =
+    lowerCaseNamesToValuesMap.get(name.toLowerCase).toRight(NoSuchMember(name, values))
+
+  /**
+    * Returns an [[Right[A]]] for a given name, or a [[Left[NoSuchMember]]] if the name does not match any of the values'
+    * .entryName values, disregarding case.
+    */
+  def withNameUppercaseOnlyEither(name: String): Either[NoSuchMember[A], A] =
+    upperCaseNameValuesToMap.get(name).toRight(NoSuchMember(name, values))
+
+  /**
+    * Returns an [[Right[A]]] for a given name, or a [[Left[NoSuchMember]]] if the name does not match any of the values'
+    * .entryName values, disregarding case.
+    */
+  def withNameLowercaseOnlyEither(name: String): Either[NoSuchMember[A], A] =
+    lowerCaseNamesToValuesMap.get(name).toRight(NoSuchMember(name, values))
 
   /**
     * Returns the index number of the member passed in the values picked up by this enum
