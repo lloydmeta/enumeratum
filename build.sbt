@@ -21,7 +21,7 @@ lazy val reactiveMongoVersion = "0.18.6"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.2.1"
-lazy val doobieVersion        = "0.7.0"
+lazy val doobieVersion        = "0.8.4"
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
