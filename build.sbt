@@ -21,7 +21,14 @@ lazy val reactiveMongoVersion = "0.18.6"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.2.1"
-lazy val doobieVersion        = "0.8.4"
+
+def theDoobieVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.8.4"
+    case Some((2, scalaMajor)) if scalaMajor == 11 => "0.7.0"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -432,7 +439,7 @@ lazy val enumeratumDoobie =
       libraryDependencies ++= {
         Seq(
           "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-          "org.tpolecat" %% "doobie-core" % doobieVersion
+          "org.tpolecat" %% "doobie-core" % theDoobieVersion(scalaVersion.value)
         )
       }
     )
