@@ -407,7 +407,7 @@ lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
 lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
-  crossScalaVersions := post210Only(crossScalaVersions.value)
+  crossScalaVersions := post210Only(scalaVersionsAbove_2_11 :+ scala_2_13Version)
 )
 lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -417,7 +417,7 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-quill",
     version := "1.5.15-SNAPSHOT",
-    crossScalaVersions := post210Only(crossScalaVersions.value),
+    crossScalaVersions := post210Only(scalaVersionsAbove_2_11 :+ scala_2_13Version),
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
