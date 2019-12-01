@@ -20,7 +20,7 @@ lazy val scalacheckVersion = "1.14.0"
 lazy val reactiveMongoVersion = "0.18.6"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
-lazy val quillVersion         = "3.2.1"
+lazy val quillVersion         = "3.5.0"
 
 def theDoobieVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -117,7 +117,9 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
-  enumeratumCatsJs
+  enumeratumCatsJs,
+  enumeratumQuillJvm,
+  enumeratumQuillJs
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -423,6 +425,14 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
         "io.getquill"  %%% "quill-core" % quillVersion,
         "io.getquill"  %%% "quill-sql"  % quillVersion % Test
+      )
+    },
+    dependencyOverrides ++= {
+      def pprintVersion(v: String) = {
+        if (v.startsWith("2.11")) "0.5.4" else "0.5.5"
+      }
+      Seq(
+        "com.lihaoyi" %%% "pprint" % pprintVersion(scalaVersion.value)
       )
     }
   )
