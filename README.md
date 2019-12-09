@@ -1142,7 +1142,7 @@ val xa = Transactor.fromDriverManager[IO](
   Blocker.liftExecutionContext(ExecutionContexts.synchronous)
 )
 
-sql"insert into clothes (shirt_size) values (${ShirtSize.Small: ShirtSize})".update.run
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
   .transact(xa)
   .unsafeRunSync
 
@@ -1190,7 +1190,7 @@ val xa = Transactor.fromDriverManager[IO](
   Blocker.liftExecutionContext(ExecutionContexts.synchronous)
 )
 
-sql"insert into clothes (shirt_size) values (${ShirtSize.Small: ShirtSize})".update.run
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
   .transact(xa)
   .unsafeRunSync
 
