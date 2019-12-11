@@ -1106,6 +1106,104 @@ libraryDependencies ++= Seq(
 )
 ```
 
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with DoobieEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large  extends ShirtSize
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import doobie._
+import doobie.implicits._
+import doobie.util.ExecutionContexts
+import cats.effect._
+
+implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+
+val xa = Transactor.fromDriverManager[IO](
+  "org.postgresql.Driver",
+  "jdbc:postgresql:world",
+  "postgres",
+  "",
+  Blocker.liftExecutionContext(ExecutionContexts.synchronous)
+)
+
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
+  .transact(xa)
+  .unsafeRunSync
+
+sql"select shirt from clothes"
+  .query[Shirt]
+  .to[List]
+  .transact(xa)
+  .unsafeRunSync
+  .take(5)
+  .foreach(println)
+```
+- Note that a type ascription to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
+
+#### ValueEnum
+
+```scala
+import enumeratum.values.{ IntDoobieEnum, IntEnum, IntEnumEntry }
+
+sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+
+case object ShirtSize extends IntEnum[ShirtSize] with IntDoobieEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize(1)
+  case object Medium extends ShirtSize(2)
+  case object Large  extends ShirtSize(3)
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import doobie._
+import doobie.implicits._
+import doobie.util.ExecutionContexts
+import cats.effect._
+
+implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+
+val xa = Transactor.fromDriverManager[IO](
+  "org.postgresql.Driver",
+  "jdbc:postgresql:world",
+  "postgres",
+  "",
+  Blocker.liftExecutionContext(ExecutionContexts.synchronous)
+)
+
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
+  .transact(xa)
+  .unsafeRunSync
+
+sql"select shirt from clothes"
+  .query[Shirt]
+  .to[List]
+  .transact(xa)
+  .unsafeRunSync
+  .take(5)
+  .foreach(println)
+```
+- Note that a type ascription to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+
 ## Benchmarking
 
 Benchmarking is in the unpublished `benchmarking` project. It uses JMH and you can run them in the sbt console by issuing the following command from your command line:
