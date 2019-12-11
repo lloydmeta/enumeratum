@@ -104,7 +104,7 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
        """ shouldNot compile
       }
 
-      it("compile even when values are repeated if AllowAlias is extended") {
+      it("should compile even when values are repeated if AllowAlias is extended") {
         """
         sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry with AllowAlias
 
