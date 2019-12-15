@@ -205,9 +205,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     name := "enumeratum",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+    //libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
-//  .dependsOn(macros) // used for testing macros
+  .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 

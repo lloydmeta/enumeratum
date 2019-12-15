@@ -245,7 +245,7 @@ import enumeratum.values._
 
 sealed abstract class LibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object LibraryItem extends IntEnum[LibraryItem] {
+object LibraryItem extends IntEnum[LibraryItem] {
 
 
   case object Book     extends LibraryItem(value = 1, name = "book")
@@ -266,6 +266,32 @@ case object LibraryItem extends IntEnum[LibraryItem] {
 assert(LibraryItem.withValue(1) == LibraryItem.Book)
 
 LibraryItem.withValue(10) // => java.util.NoSuchElementException:
+```
+
+If you want to allow aliases in your enumeration, i.e. multiple entries that share the same value, you can extend the
+`enumeratum.values.AllowAlias` trait:
+
+```scala
+import enumeratum.values._
+
+sealed abstract class Judgement(val value: Int) extends IntEnumEntry with AllowAlias
+
+object Judgement extends IntEnum[Judgement] {
+
+  case object Good extends Judgement(1)
+  case object OK extends Judgement(2)
+  case object Meh extends Judgement(2)
+  case object Bad extends Judgement(3)
+
+  val values = findValues
+
+}
+```
+
+Calling `withValue` with an aliased value will return one of the corresponding entries. Which one it returns is undefined:
+
+```scala
+assert(Judgement.withValue(2) == Judgement.OK || Judgement.withValue(2) == Judgement.Meh)
 ```
 
 **Restrictions**

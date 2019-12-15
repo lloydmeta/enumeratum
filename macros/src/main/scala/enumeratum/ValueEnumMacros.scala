@@ -4,6 +4,7 @@ import ContextUtils.Context
 
 import scala.reflect.ClassTag
 import scala.collection.immutable._
+import enumeratum.values.AllowAlias
 
 @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object ValueEnumMacros {
@@ -105,8 +106,14 @@ object ValueEnumMacros {
       subclassTrees,
       processFoundValues
     )
-    // Make sure the processed found value implementations are unique
-    ensureUnique[ProcessedValue](c)(treeWithVals)
+
+    if (weakTypeOf[ValueEntryType] <:< c.typeOf[AllowAlias]) {
+      // Skip the uniqueness check
+    } else {
+      // Make sure the processed found value implementations are unique
+      ensureUnique[ProcessedValue](c)(treeWithVals)
+    }
+
     // Finish by building our Sequence
     val subclassSymbols = treeWithVals.map(_.tree.symbol)
     EnumMacros.buildSeqExpr[ValueEntryType](c)(subclassSymbols)
