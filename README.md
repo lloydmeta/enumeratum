@@ -28,7 +28,7 @@ Integrations are available for:
 - [Play](https://www.playframework.com/): JVM only
 - [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
-- [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
+- [ReactiveMongo BSON](http://reactivemongo.org/releases/0.1x/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
@@ -662,16 +662,16 @@ case object BsonDrinks extends ShortEnum[BsonDrinks] with ShortReactiveMongoBson
 
 }
 
-import reactivemongo.bson._
+import reactivemongo.api.bson._
 
 // Use to deserialise numbers to enum members directly
 BsonDrinks.values.foreach { drink =>
-  val writer = implicitly[BSONWriter[BsonDrinks, BSONValue]]
+  val writer = implicitly[BSONWriter[BsonDrinks]]
 
   assert(writer.write(drink) == BSONInteger(drink.value))
 }
 
-val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
+val reader = implicitly[BSONReader[BsonDrinks]]
 
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```

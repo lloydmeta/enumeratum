@@ -2,7 +2,9 @@ package enumeratum
 
 import org.scalatest.OptionValues._
 import org.scalatest.{FunSpec, Matchers}
-import reactivemongo.bson._
+import reactivemongo.api.bson._
+
+import scala.util.Success
 
 /**
   *
@@ -53,19 +55,19 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
   private def testScenario(
       descriptor: String,
-      reader: BSONReader[BSONValue, Dummy],
+      reader: BSONReader[Dummy],
       expectedReadSuccesses: Map[String, Dummy],
       expectedReadFails: Seq[String],
-      writer: BSONWriter[Dummy, BSONValue],
+      writer: BSONWriter[Dummy],
       expectedWrites: Map[Dummy, String],
-      handler: BSONHandler[BSONValue, Dummy]
+      handler: BSONHandler[Dummy]
   ): Unit = describe(descriptor) {
 
     val expectedReadErrors = {
-      expectedReadFails.map(BSONString) ++ Seq(BSONString("D"), BSONInteger(2))
+      expectedReadFails.map(BSONString(_)) ++ Seq(BSONString("D"), BSONInteger(2))
     }
 
-    def readTests(theReader: BSONReader[BSONValue, Dummy]): Unit = {
+    def readTests(theReader: BSONReader[Dummy]): Unit = {
       it("should work with valid values") {
         expectedReadSuccesses.foreach {
           case (k, v) =>
@@ -80,11 +82,11 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
       }
     }
 
-    def writeTests(theWriter: BSONWriter[Dummy, BSONValue]): Unit = {
+    def writeTests(theWriter: BSONWriter[Dummy]): Unit = {
       it("should write enum values to BSONString") {
         expectedWrites.foreach {
           case (k, v) =>
-            theWriter.write(k) shouldBe BSONString(v)
+            theWriter.writeTry(k) shouldBe Success(BSONString(v))
         }
       }
     }

@@ -1,8 +1,7 @@
 package enumeratum
 
 import org.scalatest.{FunSpec, Matchers}
-import reactivemongo.bson._
-import org.scalatest.OptionValues._
+import reactivemongo.api.bson.{BSONInteger, BSONString, BSONValue}
 
 /**
   *
@@ -17,7 +16,7 @@ class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
 
       it("should work with valid values") {
         val bsonValue: BSONValue = BSONString("A")
-        bsonValue.asOpt[Dummy].value shouldBe Dummy.A
+        bsonValue.asOpt[Dummy].get shouldBe Dummy.A
       }
 
       it("should fail with invalid values") {
