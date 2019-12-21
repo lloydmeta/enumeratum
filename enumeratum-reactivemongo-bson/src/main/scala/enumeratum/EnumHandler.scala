@@ -1,6 +1,8 @@
 package enumeratum
 
-import reactivemongo.bson._
+import reactivemongo.api.bson._
+
+import scala.util.{Failure, Try}
 
 /**
   * Holds BSON reader and writer for [[enumeratum.Enum]]
@@ -20,15 +22,14 @@ object EnumHandler {
   def reader[A <: EnumEntry](
       enum: Enum[A],
       insensitive: Boolean = false
-  ): BSONReader[BSONValue, A] =
-    new BSONReader[BSONValue, A] {
-      override def read(bson: BSONValue): A = {
+  ): BSONReader[A] =
+    new BSONReader[A] {
+      override def readTry(bson: BSONValue): Try[A] =
         bson match {
-          case BSONString(s) if insensitive => enum.withNameInsensitive(s)
-          case BSONString(s)                => enum.withName(s)
-          case _                            => throw new RuntimeException("String value expected")
+          case BSONString(s) if insensitive => Try(enum.withNameInsensitive(s))
+          case BSONString(s)                => Try(enum.withName(s))
+          case _                            => Failure(new RuntimeException("String value expected"))
         }
-      }
     }
 
   /**
@@ -36,53 +37,46 @@ object EnumHandler {
     *
     * @param enum The enum
     */
-  def readerLowercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONReader[BSONValue, A] =
-    new BSONReader[BSONValue, A] {
-      override def read(bson: BSONValue): A = {
-        bson match {
-          case BSONString(s) => enum.withNameLowercaseOnly(s)
-          case _             => throw new RuntimeException("String value expected")
-        }
-      }
+  def readerLowercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONReader[A] = new BSONReader[A] {
+    override def readTry(bson: BSONValue): Try[A] = bson match {
+      case BSONString(s) => Try(enum.withNameLowercaseOnly(s))
+      case _             => Failure(new RuntimeException("String value expected"))
     }
+  }
 
   /**
     * Returns a BSONReader for a given enum [[Enum]] transformed to upper case
     *
     * @param enum The enum
     */
-  def readerUppercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONReader[BSONValue, A] =
-    new BSONReader[BSONValue, A] {
-      override def read(bson: BSONValue): A = {
-        bson match {
-          case BSONString(s) => enum.withNameUppercaseOnly(s)
-          case _             => throw new RuntimeException("String value expected")
-        }
+  def readerUppercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONReader[A] = new BSONReader[A] {
+    override def readTry(bson: BSONValue): Try[A] =
+      bson match {
+        case BSONString(s) => Try(enum.withNameUppercaseOnly(s))
+        case _             => Failure(new RuntimeException("String value expected"))
       }
-    }
+  }
 
   /**
     * Returns a BSONWriter for a given enum [[Enum]]
     */
-  def writer[A <: EnumEntry](enum: Enum[A]): BSONWriter[A, BSONValue] =
-    new BSONWriter[A, BSONValue] {
-      override def write(t: A): BSONValue = BSONString(t.entryName)
-    }
+  def writer[A <: EnumEntry](enum: Enum[A]): BSONWriter[A] = new BSONWriter[A] {
+    override def writeTry(t: A): Try[BSONValue] = Try(BSONString(t.entryName))
+  }
 
   /**
     * Returns a BSONWriter for a given enum [[Enum]], outputting the value as lower case
     */
-  def writerLowercase[A <: EnumEntry](enum: Enum[A]): BSONWriter[A, BSONValue] =
-    new BSONWriter[A, BSONValue] {
-      override def write(t: A): BSONValue = BSONString(t.entryName.toLowerCase)
-    }
+  def writerLowercase[A <: EnumEntry](enum: Enum[A]): BSONWriter[A] = new BSONWriter[A] {
+    override def writeTry(t: A): Try[BSONValue] = Try(BSONString(t.entryName.toLowerCase))
+  }
 
   /**
     * Returns a BSONWriter for a given enum [[Enum]], outputting the value as upper case
     */
-  def writerUppercase[A <: EnumEntry](enum: Enum[A]): BSONWriter[A, BSONValue] =
-    new BSONWriter[A, BSONValue] {
-      override def write(t: A): BSONValue = BSONString(t.entryName.toUpperCase)
+  def writerUppercase[A <: EnumEntry](enum: Enum[A]): BSONWriter[A] =
+    new BSONWriter[A] {
+      override def writeTry(t: A): Try[BSONValue] = Try(BSONString(t.entryName.toUpperCase))
     }
 
   /**
@@ -94,14 +88,14 @@ object EnumHandler {
   def handler[A <: EnumEntry](
       enum: Enum[A],
       insensitive: Boolean = false
-  ): BSONHandler[BSONValue, A] =
-    new BSONHandler[BSONValue, A] {
+  ): BSONHandler[A] =
+    new BSONHandler[A] {
       private val concreteReader = reader(enum, insensitive)
       private val concreteWriter = writer(enum)
 
-      override def read(bson: BSONValue): A = concreteReader.read(bson)
+      override def readTry(bson: BSONValue): Try[A] = concreteReader.readTry(bson)
 
-      override def write(t: A): BSONValue = concreteWriter.write(t)
+      override def writeTry(t: A): Try[BSONValue] = concreteWriter.writeTry(t)
     }
 
   /**
@@ -109,14 +103,14 @@ object EnumHandler {
     *
     * @param enum The enum
     */
-  def handlerLowercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[BSONValue, A] =
-    new BSONHandler[BSONValue, A] {
+  def handlerLowercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[A] =
+    new BSONHandler[A] {
       private val concreteReader = readerLowercaseOnly(enum)
       private val concreteWriter = writerLowercase(enum)
 
-      override def read(bson: BSONValue): A = concreteReader.read(bson)
+      override def readTry(bson: BSONValue): Try[A] = concreteReader.readTry(bson)
 
-      override def write(t: A): BSONValue = concreteWriter.write(t)
+      override def writeTry(t: A): Try[BSONValue] = concreteWriter.writeTry(t)
     }
 
   /**
@@ -124,13 +118,13 @@ object EnumHandler {
     *
     * @param enum The enum
     */
-  def handlerUppercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[BSONValue, A] =
-    new BSONHandler[BSONValue, A] {
+  def handlerUppercaseOnly[A <: EnumEntry](enum: Enum[A]): BSONHandler[A] =
+    new BSONHandler[A] {
       private val concreteReader = readerUppercaseOnly(enum)
       private val concreteWriter = writerUppercase(enum)
 
-      override def read(bson: BSONValue): A = concreteReader.read(bson)
+      override def readTry(bson: BSONValue): Try[A] = concreteReader.readTry(bson)
 
-      override def write(t: A): BSONValue = concreteWriter.write(t)
+      override def writeTry(t: A): Try[BSONValue] = concreteWriter.writeTry(t)
     }
 }

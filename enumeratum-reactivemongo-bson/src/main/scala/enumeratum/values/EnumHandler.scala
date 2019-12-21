@@ -1,6 +1,8 @@
 package enumeratum.values
 
-import reactivemongo.bson._
+import reactivemongo.api.bson.{BSONHandler, BSONReader, BSONValue, BSONWriter}
+
+import scala.util.Try
 
 /**
   * @author Alessandro Lacava (@lambdista)
@@ -14,12 +16,10 @@ object EnumHandler {
   def reader[ValueType, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]
   )(
-      implicit baseBsonReader: BSONReader[BSONValue, ValueType]
-  ): BSONReader[BSONValue, EntryType] = new BSONReader[BSONValue, EntryType] {
-    def read(bson: BSONValue): EntryType = {
-      val value = baseBsonReader.read(bson)
-      enum.withValue(value)
-    }
+      implicit baseBsonReader: BSONReader[ValueType]
+  ): BSONReader[EntryType] = new BSONReader[EntryType] {
+    override def readTry(bson: BSONValue): Try[EntryType] =
+      baseBsonReader.readTry(bson).map(enum.withValue)
   }
 
   /**
@@ -28,9 +28,10 @@ object EnumHandler {
   def writer[ValueType, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]
   )(
-      implicit baseBsonWriter: BSONWriter[ValueType, BSONValue]
-  ): BSONWriter[EntryType, BSONValue] = new BSONWriter[EntryType, BSONValue] {
-    def write(t: EntryType): BSONValue = baseBsonWriter.write(t.value)
+      implicit baseBsonWriter: BSONWriter[ValueType]
+  ): BSONWriter[EntryType] = new BSONWriter[EntryType] {
+
+    override def writeTry(t: EntryType): Try[BSONValue] = baseBsonWriter.writeTry(t.value)
   }
 
   /**
@@ -38,14 +39,14 @@ object EnumHandler {
     * Enum's value type
     */
   def handler[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
-  )(
-      implicit baseBsonHandler: BSONHandler[BSONValue, ValueType]
-  ): BSONHandler[BSONValue, EntryType] =
-    new BSONHandler[BSONValue, EntryType] {
-      private val concreteReader           = reader(enum)
-      private val concreteWriter           = writer(enum)
-      def read(bson: BSONValue): EntryType = concreteReader.read(bson)
-      def write(t: EntryType): BSONValue   = concreteWriter.write(t)
-    }
+      enum: ValueEnum[ValueType, EntryType])(
+      implicit baseBsonHandler: BSONHandler[ValueType]
+  ): BSONHandler[EntryType] = new BSONHandler[EntryType] {
+    private val concreteReader = reader(enum)
+    private val concreteWriter = writer(enum)
+
+    override def readTry(bson: BSONValue): Try[EntryType] = concreteReader.readTry(bson)
+
+    override def writeTry(t: EntryType): Try[BSONValue] = concreteWriter.writeTry(t)
+  }
 }

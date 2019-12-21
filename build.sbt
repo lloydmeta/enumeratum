@@ -1,6 +1,6 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val theScalaVersion = "2.12.8"
 
@@ -17,7 +17,7 @@ lazy val scalaTestVersion  = "3.0.8"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.18.6"
+lazy val reactiveMongoVersion = "0.19.4"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.5.0"
@@ -261,7 +261,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(testSettings: _*)
     .settings(
       version := "1.5.15-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
