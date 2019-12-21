@@ -260,7 +260,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.15",
+      version := "1.5.16-SNAPSHOT",
       crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
