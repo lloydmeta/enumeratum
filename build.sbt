@@ -40,7 +40,7 @@ def theArgonautVersion(scalaVersion: String) =
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.3"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -65,7 +65,7 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.7.4"
+    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
     case Some((2, scalaMajor)) if scalaMajor == 10 => "2.4.11"
     case _ =>
@@ -82,6 +82,8 @@ def theCirceVersion(scalaVersion: String) =
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
+  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
   case Some((2, scalaMajor)) if scalaMajor == 10 =>
