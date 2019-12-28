@@ -1,6 +1,7 @@
 package enumeratum.values
 
 import doobie.util._
+import doobie.Meta
 
 object Doobie {
 

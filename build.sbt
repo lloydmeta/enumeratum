@@ -24,7 +24,7 @@ lazy val quillVersion         = "3.5.0"
 
 def theDoobieVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.8.6"
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.8.8"
     case Some((2, scalaMajor)) if scalaMajor <= 11 => "0.7.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
