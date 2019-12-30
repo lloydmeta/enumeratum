@@ -1,6 +1,7 @@
 package enumeratum.values
 
 import doobie.util._
+import doobie.Meta
 
 sealed trait DoobieValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType], DoobieType] {
   this: ValueEnum[ValueType, EntryType] =>

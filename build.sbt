@@ -1,6 +1,6 @@
 import com.typesafe.sbt.SbtGit.{GitKeys => git}
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val theScalaVersion = "2.12.8"
 
@@ -10,18 +10,25 @@ lazy val theScalaVersion = "2.12.8"
  */
 lazy val scalaVersions           = Seq(theScalaVersion, "2.10.7", "2.11.12")
 lazy val scalaVersionsAbove_2_11 = Seq("2.11.12", "2.12.8")
-lazy val scala_2_13Version       = "2.13.0"
+lazy val scala_2_13Version       = "2.13.1"
 lazy val scalaVersionsAll        = scalaVersions :+ scala_2_13Version
 
 lazy val scalaTestVersion  = "3.0.8"
 lazy val scalacheckVersion = "1.14.0"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.18.6"
+lazy val reactiveMongoVersion = "0.19.4"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
-lazy val quillVersion         = "3.2.1"
-lazy val doobieVersion        = "0.7.0"
+lazy val quillVersion         = "3.5.0"
+
+def theDoobieVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.8.8"
+    case Some((2, scalaMajor)) if scalaMajor <= 11 => "0.7.0"
+    case _ =>
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -110,7 +117,9 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
-  enumeratumCatsJs
+  enumeratumCatsJs,
+  enumeratumQuillJvm,
+  enumeratumQuillJs
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -251,8 +260,8 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.15-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll,
+      version := "1.5.16-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo"   % reactiveMongoVersion,
         "com.beachape"      %% "enumeratum"      % Versions.Core.stable,
@@ -400,7 +409,7 @@ lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
 lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
-  crossScalaVersions := post210Only(crossScalaVersions.value)
+  crossScalaVersions := post210Only(scalaVersionsAbove_2_11 :+ scala_2_13Version)
 )
 lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -409,13 +418,21 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "1.5.15-SNAPSHOT",
-    crossScalaVersions := post210Only(crossScalaVersions.value),
+    version := "1.5.16-SNAPSHOT",
+    crossScalaVersions := post210Only(scalaVersionsAbove_2_11 :+ scala_2_13Version),
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
         "io.getquill"  %%% "quill-core" % quillVersion,
         "io.getquill"  %%% "quill-sql"  % quillVersion % Test
+      )
+    },
+    dependencyOverrides ++= {
+      def pprintVersion(v: String) = {
+        if (v.startsWith("2.11")) "0.5.4" else "0.5.5"
+      }
+      Seq(
+        "com.lihaoyi" %%% "pprint" % pprintVersion(scalaVersion.value)
       )
     }
   )
@@ -427,12 +444,12 @@ lazy val enumeratumDoobie =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      crossScalaVersions := scalaVersionsAbove_2_11,
-      version := "1.5.16-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAbove_2_11 :+ scala_2_13Version,
+      version := "1.5.18-SNAPSHOT",
       libraryDependencies ++= {
         Seq(
           "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-          "org.tpolecat" %% "doobie-core" % doobieVersion
+          "org.tpolecat" %% "doobie-core" % theDoobieVersion(scalaVersion.value)
         )
       }
     )

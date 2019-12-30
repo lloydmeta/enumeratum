@@ -1,6 +1,7 @@
 package enumeratum
 
 import doobie.util._
+import doobie.Meta
 
 /**
   * Helper trait that adds implicit Doobie Get and Put for an [[Enum]]'s members

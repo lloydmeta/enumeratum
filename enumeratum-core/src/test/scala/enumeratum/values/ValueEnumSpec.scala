@@ -104,6 +104,23 @@ class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
        """ shouldNot compile
       }
 
+      it("should compile even when values are repeated if AllowAlias is extended") {
+        """
+        sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry with AllowAlias
+
+        case object ContentTypeRepeated extends LongEnum[ContentTypeRepeated] {
+
+          case object Text extends ContentTypeRepeated(value = 1L, name = "text")
+          case object Image extends ContentTypeRepeated(value = 2L, name = "image")
+          case object Video extends ContentTypeRepeated(value = 2L, name = "video")
+          case object Audio extends ContentTypeRepeated(value = 4L, name = "audio")
+
+          val values = findValues
+
+        }
+       """ should (compile)
+      }
+
       it("should fail to compile when there are non literal values") {
         """
         sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry

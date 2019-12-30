@@ -28,7 +28,7 @@ Integrations are available for:
 - [Play](https://www.playframework.com/): JVM only
 - [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
-- [ReactiveMongo BSON](http://reactivemongo.org/releases/0.11/documentation/bson/overview.html): JVM only
+- [ReactiveMongo BSON](http://reactivemongo.org/releases/0.1x/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
 - [Json4s](http://json4s.org): JVM only
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
@@ -38,13 +38,13 @@ Integrations are available for:
 ### Table of Contents
 
 1. [Quick start](#quick-start)
-  - [SBT](#sbt)
-  - [Usage](#usage)
+    - [SBT](#sbt)
+    - [Usage](#usage)
 2. [More examples](#more-examples)
-  - [Enum](#enum)
-    - [Manual override of name](#manual-override-of-name)
-    - [Mixins to override the name](#mixins-to-override-the-name)
-  - [ValueEnum](#valueenum)
+    - [Enum](#enum)
+      - [Manual override of name](#manual-override-of-name)
+      - [Mixins to override the name](#mixins-to-override-the-name)
+    - [ValueEnum](#valueenum)
 3. [ScalaJS](#scalajs)
 4. [Play integration](#play-integration)
 5. [Play JSON integration](#play-json)
@@ -245,7 +245,7 @@ import enumeratum.values._
 
 sealed abstract class LibraryItem(val value: Int, val name: String) extends IntEnumEntry
 
-case object LibraryItem extends IntEnum[LibraryItem] {
+object LibraryItem extends IntEnum[LibraryItem] {
 
 
   case object Book     extends LibraryItem(value = 1, name = "book")
@@ -266,6 +266,32 @@ case object LibraryItem extends IntEnum[LibraryItem] {
 assert(LibraryItem.withValue(1) == LibraryItem.Book)
 
 LibraryItem.withValue(10) // => java.util.NoSuchElementException:
+```
+
+If you want to allow aliases in your enumeration, i.e. multiple entries that share the same value, you can extend the
+`enumeratum.values.AllowAlias` trait:
+
+```scala
+import enumeratum.values._
+
+sealed abstract class Judgement(val value: Int) extends IntEnumEntry with AllowAlias
+
+object Judgement extends IntEnum[Judgement] {
+
+  case object Good extends Judgement(1)
+  case object OK extends Judgement(2)
+  case object Meh extends Judgement(2)
+  case object Bad extends Judgement(3)
+
+  val values = findValues
+
+}
+```
+
+Calling `withValue` with an aliased value will return one of the corresponding entries. Which one it returns is undefined:
+
+```scala
+assert(Judgement.withValue(2) == Judgement.OK || Judgement.withValue(2) == Judgement.Meh)
 ```
 
 **Restrictions**
@@ -636,16 +662,16 @@ case object BsonDrinks extends ShortEnum[BsonDrinks] with ShortReactiveMongoBson
 
 }
 
-import reactivemongo.bson._
+import reactivemongo.api.bson._
 
 // Use to deserialise numbers to enum members directly
 BsonDrinks.values.foreach { drink =>
-  val writer = implicitly[BSONWriter[BsonDrinks, BSONValue]]
+  val writer = implicitly[BSONWriter[BsonDrinks]]
 
   assert(writer.write(drink) == BSONInteger(drink.value))
 }
 
-val reader = implicitly[BSONReader[BSONValue, BsonDrinks]]
+val reader = implicitly[BSONReader[BsonDrinks]]
 
 assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
@@ -1105,6 +1131,104 @@ libraryDependencies ++= Seq(
     "com.beachape" %%% "enumeratum-doobie" % enumeratumDoobieVersion
 )
 ```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with DoobieEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large  extends ShirtSize
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import doobie._
+import doobie.implicits._
+import doobie.util.ExecutionContexts
+import cats.effect._
+
+implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+
+val xa = Transactor.fromDriverManager[IO](
+  "org.postgresql.Driver",
+  "jdbc:postgresql:world",
+  "postgres",
+  "",
+  Blocker.liftExecutionContext(ExecutionContexts.synchronous)
+)
+
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
+  .transact(xa)
+  .unsafeRunSync
+
+sql"select shirt from clothes"
+  .query[Shirt]
+  .to[List]
+  .transact(xa)
+  .unsafeRunSync
+  .take(5)
+  .foreach(println)
+```
+- Note that a type ascription to the `EnumEntry` trait (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `EnumEntry`s
+
+#### ValueEnum
+
+```scala
+import enumeratum.values.{ IntDoobieEnum, IntEnum, IntEnumEntry }
+
+sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+
+case object ShirtSize extends IntEnum[ShirtSize] with IntDoobieEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize(1)
+  case object Medium extends ShirtSize(2)
+  case object Large  extends ShirtSize(3)
+
+  val values = findValues
+
+}
+
+case class Shirt(size: ShirtSize)
+
+import doobie._
+import doobie.implicits._
+import doobie.util.ExecutionContexts
+import cats.effect._
+
+implicit val cs = IO.contextShift(ExecutionContexts.synchronous)
+
+val xa = Transactor.fromDriverManager[IO](
+  "org.postgresql.Driver",
+  "jdbc:postgresql:world",
+  "postgres",
+  "",
+  Blocker.liftExecutionContext(ExecutionContexts.synchronous)
+)
+
+sql"insert into clothes (shirt) values (${Shirt(ShirtSize.Small)})".update.run
+  .transact(xa)
+  .unsafeRunSync
+
+sql"select shirt from clothes"
+  .query[Shirt]
+  .to[List]
+  .transact(xa)
+  .unsafeRunSync
+  .take(5)
+  .foreach(println)
+```
+- Note that a type ascription to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
 
 ## Benchmarking
 
