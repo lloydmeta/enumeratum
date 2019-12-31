@@ -1,8 +1,8 @@
 object Versions {
 
   object Core {
-    val stable = "1.5.14"
-    val head   = "1.5.15-SNAPSHOT"
+    val stable = "1.5.15"
+    val head   = "1.5.16-SNAPSHOT"
   }
 
   object Macros {
