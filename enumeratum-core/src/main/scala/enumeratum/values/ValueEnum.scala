@@ -62,6 +62,14 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
     */
   def withValueOpt(i: ValueType): Option[EntryType] = valuesToEntriesMap.get(i)
 
+  /**
+    * Returns an [[Right[EntryType]]] for a given value, or a [[Left[NoSuchMember]]] if the value does not match any of the values'
+    * `.value` values.
+    */
+  def withValueEither(
+      i: ValueType): Either[NoSuchMember[ValueType, ValueEnumEntry[ValueType]], EntryType] =
+    valuesToEntriesMap.get(i).toRight(NoSuchMember(i, values))
+
   private lazy val existingEntriesString = values.map(_.value).mkString(", ")
 
   private def buildNotFoundMessage(i: ValueType): String = {

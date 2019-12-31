@@ -71,6 +71,22 @@ trait ValueEnumHelpers { this: FunSpec with Matchers =>
 
       }
 
+      describe("withValueEither") {
+
+        it("should return Right(entry) that match the value") {
+          enum.values.foreach { entry =>
+            enum.withValueEither(entry.value) shouldBe Right(entry)
+          }
+        }
+
+        it("should return Left when given values that do not map to any entries") {
+          invalidValues.foreach { invalid =>
+            enum.withValueEither(invalid) shouldBe Left(NoSuchMember(invalid, enum.values))
+          }
+        }
+
+      }
+
       describe("in") {
 
         it("should return false if given an empty list") {
