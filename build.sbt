@@ -2,10 +2,10 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-lazy val scala_2_11Version       = "2.11.12"
-lazy val scala_2_12Version       = "2.12.10"
-lazy val scala_2_13Version       = "2.13.1"
-lazy val scalaVersionsAll        = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
+lazy val scala_2_11Version = "2.11.12"
+lazy val scala_2_12Version = "2.12.10"
+lazy val scala_2_13Version = "2.13.1"
+lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
 
 lazy val theScalaVersion = scala_2_12Version
 
@@ -159,8 +159,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .in(file("macros"))
   .settings(testSettings: _*)
   .settings(commonWithPublishSettings: _*)
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true,
-                                       includeTestSrcs = false): _*)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
     version := Versions.Macros.head,
@@ -286,8 +285,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
         scalaTestPlay(scalaVersion.value)
       )
   )
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = false,
-                                       includeTestSrcs = true): _*)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, includeTestSrcs = true): _*)
   .dependsOn(enumeratumPlayJsonJvm % "compile->compile;test->test")
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
