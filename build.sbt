@@ -258,7 +258,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-play-json",
-    version := s"1.5.17-SNAPSHOT",
+    version := s"1.5.17",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -275,7 +275,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := s"1.5.17-SNAPSHOT",
+    version := s"1.5.17",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++=
       Seq(
