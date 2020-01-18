@@ -21,7 +21,7 @@ Enumeratum has the following niceties:
 - All magic happens at compile-time so you know right away when things go awry
 - Comprehensive automated testing to make sure everything is in tip-top shape
 
-Enumeratum is published for Scala 2.10.x, 2.11.x, 2.12.x, 2.13.x as well as ScalaJS.
+Enumeratum is published for Scala 2.11.x, 2.12.x, 2.13.x as well as ScalaJS.
 
 Integrations are available for:
 
@@ -327,8 +327,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
-Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+
 
 ### Usage
 
@@ -469,8 +468,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+ while 2.10 is compatible with
-Play 2.4.x. Versions prior to 1.4.0 are compatible with 2.4.x.
+Note that as of version 1.4.0, `enumeratum-play-json` for Scala 2.11 is compatible with Play 2.5+.
 
 ### Usage
 

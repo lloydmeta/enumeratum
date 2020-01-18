@@ -7,19 +7,13 @@ env:
 # Only run aggregation 2.12
 matrix:
   include:
-    - scala: 2.10.7
-      jdk: openjdk8
-      script:
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION  test:compile test:doc
-        - travis_wait 30 sleep 1800 &
-        - travis_retry sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
     - scala: 2.11.12
       jdk: openjdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmtCheck scalafmtSbtCheck test:compile test:doc
         - travis_wait 30 sleep 1800 &
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
-    - scala: 2.12.8
+    - scala: 2.12.10
       jdk: openjdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
@@ -27,6 +21,12 @@ matrix:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
+    - scala: 2.13.1
+      jdk: openjdk8
+      script:
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
+        - travis_wait 30 sleep 1800 &
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
     - scala: 2.13.0
       jdk: openjdk8
       script:

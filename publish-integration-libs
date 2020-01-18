@@ -7,9 +7,7 @@ say "Done 1" &&
 say "Done 2" &&
 sbt "project enumeratum-reactivemongo-bson" +clean +publishSigned &&
 say "Done 3" &&
-# sbt "project play-json-aggregate" +clean +publishSigned && # Doesn't work; 2.10 tries to publish a 2.13 POM
-sbt "project enumeratumPlayJsonJVM" +clean +publishSigned &&
-sbt "project enumeratumPlayJsonJS" +clean +publishSigned &&
+sbt "project play-json-aggregate" +clean +publishSigned &&
 say "Done 4" &&
 sbt "project enumeratum-play" +clean +publishSigned &&
 say "Done 5" &&
