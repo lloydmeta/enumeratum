@@ -238,7 +238,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.5.16-SNAPSHOT",
+      version := "1.5.17-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo-bson-api" % s"$reactiveMongoVersion-noshaded" % Provided,
@@ -296,7 +296,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.5.23-SNAPSHOT",
+    version := "1.5.24-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
