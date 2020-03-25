@@ -384,6 +384,7 @@ class EnumSpec extends FunSpec with Matchers {
         CamelcaseEnum.withName("GoodBye") shouldBe CamelcaseEnum.GOOD_BYE
         CamelcaseEnum.withName("sikeagain") shouldBe CamelcaseEnum.SIKE_AGAIN
         CamelcaseEnum.withName("Private") shouldBe CamelcaseEnum._PRIVATE
+        CamelcaseEnum.withName("CamelCase") shouldBe CamelcaseEnum.CamelCase
 
         LowerCamelcaseEnum.withName("hello") shouldBe LowerCamelcaseEnum.HELLO
         LowerCamelcaseEnum.withName("goodBye") shouldBe LowerCamelcaseEnum.GOOD_BYE

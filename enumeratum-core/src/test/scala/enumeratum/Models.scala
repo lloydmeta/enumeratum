@@ -198,6 +198,7 @@ object CamelcaseEnum extends Enum[CamelcaseEnum] {
   case object GOOD_BYE   extends CamelcaseEnum
   case object SIKE_AGAIN extends CamelcaseEnum with Lowercase
   case object _PRIVATE   extends CamelcaseEnum
+  case object CamelCase  extends CamelcaseEnum
 
 }
 

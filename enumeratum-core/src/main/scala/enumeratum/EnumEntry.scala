@@ -101,7 +101,7 @@ object EnumEntry {
     override def entryName: String = stableEntryName
 
     private[this] lazy val stableEntryName: String =
-      super.entryName.split("_+").map(s => capitalise(s.toLowerCase)).mkString
+      camel2WordArray(super.entryName).map(s => capitalise(s.toLowerCase)).mkString
   }
 
   /**
