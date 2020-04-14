@@ -76,6 +76,24 @@ object EnumMacros {
       )
   }
 
+  private[enumeratum] def enclosedSubClassTreesInModule(c: Context)(
+      typeSymbol: c.universe.Symbol,
+      enclosingModule: c.universe.ModuleDef
+  ): List[c.universe.ModuleDef] = {
+    import c.universe._
+    enclosingModule.impl.body.flatMap(_ match {
+      case m: ModuleDef
+          if m.symbol.isModule &&
+            m.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol) =>
+        m :: enclosedSubClassTreesInModule(c)(typeSymbol, m)
+
+      case m: ModuleDef =>
+        enclosedSubClassTreesInModule(c)(typeSymbol, m)
+
+      case _ => List.empty
+    })
+  }
+
   /**
     * Finds the actual trees in the current scope that implement objects of the given type
     *
@@ -97,18 +115,15 @@ object EnumMacros {
             "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
           )
       }
-      enclosingModule.impl.body.filter { x =>
-        try {
-          x.symbol.isModule &&
-          x.symbol.asModule.moduleClass.asClass.baseClasses.contains(typeSymbol)
-        } catch {
-          case NonFatal(e) =>
-            c.warning(
-              c.enclosingPosition,
-              s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
-            )
-            false
-        }
+      try {
+        enclosedSubClassTreesInModule(c)(typeSymbol, enclosingModule)
+      } catch {
+        case NonFatal(e) =>
+          c.warning(
+            c.enclosingPosition,
+            s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
+          )
+          List.empty
       }
     } catch {
       case NonFatal(e) =>

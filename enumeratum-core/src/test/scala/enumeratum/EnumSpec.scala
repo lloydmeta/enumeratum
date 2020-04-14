@@ -23,6 +23,20 @@ class EnumSpec extends FunSpec with Matchers {
         DummyEnum.values should be(IndexedSeq(Hello, GoodBye, Hi))
       }
 
+      it("should contain objects found in nested objects") {
+        NestedObjectEnum.values should be(
+          IndexedSeq(
+            NestedObjectEnum.Hello,
+            NestedObjectEnum.GoodBye,
+            NestedObjectEnum.nested1.Hello,
+            NestedObjectEnum.nested1.GoodBye,
+            NestedObjectEnum.nested1.GoodBye.NestedInsideMember,
+            NestedObjectEnum.nested2.Hello,
+            NestedObjectEnum.nested2.GoodBye,
+            NestedObjectEnum.nested2.nested3.Hello
+          ))
+      }
+
     }
 
     describe("#withName") {

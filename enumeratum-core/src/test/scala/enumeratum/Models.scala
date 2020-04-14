@@ -228,6 +228,33 @@ object UncapitalisedEnum extends Enum[UncapitalisedEnum] {
 
 }
 
+sealed trait NestedObjectEnum extends EnumEntry
+
+object NestedObjectEnum extends Enum[NestedObjectEnum] {
+
+  val values = findValues
+
+  case object Hello   extends NestedObjectEnum
+  case object GoodBye extends NestedObjectEnum
+
+  object nested1 {
+    case object Hello extends NestedObjectEnum
+    case object GoodBye extends NestedObjectEnum {
+      case object NestedInsideMember extends NestedObjectEnum
+    }
+  }
+
+  object nested2 {
+    case object Hello   extends NestedObjectEnum
+    case object GoodBye extends NestedObjectEnum
+
+    object nested3 {
+      case object Hello extends NestedObjectEnum
+    }
+  }
+
+}
+
 sealed class MultiEnum(override val entryName: String, val alternateNames: String*)
     extends EnumEntry
 
