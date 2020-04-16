@@ -1133,7 +1133,14 @@ libraryDependencies ++= Seq(
 ### Usage
 
 #### Enum
+If you need to store enum values in text column of following table
 
+```sql
+CREATE TABLE clothes (
+  shirt varchar(100)
+)
+```
+you should use following code 
 ```scala
 import enumeratum._
 
