@@ -9,8 +9,8 @@ lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_1
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion  = "3.0.8"
-lazy val scalacheckVersion = "1.14.0"
+lazy val scalaTestVersion  = "3.1.1"
+lazy val scalacheckVersion = "1.14.3"
 
 // Library versions
 lazy val reactiveMongoVersion = "0.20.3"
@@ -50,6 +50,7 @@ def theSlickVersion(scalaVersion: String) =
 
 def theCatsVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.1.1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.0.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -88,8 +89,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
-  enumeratumPlayJsonJs,
-  enumeratumArgonautJs,
+  // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
+  // enumeratumArgonautJs, TODO re-enable once argonaut supports Scala.js 1.0
   enumeratumArgonautJvm,
   enumeratumSlick,
   enumeratumPlay,
@@ -99,7 +100,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumCatsJvm,
   enumeratumCatsJs,
   enumeratumQuillJvm,
-  enumeratumQuillJs
+  // enumeratumQuillJs  TODO re-enable once quill supports Scala.js 1.0
 ).map(Project.projectToRef)
 
 lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
@@ -120,17 +121,17 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
-  enumeratumPlayJsonJs,
+//  enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
   enumeratumPlayJsonJvm,
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-  enumeratumArgonautJs,
+//  enumeratumArgonautJs,  TODO re-enable once argonaut supports Scala.js 1.0
   enumeratumArgonautJvm,
   enumeratumJson4s,
   enumeratumScalacheckJs,
   enumeratumScalacheckJvm,
-  enumeratumQuillJs,
+//  enumeratumQuillJs, TODO re-enable once quill supports Scala.js 1.0
   enumeratumQuillJvm,
   enumeratumDoobie,
   enumeratumSlick,
@@ -158,6 +159,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("macros"))
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(commonWithPublishSettings: _*)
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
@@ -178,6 +180,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
@@ -195,6 +198,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-test"))
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
@@ -248,7 +252,8 @@ lazy val enumeratumReactiveMongoBson =
     )
 
 lazy val playJsonAggregate =
-  aggregateProject("play-json", enumeratumPlayJsonJs, enumeratumPlayJsonJvm).settings(
+  aggregateProject("play-json", /*enumeratumPlayJsonJs,*/ enumeratumPlayJsonJvm).settings( // TODO re-enable once play-json supports Scala.js 1.0
+
     crossScalaVersions := scalaVersionsAll
   )
 lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
@@ -256,6 +261,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .in(file("enumeratum-play-json"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-play-json",
     version := "1.6.1-SNAPSHOT",
@@ -268,7 +274,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js
+// lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js // TODO re-enable once play-json supports Scala.js 1.0
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
@@ -294,6 +300,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .in(file("enumeratum-circe"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-circe",
     version := "1.6.1-SNAPSHOT",
@@ -305,16 +312,21 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
+  .jsSettings(
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
+  )
+
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
 lazy val argonautAggregate =
-  aggregateProject("argonaut", enumeratumArgonautJs, enumeratumArgonautJvm)
+  aggregateProject("argonaut", /*enumeratumArgonautJs,*/ enumeratumArgonautJvm) // TODO re-enable once argonaut supports Scala.js 1.0
 lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-argonaut"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
     version := "1.6.1-SNAPSHOT",
@@ -327,7 +339,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
     }
   )
 
-lazy val enumeratumArgonautJs  = enumeratumArgonaut.js
+// lazy val enumeratumArgonautJs  = enumeratumArgonaut.js // TODO re-enable once argonaut supports Scala.js 1.0
 lazy val enumeratumArgonautJvm = enumeratumArgonaut.jvm
 
 lazy val enumeratumJson4s =
@@ -352,6 +364,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .in(file("enumeratum-scalacheck"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
     version := "1.6.1-SNAPSHOT",
@@ -360,6 +373,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
       Seq(
         "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
         "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
+        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1" % Test,
         "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test
       )
     }
@@ -368,7 +382,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
 lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
-lazy val quillAggregate = aggregateProject("quill", enumeratumQuillJs, enumeratumQuillJvm).settings(
+lazy val quillAggregate = aggregateProject("quill", /*enumeratumQuillJs,*/ enumeratumQuillJvm).settings( // TODO re-enable once quill supports Scala.js 1.0
   crossScalaVersions := scalaVersionsAll
 )
 lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
@@ -376,6 +390,7 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .in(file("enumeratum-quill"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-quill",
     version := "1.6.1-SNAPSHOT",
@@ -396,7 +411,7 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-lazy val enumeratumQuillJs  = enumeratumQuill.js
+// lazy val enumeratumQuillJs  = enumeratumQuill.js // TODO re-enable once quill supports Scala.js 1.0
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
 lazy val enumeratumDoobie =
@@ -434,6 +449,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .in(file("enumeratum-cats"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
+  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-cats",
     version := "1.6.1-SNAPSHOT",
@@ -445,6 +461,10 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
+  .jsSettings(
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
+  )
+
 lazy val enumeratumCatsJs  = enumeratumCats.js
 lazy val enumeratumCatsJvm = enumeratumCats.jvm
 
@@ -563,12 +583,17 @@ val testSettings = {
     },
     doctestGenTests := {
       val originalValue = doctestGenTests.value
-      if (isScalaJSProject.value)
-        Seq.empty
-      else
-        Seq.empty // TODO: re-enable originalValue
+      Seq.empty // TODO: re-enable originalValue
     },
     doctestTestFramework := DoctestTestFramework.ScalaTest
+  )
+}
+
+val jsTestSettings = {
+  Seq(
+    doctestGenTests := {
+      Seq.empty
+    },
   )
 }
 

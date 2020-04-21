@@ -3,10 +3,10 @@ package enumeratum
 import org.scalacheck.{Arbitrary, Cogen}
 import org.scalacheck.rng.Seed
 import org.scalatest.{FunSpecLike, Matchers}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 trait ScalacheckTest {
-  self: FunSpecLike with GeneratorDrivenPropertyChecks with Matchers =>
+  self: FunSpecLike with ScalaCheckDrivenPropertyChecks with Matchers =>
 
   private implicit val arbSeed: Arbitrary[Seed] = Arbitrary(
     Arbitrary.arbitrary[Long].map(Seed.apply))

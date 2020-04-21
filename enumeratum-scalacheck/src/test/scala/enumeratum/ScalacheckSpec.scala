@@ -1,11 +1,11 @@
 package enumeratum
 
 import org.scalatest.{FunSpec, Matchers}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 class ScalacheckSpec
     extends FunSpec
-    with GeneratorDrivenPropertyChecks
+    with ScalaCheckDrivenPropertyChecks
     with Matchers
     with ScalacheckTest {
 
