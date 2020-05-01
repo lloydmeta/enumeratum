@@ -253,6 +253,12 @@ object NestedObjectEnum extends Enum[NestedObjectEnum] {
     }
   }
 
+  case object BackToRoot extends NestedObjectEnum
+
+  object nested4 {
+    case object NestedAgain extends NestedObjectEnum
+  }
+
 }
 
 sealed class MultiEnum(override val entryName: String, val alternateNames: String*)

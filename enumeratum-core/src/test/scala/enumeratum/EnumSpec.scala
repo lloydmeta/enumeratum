@@ -33,7 +33,9 @@ class EnumSpec extends FunSpec with Matchers {
             NestedObjectEnum.nested1.GoodBye.NestedInsideMember,
             NestedObjectEnum.nested2.Hello,
             NestedObjectEnum.nested2.GoodBye,
-            NestedObjectEnum.nested2.nested3.Hello
+            NestedObjectEnum.nested2.nested3.Hello,
+            NestedObjectEnum.BackToRoot,
+            NestedObjectEnum.nested4.NestedAgain
           ))
       }
 
@@ -435,6 +437,17 @@ class EnumSpec extends FunSpec with Matchers {
       SmartEnum.indexOf(SmartEnum.Hello) shouldBe 0
       SmartEnum.indexOf(SmartEnum.GoodBye) shouldBe 1
       SmartEnum.indexOf(SmartEnum.Hi) shouldBe 2
+
+      NestedObjectEnum.indexOf(NestedObjectEnum.Hello) shouldBe 0
+      NestedObjectEnum.indexOf(NestedObjectEnum.GoodBye) shouldBe 1
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested1.Hello) shouldBe 2
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested1.GoodBye) shouldBe 3
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested1.GoodBye.NestedInsideMember) shouldBe 4
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested2.Hello) shouldBe 5
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested2.GoodBye) shouldBe 6
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested2.nested3.Hello) shouldBe 7
+      NestedObjectEnum.indexOf(NestedObjectEnum.BackToRoot) shouldBe 8
+      NestedObjectEnum.indexOf(NestedObjectEnum.nested4.NestedAgain) shouldBe 9
     }
 
     it("should return -1 for elements that do not exist") {
