@@ -253,6 +253,10 @@ object NestedObjectEnum extends Enum[NestedObjectEnum] {
     }
   }
 
+  class NestedClass {
+    case object NotFound extends NestedObjectEnum
+  }
+
   case object BackToRoot extends NestedObjectEnum
 
   object nested4 {
