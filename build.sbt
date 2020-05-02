@@ -3,8 +3,8 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_11Version = "2.11.12"
-lazy val scala_2_12Version = "2.12.10"
-lazy val scala_2_13Version = "2.13.1"
+lazy val scala_2_12Version = "2.12.11"
+lazy val scala_2_13Version = "2.13.2"
 lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
 
 lazy val theScalaVersion = scala_2_12Version
@@ -145,6 +145,7 @@ lazy val root =
     .settings(
       name := "enumeratum-root",
       crossVersion := CrossVersion.binary,
+      crossScalaVersions := Nil,
       git.gitRemoteRepo := "git@github.com:lloydmeta/enumeratum.git",
       // Do not publish the root project (it just serves as an aggregate)
       publishArtifact := false,
@@ -252,10 +253,9 @@ lazy val enumeratumReactiveMongoBson =
     )
 
 lazy val playJsonAggregate =
-  aggregateProject("play-json", /*enumeratumPlayJsonJs,*/ enumeratumPlayJsonJvm).settings( // TODO re-enable once play-json supports Scala.js 1.0
-
-    crossScalaVersions := scalaVersionsAll
-  )
+  aggregateProject("play-json", /*enumeratumPlayJsonJs,*/ enumeratumPlayJsonJvm)
+    .settings( // TODO re-enable once play-json supports Scala.js 1.0
+      crossScalaVersions := scalaVersionsAll)
 lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-play-json"))
@@ -304,13 +304,15 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-circe",
     version := "1.6.1-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
         "io.circe"     %%% "circe-core" % theCirceVersion(scalaVersion.value)
       )
     }
+  )
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll
   )
   .jsSettings(
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
@@ -382,9 +384,9 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
 lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 
-lazy val quillAggregate = aggregateProject("quill", /*enumeratumQuillJs,*/ enumeratumQuillJvm).settings( // TODO re-enable once quill supports Scala.js 1.0
-  crossScalaVersions := scalaVersionsAll
-)
+lazy val quillAggregate =
+  aggregateProject("quill", /*enumeratumQuillJs,*/ enumeratumQuillJvm) // TODO re-enable once quill supports Scala.js 1.0
+    .settings(crossScalaVersions := scalaVersionsAll)
 lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-quill"))
@@ -453,13 +455,15 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-cats",
     version := "1.6.1-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
         "org.typelevel" %%% "cats-core"  % theCatsVersion(scalaVersion.value)
       )
     }
+  )
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll
   )
   .jsSettings(
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
@@ -659,7 +663,7 @@ def aggregateProject(id: String, projects: ProjectReference*): Project =
   Project(id = s"$id-aggregate", base = file(s"./aggregates/$id"))
     .settings(commonWithPublishSettings: _*)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := Nil,
       crossVersion := CrossVersion.binary,
       // Do not publish the aggregate project (it just serves as an aggregate)
       libraryDependencies += {
