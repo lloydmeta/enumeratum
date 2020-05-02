@@ -145,13 +145,36 @@ Greeting.withNameLowercaseOnlyOption("hello")
 Note that by default, `findValues` will return a `Seq` with the enum members listed in written-order (relevant if you want to
 use the `indexOf` method).
 
+Enum members found in nested objects will be included by `findValues` as well, and will appear in the order they are
+written in the companion object, top to bottom. Note that enum members declared in traits or classes will *not* be
+discovered by `findValues`. For example:
+
+```scala
+sealed trait Nesting extends EnumEntry
+object Nesting extends Enum[Nesting] {
+  val values = findValues
+
+  case object Hello extends Nesting
+  object others {
+    case object GoodBye extends Nesting
+  }
+  case object Hi extends Nesting
+  class InnerClass {
+    case object NotFound extends Nesting
+  }
+}
+
+Nesting.values
+// => res0: scala.collection.immutable.IndexedSeq[Nesting] = Vector(Hello, GoodBye, Hi)
+```
+
 For an interactive demo, checkout this [Scastie snippet](https://scastie.scala-lang.org/lloydmeta/AMXiGvzkR0CD5sgWXiW4bg).
 
 ## More examples
 
 ### Enum
 
-Continuing from the enum declared in [the quick-start section](#usage):
+Continuing from the `Greeting` enum declared in [the quick-start section](#usage):
 
 ```scala
 import Greeting._
@@ -1140,7 +1163,7 @@ CREATE TABLE clothes (
   shirt varchar(100)
 )
 ```
-you should use following code 
+you should use following code
 ```scala
 import enumeratum._
 
