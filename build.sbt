@@ -18,6 +18,8 @@ lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.5.0"
 
+lazy val CompileTime = config("compile-time").hide
+
 def theDoobieVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.8.8"
@@ -165,7 +167,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
     version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % CompileTime
     )
   )
 
@@ -183,7 +185,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
     name := "enumeratum",
     version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
-    // libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+    // libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable % CompileTime
   )
   .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
@@ -452,7 +454,9 @@ lazy val commonSettings = Seq(
   organization := "com.beachape",
   scalafmtOnCompile := true,
   scalaVersion := theScalaVersion,
-  crossScalaVersions := scalaVersionsAll
+  crossScalaVersions := scalaVersionsAll,
+  ivyConfigurations += CompileTime,
+  unmanagedClasspath in Compile ++= update.value.select(configurationFilter(CompileTime.name))
 ) ++
   compilerSettings ++
   resolverSettings ++
