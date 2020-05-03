@@ -375,10 +375,10 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
-        "com.beachape"   %%% "enumeratum"      % Versions.Core.stable,
-        "org.scalacheck" %%% "scalacheck"      % scalacheckVersion,
+        "com.beachape"      %%% "enumeratum"      % Versions.Core.stable,
+        "org.scalacheck"    %%% "scalacheck"      % scalacheckVersion,
         "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1" % Test,
-        "com.beachape"   %%% "enumeratum-test" % Versions.Core.stable % Test
+        "com.beachape"      %%% "enumeratum-test" % Versions.Core.stable % Test
       )
     }
   )
@@ -599,6 +599,7 @@ val testSettings = {
 
 val jsTestSettings = {
   Seq(
+    coverageEnabled := false, // Disable until Scala.js 1.0 support is there https://github.com/scoverage/scalac-scoverage-plugin/pull/287
     doctestGenTests := {
       Seq.empty
     },
