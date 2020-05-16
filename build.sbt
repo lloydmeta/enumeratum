@@ -119,6 +119,40 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   )
   .aggregate((baseProjectRefs ++ scala213ProjectRefs): _*)
 
+// Disable cats and circe js modules here, as they don't have versions compatible with Scala.js 1.0 on Scala 2.11
+lazy val scala211ProjectRefs = Seq(
+  enumeratumJson4s,
+  enumeratumScalacheckJvm,
+  enumeratumScalacheckJs,
+  enumeratumPlayJsonJvm,
+  // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
+  // enumeratumArgonautJs, TODO re-enable once argonaut supports Scala.js 1.0
+  enumeratumArgonautJvm,
+  enumeratumSlick,
+  enumeratumPlay,
+  enumeratumCirceJvm,
+  enumeratumReactiveMongoBson,
+  enumeratumCatsJvm,
+  enumeratumQuillJvm,
+  // enumeratumQuillJs  TODO re-enable once quill supports Scala.js 1.0
+).map(Project.projectToRef)
+
+lazy val scala_2_11 = Project(id = "scala_2_11", base = file("scala_2_11"))
+  .settings(
+    commonSettings ++ publishSettings,
+    name := "enumeratum-scala_2_11",
+    scalaVersion := scala_2_11Version, // not sure if this and below are needed
+    crossScalaVersions := Seq(scala_2_11Version),
+    crossVersion := CrossVersion.binary,
+    // Do not publish this  project (it just serves as an aggregate)
+    publishArtifact := false,
+    publishLocal := {},
+    //doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
+    aggregate in publish := false,
+    aggregate in PgpKeys.publishSigned := false
+  )
+  .aggregate((baseProjectRefs ++ scala211ProjectRefs): _*)
+
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
 //  enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0

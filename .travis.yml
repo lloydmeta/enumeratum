@@ -10,9 +10,9 @@ matrix:
     - scala: 2.11.12
       jdk: openjdk8
       script:
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmtCheck scalafmtSbtCheck test:compile test:doc
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scala_2_11/test
     - scala: 2.12.11
       jdk: openjdk8
       script:
