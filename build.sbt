@@ -199,7 +199,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.stable,
+    version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -219,7 +219,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
@@ -237,7 +237,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.stable,
+    version := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
@@ -337,7 +337,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.6.1",
+    version := "1.6.2-SNAPSHOT",
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
@@ -403,7 +403,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.6.1",
+    version := "1.6.2-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -488,7 +488,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.6.1",
+    version := "1.6.2-SNAPSHOT",
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
