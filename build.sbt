@@ -199,7 +199,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
-    version := Versions.Macros.head,
+    version := Versions.Macros.stable,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -219,11 +219,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
   )
-  .dependsOn(macros) // used for testing macros
+  // .dependsOn(macros) // used for testing macros
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 
@@ -237,13 +237,12 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings: _*)
   .settings(
     name := "enumeratum-test",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
     }
   )
-  .dependsOn(core)
 lazy val enumeratumTestJs  = enumeratumTest.js
 lazy val enumeratumTestJvm = enumeratumTest.jvm
 
@@ -338,7 +337,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.6.1-SNAPSHOT",
+    version := "1.6.1",
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
@@ -352,7 +351,6 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
   )
-  .dependsOn(core)
 
 lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
@@ -405,7 +403,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.6.1-SNAPSHOT",
+    version := "1.6.1",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -416,7 +414,6 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-  .dependsOn(enumeratumTest)
 
 lazy val enumeratumScalacheckJs  = enumeratumScalacheck.js
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
@@ -491,7 +488,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.6.1-SNAPSHOT",
+    version := "1.6.1",
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
@@ -505,7 +502,6 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
   )
-  .dependsOn(core)
 
 lazy val enumeratumCatsJs  = enumeratumCats.js
 lazy val enumeratumCatsJvm = enumeratumCats.jvm
