@@ -13,7 +13,7 @@ lazy val scalaTestVersion  = "3.1.1"
 lazy val scalacheckVersion = "1.14.3"
 
 // Library versions
-lazy val reactiveMongoVersion = "0.20.3"
+lazy val reactiveMongoVersion = "1.0.0-noshaded-rc.2"
 lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.5.0"
@@ -280,7 +280,7 @@ lazy val enumeratumReactiveMongoBson =
       version := "1.6.1-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
-        "org.reactivemongo" %% "reactivemongo-bson-api" % s"$reactiveMongoVersion-noshaded" % Provided,
+        "org.reactivemongo" %% "reactivemongo-bson-api" % reactiveMongoVersion % Provided,
         "com.beachape"      %% "enumeratum"             % Versions.Core.stable,
         "com.beachape"      %% "enumeratum-test"        % Versions.Core.stable % Test
       )
