@@ -14,7 +14,6 @@ lazy val scalacheckVersion = "1.14.3"
 
 // Library versions
 lazy val reactiveMongoVersion = "1.0.0-noshaded-rc.2"
-lazy val argonautVersion      = "6.2.3"
 lazy val json4sVersion        = "3.6.6"
 lazy val quillVersion         = "3.5.0"
 
@@ -28,14 +27,15 @@ def theDoobieVersion(scalaVersion: String) =
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.3"
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "6.3.0"
+    case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.5"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.0"
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.8.0"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -58,7 +58,8 @@ def theCatsVersion(scalaVersion: String) =
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 13 => "2.8.1"
+    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.9.0"
+    // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
@@ -73,7 +74,7 @@ def theCirceVersion(scalaVersion: String) =
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+  case Some((2, scalaMajor)) if scalaMajor >= 12 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
   case Some((2, scalaMajor)) if scalaMajor >= 11 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
@@ -89,8 +90,8 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
-  // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
-  // enumeratumArgonautJs, TODO re-enable once argonaut supports Scala.js 1.0
+  enumeratumPlayJsonJs,
+  enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumSlick,
   enumeratumPlay,
@@ -125,8 +126,9 @@ lazy val scala211ProjectRefs = Seq(
   enumeratumScalacheckJvm,
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
+  // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
   // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
-  // enumeratumArgonautJs, TODO re-enable once argonaut supports Scala.js 1.0
+  enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumSlick,
   enumeratumPlay,
@@ -155,12 +157,12 @@ lazy val scala_2_11 = Project(id = "scala_2_11", base = file("scala_2_11"))
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
-//  enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
+  enumeratumPlayJsonJs,
   enumeratumPlayJsonJvm,
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
-//  enumeratumArgonautJs,  TODO re-enable once argonaut supports Scala.js 1.0
+  enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumJson4s,
   enumeratumScalacheckJs,
@@ -287,9 +289,7 @@ lazy val enumeratumReactiveMongoBson =
     )
 
 lazy val playJsonAggregate =
-  aggregateProject("play-json", /*enumeratumPlayJsonJs,*/ enumeratumPlayJsonJvm)
-    .settings( // TODO re-enable once play-json supports Scala.js 1.0
-      crossScalaVersions := scalaVersionsAll)
+  aggregateProject("play-json", enumeratumPlayJsonJs, enumeratumPlayJsonJvm)
 lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-play-json"))
@@ -299,7 +299,6 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "enumeratum-play-json",
     version := "1.6.1-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
         "com.typesafe.play" %%% "play-json"       % thePlayJsonVersion(scalaVersion.value),
@@ -308,7 +307,13 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-// lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js // TODO re-enable once play-json supports Scala.js 1.0
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll,
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
+  )
+lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
@@ -356,7 +361,7 @@ lazy val enumeratumCirceJs  = enumeratumCirce.js
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
 
 lazy val argonautAggregate =
-  aggregateProject("argonaut", /*enumeratumArgonautJs,*/ enumeratumArgonautJvm) // TODO re-enable once argonaut supports Scala.js 1.0
+  aggregateProject("argonaut", enumeratumArgonautJs, enumeratumArgonautJvm)
 lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-argonaut"))
@@ -375,7 +380,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
     }
   )
 
-// lazy val enumeratumArgonautJs  = enumeratumArgonaut.js // TODO re-enable once argonaut supports Scala.js 1.0
+lazy val enumeratumArgonautJs  = enumeratumArgonaut.js
 lazy val enumeratumArgonautJvm = enumeratumArgonaut.jvm
 
 lazy val enumeratumJson4s =
