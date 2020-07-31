@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import EnumFormats._
 import play.api.libs.json.{JsNumber, JsString}
 
@@ -9,7 +10,7 @@ import play.api.libs.json.{JsNumber, JsString}
   *
   * Copyright 2016
   */
-class EnumFormatsSpec extends FunSpec with Matchers with EnumJsonFormatHelpers {
+class EnumFormatsSpec extends AnyFunSpec with Matchers with EnumJsonFormatHelpers {
 
   describe(".reads") {
 

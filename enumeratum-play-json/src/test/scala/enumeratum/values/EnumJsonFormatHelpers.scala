@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json._
 import org.scalatest.OptionValues._
 
@@ -9,7 +10,7 @@ import org.scalatest.OptionValues._
   *
   * Copyright 2016
   */
-trait EnumJsonFormatHelpers { this: FunSpec with Matchers =>
+trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
   def testNumericWrites[EntryType <: ValueEnumEntry[ValueType],
                         ValueType <: AnyVal: Numeric: Writes](
