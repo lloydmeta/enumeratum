@@ -26,7 +26,7 @@ Enumeratum is published for Scala 2.11.x, 2.12.x, 2.13.x as well as ScalaJS.
 Integrations are available for:
 
 - [Play](https://www.playframework.com/): JVM only
-- [Play JSON](https://www.playframework.com/documentation/2.5.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
+- [Play JSON](https://www.playframework.com/documentation/2.8.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
 - [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
 - [ReactiveMongo BSON](http://reactivemongo.org/releases/0.1x/documentation/bson/overview.html): JVM only
 - [Argonaut](http://argonaut.io): JVM and ScalaJS
@@ -350,7 +350,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5+
+Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5 - 2.7
 
 ### Usage
 
@@ -491,7 +491,7 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Note that as of version 1.4.0, `enumeratum-play-json` for Scala 2.11 is compatible with Play 2.5+.
+Note that as of version 1.4.0, `enumeratum-play-json` for Scala 2.11 is compatible with Play 2.5 - 2.7
 
 ### Usage
 

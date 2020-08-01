@@ -1,10 +1,11 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json._
 
-class EnumFormatsSpec extends FunSpec with Matchers {
+class EnumFormatsSpec extends AnyFunSpec with Matchers {
 
   testScenario(
     descriptor = "normal operation",

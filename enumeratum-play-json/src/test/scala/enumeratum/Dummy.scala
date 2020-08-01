@@ -23,3 +23,19 @@ object InsensitiveDummy
   case object c extends InsensitiveDummy
   val values = findValues
 }
+
+sealed trait LowercaseDummy extends EnumEntry
+object LowercaseDummy extends Enum[LowercaseDummy] with PlayLowercaseJsonEnum[LowercaseDummy] {
+  case object Apple  extends LowercaseDummy
+  case object Banana extends LowercaseDummy
+  case object Cherry extends LowercaseDummy
+  val values = findValues
+}
+
+sealed trait UppercaseDummy extends EnumEntry
+object UppercaseDummy extends Enum[UppercaseDummy] with PlayUppercaseJsonEnum[UppercaseDummy] {
+  case object Apple  extends UppercaseDummy
+  case object Banana extends UppercaseDummy
+  case object Cherry extends UppercaseDummy
+  val values = findValues
+}
