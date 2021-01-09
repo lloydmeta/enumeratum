@@ -1,4 +1,4 @@
-# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/app/lloydmeta/enumeratum?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lloydmeta/enumeratum&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Enumeratum [![Build Status](https://travis-ci.org/lloydmeta/enumeratum.svg?branch=master)](https://travis-ci.org/lloydmeta/enumeratum) [![Coverage Status](https://coveralls.io/repos/lloydmeta/enumeratum/badge.svg?branch=master)](https://coveralls.io/r/lloydmeta/enumeratum?branch=master) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/app/lloydmeta/enumeratum?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lloydmeta/enumeratum&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
@@ -65,7 +65,7 @@ Integrations are available for:
 
 ### SBT
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12)
 
 In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you see
 in the Maven badge above).
@@ -325,7 +325,7 @@ assert(Judgement.withValue(2) == Judgement.OK || Judgement.withValue(2) == Judge
 
 In a ScalaJS project, add the following to `build.sbt`:
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12)
 
 ```scala
 libraryDependencies ++= Seq(
@@ -336,7 +336,7 @@ libraryDependencies ++= Seq(
 As expected, usage is exactly the same as normal Scala.
 
 ## Play Integration
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.12)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
@@ -478,7 +478,7 @@ object GreetingForm {
 ```
 
 ## Play JSON
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.12)
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
@@ -549,7 +549,7 @@ assert(PlayJson.fromJson[JsonDrinks](JsNumber(19)).isError)
 ```
 
 ## Circe
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-circe_2.12)
 
 ### SBT
 
@@ -625,7 +625,7 @@ CirceLibraryItem.values.foreach { item =>
 ```
 
 ## ReactiveMongo BSON
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-reactivemongo-bson_2.12)
 
 The `enumeratum-reactivemongo-bson` project is published separately and gives you access to ReactiveMongo's auto-generated boilerplate
 for BSON serialization in your Enum's.
@@ -698,7 +698,7 @@ assert(reader.read(BSONInteger(3)) == BsonDrinks.Cola)
 ```
 
 ## Argonaut
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-argonaut_2.12)
 
 ### SBT
 
@@ -760,7 +760,7 @@ ArgonautDevice.values.foreach { item =>
 ```
 
 ## Json4s
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-json4s_2.12)
 
 ### SBT
 
@@ -817,7 +817,7 @@ implicit val formats = DefaultFormats + Json4s.serializer(Device)
 ```
 
 ## ScalaCheck
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-scalacheck_2.12)
 
 ### SBT
 
@@ -848,7 +848,7 @@ import enumeratum.values.scalacheck._
 ```
 
 ## Quill
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-quill_2.12)
 
 ### SBT
 
@@ -933,7 +933,7 @@ ctx.run(query[Shirt]).foreach(println)
 - `quill-orientdb` currently does not support `ByteEnum` (see [getquill/quill#1029](https://github.com/getquill/quill/issues/1029))
 
 ## Slick integration
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-slick_2.12)
 
 ### Column Mappings
 In order to use your enumeratum Enums in Slick tables as columns, you will
@@ -1040,7 +1040,7 @@ implicit val greetingOptionSetParameter = optionalSetParameterForEnum(Greeting)
 ```
 
 ## Cats
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-cats_2.12)
 
 ### SBT
 
@@ -1133,7 +1133,7 @@ items.maximumOption // Some(SuperHigh)
 If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
 
 ## Doobie
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.11)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.12)
 
 ### SBT
 
