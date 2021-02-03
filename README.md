@@ -34,6 +34,7 @@ Integrations are available for:
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
 - [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
+- [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
 
 ### Table of Contents
 
