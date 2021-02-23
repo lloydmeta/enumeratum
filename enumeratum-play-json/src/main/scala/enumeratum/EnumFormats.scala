@@ -25,6 +25,18 @@ object EnumFormats {
   def readsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
     readsAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
 
+  def keyReads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): KeyReads[A] =
+    readsKeyAndExtracts[A](enum) { s =>
+      if (insensitive) enum.withNameInsensitiveOption(s)
+      else enum.withNameOption(s)
+    }
+
+  def keyReadsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
+    readsKeyAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
+
+  def keyReadsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
+    readsKeyAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
+
   /**
     * Returns a Json writes for a given enum [[Enum]]
     */
@@ -46,6 +58,30 @@ object EnumFormats {
   def writesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Writes[A] =
     Writes[A] { e =>
       JsString(e.entryName.toUpperCase)
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]]
+    */
+  def keyWrites[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A): String = e.entryName
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]] and transforms it to lower case
+    */
+  def keyWritesLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A) = e.entryName.toLowerCase
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]] and transforms it to upper case
+    */
+  def keyWritesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A) = e.entryName.toUpperCase
     }
 
   /**
@@ -87,5 +123,13 @@ object EnumFormats {
       }
 
     case _ => JsError("error.expected.enumstring")
+  }
+
+  private def readsKeyAndExtracts[A <: EnumEntry](enum: Enum[A])(
+      extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
+    def readKey(s: String): JsResult[A] = extract(s) match {
+      case Some(obj) => JsSuccess(obj)
+      case None      => JsError("error.expected.validenumvalue")
+    }
   }
 }

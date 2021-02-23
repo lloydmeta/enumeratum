@@ -2,7 +2,7 @@ package enumeratum
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.{JsNumber, JsString, Json => PlayJson}
+import play.api.libs.json.{JsNumber, JsString, JsSuccess, Json => PlayJson, Writes}
 import org.scalatest.OptionValues._
 
 class PlayJsonEnumSpec extends AnyFunSpec with Matchers {
@@ -49,10 +49,19 @@ class PlayJsonEnumSpec extends AnyFunSpec with Matchers {
           JsNumber(2).asOpt[Dummy] shouldBe None
         }
       }
+
+      it("should deserialise from Map keys") {
+        PlayJson.obj("A" -> 1).validate[Map[Dummy, Int]] shouldBe JsSuccess(Map(Dummy.A -> 1))
+        PlayJson.obj("A" -> 2).validate[Map[InsensitiveDummy, Int]] shouldBe JsSuccess(
+          Map(InsensitiveDummy.A -> 2))
+        PlayJson.obj("apple" -> 3).validate[Map[LowercaseDummy, Int]] shouldBe JsSuccess(
+          Map(LowercaseDummy.Apple -> 3))
+        PlayJson.obj("APPLE" -> 4).validate[Map[UppercaseDummy, Int]] shouldBe JsSuccess(
+          Map(UppercaseDummy.Apple -> 4))
+      }
     }
 
     describe("serialisation") {
-
       it("should serialise values to JsString") {
         PlayJson.toJson(Dummy.A) shouldBe JsString("A")
         PlayJson.toJson(InsensitiveDummy.A) shouldBe JsString("A")
@@ -60,6 +69,13 @@ class PlayJsonEnumSpec extends AnyFunSpec with Matchers {
         PlayJson.toJson(UppercaseDummy.Apple) shouldBe JsString("APPLE")
       }
 
+      it("should serialise as Map keys") {
+        PlayJson.toJson(Map(Dummy.A -> 1)) shouldBe PlayJson.obj("A" -> 1)
+
+        PlayJson.toJson(Map(InsensitiveDummy.A   -> 2)) shouldBe PlayJson.obj("A"     -> 2)
+        PlayJson.toJson(Map(LowercaseDummy.Apple -> 3)) shouldBe PlayJson.obj("apple" -> 3)
+        PlayJson.toJson(Map(UppercaseDummy.Apple -> 4)) shouldBe PlayJson.obj("APPLE" -> 4)
+      }
     }
 
   }
