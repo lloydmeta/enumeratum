@@ -1,6 +1,6 @@
 package enumeratum
 
-import reactivemongo.api.bson.BSONHandler
+import reactivemongo.api.bson.{BSONHandler, KeyReader, KeyWriter}
 
 /**
   * @author Alessandro Lacava (@lambdista)
@@ -9,4 +9,7 @@ import reactivemongo.api.bson.BSONHandler
 trait ReactiveMongoBsonEnum[A <: EnumEntry] { self: Enum[A] =>
   implicit val bsonHandler: BSONHandler[A] =
     EnumHandler.handler(this)
+
+  implicit val keyReader: KeyReader[A] = EnumHandler.keyReader[A](this)
+  implicit val keyWriter: KeyWriter[A] = EnumHandler.keyWriter[A](this)
 }

@@ -20,15 +20,31 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelp
 
   }
 
-  describe(".writer") {
+  describe(".keyReader") {
+    testKeyReader("IntEnum", LibraryItem)
+    testKeyReader("LongEnum", ContentType)
+    testKeyReader("ShortEnum", Drinks)
+    testKeyReader("StringEnum", OperatingSystem)
+    testKeyReader("ByteEnum", Bites)
+    testKeyReader("CharEnum", Alphabet)
+  }
 
+  describe(".writer") {
     testWriter("IntEnum", LibraryItem)
     testWriter("LongEnum", ContentType)
     testWriter("ShortEnum", Drinks)
     testWriter("StringEnum", OperatingSystem)
     testWriter("ByteEnum", Bites)
     testWriter("CharEnum", Alphabet)
+  }
 
+  describe(".keyWriter") {
+    testKeyWriter("IntEnum", LibraryItem)
+    testKeyWriter("LongEnum", ContentType)
+    testKeyWriter("ShortEnum", Drinks)
+    testKeyWriter("StringEnum", OperatingSystem)
+    testKeyWriter("ByteEnum", Bites)
+    testKeyWriter("CharEnum", Alphabet)
   }
 
   describe(".handler") {

@@ -1,7 +1,7 @@
 package enumeratum.values
 
 import enumeratum.values.BSONValueHandlers._
-import reactivemongo.api.bson.BSONHandler
+import reactivemongo.api.bson._
 
 /**
   * @author Alessandro Lacava (@lambdista)
@@ -14,6 +14,9 @@ sealed trait ReactiveMongoBsonValueEnum[ValueType, EntryType <: ValueEnumEntry[V
     * Implicit BSON handler for the entries of this enum
     */
   implicit def bsonHandler: BSONHandler[EntryType]
+
+  implicit def keyReader: KeyReader[EntryType]
+  implicit def keyWriter: KeyWriter[EntryType]
 }
 
 /**
@@ -24,6 +27,9 @@ trait IntReactiveMongoBsonValueEnum[EntryType <: IntEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
 
 /**
@@ -34,6 +40,9 @@ trait LongReactiveMongoBsonValueEnum[EntryType <: LongEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
 
 /**
@@ -44,6 +53,9 @@ trait ShortReactiveMongoBsonValueEnum[EntryType <: ShortEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
 
 /**
@@ -54,6 +66,9 @@ trait StringReactiveMongoBsonValueEnum[EntryType <: StringEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
 
 /**
@@ -64,6 +79,9 @@ trait CharReactiveMongoBsonValueEnum[EntryType <: CharEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
 
 /**
@@ -74,4 +92,7 @@ trait ByteReactiveMongoBsonValueEnum[EntryType <: ByteEnumEntry]
 
   implicit val bsonHandler: BSONHandler[EntryType] =
     EnumHandler.handler(this)
+
+  implicit def keyReader: KeyReader[EntryType] = EnumHandler.keyReader(this)
+  implicit def keyWriter: KeyWriter[EntryType] = EnumHandler.keyWriter(this)
 }
