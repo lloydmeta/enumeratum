@@ -14,66 +14,74 @@ object EnumFormats {
     * @param insensitive bind in a case-insensitive way, defaults to false
     */
   def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] =
-    new Reads[A] {
-      def reads(json: JsValue): JsResult[A] = json match {
-        case JsString(s) => {
-          val maybeBound =
-            if (insensitive) enum.withNameInsensitiveOption(s)
-            else enum.withNameOption(s)
-          maybeBound match {
-            case Some(obj) => JsSuccess(obj)
-            case None      => JsError("error.expected.validenumvalue")
-          }
-        }
-        case _ => JsError("error.expected.enumstring")
-      }
+    readsAndExtracts[A](enum) { s =>
+      if (insensitive) enum.withNameInsensitiveOption(s)
+      else enum.withNameOption(s)
     }
 
   def readsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
-    new Reads[A] {
-      def reads(json: JsValue): JsResult[A] = json match {
-        case JsString(s) =>
-          enum.withNameLowercaseOnlyOption(s) match {
-            case Some(obj) => JsSuccess(obj)
-            case None      => JsError("error.expected.validenumvalue")
-          }
-        case _ => JsError("error.expected.enumstring")
-      }
-    }
+    readsAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
 
   def readsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
-    new Reads[A] {
-      def reads(json: JsValue): JsResult[A] = json match {
-        case JsString(s) =>
-          enum.withNameUppercaseOnlyOption(s) match {
-            case Some(obj) => JsSuccess(obj)
-            case None      => JsError("error.expected.validenumvalue")
-          }
-        case _ => JsError("error.expected.enumstring")
-      }
+    readsAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
+
+  def keyReads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): KeyReads[A] =
+    readsKeyAndExtracts[A](enum) { s =>
+      if (insensitive) enum.withNameInsensitiveOption(s)
+      else enum.withNameOption(s)
     }
+
+  def keyReadsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
+    readsKeyAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
+
+  def keyReadsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
+    readsKeyAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
 
   /**
     * Returns a Json writes for a given enum [[Enum]]
     */
-  def writes[A <: EnumEntry](enum: Enum[A]): Writes[A] = new Writes[A] {
-    def writes(v: A): JsValue = JsString(v.entryName)
+  def writes[A <: EnumEntry](enum: Enum[A]): Writes[A] = Writes[A] { e =>
+    JsString(e.entryName)
   }
 
   /**
     * Returns a Json writes for a given enum [[Enum]] and transforms it to lower case
     */
   def writesLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Writes[A] =
-    new Writes[A] {
-      def writes(v: A): JsValue = JsString(v.entryName.toLowerCase)
+    Writes[A] { e =>
+      JsString(e.entryName.toLowerCase)
     }
 
   /**
     * Returns a Json writes for a given enum [[Enum]] and transforms it to upper case
     */
   def writesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Writes[A] =
-    new Writes[A] {
-      def writes(v: A): JsValue = JsString(v.entryName.toUpperCase)
+    Writes[A] { e =>
+      JsString(e.entryName.toUpperCase)
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]]
+    */
+  def keyWrites[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A): String = e.entryName
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]] and transforms it to lower case
+    */
+  def keyWritesLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A) = e.entryName.toLowerCase
+    }
+
+  /**
+    * Returns a Json key writes for a given enum [[Enum]] and transforms it to upper case
+    */
+  def keyWritesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+    new KeyWrites[A] {
+      def writeKey(e: A) = e.entryName.toUpperCase
     }
 
   /**
@@ -104,4 +112,24 @@ object EnumFormats {
     Format(readsUppercaseOnly(enum), writesUppercaseOnly(enum))
   }
 
+  // ---
+
+  private def readsAndExtracts[A <: EnumEntry](enum: Enum[A])(
+      extract: String => Option[A]): Reads[A] = Reads[A] {
+    case JsString(s) =>
+      extract(s) match {
+        case Some(obj) => JsSuccess(obj)
+        case None      => JsError("error.expected.validenumvalue")
+      }
+
+    case _ => JsError("error.expected.enumstring")
+  }
+
+  private def readsKeyAndExtracts[A <: EnumEntry](enum: Enum[A])(
+      extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
+    def readKey(s: String): JsResult[A] = extract(s) match {
+      case Some(obj) => JsSuccess(obj)
+      case None      => JsError("error.expected.validenumvalue")
+    }
+  }
 }

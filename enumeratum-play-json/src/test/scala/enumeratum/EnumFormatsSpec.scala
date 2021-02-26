@@ -17,6 +17,15 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     formats = EnumFormats.formats(Dummy)
   )
 
+  testKeyScenario(
+    descriptor = "normal operation",
+    reads = EnumFormats.keyReads(Dummy),
+    readSuccessExpectations = Map("A" -> Dummy.A),
+    readErrors = Map("C"              -> Seq("error.expected.validenumvalue")),
+    writes = EnumFormats.keyWrites(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
   testScenario(
     descriptor = "case insensitive",
     reads = EnumFormats.reads(enum = Dummy, insensitive = true),
@@ -28,6 +37,18 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     writes = EnumFormats.writes(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
     formats = EnumFormats.formats(enum = Dummy, insensitive = true)
+  )
+
+  testKeyScenario(
+    descriptor = "case insensitive",
+    reads = EnumFormats.keyReads(enum = Dummy, insensitive = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "a" -> Dummy.A
+    ),
+    readErrors = Map.empty,
+    writes = EnumFormats.keyWrites(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
   )
 
   testScenario(
@@ -44,6 +65,19 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     formats = EnumFormats.formatsLowerCaseOnly(Dummy)
   )
 
+  testKeyScenario(
+    descriptor = "lower case transformed",
+    reads = EnumFormats.keyReadsLowercaseOnly(Dummy),
+    readSuccessExpectations = Map(
+      "a" -> Dummy.A
+    ),
+    readErrors = Map(
+      "A" -> Seq("error.expected.validenumvalue")
+    ),
+    writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "a")
+  )
+
   testScenario(
     descriptor = "upper case transformed",
     reads = EnumFormats.readsUppercaseOnly(Dummy),
@@ -57,6 +91,20 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     writes = EnumFormats.writesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
     formats = EnumFormats.formatsUppercaseOnly(Dummy)
+  )
+
+  testKeyScenario(
+    descriptor = "upper case transformed",
+    reads = EnumFormats.keyReadsUppercaseOnly(Dummy),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "C" -> Dummy.c
+    ),
+    readErrors = Map(
+      "a" -> Seq("error.expected.validenumvalue")
+    ),
+    writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
   )
 
   // Bunch of shared testing methods
@@ -142,4 +190,51 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     testReads(formats, expectedReadSuccesses, expectedReadErrors)
     testWrites(formats, expectedWrites)
   }
+
+  private def testKeyScenario(
+      descriptor: String,
+      reads: KeyReads[Dummy],
+      readSuccessExpectations: Map[String, Dummy],
+      readErrors: Map[String, Seq[String]],
+      writes: KeyWrites[Dummy],
+      writeExpectations: Map[Dummy, String]
+  ): Unit = describe(descriptor) {
+    testKeyReads(reads, readSuccessExpectations, readErrors)
+    testKeyWrites(writes, writeExpectations)
+  }
+
+  private def testKeyReads(
+      reads: KeyReads[Dummy],
+      expectedSuccesses: Map[String, Dummy],
+      expectedErrors: Map[String, Seq[String]]
+  ): Unit = describe("KeyReads") {
+    it("should create a KeyReads that works with valid values") {
+      expectedSuccesses.foreach {
+        case (name, expected) =>
+          reads.readKey(name).asOpt.value should be(expected)
+      }
+    }
+
+    it("should create a KeyReads that fails with invalid values") {
+      expectedErrors.foreach {
+        case (k, v) =>
+          val result = reads.readKey(k)
+          result.isError shouldBe true
+          errorMessages(result) shouldBe v
+      }
+    }
+  }
+
+  /**
+    * Shared scenarios for testing KeyWrites
+    */
+  private def testKeyWrites(writer: KeyWrites[Dummy], expectations: Map[Dummy, String]): Unit =
+    describe("KeyWrites") {
+      it("should create a KeyWrites that writes enum values to String") {
+        expectations.foreach {
+          case (k, v) =>
+            writer.writeKey(k) should be(v)
+        }
+      }
+    }
 }
