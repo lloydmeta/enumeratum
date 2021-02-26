@@ -13,6 +13,7 @@ import scala.util.{Failure, Try}
   * Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
   * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
   */
+@deprecated("No longer needed", "ReactiveMongo 1.0.0")
 object BSONValueHandlers {
 
   implicit def shortHandler: BSONHandler[Short] = new BSONHandler[Short] {
