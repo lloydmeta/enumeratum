@@ -75,8 +75,6 @@ def theCirceVersion(scalaVersion: String) =
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
-  case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
 }
@@ -297,7 +295,8 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-play-json",
-    version := "1.6.2-SNAPSHOT",
+    version := "1.6.2",
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++= {
       Seq(
         "com.typesafe.play" %%% "play-json"       % thePlayJsonVersion(scalaVersion.value),
@@ -306,12 +305,6 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       )
     }
   )
-  .jvmSettings(
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
-  )
 lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
@@ -319,7 +312,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := "1.6.2-SNAPSHOT",
+    version := "1.6.2",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++=
       Seq(
