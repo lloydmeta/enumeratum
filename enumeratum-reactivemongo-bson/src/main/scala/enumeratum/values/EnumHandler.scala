@@ -2,8 +2,6 @@ package enumeratum.values
 
 import reactivemongo.api.bson._
 
-import scala.util.Try
-
 /**
   * @author Alessandro Lacava (@lambdista)
   * @since 2016-04-23

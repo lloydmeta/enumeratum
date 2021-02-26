@@ -2,7 +2,7 @@ package enumeratum
 
 import reactivemongo.api.bson._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 /**
   * Holds BSON reader and writer for [[enumeratum.Enum]]
