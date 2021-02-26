@@ -36,7 +36,6 @@ def theArgonautVersion(scalaVersion: String) =
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.8.0"
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.0"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
   }
@@ -279,7 +278,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.6.3",
+      version := "1.6.4-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo-bson-api" % reactiveMongoVersion % Provided,
@@ -308,7 +307,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
     }
   )
   .jvmSettings(
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
   )
   .jsSettings(
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version)
@@ -321,7 +320,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(testSettings: _*)
   .settings(
     version := "1.6.2-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++=
       Seq(
         "com.typesafe.play" %% "play"            % thePlayVersion(scalaVersion.value),
