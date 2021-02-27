@@ -13,11 +13,13 @@ object EnumFormats {
     * @param enum The enum
     * @param insensitive bind in a case-insensitive way, defaults to false
     */
-  def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] =
-    readsAndExtracts[A](enum) { s =>
-      if (insensitive) enum.withNameInsensitiveOption(s)
-      else enum.withNameOption(s)
+  def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] = {
+    if (insensitive) {
+      readsAndExtracts[A](enum)(enum.withNameInsensitiveOption)
+    } else {
+      readsAndExtracts[A](enum)(enum.withNameOption)
     }
+  }
 
   def readsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
     readsAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
