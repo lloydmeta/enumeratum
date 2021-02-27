@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import anorm.Column
+import anorm.{Column, ToStatement}
 
 trait AnormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   enum: ValueEnum[ValueType, EntryType] =>
@@ -10,6 +10,10 @@ trait AnormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
     */
   implicit def column: Column[EntryType]
 
+  /**
+    * ToStatement instance for the entries of this enum
+    */
+  implicit def toStatement: ToStatement[EntryType]
 }
 
 /**
@@ -17,7 +21,8 @@ trait AnormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   */
 trait IntAnormValueEnum[EntryType <: IntEnumEntry] extends AnormValueEnum[Int, EntryType] {
   this: IntEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }
 
 /**
@@ -25,7 +30,8 @@ trait IntAnormValueEnum[EntryType <: IntEnumEntry] extends AnormValueEnum[Int, E
   */
 trait LongAnormValueEnum[EntryType <: LongEnumEntry] extends AnormValueEnum[Long, EntryType] {
   this: LongEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }
 
 /**
@@ -33,7 +39,8 @@ trait LongAnormValueEnum[EntryType <: LongEnumEntry] extends AnormValueEnum[Long
   */
 trait ShortAnormValueEnum[EntryType <: ShortEnumEntry] extends AnormValueEnum[Short, EntryType] {
   this: ShortEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }
 
 /**
@@ -41,7 +48,8 @@ trait ShortAnormValueEnum[EntryType <: ShortEnumEntry] extends AnormValueEnum[Sh
   */
 trait StringAnormValueEnum[EntryType <: StringEnumEntry] extends AnormValueEnum[String, EntryType] {
   this: StringEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }
 
 /**
@@ -49,7 +57,8 @@ trait StringAnormValueEnum[EntryType <: StringEnumEntry] extends AnormValueEnum[
   */
 trait CharAnormValueEnum[EntryType <: CharEnumEntry] extends AnormValueEnum[Char, EntryType] {
   this: CharEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }
 
 /**
@@ -57,5 +66,6 @@ trait CharAnormValueEnum[EntryType <: CharEnumEntry] extends AnormValueEnum[Char
   */
 trait ByteAnormValueEnum[EntryType <: ByteEnumEntry] extends AnormValueEnum[Byte, EntryType] {
   this: ByteEnum[EntryType] =>
-  implicit val column: Column[EntryType] = AnormColumn(this)
+  implicit val column: Column[EntryType]           = AnormColumn(this)
+  implicit val toStatement: ToStatement[EntryType] = AnormToStatement(this)
 }

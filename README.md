@@ -1275,14 +1275,6 @@ libraryDependencies ++= Seq(
 )
 ```
 
-To use with ScalaJS:
-
-```scala
-libraryDependencies ++= Seq(
-  "com.beachape" %%% "enumeratum-anorm" % enumeratumAnormVersion
-)
-```
-
 ### Usage
 
 #### Enum
@@ -1312,6 +1304,8 @@ case object ShirtSize extends Enum[ShirtSize] with AnormEnum[ShirtSize] {
 
 case class Shirt(size: ShirtSize)
 
+// ---
+
 import java.sql.Connection
 import anorm._
 
@@ -1319,16 +1313,23 @@ import anorm._
 def findShirtSize(shirtId: String)(implicit con: Connection): ShirtSize =
   SQL"SELECT size FROM shirt_tbl WHERE id = $shirtId".
     as(SqlParser.scalar[ShirtSize].single)
+
+// Support Enum as parameter
+def updateShirtSize(shirtId: String, size: ShirtSize)(
+  implicit con: Connection) =
+    SQL"UPDATE shirt_tbl SET size = ${size} WHERE id = ${shirtId}".execute()
 ```
 
 #### ValueEnum
 
 ```scala
-import enumeratum.values.{ IntAnormEnum, IntEnum, IntEnumEntry }
+import enumeratum.values.{ IntAnormValueEnum, IntEnum, IntEnumEntry }
 
 sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
 
-case object ShirtSize extends IntEnum[ShirtSize] with IntAnormEnum[ShirtSize] {
+case object ShirtSize extends IntEnum[ShirtSize]
+  with IntAnormValueEnum[ShirtSize] {
+
   case object Small  extends ShirtSize(1)
   case object Medium extends ShirtSize(2)
   case object Large  extends ShirtSize(3)
@@ -1338,12 +1339,20 @@ case object ShirtSize extends IntEnum[ShirtSize] with IntAnormEnum[ShirtSize] {
 
 case class Shirt(size: ShirtSize)
 
+// ---
+
+import java.sql.Connection
 import anorm._
 
-// Support Enum as readable Column
+// Support ValueEnum as readable Column
 def findShirtSize(shirtId: String)(implicit con: Connection): ShirtSize =
   SQL"SELECT size FROM shirt_tbl WHERE id = $shirtId".
     as(SqlParser.scalar[ShirtSize].single)
+
+// Support ValueEnum as parameter
+def updateShirtSize(shirtId: String, size: ShirtSize)(
+  implicit con: Connection) =
+    SQL"UPDATE shirt_tbl SET size = ${size} WHERE id = ${shirtId}".execute()
 ```
 
 ## Benchmarking
