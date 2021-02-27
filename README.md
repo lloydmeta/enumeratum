@@ -34,6 +34,7 @@ Integrations are available for:
 - [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
 - [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
+- [Anorm](https://playframework.github.io/anorm/): JVM only
 - [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
 
 ### Table of Contents
@@ -58,9 +59,9 @@ Integrations are available for:
 13. [Quill integration](#quill)
 14. [Cats integration](#cats)
 15. [Doobie integration](#doobie)
-16. [Benchmarking](#benchmarking)
-17. [Publishing](#publishing)
-
+16. [Anorm integration](#anorm)
+17. [Benchmarking](#benchmarking)
+18. [Publishing](#publishing)
 
 ## Quick start
 
@@ -1134,6 +1135,7 @@ items.maximumOption // Some(SuperHigh)
 If you need instances, but hesitate to mix in the traits demonstrated above, you can get them using the provided methods in `enumeratum.Cats` and `enumeratum.values.Cats` - the second also provides more flexibility than the (opinionated) mix-in trait as it allows to pass a custom type class instance for the value type (methods names are prefixed with `value`).
 
 ## Doobie
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-doobie_2.12)
 
 ### SBT
@@ -1258,6 +1260,66 @@ sql"select shirt from clothes"
   .foreach(println)
 ```
 - Note that a type ascription to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+
+## Anorm
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-anorm_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-anorm_2.12)
+
+### SBT
+
+To use enumeratum with [Anorm](https://playframework.github.io/anorm/):
+
+```scala
+libraryDependencies ++= Seq(
+  "com.beachape" %% "enumeratum-anorm" % enumeratumAnormVersion
+)
+```
+
+To use with ScalaJS:
+
+```scala
+libraryDependencies ++= Seq(
+  "com.beachape" %%% "enumeratum-anorm" % enumeratumAnormVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+If you need to store enum values in text column of following table
+
+```sql
+CREATE TABLE clothes (
+  shirt varchar(100)
+)
+```
+
+you should use following code
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with AnormEnum[ShirtSize] {
+  case object Small  extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large  extends ShirtSize
+
+  val values = findValues
+}
+
+case class Shirt(size: ShirtSize)
+
+import java.sql.Connection
+import anorm._
+
+def findShirtSize(shirtId: String)(implicit con: Connection): ShirtSize =
+  SQL"SELECT size FROM shirt_tbl WHERE id = $shirtId".
+    as(SqlParser.scalar[ShirtSize].single)
+```
+
 
 ## Benchmarking
 

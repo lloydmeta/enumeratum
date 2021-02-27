@@ -1,0 +1,11 @@
+package enumeratum
+
+/**
+  * Provides insensitive instances for Anorm typeclasses:
+  *
+  * - [[anorm.Column]]
+  */
+trait AnormInsensitiveEnum[A <: EnumEntry] { self: Enum[A] =>
+  implicit def column: Column[A] =
+    AnormColum.column[A](self, insensitive = true)
+}

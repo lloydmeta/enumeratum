@@ -1,0 +1,7 @@
+package enumeratum
+
+import anorm.{Column, TypeDoesNotMatch}
+
+/** Anorm [[Column]] utilities for enumerated types. */
+private[enumeratum] object AnormColumn {
+}

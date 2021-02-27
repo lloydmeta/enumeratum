@@ -88,6 +88,7 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumScalacheckJs,
   enumeratumPlayJsonJvm,
   enumeratumPlayJsonJs,
+  enumeratumAnorm,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumSlick,
@@ -125,6 +126,7 @@ lazy val scala211ProjectRefs = Seq(
   enumeratumPlayJsonJvm,
   // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
   // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
+  enumeratumAnorm,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumSlick,
@@ -159,6 +161,7 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
+  enumeratumAnorm,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
   enumeratumJson4s,
@@ -324,6 +327,22 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   )
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, includeTestSrcs = true): _*)
   .dependsOn(enumeratumPlayJsonJvm % "compile->compile;test->test")
+
+lazy val enumeratumAnorm = Project(id = "enumeratum-anorm", base = file("enumeratum-anorm"))
+  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings: _*)
+  .settings(
+    version := "1.6.3-SNAPSHOT",
+    crossScalaVersions := Seq(
+      scala_2_11Version, scala_2_12Version, scala_2_13Version),
+    libraryDependencies ++=
+      Seq(
+        "org.playframework.anorm" %% "anorm"           % "2.6.9",
+        "com.beachape"            %% "enumeratum"      % Versions.Core.stable,
+        //"com.beachape"            %% "enumeratum-test" % Versions.Core.stable % Test
+        "org.eu.acolyte" %% "jdbc-scala" % "1.0.57" % Test
+      )
+  )
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
