@@ -1315,11 +1315,36 @@ case class Shirt(size: ShirtSize)
 import java.sql.Connection
 import anorm._
 
+// Support Enum as readable Column
 def findShirtSize(shirtId: String)(implicit con: Connection): ShirtSize =
   SQL"SELECT size FROM shirt_tbl WHERE id = $shirtId".
     as(SqlParser.scalar[ShirtSize].single)
 ```
 
+#### ValueEnum
+
+```scala
+import enumeratum.values.{ IntAnormEnum, IntEnum, IntEnumEntry }
+
+sealed abstract class ShirtSize(val value: Int) extends IntEnumEntry
+
+case object ShirtSize extends IntEnum[ShirtSize] with IntAnormEnum[ShirtSize] {
+  case object Small  extends ShirtSize(1)
+  case object Medium extends ShirtSize(2)
+  case object Large  extends ShirtSize(3)
+
+  val values = findValues
+}
+
+case class Shirt(size: ShirtSize)
+
+import anorm._
+
+// Support Enum as readable Column
+def findShirtSize(shirtId: String)(implicit con: Connection): ShirtSize =
+  SQL"SELECT size FROM shirt_tbl WHERE id = $shirtId".
+    as(SqlParser.scalar[ShirtSize].single)
+```
 
 ## Benchmarking
 

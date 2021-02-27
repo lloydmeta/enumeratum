@@ -19,7 +19,7 @@ private[enumeratum] object AnormColumn {
   // ---
 
   private def parse[A <: EnumEntry](enum: Enum[A])(extract: String => Option[A]): Column[A] =
-    Column.nonNull1[A] {
+    Column.nonNull[A] {
       case (s: String, _) =>
         extract(s) match {
           case Some(result) => Right(result)
