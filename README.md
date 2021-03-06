@@ -58,8 +58,9 @@ Integrations are available for:
 13. [Quill integration](#quill)
 14. [Cats integration](#cats)
 15. [Doobie integration](#doobie)
-16. [Benchmarking](#benchmarking)
-17. [Publishing](#publishing)
+16. [Anorm integration](#anorm)
+17. [Benchmarking](#benchmarking)
+18. [Publishing](#publishing)
 
 
 ## Quick start
@@ -1258,6 +1259,10 @@ sql"select shirt from clothes"
   .foreach(println)
 ```
 - Note that a type ascription to the `ValueEnumEntry` abstract class (eg. `ShirtSize.Small: ShirtSize`) is required when binding hardcoded `ValueEnumEntry`s
+
+## Anorm
+
+Anorm provides a [module to support Enum](https://playframework.github.io/anorm/AnormEnumeratum.html) as `Column` and parameters.
 
 ## Benchmarking
 
