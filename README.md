@@ -1302,3 +1302,10 @@ JVM + ScalaJS projects should have an aggregate project to make it easy to publi
 `$ sbt "project circe-aggregate" +clean +publish-signed`
 
 Should publish all needed artefacts. Note that `sbt circe-aggregate/publish-signed` will not work (ScalaJS gets skipped).
+
+## Contributions
+
+Issues and PRs are more than welcome.
+
+* For bug fixes, enhancements, version bumps etc: please feel free to send a PR or issue
+* For _new_ integrations: these are generally bigger investments, and not all projects are a good fit to be maintained by me, so it would be a good idea to send an issue first to gauge interest and fit. If you feel it's a faster/better to have a concrete PR to discuss things with, by all means, feel free to go that route too.
