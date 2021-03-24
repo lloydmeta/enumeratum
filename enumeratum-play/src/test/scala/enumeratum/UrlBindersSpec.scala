@@ -27,6 +27,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) shouldBe "B"
     }
 
+    it("should not create an enumeration binder with an invalid enum value") {
+      subject.bind("hello", "Z") shouldBe Left(s"Unknown value supplied for $Dummy 'Z'")
+    }
   }
 
   describe(".pathBinder case insensitive") {
@@ -77,6 +80,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) shouldBe "b"
     }
 
+    it("should not create an enumeration binder with an invalid enum value") {
+      subject.bind("hello", "Z") shouldBe Left(s"Unknown value supplied for $Dummy 'Z'")
+    }
   }
 
   describe(".pathBinder upper case") {
@@ -103,6 +109,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) shouldBe "B"
     }
 
+    it("should not create an enumeration binder with an invalid enum value") {
+      subject.bind("hello", "Z") shouldBe Left(s"Unknown value supplied for $Dummy 'Z'")
+    }
   }
 
   describe(".queryBinder") {
@@ -125,6 +134,10 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) should be("hello=B")
     }
 
+    it("should have the enum on the Left message") {
+      subject.bind("hello", Map("hello" -> Seq("Z"))) shouldBe Some(
+        Left(s"Cannot parse parameter hello as an Enum: $Dummy"))
+    }
   }
 
   describe(".queryBinder case insensitive") {
@@ -176,6 +189,10 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) should be("hello=b")
     }
 
+    it("should not create an enumeration binder with an invalid enum value") {
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe Left(
+        s"Cannot parse parameter hello as an Enum: $Dummy")
+    }
   }
 
   describe(".queryBinder upper case") {
@@ -204,6 +221,10 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.unbind("hello", Dummy.B) should be("hello=B")
     }
 
+    it("should not create an enumeration binder with an invalid enum value") {
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe Left(
+        s"Cannot parse parameter hello as an Enum: $Dummy")
+    }
   }
 
 }
