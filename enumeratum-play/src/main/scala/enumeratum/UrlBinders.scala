@@ -81,7 +81,7 @@ object UrlBinders {
             else enum.withNameOption(p)
           maybeBound match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
           }
         }
       }
@@ -102,7 +102,7 @@ object UrlBinders {
         params.get(key).flatMap(_.headOption).map { p =>
           enum.withNameLowercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
           }
         }
       }
@@ -123,7 +123,7 @@ object UrlBinders {
         params.get(key).flatMap(_.headOption).map { p =>
           enum.withNameUppercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${this.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
           }
         }
       }
