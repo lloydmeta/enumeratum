@@ -352,7 +352,9 @@ libraryDependencies ++= Seq(
 )
 ```
 
-Note that as of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5 - 2.7
+#### Dependencies and compatibility notes
+- As of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5 - 2.7
+- As of version 1.6.1, `enumeratum-play` for Scala 2.12 requires Play >= 2.8
 
 ### Usage
 
