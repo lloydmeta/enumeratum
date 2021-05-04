@@ -2,20 +2,20 @@
 
 # Warning, OSX-specific command hidden in between ;)
 # SBT dies if we try to do them all in one go...
-sbt "project circe-aggregate" +clean +publishSigned &&
+sbt "project circe-aggregate" +clean +versionCheck +publishSigned &&
 say "Done 1" &&
 say "Done 2" &&
-sbt "project enumeratum-reactivemongo-bson" +clean +publishSigned &&
+sbt "project enumeratum-reactivemongo-bson" +clean +versionCheck +publishSigned &&
 say "Done 3" &&
-sbt "project play-json-aggregate" +clean +publishSigned &&
+sbt "project play-json-aggregate" +clean +versionCheck +publishSigned &&
 say "Done 4" &&
-sbt "project enumeratum-play" +clean +publishSigned &&
+sbt "project enumeratum-play" +clean +versionCheck +publishSigned &&
 say "Done 5" &&
-sbt "project argonaut-aggregate" +clean +publishSigned &&
+sbt "project argonaut-aggregate" +clean +versionCheck +publishSigned &&
 say "Done 6" &&
-sbt "project enumeratum-json4s" +clean +publishSigned &&
+sbt "project enumeratum-json4s" +clean +versionCheck +publishSigned &&
 say "Done 7" &&
-sbt "project scalacheck-aggregate" +clean +publishSigned &&
+sbt "project scalacheck-aggregate" +clean +versionCheck +publishSigned &&
 say "Done 8" &&
-sbt "project quill-aggregate" +clean +publishSigned &&
+sbt "project quill-aggregate" +clean +versionCheck +publishSigned &&
 say "All done"
