@@ -112,8 +112,8 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
     publishArtifact := false,
     publishLocal := {},
     //doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
-    aggregate in publish := false,
-    aggregate in PgpKeys.publishSigned := false
+    publish / aggregate := false,
+    PgpKeys.publishSigned / aggregate := false
   )
   .aggregate((baseProjectRefs ++ scala213ProjectRefs): _*)
 
@@ -147,8 +147,8 @@ lazy val scala_2_11 = Project(id = "scala_2_11", base = file("scala_2_11"))
     publishArtifact := false,
     publishLocal := {},
     //doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
-    aggregate in publish := false,
-    aggregate in PgpKeys.publishSigned := false
+    publish / aggregate := false,
+    PgpKeys.publishSigned / aggregate := false
   )
   .aggregate((baseProjectRefs ++ scala211ProjectRefs): _*)
 
@@ -183,8 +183,9 @@ lazy val root =
       // Do not publish the root project (it just serves as an aggregate)
       publishArtifact := false,
       publishLocal := {},
-      aggregate in publish := false,
-      aggregate in PgpKeys.publishSigned := false
+      publish / aggregate := false,
+      PgpKeys.publishSigned / aggregate := false,
+      Global / excludeLintKeys ++= Set(git.gitRemoteRepo),
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
@@ -253,7 +254,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
                                        scalaVersion,
                                        sbtVersion,
                                        BuildInfoKey.action("macrosJVMClassesDir") {
-                                         ((macrosJVM / classDirectory) in Compile).value
+                                         (macrosJVM / Compile / classDirectory).value
                                        }),
     buildInfoPackage := "enumeratum"
   )
@@ -267,7 +268,8 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
       "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
     ),
     publishArtifact := false,
-    publishLocal := {}
+    publishLocal := {},
+    versionPolicyIntention := Compatibility.None,
   )
   .dependsOn(coreJVM, macrosJVM)
 
@@ -507,6 +509,7 @@ lazy val commonSettings = Seq(
   organization := "com.beachape",
   scalafmtOnCompile := true,
   scalaVersion := theScalaVersion,
+  versionPolicyIntention := Compatibility.BinaryCompatible,
   crossScalaVersions := scalaVersionsAll
 ) ++
   compilerSettings ++
@@ -531,17 +534,17 @@ lazy val resolverSettings = Seq(
 
 lazy val ideSettings = Seq(
   // Faster "sbt gen-idea"
-  transitiveClassifiers in Global := Seq(Artifact.SourceClassifier)
+  Global / transitiveClassifiers := Seq(Artifact.SourceClassifier)
 )
 
 lazy val compilerSettings = Seq(
-  scalaJSStage in ThisBuild := {
+  ThisBuild / scalaJSStage := {
     sys.props.get("sbt.scalajs.testOpt").orElse(sys.env.get("SCALAJS_TEST_OPT")) match {
       case Some("full") => FullOptStage
       case _            => FastOptStage
     }
   },
-  scalacOptions in (Compile, compile) ++= {
+  Compile / compile / scalacOptions ++= {
     val base = Seq(
       "-Xlog-free-terms",
       "-encoding",
@@ -602,11 +605,12 @@ lazy val publishSettings = Seq(
   },
   pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   publishMavenStyle := true,
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   PgpKeys.pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   pomIncludeRepository := { _ =>
     false
-  }
+  },
+  Global / excludeLintKeys ++= Set(PgpKeys.pgpPassphrase),
 )
 
 val testSettings = {
@@ -620,7 +624,8 @@ val testSettings = {
       val originalValue = doctestGenTests.value
       Seq.empty // TODO: re-enable originalValue
     },
-    doctestTestFramework := DoctestTestFramework.ScalaTest
+    doctestTestFramework := DoctestTestFramework.ScalaTest,
+    Global / excludeLintKeys ++= Set(doctestTestFramework),
   )
 }
 
@@ -666,7 +671,7 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
   }
 
   val unmanagedMainDirsSetting = Seq(
-    unmanagedSourceDirectories in Compile ++= {
+    Compile / unmanagedSourceDirectories ++= {
       compatDirs(projectbase = baseDirectory.value,
                  scalaVersion = scalaVersion.value,
                  isMain = true)
@@ -674,7 +679,7 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
   )
   if (includeTestSrcs) {
     unmanagedMainDirsSetting ++ {
-      unmanagedSourceDirectories in Test ++= {
+      Test / unmanagedSourceDirectories ++= {
         compatDirs(projectbase = baseDirectory.value,
                    scalaVersion = scalaVersion.value,
                    isMain = false)

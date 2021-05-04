@@ -12,13 +12,13 @@ matrix:
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scala_2_11/test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION scala_2_11/test scala_2_11/versionPolicyCheck
     - scala: 2.12.11
       jdk: openjdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverage test coverageReport versionPolicyCheck
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coverageAggregate
       after_success: sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION coveralls
     - scala: 2.12.10
@@ -26,24 +26,24 @@ matrix:
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test versionPolicyCheck
     - scala: 2.13.2
       jdk: openjdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test versionPolicyCheck
     - scala: 2.13.1
       jdk: openjdk8
       script:
         - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test:compile test:doc
         - travis_wait 30 sleep 1800 &
-        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test
+        - sbt -jvm-opts .travis-jvmopts ++$TRAVIS_SCALA_VERSION test versionPolicyCheck
     - scala: 2.13.0
       jdk: openjdk8
       script:
         - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test:compile scala_2_13/test:doc
-        - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test
+        - sbt ++$TRAVIS_SCALA_VERSION scala_2_13/test scala_2_13/versionPolicyCheck
 cache:
   directories:
   - $HOME/.sbt/1.0
