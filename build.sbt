@@ -418,12 +418,12 @@ lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
 lazy val quillAggregate =
   aggregateProject("quill", /*enumeratumQuillJs,*/ enumeratumQuillJvm) // TODO re-enable once quill supports Scala.js 1.0
     .settings(crossScalaVersions := scalaVersionsAll)
-lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
+lazy val enumeratumQuill = crossProject(/*JSPlatform, */JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-quill"))
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
-  .jsSettings(jsTestSettings: _*)
+//  .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-quill",
     version := "1.6.1-SNAPSHOT",
