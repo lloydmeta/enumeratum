@@ -186,6 +186,7 @@ lazy val root =
       publish / aggregate := false,
       PgpKeys.publishSigned / aggregate := false,
       Global / excludeLintKeys ++= Set(git.gitRemoteRepo),
+      versionPolicyIntention := Compatibility.None,
     )
     .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
 
@@ -278,7 +279,7 @@ lazy val enumeratumReactiveMongoBson =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.6.4-SNAPSHOT",
+      version := "1.7.0-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.reactivemongo" %% "reactivemongo-bson-api" % reactiveMongoVersion % Provided,
@@ -297,7 +298,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-play-json",
-    version := "1.6.4-SNAPSHOT",
+    version := "1.7.0-SNAPSHOT",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++= {
       Seq(
@@ -314,7 +315,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := "1.6.4-SNAPSHOT",
+    version := "1.7.0-SNAPSHOT",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++=
       Seq(
@@ -469,7 +470,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.6.1-SNAPSHOT",
+      version := "1.7.0-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
@@ -510,6 +511,7 @@ lazy val commonSettings = Seq(
   scalafmtOnCompile := true,
   scalaVersion := theScalaVersion,
   versionPolicyIntention := Compatibility.BinaryCompatible,
+  versionScheme := Some("pvp"),
   crossScalaVersions := scalaVersionsAll
 ) ++
   compilerSettings ++
