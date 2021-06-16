@@ -38,7 +38,13 @@ trait Enum[A <: EnumEntry] {
     * Map of [[A]] object names to [[A]]s
     */
   lazy val namesToValuesMap: Map[String, A] =
-    values.map(v => v.entryName -> v).toMap
+    values.map(v => v.entryName -> v).toMap ++ extraNamesToValuesMap
+
+  /**
+    * Additional list of names which can be mapped to values, for example to allow mapping of legacy values.
+    * @return a Map of names to Values
+    */
+  def extraNamesToValuesMap: Map[String, A] = Map.empty[String, A]
 
   /**
     * Map of [[A]] object names in lower case to [[A]]s for case-insensitive comparison
