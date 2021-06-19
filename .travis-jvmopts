@@ -1,9 +1,0 @@
-# This is used to configure the sbt instance that Travis launches
-
--Xms4G
--Xmx4G
--Xss4M
--XX:MaxMetaspaceSize=1G
--XX:+CMSClassUnloadingEnabled
--XX:+UseConcMarkSweepGC
--Dfile.encoding=UTF-8
