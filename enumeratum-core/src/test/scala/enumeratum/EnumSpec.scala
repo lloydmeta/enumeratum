@@ -555,4 +555,23 @@ class EnumSpec extends FunSpec with Matchers {
       """ shouldNot compile
     }
   }
+
+  describe("extraNamesToValuesMap") {
+    it("should return a value for a legacy name") {
+      sealed trait Result extends EnumEntry
+      object Result extends Enum[Result] {
+        case object Good extends Result
+        case object Bad  extends Result
+
+        override val extraNamesToValuesMap: Map[String, Result] = Map[String, Result]("Ok" -> Good)
+
+        override val values = findValues
+      }
+
+      Result.withName("Good") shouldBe Result.Good
+      Result.withName("Bad") shouldBe Result.Bad
+      Result.withName("Ok") shouldBe Result.Good
+      Result.withNameInsensitive("ok") shouldBe Result.Good
+    }
+  }
 }
