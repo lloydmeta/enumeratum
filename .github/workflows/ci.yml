@@ -57,6 +57,7 @@ jobs:
           find $HOME/.cache/coursier/v1                -name "ivydata-*.properties" -delete || true
           find $HOME/.sbt                              -name "*.lock"               -delete || true
       - name: Upload coverage data to Coveralls
+        if: {{ matrix.scala == '2.12.14' }}
         run: sbt -v ++${{ matrix.scala }} coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
