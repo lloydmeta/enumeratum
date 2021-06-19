@@ -1,0 +1,63 @@
+## Base: https://www.scala-sbt.org/1.x/docs/GitHub-Actions-with-sbt.html
+
+name: Continuous integration
+on:
+  pull_request:
+  push:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: 11
+            scala: 2.11.13
+          - java: 11
+            scala: 2.12.14
+          - java: 11
+            scala: 2.13.6
+    runs-on: ubuntu-latest
+    env:
+      # define Java options for both official sbt and sbt-extras
+      JAVA_OPTS: -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      JVM_OPTS:  -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: "adopt@1.${{ matrix.java }}"
+      - name: Coursier cache
+        uses: coursier/cache-action@v5
+      - name: Build and test
+        shell: bash
+        run: |
+          case ${{ matrix.scala }} in
+            2.11.12)
+              sbt -v ++${{ matrix.scala }} scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
+              sbt -v ++${{ matrix.scala }} scala_2_11/test
+              ;;
+            2.12.13)
+              sbt -v ++${{ matrix.scala }} test:compile test:doc
+              sbt -v ++${{ matrix.scala }} coverage test coverageReport
+              sbt -v ++${{ matrix.scala }} coverageAggregate
+              ;;
+            2.13.6)
+              sbt -v ++${{ matrix.scala }} test:compile test:doc
+              sbt -v ++${{ matrix.scala }} test
+              ;;
+            *)
+              echo unknown Scala Version ${{ matrix.scala }}
+              exit 1
+          esac
+          rm -rf "$HOME/.ivy2/local" || true
+          find $HOME/Library/Caches/Coursier/v1        -name "ivydata-*.properties" -delete || true
+          find $HOME/.ivy2/cache                       -name "ivydata-*.properties" -delete || true
+          find $HOME/.cache/coursier/v1                -name "ivydata-*.properties" -delete || true
+          find $HOME/.sbt                              -name "*.lock"               -delete || true
+      - name: Upload coverage data to Coveralls
+        run: sbt -v ++${{ matrix.scala }} coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: Scala ${{ matrix.scala }} Java ${{ matrix.java }}
