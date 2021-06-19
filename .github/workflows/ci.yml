@@ -20,8 +20,8 @@ jobs:
     env:
       SCALAJS_TEST_OPT: full
       # define Java options for both official sbt and sbt-extras
-      JAVA_OPTS: -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
-      JVM_OPTS:  -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      JAVA_OPTS: -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      JVM_OPTS:  -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
     steps:
       - name: Checkout
         uses: actions/checkout@v1
