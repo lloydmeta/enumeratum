@@ -57,9 +57,8 @@ jobs:
           find $HOME/.ivy2/cache                       -name "ivydata-*.properties" -delete || true
           find $HOME/.cache/coursier/v1                -name "ivydata-*.properties" -delete || true
           find $HOME/.sbt                              -name "*.lock"               -delete || true
-      - name: Upload coverage data to Coveralls
+      - name: Upload coverage to Codecov
         if: ${{ matrix.scala == '2.12.11' }}
-        run: sbt -v ++${{ matrix.scala }} coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: Scala ${{ matrix.scala }} Java ${{ matrix.java }}
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
