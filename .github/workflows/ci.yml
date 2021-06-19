@@ -13,15 +13,15 @@ jobs:
           - java: 11
             scala: 2.11.12
           - java: 11
-            scala: 2.12.11
+            scala: 2.12.14
           - java: 11
-            scala: 2.13.2
+            scala: 2.13.6
     runs-on: ubuntu-latest
     env:
       SCALAJS_TEST_OPT: full
       # define Java options for both official sbt and sbt-extras
-      JAVA_OPTS: -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
-      JVM_OPTS:  -Xms4G -Xmx4G -Xss6M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      JAVA_OPTS: -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      JVM_OPTS:  -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -39,12 +39,12 @@ jobs:
               sbt -v ++${{ matrix.scala }} scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
               sbt -v ++${{ matrix.scala }} scala_2_11/test
               ;;
-            2.12.11)
+            2.12.14)
               sbt -v ++${{ matrix.scala }} test:compile test:doc
               sbt -v ++${{ matrix.scala }} coverage test coverageReport
               sbt -v ++${{ matrix.scala }} coverageAggregate
               ;;
-            2.13.2)
+            2.13.6)
               sbt -v ++${{ matrix.scala }} test:compile test:doc
               sbt -v ++${{ matrix.scala }} test
               ;;
@@ -58,7 +58,7 @@ jobs:
           find $HOME/.cache/coursier/v1                -name "ivydata-*.properties" -delete || true
           find $HOME/.sbt                              -name "*.lock"               -delete || true
       - name: Upload coverage to Codecov
-        if: ${{ matrix.scala == '2.12.11' }}
+        if: ${{ matrix.scala == '2.12.14' }}
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: true
