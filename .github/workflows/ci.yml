@@ -34,11 +34,11 @@ jobs:
         shell: bash
         run: |
           case ${{ matrix.scala }} in
-            2.11.12)
+            2.11.13)
               sbt -v ++${{ matrix.scala }} scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
               sbt -v ++${{ matrix.scala }} scala_2_11/test
               ;;
-            2.12.13)
+            2.12.14)
               sbt -v ++${{ matrix.scala }} test:compile test:doc
               sbt -v ++${{ matrix.scala }} coverage test coverageReport
               sbt -v ++${{ matrix.scala }} coverageAggregate
