@@ -295,7 +295,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-play-json",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++= {
       Seq(
@@ -312,7 +312,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings: _*)
   .settings(testSettings: _*)
   .settings(
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
     libraryDependencies ++=
       Seq(
@@ -334,7 +334,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-circe",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     libraryDependencies ++= {
       Seq(
         "com.beachape" %%% "enumeratum" % Versions.Core.stable,
@@ -362,7 +362,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-argonaut",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -380,7 +380,7 @@ lazy val enumeratumJson4s =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.7.0",
+      version := "1.7.1-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s"   %% "json4s-core"   % json4sVersion,
@@ -400,7 +400,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-scalacheck",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -426,7 +426,7 @@ lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-quill",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       Seq(
@@ -453,7 +453,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings: _*)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version := "1.7.0",
+      version := "1.7.1-SNAPSHOT",
       libraryDependencies ++= {
         Seq(
           "com.beachape" %%% "enumeratum" % Versions.Core.stable,
@@ -467,7 +467,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings: _*)
     .settings(testSettings: _*)
     .settings(
-      version := "1.7.0",
+      version := "1.7.1-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "com.typesafe.slick" %% "slick"      % theSlickVersion(scalaVersion.value),
@@ -485,7 +485,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings: _*)
   .settings(
     name := "enumeratum-cats",
-    version := "1.7.0",
+    version := "1.7.1-SNAPSHOT",
     libraryDependencies ++= {
       Seq(
         "com.beachape"  %%% "enumeratum" % Versions.Core.stable,
