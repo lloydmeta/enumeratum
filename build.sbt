@@ -3,8 +3,8 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_11Version = "2.11.12"
-lazy val scala_2_12Version = "2.12.11"
-lazy val scala_2_13Version = "2.13.2"
+lazy val scala_2_12Version = "2.12.14"
+lazy val scala_2_13Version = "2.13.6"
 lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
 
 lazy val theScalaVersion = scala_2_12Version
