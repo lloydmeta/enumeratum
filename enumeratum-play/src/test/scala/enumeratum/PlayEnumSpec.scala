@@ -1,6 +1,7 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.data.{Form, Mapping}
 import play.api.http.HttpVerbs
 import play.api.libs.json.{Format, JsNumber, JsString, JsValue, Json => PlayJson}
@@ -11,7 +12,7 @@ import play.api.routing.sird.PathBindableExtractor
 import play.api.test.FakeRequest
 import enumeratum.helpers.ActionHelper
 
-class PlayEnumSpec extends FunSpec with Matchers {
+class PlayEnumSpec extends AnyFunSpec with Matchers {
 
   testScenarios(
     descriptor = "ordinary operation (no tarnsforms)",

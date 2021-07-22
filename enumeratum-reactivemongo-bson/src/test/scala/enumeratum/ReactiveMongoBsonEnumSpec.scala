@@ -2,14 +2,15 @@ package enumeratum
 
 import scala.util.Success
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import reactivemongo.api.bson.{BSON, BSONDocument, BSONInteger, BSONString, BSONValue}
 
 /** @author
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
+class ReactiveMongoBsonEnumSpec extends AnyFunSpec with Matchers {
 
   describe("BSON serdes") {
 

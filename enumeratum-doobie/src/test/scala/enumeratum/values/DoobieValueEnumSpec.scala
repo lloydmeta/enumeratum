@@ -2,13 +2,14 @@ package enumeratum.values
 
 import cats.effect.{IO, Resource}
 import doobie.util.{Read => DoobieRead, Write => DoobieWrite}
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import scala.collection.immutable
 import java.util.concurrent.{Executors, ExecutorService}
 
-class DoobieValueEnumSpec extends FunSpec with Matchers {
+class DoobieValueEnumSpec extends AnyFunSpec with Matchers {
 
   describe("An IntDoobieEnum") {
 

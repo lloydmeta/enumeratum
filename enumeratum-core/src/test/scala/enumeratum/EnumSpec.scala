@@ -1,9 +1,10 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class EnumSpec extends FunSpec with Matchers {
+class EnumSpec extends AnyFunSpec with Matchers {
 
   describe("no values") {
 

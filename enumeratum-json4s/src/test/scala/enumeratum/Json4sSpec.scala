@@ -2,9 +2,10 @@ package enumeratum
 
 import org.json4s.{DefaultFormats, MappingException}
 import org.json4s.native.Serialization
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class Json4sSpec extends FunSpec with Matchers {
+class Json4sSpec extends AnyFunSpec with Matchers {
 
   implicit val formats =
     DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(TrafficLight)

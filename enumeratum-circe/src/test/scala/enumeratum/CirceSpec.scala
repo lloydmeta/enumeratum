@@ -1,6 +1,7 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import cats.syntax.either._
 import io.circe.Json
 import io.circe.syntax._
@@ -9,7 +10,7 @@ import io.circe.syntax._
   *
   * Copyright 2016
   */
-class CirceSpec extends FunSpec with Matchers {
+class CirceSpec extends AnyFunSpec with Matchers {
 
   describe("to JSON") {
 

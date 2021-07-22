@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import cats.syntax.either._
 import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder, Json}
 import io.circe.syntax._
@@ -9,7 +10,7 @@ import io.circe.syntax._
   *
   * Copyright 2016
   */
-class CirceValueEnumSpec extends FunSpec with Matchers {
+class CirceValueEnumSpec extends AnyFunSpec with Matchers {
 
   testCirceEnum("LongCirceEnum", CirceContentType)
   testCirceEnum("ShortCirceEnum", CirceDrinks)

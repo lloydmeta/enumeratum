@@ -1,12 +1,13 @@
 package enumeratum.values
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /** Created by Lloyd on 4/12/16.
   *
   * Copyright 2016
   */
-class ValueEnumSpec extends FunSpec with Matchers with ValueEnumHelpers {
+class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
 
   describe("basic sanity check") {
 
