@@ -422,32 +422,33 @@ lazy val quillAggregate =
     "quill", /*enumeratumQuillJs,*/ enumeratumQuillJvm
   ) // TODO re-enable once quill supports Scala.js 1.0
     .settings(crossScalaVersions := scalaVersionsAll)
-lazy val enumeratumQuill = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("enumeratum-quill"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(testSettings: _*)
-  .jsSettings(jsTestSettings: _*)
-  .settings(
-    name               := "enumeratum-quill",
-    version            := "1.7.1-SNAPSHOT",
-    crossScalaVersions := scalaVersionsAll,
-    libraryDependencies ++= {
-      Seq(
-        "com.beachape" %%% "enumeratum" % Versions.Core.stable,
-        "io.getquill"  %%% "quill-core" % quillVersion,
-        "io.getquill"  %%% "quill-sql"  % quillVersion % Test
-      )
-    },
-    dependencyOverrides ++= {
-      def pprintVersion(v: String) = {
-        if (v.startsWith("2.11")) "0.5.4" else "0.5.5"
+lazy val enumeratumQuill =
+  crossProject(JVMPlatform /*, JSPlatform TODO re-enable once quill supports Scala.js 1.0 */ )
+    .crossType(CrossType.Pure)
+    .in(file("enumeratum-quill"))
+    .settings(commonWithPublishSettings: _*)
+    .settings(testSettings: _*)
+    // .jsSettings(jsTestSettings: _*) TODO re-enable once quill supports Scala.js 1.0 */,
+    .settings(
+      name               := "enumeratum-quill",
+      version            := "1.7.1-SNAPSHOT",
+      crossScalaVersions := scalaVersionsAll,
+      libraryDependencies ++= {
+        Seq(
+          "com.beachape" %%% "enumeratum" % Versions.Core.stable,
+          "io.getquill"  %%% "quill-core" % quillVersion,
+          "io.getquill"  %%% "quill-sql"  % quillVersion % Test
+        )
+      },
+      dependencyOverrides ++= {
+        def pprintVersion(v: String) = {
+          if (v.startsWith("2.11")) "0.5.4" else "0.5.5"
+        }
+        Seq(
+          "com.lihaoyi" %%% "pprint" % pprintVersion(scalaVersion.value)
+        )
       }
-      Seq(
-        "com.lihaoyi" %%% "pprint" % pprintVersion(scalaVersion.value)
-      )
-    }
-  )
+    )
 // lazy val enumeratumQuillJs  = enumeratumQuill.js // TODO re-enable once quill supports Scala.js 1.0
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
