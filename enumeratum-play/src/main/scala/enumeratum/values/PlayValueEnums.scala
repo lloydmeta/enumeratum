@@ -1,13 +1,10 @@
 package enumeratum.values
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
-/**
-  * An IntEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** An IntEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *
@@ -26,21 +23,19 @@ package enumeratum.values
   * scala> sealed abstract class Greeting(val value:Int) extends IntEnumEntry
   *
   * scala> object Greeting extends IntPlayEnum[Greeting] {
-  *      |   val values = findValues
-  *      |   case object Hello   extends Greeting(1)
-  *      |   case object GoodBye extends Greeting(2)
-  *      |   case object Hi      extends Greeting(3)
-  *      |   case object Bye     extends Greeting(4)
-  *      | }
+  *     |   val values = findValues
+  *     |   case object Hello   extends Greeting(1)
+  *     |   case object GoodBye extends Greeting(2)
+  *     |   case object Hi      extends Greeting(3)
+  *     |   case object Bye     extends Greeting(4)
+  *     | }
   *
   * scala> val form = Form("greeting" -> Greeting.formField)
   * scala> form.bind(Map("greeting" -> "1")).value
   * res0: Option[Greeting] = Some(Hello)
   * }}}
   *
-  * scala> Json.toJson(Greeting.Hello)
-  * res1: JsValue = 1
-  *
+  * scala> Json.toJson(Greeting.Hello) res1: JsValue = 1
   */
 trait IntPlayEnum[EnumEntry <: IntEnumEntry]
     extends IntEnum[EnumEntry]
@@ -49,9 +44,7 @@ trait IntPlayEnum[EnumEntry <: IntEnumEntry]
     with IntPlayFormValueEnum[EnumEntry]
     with IntPlayJsonValueEnum[EnumEntry]
 
-/**
-  * A LongEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** A LongEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *
@@ -61,7 +54,6 @@ trait IntPlayEnum[EnumEntry <: IntEnumEntry]
   *   - implicit Json format
   *
   * See [[IntPlayEnum]] for example usage.
-  *
   */
 trait LongPlayEnum[EnumEntry <: LongEnumEntry]
     extends LongEnum[EnumEntry]
@@ -70,9 +62,7 @@ trait LongPlayEnum[EnumEntry <: LongEnumEntry]
     with LongPlayFormValueEnum[EnumEntry]
     with LongPlayJsonValueEnum[EnumEntry]
 
-/**
-  * A ShortEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** A ShortEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *
@@ -90,9 +80,7 @@ trait ShortPlayEnum[EnumEntry <: ShortEnumEntry]
     with ShortPlayFormValueEnum[EnumEntry]
     with ShortPlayJsonValueEnum[EnumEntry]
 
-/**
-  * A StringEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** A StringEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *
@@ -110,9 +98,7 @@ trait StringPlayEnum[EnumEntry <: StringEnumEntry]
     with StringPlayFormValueEnum[EnumEntry]
     with StringPlayJsonValueEnum[EnumEntry]
 
-/**
-  * A ByteEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** A ByteEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *
@@ -130,9 +116,7 @@ trait BytePlayEnum[EnumEntry <: ByteEnumEntry]
     with BytePlayFormValueEnum[EnumEntry]
     with BytePlayJsonValueEnum[EnumEntry]
 
-/**
-  * A CharEnum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** A CharEnum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Things included are:
   *

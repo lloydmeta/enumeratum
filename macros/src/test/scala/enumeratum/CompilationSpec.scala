@@ -18,8 +18,7 @@ class CompilationSpec extends FunSpec with Matchers {
 
 }
 
-/**
-  * Created by Lloyd on 1/4/17.
+/** Created by Lloyd on 1/4/17.
   *
   * Copyright 2017
   */
@@ -109,25 +108,21 @@ sealed trait E {
   def value: Int
 }
 
-/**
-  * The E
+/** The E
   */
 object E {
 
-  /**
-    * What's up?
+  /** What's up?
     */
   val values = FindValEnums[E]
 
-  /**
-    * E1
+  /** E1
     */
   case object E1 extends E {
     val value = 1
   }
 
-  /**
-    * E2
+  /** E2
     */
   case object E2 extends E {
     val value = 2

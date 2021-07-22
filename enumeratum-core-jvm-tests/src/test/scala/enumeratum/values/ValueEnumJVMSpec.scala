@@ -6,8 +6,7 @@ import org.scalatest.{FunSpec, Matchers}
 import scala.reflect.ClassTag
 import scala.util.Random
 
-/**
-  * Created by Lloyd on 8/30/16.
+/** Created by Lloyd on 8/30/16.
   *
   * Copyright 2016
   */
@@ -54,8 +53,8 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
           val values        = valuesGenerator.distinct.take(5)
           val namesToValues = names.zip(values)
           val memberDefs = namesToValues
-            .map {
-              case (n, v) => s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)"""
+            .map { case (n, v) =>
+              s"""case object $n extends $enumName($valuePrefix$v$valueSuffix)"""
             }
             .mkString("\n\n")
           val objDef =
@@ -72,9 +71,8 @@ class ValueEnumJVMSpec extends FunSpec with Matchers {
                |$enumName
         """.stripMargin
           val obj = Eval.apply[ValueEnum[A, _ <: ValueEnumEntry[A]]](objDef)
-          namesToValues.foreach {
-            case (n, v) =>
-              obj.withValue(v).toString shouldBe n
+          namesToValues.foreach { case (n, v) =>
+            obj.withValue(v).toString shouldBe n
           }
           // filterNot is not lazy until 2.12
           valuesGenerator.filter(a => !values.contains(a)).take(5).foreach { invalidValue =>

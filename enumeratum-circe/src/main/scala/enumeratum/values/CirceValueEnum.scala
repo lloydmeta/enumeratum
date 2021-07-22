@@ -2,27 +2,23 @@ package enumeratum.values
 
 import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder}
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */
 sealed trait CirceValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
 
-  /**
-    * Implicit Encoder for this enum
+  /** Implicit Encoder for this enum
     */
   implicit def circeEncoder: Encoder[EntryType]
 
-  /**
-    * Implicit Decoder for this enum
+  /** Implicit Decoder for this enum
     */
   implicit def circeDecoder: Decoder[EntryType]
 }
 
-/**
-  * CirceEnum for IntEnumEntry
+/** CirceEnum for IntEnumEntry
   *
   * {{{
   * scala> import enumeratum.values._
@@ -32,11 +28,11 @@ sealed trait CirceValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   *
   * scala> sealed abstract class ShirtSize(val value:Int) extends IntEnumEntry
   * scala> case object ShirtSize extends IntEnum[ShirtSize] with IntCirceEnum[ShirtSize] {
-  *      |  case object Small  extends ShirtSize(1)
-  *      |  case object Medium extends ShirtSize(2)
-  *      |  case object Large  extends ShirtSize(3)
-  *      |  val values = findValues
-  *      | }
+  *     |  case object Small  extends ShirtSize(1)
+  *     |  case object Medium extends ShirtSize(2)
+  *     |  case object Large  extends ShirtSize(3)
+  *     |  val values = findValues
+  *     | }
   *
   * scala> val size: ShirtSize = ShirtSize.Small
   *
@@ -56,8 +52,7 @@ trait IntCirceEnum[EntryType <: IntEnumEntry] extends CirceValueEnum[Int, EntryT
   implicit val circeDecoder: Decoder[EntryType] = Circe.decoder(this)
 }
 
-/**
-  * CirceEnum for LongEnumEntry
+/** CirceEnum for LongEnumEntry
   */
 trait LongCirceEnum[EntryType <: LongEnumEntry] extends CirceValueEnum[Long, EntryType] {
   this: ValueEnum[Long, EntryType] =>
@@ -65,8 +60,7 @@ trait LongCirceEnum[EntryType <: LongEnumEntry] extends CirceValueEnum[Long, Ent
   implicit val circeDecoder: Decoder[EntryType] = Circe.decoder(this)
 }
 
-/**
-  * CirceEnum for ShortEnumEntry
+/** CirceEnum for ShortEnumEntry
   */
 trait ShortCirceEnum[EntryType <: ShortEnumEntry] extends CirceValueEnum[Short, EntryType] {
   this: ValueEnum[Short, EntryType] =>
@@ -74,8 +68,7 @@ trait ShortCirceEnum[EntryType <: ShortEnumEntry] extends CirceValueEnum[Short, 
   implicit val circeDecoder: Decoder[EntryType] = Circe.decoder(this)
 }
 
-/**
-  * CirceEnum for StringEnumEntry
+/** CirceEnum for StringEnumEntry
   */
 trait StringCirceEnum[EntryType <: StringEnumEntry] extends CirceValueEnum[String, EntryType] {
   this: ValueEnum[String, EntryType] =>
@@ -86,8 +79,7 @@ trait StringCirceEnum[EntryType <: StringEnumEntry] extends CirceValueEnum[Strin
   implicit val circeKeyDecoder: KeyDecoder[EntryType] = Circe.keyDecoder(this)
 }
 
-/**
-  * CirceEnum for CharEnumEntry
+/** CirceEnum for CharEnumEntry
   */
 trait CharCirceEnum[EntryType <: CharEnumEntry] extends CirceValueEnum[Char, EntryType] {
   this: ValueEnum[Char, EntryType] =>
@@ -95,8 +87,7 @@ trait CharCirceEnum[EntryType <: CharEnumEntry] extends CirceValueEnum[Char, Ent
   implicit val circeDecoder: Decoder[EntryType] = Circe.decoder(this)
 }
 
-/**
-  * CirceEnum for ByteEnumEntry
+/** CirceEnum for ByteEnumEntry
   */
 trait ByteCirceEnum[EntryType <: ByteEnumEntry] extends CirceValueEnum[Byte, EntryType] {
   this: ValueEnum[Byte, EntryType] =>

@@ -4,15 +4,13 @@ import cats.syntax.either._
 import io.circe.Decoder.Result
 import io.circe.{Encoder, Decoder, Json, HCursor, DecodingFailure, KeyEncoder, KeyDecoder}
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */
 object Circe {
 
-  /**
-    * Returns an Encoder for the given enum
+  /** Returns an Encoder for the given enum
     */
   def encoder[A <: EnumEntry](enum: Enum[A]): Encoder[A] = new Encoder[A] {
     final def apply(a: A): Json = stringEncoder.apply(a.entryName)
@@ -30,8 +28,7 @@ object Circe {
         stringEncoder.apply(a.entryName.toUpperCase)
     }
 
-  /**
-    * Returns a Decoder for the given enum
+  /** Returns a Decoder for the given enum
     */
   def decoder[A <: EnumEntry](enum: Enum[A]): Decoder[A] = new Decoder[A] {
     final def apply(c: HCursor): Result[A] = stringDecoder.apply(c).flatMap { s =>
@@ -80,13 +77,11 @@ object Circe {
       }
     }
 
-  /**
-    * Returns a KeyEncoder for the given enum
+  /** Returns a KeyEncoder for the given enum
     */
   def keyEncoder[A <: EnumEntry](enum: Enum[A]): KeyEncoder[A] = KeyEncoder.instance(_.entryName)
 
-  /**
-    * Returns a KeyDecoder for the given enum
+  /** Returns a KeyDecoder for the given enum
     */
   def keyDecoder[A <: EnumEntry](enum: Enum[A]): KeyDecoder[A] =
     KeyDecoder.instance(enum.withNameOption)

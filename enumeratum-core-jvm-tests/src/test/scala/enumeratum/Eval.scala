@@ -2,8 +2,7 @@ package enumeratum
 
 import scala.tools.reflect.ToolBox
 
-/**
-  * Eval with bits and pieces stolen from here and there...
+/** Eval with bits and pieces stolen from here and there...
   */
 object Eval {
 

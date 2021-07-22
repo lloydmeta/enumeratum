@@ -6,8 +6,8 @@ import org.scalatest.{FunSpec, Matchers}
 
 class Json4sSpec extends FunSpec with Matchers {
 
-  implicit val formats = DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(
-    TrafficLight)
+  implicit val formats =
+    DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(TrafficLight)
 
   case class Data(tr: TrafficLight)
   case class DataOpt(tr: Option[TrafficLight])
@@ -22,7 +22,9 @@ class Json4sSpec extends FunSpec with Matchers {
 
     it("should serialize Some(value) to entryName") {
       TrafficLight.values.foreach { value =>
-        Serialization.write(DataOpt(tr = Some(value))) shouldBe ("""{"tr":"""" + value.entryName + """"}""")
+        Serialization.write(
+          DataOpt(tr = Some(value))
+        ) shouldBe ("""{"tr":"""" + value.entryName + """"}""")
       }
     }
 
@@ -48,7 +50,8 @@ class Json4sSpec extends FunSpec with Matchers {
     it("should parse enum members into optional values") {
       TrafficLight.values.foreach { value =>
         Serialization.read[DataOpt]("""{"tr":"""" + value.entryName + """"}""").tr shouldBe Some(
-          value)
+          value
+        )
       }
     }
 

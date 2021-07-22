@@ -1,13 +1,11 @@
 package enumeratum
 import io.circe.{Decoder, Encoder}
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */
-/**
-  * Helper trait that adds implicit Circe encoders and decoders for an [[Enum]]'s members
+/** Helper trait that adds implicit Circe encoders and decoders for an [[Enum]] 's members
   *
   * Example:
   *
@@ -19,11 +17,11 @@ import io.circe.{Decoder, Encoder}
   *
   * scala> sealed trait ShirtSize extends EnumEntry
   * scala> case object ShirtSize extends Enum[ShirtSize] with CirceEnum[ShirtSize] {
-  *      |  case object Small  extends ShirtSize
-  *      |  case object Medium extends ShirtSize
-  *      |  case object Large  extends ShirtSize
-  *      |  val values = findValues
-  *      | }
+  *     |  case object Small  extends ShirtSize
+  *     |  case object Medium extends ShirtSize
+  *     |  case object Large  extends ShirtSize
+  *     |  val values = findValues
+  *     | }
   *
   * scala> val size: ShirtSize = ShirtSize.Small
   *
@@ -40,13 +38,11 @@ import io.circe.{Decoder, Encoder}
   */
 trait CirceEnum[A <: EnumEntry] { this: Enum[A] =>
 
-  /**
-    * Implicit Encoder for this enum
+  /** Implicit Encoder for this enum
     */
   implicit val circeEncoder: Encoder[A] = Circe.encoder(this)
 
-  /**
-    * Implicit Decoder for this enum
+  /** Implicit Decoder for this enum
     */
   implicit val circeDecoder: Decoder[A] = Circe.decoder(this)
 

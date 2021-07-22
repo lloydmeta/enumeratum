@@ -76,9 +76,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
         describe("deserialisation") {
 
           it("should work with valid values") {
-            validTransforms.foreach {
-              case (k, v) =>
-                JsString(k).asOpt[A].value shouldBe v
+            validTransforms.foreach { case (k, v) =>
+              JsString(k).asOpt[A].value shouldBe v
             }
           }
 
@@ -92,9 +91,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
         describe("serialisation") {
 
           it("should serialise values to JsString") {
-            validTransforms.foreach {
-              case (k, v) =>
-                PlayJson.toJson(v) shouldBe JsString(k)
+            validTransforms.foreach { case (k, v) =>
+              PlayJson.toJson(v) shouldBe JsString(k)
             }
           }
 
@@ -110,10 +108,9 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
       describe("Form binding") {
         it("should bind proper strings into an Enum value") {
-          validTransforms.foreach {
-            case (k, v) =>
-              val r = subject.bind(Map("hello" -> k))
-              r.value.value shouldBe v
+          validTransforms.foreach { case (k, v) =>
+            val r = subject.bind(Map("hello" -> k))
+            r.value.value shouldBe v
           }
         }
 
@@ -134,9 +131,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
 
         describe("PathBindable") {
           it("should bind strings corresponding to enum strings") {
-            validTransforms.foreach {
-              case (k, v) =>
-                pathBindable.bind("hello", k).right.value shouldBe v
+            validTransforms.foreach { case (k, v) =>
+              pathBindable.bind("hello", k).right.value shouldBe v
             }
           }
 
@@ -147,9 +143,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
           }
 
           it("should unbind values") {
-            validTransforms.foreach {
-              case (k, v) =>
-                pathBindable.unbind("hello", v) shouldBe k
+            validTransforms.foreach { case (k, v) =>
+              pathBindable.unbind("hello", v) shouldBe k
             }
           }
         }
@@ -157,9 +152,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
         describe("PathBindableExtractor") {
 
           it("should extract strings corresponding to enum strings") {
-            validTransforms.foreach {
-              case (k, v) =>
-                pathBindableExtractor.unapply(k) shouldBe Some(v)
+            validTransforms.foreach { case (k, v) =>
+              pathBindableExtractor.unapply(k) shouldBe Some(v)
             }
           }
 
@@ -173,15 +167,13 @@ class PlayEnumSpec extends FunSpec with Matchers {
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
-            val router = Router.from {
-              case GET(p"/${pathBindableExtractor(greeting)}") =>
-                ActionHelper {
-                  Results.Ok(s"$greeting")
-                }
+            val router = Router.from { case GET(p"/${pathBindableExtractor(greeting)}") =>
+              ActionHelper {
+                Results.Ok(s"$greeting")
+              }
             }
-            validTransforms.foreach {
-              case (k, v) =>
-                router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$k")) shouldBe true
+            validTransforms.foreach { case (k, v) =>
+              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$k")) shouldBe true
             }
             expectedErrors.foreach { v =>
               router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$v")) shouldBe false
@@ -193,13 +185,12 @@ class PlayEnumSpec extends FunSpec with Matchers {
         describe("QueryStringBindable") {
 
           it("should bind strings corresponding to enum strings") {
-            validTransforms.foreach {
-              case (k, v) =>
-                queryStringBindable
-                  .bind("hello", Map("hello" -> Seq(k)))
-                  .value
-                  .right
-                  .value should be(v)
+            validTransforms.foreach { case (k, v) =>
+              queryStringBindable
+                .bind("hello", Map("hello" -> Seq(k)))
+                .value
+                .right
+                .value should be(v)
             }
           }
 
@@ -211,9 +202,8 @@ class PlayEnumSpec extends FunSpec with Matchers {
           }
 
           it("should unbind values") {
-            validTransforms.foreach {
-              case (k, v) =>
-                queryStringBindable.unbind("hello", v) shouldBe s"hello=$k"
+            validTransforms.foreach { case (k, v) =>
+              queryStringBindable.unbind("hello", v) shouldBe s"hello=$k"
             }
           }
 
