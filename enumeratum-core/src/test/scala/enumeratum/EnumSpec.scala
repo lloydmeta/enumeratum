@@ -36,7 +36,8 @@ class EnumSpec extends FunSpec with Matchers {
             NestedObjectEnum.nested2.nested3.Hello,
             NestedObjectEnum.BackToRoot,
             NestedObjectEnum.nested4.NestedAgain
-          ))
+          )
+        )
       }
 
     }
@@ -137,13 +138,16 @@ class EnumSpec extends FunSpec with Matchers {
 
       it("should return Left otherwise") {
         DummyEnum.withNameInsensitiveEither("bbeeeech") shouldBe Left(
-          NoSuchMember("bbeeeech", DummyEnum.values))
+          NoSuchMember("bbeeeech", DummyEnum.values)
+        )
       }
 
     }
 
     describe("#withNameUppercaseOnly") {
-      it("should return the proper object when passed the proper string, transforming to upper case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to upper case first"
+      ) {
         DummyEnum.withNameUppercaseOnly("HELLO") should be(Hello)
         DummyEnum.withNameUppercaseOnly("GOODBYE") should be(GoodBye)
         DummyEnum.withNameUppercaseOnly("HI") should be(Hi)
@@ -169,7 +173,9 @@ class EnumSpec extends FunSpec with Matchers {
     }
 
     describe("#withNameUppercaseOnlyOption") {
-      it("should return the proper object when passed the proper string, transforming to upper case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to upper case first"
+      ) {
         DummyEnum.withNameUppercaseOnlyOption("HELLO").value should be(Hello)
         DummyEnum.withNameUppercaseOnlyOption("GOODBYE").value should be(GoodBye)
         DummyEnum.withNameUppercaseOnlyOption("HI").value should be(Hi)
@@ -187,7 +193,9 @@ class EnumSpec extends FunSpec with Matchers {
     }
 
     describe("#withNameUppercaseOnlyEither") {
-      it("should return the proper object when passed the proper string, transforming to upper case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to upper case first"
+      ) {
         DummyEnum.withNameUppercaseOnlyEither("HELLO") should be(Right(Hello))
         DummyEnum.withNameUppercaseOnlyEither("GOODBYE") should be(Right(GoodBye))
         DummyEnum.withNameUppercaseOnlyEither("HI") should be(Right(Hi))
@@ -195,21 +203,27 @@ class EnumSpec extends FunSpec with Matchers {
 
       it("should return Left for not uppercase but case insensitive values") {
         DummyEnum.withNameUppercaseOnlyEither("Hello") should be(
-          Left(NoSuchMember("Hello", DummyEnum.values)))
+          Left(NoSuchMember("Hello", DummyEnum.values))
+        )
         DummyEnum.withNameUppercaseOnlyEither("GoodBye") should be(
-          Left(NoSuchMember("GoodBye", DummyEnum.values)))
+          Left(NoSuchMember("GoodBye", DummyEnum.values))
+        )
         DummyEnum.withNameUppercaseOnlyEither("Hi") should be(
-          Left(NoSuchMember("Hi", DummyEnum.values)))
+          Left(NoSuchMember("Hi", DummyEnum.values))
+        )
       }
 
       it("should return Left otherwise") {
         DummyEnum.withNameUppercaseOnlyEither("bbeeeech") should be(
-          Left(NoSuchMember("bbeeeech", DummyEnum.values)))
+          Left(NoSuchMember("bbeeeech", DummyEnum.values))
+        )
       }
     }
 
     describe("#withNameLowercaseOnly") {
-      it("should return the proper object when passed the proper string, transforming to lower case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to lower case first"
+      ) {
         DummyEnum.withNameLowercaseOnly("hello") should be(Hello)
         DummyEnum.withNameLowercaseOnly("goodbye") should be(GoodBye)
         DummyEnum.withNameLowercaseOnly("hi") should be(Hi)
@@ -235,7 +249,9 @@ class EnumSpec extends FunSpec with Matchers {
     }
 
     describe("#withNameLowercaseOnlyOption") {
-      it("should return the proper object when passed the proper string, transforming to lower case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to lower case first"
+      ) {
         DummyEnum.withNameLowercaseOnlyOption("hello").value should be(Hello)
         DummyEnum.withNameLowercaseOnlyOption("goodbye").value should be(GoodBye)
         DummyEnum.withNameLowercaseOnlyOption("hi").value should be(Hi)
@@ -253,7 +269,9 @@ class EnumSpec extends FunSpec with Matchers {
     }
 
     describe("#withNameLowercaseOnlyEither") {
-      it("should return the proper object when passed the proper string, transforming to lower case first") {
+      it(
+        "should return the proper object when passed the proper string, transforming to lower case first"
+      ) {
         DummyEnum.withNameLowercaseOnlyEither("hello") should be(Right(Hello))
         DummyEnum.withNameLowercaseOnlyEither("goodbye") should be(Right(GoodBye))
         DummyEnum.withNameLowercaseOnlyEither("hi") should be(Right(Hi))
@@ -261,16 +279,20 @@ class EnumSpec extends FunSpec with Matchers {
 
       it("should return Left for not lowercase but case insensitive values") {
         DummyEnum.withNameLowercaseOnlyEither("Hello") should be(
-          Left(NoSuchMember("Hello", DummyEnum.values)))
+          Left(NoSuchMember("Hello", DummyEnum.values))
+        )
         DummyEnum.withNameLowercaseOnlyEither("GoodBye") should be(
-          Left(NoSuchMember("GoodBye", DummyEnum.values)))
+          Left(NoSuchMember("GoodBye", DummyEnum.values))
+        )
         DummyEnum.withNameLowercaseOnlyEither("Hi") should be(
-          Left(NoSuchMember("Hi", DummyEnum.values)))
+          Left(NoSuchMember("Hi", DummyEnum.values))
+        )
       }
 
       it("should return Left otherwise") {
         DummyEnum.withNameLowercaseOnlyEither("bbeeeech") should be(
-          Left(NoSuchMember("bbeeeech", DummyEnum.values)))
+          Left(NoSuchMember("bbeeeech", DummyEnum.values))
+        )
       }
     }
   }

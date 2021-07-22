@@ -22,7 +22,10 @@ class CirceKeySpec extends FunSpec with Matchers {
           "Medium" -> 100.asJson,
           "Large"  -> 15.asJson
         )
-        .as[Map[ShirtSize, Int]] shouldBe Map(ShirtSize.Medium -> 100, ShirtSize.Large -> 15).asRight
+        .as[Map[ShirtSize, Int]] shouldBe Map(
+        ShirtSize.Medium -> 100,
+        ShirtSize.Large  -> 15
+      ).asRight
     }
   }
 }

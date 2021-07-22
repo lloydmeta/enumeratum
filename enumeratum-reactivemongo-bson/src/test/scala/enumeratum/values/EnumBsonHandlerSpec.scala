@@ -3,8 +3,8 @@ package enumeratum.values
 import enumeratum.values.BSONValueHandlers._
 import org.scalatest._
 
-/**
-  * @author Alessandro Lacava (@lambdista)
+/** @author
+  *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelpers {

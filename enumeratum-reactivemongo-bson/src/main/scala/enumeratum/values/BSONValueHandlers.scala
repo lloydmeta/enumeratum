@@ -4,14 +4,13 @@ import reactivemongo.api.bson.{BSONHandler, BSONInteger, BSONLong, BSONString, B
 
 import scala.util.{Failure, Try}
 
-/**
-  * Created by Lloyd on 5/3/16.
+/** Created by Lloyd on 5/3/16.
   *
   * Copyright 2016
   */
-/**
-  * Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for subclasses like BSONLong,
-  * but what we want are BSONValue and the Reader/Writer/Handler typeclasses are not covariant.
+/** Holds BSONValue to implicits. The ones that come with ReactiveMongo by default are for
+  * subclasses like BSONLong, but what we want are BSONValue and the Reader/Writer/Handler
+  * typeclasses are not covariant.
   */
 @deprecated("No longer needed", "ReactiveMongo 1.0.0")
 object BSONValueHandlers {
@@ -21,7 +20,7 @@ object BSONValueHandlers {
 
     override def readTry(bson: BSONValue): Try[Short] = bson match {
       case BSONInteger(x) if x.abs <= Short.MaxValue => Try(x.toShort)
-      case _                                         => Failure(new RuntimeException(s"Could not convert $bson to Short"))
+      case _ => Failure(new RuntimeException(s"Could not convert $bson to Short"))
     }
   }
 
@@ -57,7 +56,7 @@ object BSONValueHandlers {
 
     override def readTry(bson: BSONValue): Try[Char] = bson match {
       case BSONString(x) if x.length == 1 => Try(x.charAt(0))
-      case _                              => Failure(new RuntimeException(s"Could not convert $bson to Char"))
+      case _ => Failure(new RuntimeException(s"Could not convert $bson to Char"))
     }
   }
 
@@ -66,7 +65,7 @@ object BSONValueHandlers {
 
     override def readTry(bson: BSONValue): Try[Byte] = bson match {
       case BSONInteger(x) if x.abs <= Byte.MaxValue => Try(x.toByte)
-      case _                                        => Failure(new RuntimeException(s"Could not convert $bson to Byte"))
+      case _ => Failure(new RuntimeException(s"Could not convert $bson to Byte"))
     }
   }
 }

@@ -2,23 +2,21 @@ package enumeratum
 
 import slick.jdbc._
 
-/**
-  * Allows for easy creation of GetResult[_] and SetParameter[_] instances for use with Slick's
-  * plain sql functionality.
-  * Does not require a profile to be in scope; only works with JDBC.
-  * Can be used by importing singleton methods or mixing in the trait.
-  * GetResult instances are used when mapping query results back to Scala types.
-  * SetParameter instances are used when inserting Scala types into interpolated sql queries.
+/** Allows for easy creation of GetResult[_] and SetParameter[_] instances for use with Slick's
+  * plain sql functionality. Does not require a profile to be in scope; only works with JDBC. Can be
+  * used by importing singleton methods or mixing in the trait. GetResult instances are used when
+  * mapping query results back to Scala types. SetParameter instances are used when inserting Scala
+  * types into interpolated sql queries.
   * {{{
   * scala> import enumeratum._
   *
   * scala> sealed trait TrafficLight extends EnumEntry
   * scala> object TrafficLight extends Enum[TrafficLight] {
-  *      |   case object Red    extends TrafficLight
-  *      |   case object Yellow extends TrafficLight
-  *      |   case object Green  extends TrafficLight
-  *      |   val values = findValues
-  *      | }
+  *     |   case object Red    extends TrafficLight
+  *     |   case object Yellow extends TrafficLight
+  *     |   case object Green  extends TrafficLight
+  *     |   val values = findValues
+  *     | }
   * scala> import SlickEnumPlainSqlSupport._
   * scala> implicit val trafficLightSetParameter = setParameterForEnum(TrafficLight)
   * scala> implicit val trafficLightOptionalSetParameter = optionalSetParameterForEnum(TrafficLight)
@@ -29,7 +27,8 @@ import slick.jdbc._
 trait SlickEnumPlainSqlSupport {
 
   private def _makeSetParameter[E <: EnumEntry](
-      nameFn: (String => String) = identity): SetParameter[E] = {
+      nameFn: (String => String) = identity
+  ): SetParameter[E] = {
     new SetParameter[E] {
       override def apply(e: E, pp: PositionedParameters): Unit = {
         val transformedName = nameFn(e.entryName)
@@ -39,7 +38,8 @@ trait SlickEnumPlainSqlSupport {
   }
 
   private def _makeOptionalSetParameter[E <: EnumEntry](
-      nameFn: (String => String) = identity): SetParameter[Option[E]] = {
+      nameFn: (String => String) = identity
+  ): SetParameter[Option[E]] = {
     new SetParameter[Option[E]] {
       override def apply(e: Option[E], pp: PositionedParameters): Unit = {
         val transformedName = e.map(e => nameFn(e.entryName))

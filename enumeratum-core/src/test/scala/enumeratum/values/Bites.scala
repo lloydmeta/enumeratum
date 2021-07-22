@@ -1,7 +1,6 @@
 package enumeratum.values
 
-/**
-  * Created by Lloyd on 9/24/16.
+/** Created by Lloyd on 9/24/16.
   *
   * Copyright 2016
   */

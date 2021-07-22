@@ -1,8 +1,6 @@
 package enumeratum
 
-/**
-  * An Enum that has a lot of the Play-related implicits built-in so you can avoid
-  * boilerplate.
+/** An Enum that has a lot of the Play-related implicits built-in so you can avoid boilerplate.
   *
   * Note, the binders created here are case-sensitive.
   *
@@ -23,20 +21,19 @@ package enumeratum
   * scala> sealed trait Greeting extends EnumEntry
   *
   * scala> object Greeting extends PlayEnum[Greeting] {
-  *      |   val values = findValues
-  *      |   case object Hello   extends Greeting
-  *      |   case object GoodBye extends Greeting
-  *      |   case object Hi      extends Greeting
-  *      |   case object Bye     extends Greeting
-  *      | }
+  *     |   val values = findValues
+  *     |   case object Hello   extends Greeting
+  *     |   case object GoodBye extends Greeting
+  *     |   case object Hi      extends Greeting
+  *     |   case object Bye     extends Greeting
+  *     | }
   *
   * scala> val form = Form("greeting" -> Greeting.formField)
   * scala> form.bind(Map("greeting" -> "Hello")).value
   * res0: Option[Greeting] = Some(Hello)
   * }}}
   *
-  * scala> Json.toJson(Greeting.Hello)
-  * res1: JsValue = "Hello"
+  * scala> Json.toJson(Greeting.Hello) res1: JsValue = "Hello"
   */
 trait PlayEnum[A <: EnumEntry]
     extends Enum[A]

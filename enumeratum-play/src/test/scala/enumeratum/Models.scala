@@ -1,7 +1,6 @@
 package enumeratum
 
-/**
-  * Created by Lloyd on 2/4/15.
+/** Created by Lloyd on 2/4/15.
   */
 sealed trait PlayDummyNormal extends EnumEntry
 

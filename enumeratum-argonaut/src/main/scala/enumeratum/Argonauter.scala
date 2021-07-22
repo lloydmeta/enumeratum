@@ -3,8 +3,7 @@ package enumeratum
 import argonaut._
 import Argonaut._
 
-/**
-  * Created by alonsodomin on 14/10/2016.
+/** Created by alonsodomin on 14/10/2016.
   */
 object Argonauter {
 

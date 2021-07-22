@@ -1,7 +1,6 @@
 package enumeratum.values
 
-/**
-  * Code from @zifeo
+/** Code from @zifeo
   */
 trait CustomEnumEntry extends IntEnumEntry {
   val value: Int

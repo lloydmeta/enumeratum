@@ -3,27 +3,26 @@ package enumeratum.values
 import play.api.data.format.Formatter
 import play.api.data.{FormError, Mapping, Forms => PlayForms}
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
 object Forms {
 
-  /**
-    * Returns a [[ValueEnum]] mapping for Play form fields
+  /** Returns a [[ValueEnum]] mapping for Play form fields
     */
-  def enum[ValueType,
-           EntryType <: ValueEnumEntry[ValueType],
-           EnumType <: ValueEnum[ValueType, EntryType]](baseFormatter: Formatter[ValueType])(
+  def enum[ValueType, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[
+    ValueType,
+    EntryType
+  ]](baseFormatter: Formatter[ValueType])(
       enum: EnumType
   ): Mapping[EntryType] = {
     PlayForms.of(formatter(baseFormatter)(enum))
   }
 
-  private[this] def formatter[ValueType,
-                              EntryType <: ValueEnumEntry[ValueType],
-                              EnumType <: ValueEnum[ValueType, EntryType]](
+  private[this] def formatter[ValueType, EntryType <: ValueEnumEntry[
+    ValueType
+  ], EnumType <: ValueEnum[ValueType, EntryType]](
       baseFormatter: Formatter[ValueType]
   )(enum: EnumType) = {
     new Formatter[EntryType] {
@@ -41,8 +40,7 @@ object Forms {
     }
   }
 
-  /**
-    * Taken from Play 2.4.x implementation
+  /** Taken from Play 2.4.x implementation
     */
   private[values] val charFormatter: Formatter[Char] = new Formatter[Char] {
     def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Char] = {

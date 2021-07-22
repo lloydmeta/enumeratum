@@ -5,8 +5,7 @@ import cats.syntax.either._
 import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder, Json}
 import io.circe.syntax._
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */
@@ -22,8 +21,9 @@ class CirceValueEnumSpec extends FunSpec with Matchers {
   testCirceEnum("IntCirceEnum with val value members", CirceMovieGenre)
 
   // Test method that generates tests for most primitve-based ValueEnums when given a simple descriptor and the enum
-  private def testCirceEnum[ValueType: Encoder: Decoder,
-                            EntryType <: ValueEnumEntry[ValueType]: Encoder: Decoder](
+  private def testCirceEnum[ValueType: Encoder: Decoder, EntryType <: ValueEnumEntry[
+    ValueType
+  ]: Encoder: Decoder](
       enumKind: String,
       enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]
   ): Unit = {

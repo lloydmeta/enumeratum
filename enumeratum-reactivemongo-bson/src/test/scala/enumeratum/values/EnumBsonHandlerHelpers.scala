@@ -5,8 +5,8 @@ import scala.util.Success
 import org.scalatest._
 import reactivemongo.api.bson._
 
-/**
-  * @author Alessandro Lacava (@lambdista)
+/** @author
+  *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>

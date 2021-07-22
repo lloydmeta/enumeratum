@@ -7,8 +7,7 @@ object Doobie {
 
   def meta[ValueType, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]
-  )(
-      implicit
+  )(implicit
       get: Get[ValueType],
       put: Put[ValueType]
   ): Meta[EntryType] =

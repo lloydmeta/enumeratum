@@ -6,8 +6,7 @@ import org.json4s.JsonAST.JString
 @SuppressWarnings(Array("org.wartremover.warts.Any"))
 object Json4s {
 
-  /**
-    * Returns a Json [[CustomSerializer]] for the given Enumeratum enum
+  /** Returns a Json [[CustomSerializer]] for the given Enumeratum enum
     *
     * {{{
     * scala> import enumeratum._
@@ -16,11 +15,11 @@ object Json4s {
     *
     * scala> sealed trait ShirtSize extends EnumEntry
     * scala> case object ShirtSize extends Enum[ShirtSize] {
-    *      |  case object Small  extends ShirtSize
-    *      |  case object Medium extends ShirtSize
-    *      |  case object Large  extends ShirtSize
-    *      |  val values = findValues
-    *      | }
+    *     |  case object Small  extends ShirtSize
+    *     |  case object Medium extends ShirtSize
+    *     |  case object Large  extends ShirtSize
+    *     |  val values = findValues
+    *     | }
     *
     * scala> implicit val formats = Serialization.formats(NoTypeHints) + Json4s.serializer(ShirtSize)
     *
@@ -31,21 +30,22 @@ object Json4s {
     * res1: Boolean = true
     * }}}
     *
-    * @param enum the enum you want to generate a Json4s serialiser for
+    * @param enum
+    *   the enum you want to generate a Json4s serialiser for
     */
   def serializer[A <: EnumEntry: Manifest](enum: Enum[A]): CustomSerializer[A] =
-    new CustomSerializer[A](
-      _ =>
-        (
-          {
-            case JString(s) if enum.withNameOption(s).isDefined => enum.withName(s)
-          }, {
-            case x: A => JString(x.entryName)
-          }
-      ))
+    new CustomSerializer[A](_ =>
+      (
+        {
+          case JString(s) if enum.withNameOption(s).isDefined => enum.withName(s)
+        },
+        { case x: A =>
+          JString(x.entryName)
+        }
+      )
+    )
 
-  /**
-    * Returns a Json [[CustomKeySerializer]] for the given Enumeratum enum
+  /** Returns a Json [[CustomKeySerializer]] for the given Enumeratum enum
     *
     * {{{
     * scala> import enumeratum._
@@ -54,11 +54,11 @@ object Json4s {
     *
     * scala> sealed trait ShirtSize extends EnumEntry
     * scala> case object ShirtSize extends Enum[ShirtSize] {
-    *      |  case object Small  extends ShirtSize
-    *      |  case object Medium extends ShirtSize
-    *      |  case object Large  extends ShirtSize
-    *      |  val values = findValues
-    *      | }
+    *     |  case object Small  extends ShirtSize
+    *     |  case object Medium extends ShirtSize
+    *     |  case object Large  extends ShirtSize
+    *     |  val values = findValues
+    *     | }
     *
     * scala> implicit val formats = Serialization.formats(NoTypeHints) + Json4s.keySerializer(ShirtSize)
     *
@@ -71,16 +71,18 @@ object Json4s {
     * res1: Boolean = true
     * }}}
     *
-    * @param enum the enum you want to generate a Json4s key serialiser for
+    * @param enum
+    *   the enum you want to generate a Json4s key serialiser for
     */
   def keySerializer[A <: EnumEntry: Manifest](enum: Enum[A]): CustomKeySerializer[A] =
-    new CustomKeySerializer[A](
-      _ =>
-        (
-          {
-            case s: String if enum.withNameOption(s).isDefined => enum.withName(s)
-          }, {
-            case x: A => x.entryName
-          }
-      ))
+    new CustomKeySerializer[A](_ =>
+      (
+        {
+          case s: String if enum.withNameOption(s).isDefined => enum.withName(s)
+        },
+        { case x: A =>
+          x.entryName
+        }
+      )
+    )
 }

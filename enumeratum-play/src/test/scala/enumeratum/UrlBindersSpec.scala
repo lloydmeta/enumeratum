@@ -5,8 +5,7 @@ import org.scalatest._
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 
-/**
-  * Created by Lloyd on 2/3/15.
+/** Created by Lloyd on 2/3/15.
   */
 class UrlBindersSpec extends FunSpec with Matchers {
 
@@ -18,7 +17,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", "A").right.value shouldBe Dummy.A
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", "Z").isLeft shouldBe true
     }
 
@@ -45,7 +46,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", "b").right.value shouldBe Dummy.B
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", "Z").isLeft shouldBe true
     }
 
@@ -65,7 +68,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", "b").right.value shouldBe Dummy.B
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", "Z").isLeft shouldBe true
     }
 
@@ -94,7 +99,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", "B").right.value shouldBe Dummy.B
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", "Z").isLeft shouldBe true
     }
 
@@ -124,7 +131,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
@@ -136,7 +145,8 @@ class UrlBindersSpec extends FunSpec with Matchers {
 
     it("should have the enum on the Left message") {
       subject.bind("hello", Map("hello" -> Seq("Z"))) shouldBe Some(
-        Left(s"Cannot parse parameter hello as an Enum: $Dummy"))
+        Left(s"Cannot parse parameter hello as an Enum: $Dummy")
+      )
     }
   }
 
@@ -151,7 +161,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
@@ -173,7 +185,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", Map("hello" -> Seq("a"))).value.right.value should be(Dummy.A)
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("a"))) shouldBe None
     }
@@ -191,7 +205,8 @@ class UrlBindersSpec extends FunSpec with Matchers {
 
     it("should not create an enumeration binder with an invalid enum value") {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe Left(
-        s"Cannot parse parameter hello as an Enum: $Dummy")
+        s"Cannot parse parameter hello as an Enum: $Dummy"
+      )
     }
   }
 
@@ -205,7 +220,9 @@ class UrlBindersSpec extends FunSpec with Matchers {
       subject.bind("hello", Map("hello" -> Seq("A"))).value.right.value should be(Dummy.A)
     }
 
-    it("should create an enumeration binder that cannot bind strings not found in the enumeration") {
+    it(
+      "should create an enumeration binder that cannot bind strings not found in the enumeration"
+    ) {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
@@ -223,7 +240,8 @@ class UrlBindersSpec extends FunSpec with Matchers {
 
     it("should not create an enumeration binder with an invalid enum value") {
       subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe Left(
-        s"Cannot parse parameter hello as an Enum: $Dummy")
+        s"Cannot parse parameter hello as an Enum: $Dummy"
+      )
     }
   }
 

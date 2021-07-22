@@ -5,23 +5,28 @@ import org.scalatest.matchers.should.Matchers
 import play.api.libs.json._
 import org.scalatest.OptionValues._
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
 trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
-  def testNumericWrites[EntryType <: ValueEnumEntry[ValueType],
-                        ValueType <: AnyVal: Numeric: Writes](
+  def testNumericWrites[EntryType <: ValueEnumEntry[
+    ValueType
+  ], ValueType <: AnyVal: Numeric: Writes](
       enumKind: String,
       enum: ValueEnum[ValueType, EntryType],
       providedWrites: Option[Writes[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
-    testWrites(enumKind, enum, { i: ValueType =>
-      JsNumber(numeric.toInt(i))
-    }, providedWrites)
+    testWrites(
+      enumKind,
+      enum,
+      { i: ValueType =>
+        JsNumber(numeric.toInt(i))
+      },
+      providedWrites
+    )
   }
 
   def testWrites[EntryType <: ValueEnumEntry[ValueType], ValueType: Writes](
@@ -46,9 +51,14 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
       providedReads: Option[Reads[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
-    testReads(enumKind, enum, { i: ValueType =>
-      JsNumber(numeric.toInt(i))
-    }, providedReads)
+    testReads(
+      enumKind,
+      enum,
+      { i: ValueType =>
+        JsNumber(numeric.toInt(i))
+      },
+      providedReads
+    )
   }
 
   def testReads[EntryType <: ValueEnumEntry[ValueType], ValueType: Reads](
@@ -71,8 +81,9 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
     }
   }
 
-  def testNumericFormats[EntryType <: ValueEnumEntry[ValueType],
-                         ValueType <: AnyVal: Numeric: Reads: Writes](
+  def testNumericFormats[EntryType <: ValueEnumEntry[
+    ValueType
+  ], ValueType <: AnyVal: Numeric: Reads: Writes](
       enumKind: String,
       enum: ValueEnum[ValueType, EntryType],
       providedFormat: Option[Format[EntryType]] = None

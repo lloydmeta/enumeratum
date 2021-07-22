@@ -5,8 +5,7 @@ import org.scalatest.{FunSpec, Matchers}
 import argonaut._
 import Argonaut._
 
-/**
-  * Created by alonsodomin on 14/10/2016.
+/** Created by alonsodomin on 14/10/2016.
   */
 class ArgonautSpec extends FunSpec with Matchers {
 
@@ -19,13 +18,17 @@ class ArgonautSpec extends FunSpec with Matchers {
 
     it("should work for lower case") {
       TrafficLight.values.foreach { value =>
-        value.asJson(Argonauter.encoderLowercase(TrafficLight)) shouldBe value.entryName.toLowerCase.asJson
+        value.asJson(
+          Argonauter.encoderLowercase(TrafficLight)
+        ) shouldBe value.entryName.toLowerCase.asJson
       }
     }
 
     it("should work for upper case") {
       TrafficLight.values.foreach { value =>
-        value.asJson(Argonauter.encoderUppercase(TrafficLight)) shouldBe value.entryName.toUpperCase.asJson
+        value.asJson(
+          Argonauter.encoderUppercase(TrafficLight)
+        ) shouldBe value.entryName.toUpperCase.asJson
       }
     }
   }

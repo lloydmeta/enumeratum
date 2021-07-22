@@ -4,8 +4,7 @@ import java.util.NoSuchElementException
 
 import org.scalatest._
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */

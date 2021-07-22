@@ -2,8 +2,7 @@ package enumeratum
 
 import io.getquill.MappedEncoding
 
-/**
-  * Helper trait that adds implicit Quill encoders and decoders for an [[Enum]]'s members
+/** Helper trait that adds implicit Quill encoders and decoders for an [[Enum]] 's members
   *
   * Example:
   *
@@ -13,11 +12,11 @@ import io.getquill.MappedEncoding
   *
   * scala> sealed trait ShirtSize extends EnumEntry
   * scala> case object ShirtSize extends Enum[ShirtSize] with QuillEnum[ShirtSize] {
-  *      |  case object Small  extends ShirtSize
-  *      |  case object Medium extends ShirtSize
-  *      |  case object Large  extends ShirtSize
-  *      |  val values = findValues
-  *      | }
+  *     |  case object Small  extends ShirtSize
+  *     |  case object Medium extends ShirtSize
+  *     |  case object Large  extends ShirtSize
+  *     |  val values = findValues
+  *     | }
   *
   * scala> case class Shirt(size: ShirtSize)
   *
@@ -32,13 +31,11 @@ import io.getquill.MappedEncoding
   */
 trait QuillEnum[A <: EnumEntry] { this: Enum[A] =>
 
-  /**
-    * Implicit Encoder for this enum
+  /** Implicit Encoder for this enum
     */
   implicit lazy val enumEncoder: MappedEncoding[A, String] = Quill.encoder(this)
 
-  /**
-    * Implicit Decoder for this enum
+  /** Implicit Decoder for this enum
     */
   implicit lazy val enumDecoder: MappedEncoding[String, A] = Quill.decoder(this)
 

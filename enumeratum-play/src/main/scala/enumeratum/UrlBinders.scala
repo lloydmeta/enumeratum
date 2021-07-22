@@ -3,16 +3,16 @@ package enumeratum
 import play.api.mvc.PathBindable
 import play.api.mvc.QueryStringBindable
 
-/**
-  * Created by Lloyd on 2/3/15.
+/** Created by Lloyd on 2/3/15.
   */
 object UrlBinders {
 
-  /**
-    * Builds a [[PathBindable]] A for a given Enum A
+  /** Builds a [[PathBindable]] A for a given Enum A
     *
-    * @param enum The enum
-    * @param insensitive bind in a case-insensitive way, defaults to false
+    * @param enum
+    *   The enum
+    * @param insensitive
+    *   bind in a case-insensitive way, defaults to false
     */
   def pathBinder[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): PathBindable[A] =
     new PathBindable[A] {
@@ -28,10 +28,10 @@ object UrlBinders {
       }
     }
 
-  /**
-    * Builds a [[PathBindable]] A for a given Enum A that transforms to lower case
+  /** Builds a [[PathBindable]] A for a given Enum A that transforms to lower case
     *
-    * @param enum The enum
+    * @param enum
+    *   The enum
     */
   def pathBinderLowercaseOnly[A <: EnumEntry](enum: Enum[A]): PathBindable[A] =
     new PathBindable[A] {
@@ -44,10 +44,10 @@ object UrlBinders {
       }
     }
 
-  /**
-    * Builds a [[PathBindable]] A for a given Enum A that transforms to upper case
+  /** Builds a [[PathBindable]] A for a given Enum A that transforms to upper case
     *
-    * @param enum The enum
+    * @param enum
+    *   The enum
     */
   def pathBinderUppercaseOnly[A <: EnumEntry](enum: Enum[A]): PathBindable[A] =
     new PathBindable[A] {
@@ -60,11 +60,12 @@ object UrlBinders {
       }
     }
 
-  /**
-    * Builds a [[QueryStringBindable]] A for a given Enum A
+  /** Builds a [[QueryStringBindable]] A for a given Enum A
     *
-    * @param enum The enum
-    * @param insensitive bind in a case-insensitive way, defaults to false
+    * @param enum
+    *   The enum
+    * @param insensitive
+    *   bind in a case-insensitive way, defaults to false
     */
   def queryBinder[A <: EnumEntry](
       enum: Enum[A],
@@ -87,10 +88,10 @@ object UrlBinders {
       }
     }
 
-  /**
-    * Builds a [[QueryStringBindable]] A for a given Enum A that transforms to lower case
+  /** Builds a [[QueryStringBindable]] A for a given Enum A that transforms to lower case
     *
-    * @param enum The enum
+    * @param enum
+    *   The enum
     */
   def queryBinderLowercaseOnly[A <: EnumEntry](enum: Enum[A]): QueryStringBindable[A] =
     new QueryStringBindable[A] {
@@ -108,10 +109,10 @@ object UrlBinders {
       }
     }
 
-  /**
-    * Builds a [[QueryStringBindable]] A for a given Enum A that transforms to upper case
+  /** Builds a [[QueryStringBindable]] A for a given Enum A that transforms to upper case
     *
-    * @param enum The enum
+    * @param enum
+    *   The enum
     */
   def queryBinderUppercaseOnly[A <: EnumEntry](enum: Enum[A]): QueryStringBindable[A] =
     new QueryStringBindable[A] {

@@ -4,8 +4,7 @@ import org.scalatest._
 import play.api.data.Form
 import org.scalatest.OptionValues._
 
-/**
-  * Created by Lloyd on 2/3/15.
+/** Created by Lloyd on 2/3/15.
   */
 class FormSpec extends FunSpec with Matchers {
 

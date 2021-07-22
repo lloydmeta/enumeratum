@@ -3,23 +3,20 @@ package enumeratum.values
 import argonaut._
 import Argonaut._
 
-/**
-  * Created by alonsodomin on 14/10/2016.
+/** Created by alonsodomin on 14/10/2016.
   */
-/**
-  * Base trait for Value-based Enumeratum Enums that automatically adds Argonaut Json
-  * Encoders and Decoders.
+/** Base trait for Value-based Enumeratum Enums that automatically adds Argonaut Json Encoders and
+  * Decoders.
   *
   * Example
   *
-  *
   * {{{
-  *  scala> import enumeratum.values._
-  *  scala> import argonaut._
-  *  scala> import Argonaut._
+  * scala> import enumeratum.values._
+  * scala> import argonaut._
+  * scala> import Argonaut._
   *
-  *  scala> sealed abstract class TrafficLight(val value: Int) extends IntEnumEntry
-  *  scala> case object TrafficLight
+  * scala> sealed abstract class TrafficLight(val value: Int) extends IntEnumEntry
+  * scala> case object TrafficLight
   *       |     extends IntEnum[TrafficLight]
   *       |       with IntArgonautEnum[TrafficLight] {
   *       |   case object Red    extends TrafficLight(1)
@@ -28,19 +25,19 @@ import Argonaut._
   *       |   val values = findValues
   *       | }
   *
-  *  scala> val light: TrafficLight = TrafficLight.Red
-  *  scala> light.asJson
-  *  res0: Json = 1
+  * scala> val light: TrafficLight = TrafficLight.Red
+  * scala> light.asJson
+  * res0: Json = 1
   *
-  *  scala> Json.jNumber(1).as[TrafficLight]
-  *  res1: DecodeResult[TrafficLight] = DecodeResult(Right(Red))
+  * scala> Json.jNumber(1).as[TrafficLight]
+  * res1: DecodeResult[TrafficLight] = DecodeResult(Right(Red))
   *
-  *  scala> Json.jNumber(5).as[TrafficLight]
-  *  res1: DecodeResult[TrafficLight] = DecodeResult(Left((5 is not a member of enum TrafficLight,CursorHistory(List()))))
+  * scala> Json.jNumber(5).as[TrafficLight]
+  * res1: DecodeResult[TrafficLight] = DecodeResult(Left((5 is not a member of enum TrafficLight,CursorHistory(List()))))
   * }}}
   *
   * @tparam ValueType
-  * @tparam EntryType
+  *   @tparam EntryType
   */
 sealed trait ArgonautValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>
@@ -50,8 +47,7 @@ sealed trait ArgonautValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]
 
 }
 
-/**
-  * ArgonautEnum for IntEnumEntry
+/** ArgonautEnum for IntEnumEntry
   */
 trait IntArgonautEnum[EntryType <: IntEnumEntry] extends ArgonautValueEnum[Int, EntryType] {
   this: ValueEnum[Int, EntryType] =>
@@ -60,8 +56,7 @@ trait IntArgonautEnum[EntryType <: IntEnumEntry] extends ArgonautValueEnum[Int, 
   implicit val argonautDecoder: DecodeJson[EntryType] = Argonauter.decoder(this)
 }
 
-/**
-  * ArgonautEnum for LongEnumEntry
+/** ArgonautEnum for LongEnumEntry
   */
 trait LongArgonautEnum[EntryType <: LongEnumEntry] extends ArgonautValueEnum[Long, EntryType] {
   this: ValueEnum[Long, EntryType] =>
@@ -70,8 +65,7 @@ trait LongArgonautEnum[EntryType <: LongEnumEntry] extends ArgonautValueEnum[Lon
   implicit val argonautDecoder: DecodeJson[EntryType] = Argonauter.decoder(this)
 }
 
-/**
-  * ArgonautEnum for ShortEnumEntry
+/** ArgonautEnum for ShortEnumEntry
   */
 trait ShortArgonautEnum[EntryType <: ShortEnumEntry] extends ArgonautValueEnum[Short, EntryType] {
   this: ValueEnum[Short, EntryType] =>
@@ -80,8 +74,7 @@ trait ShortArgonautEnum[EntryType <: ShortEnumEntry] extends ArgonautValueEnum[S
   implicit val argonautDecoder: DecodeJson[EntryType] = Argonauter.decoder(this)
 }
 
-/**
-  * ArgonautEnum for StringEnumEntry
+/** ArgonautEnum for StringEnumEntry
   */
 trait StringArgonautEnum[EntryType <: StringEnumEntry]
     extends ArgonautValueEnum[String, EntryType] { this: ValueEnum[String, EntryType] =>
@@ -90,8 +83,7 @@ trait StringArgonautEnum[EntryType <: StringEnumEntry]
   implicit val argonautDecoder: DecodeJson[EntryType] = Argonauter.decoder(this)
 }
 
-/**
-  * ArgonautEnum for CharEnumEntry
+/** ArgonautEnum for CharEnumEntry
   */
 trait CharArgonautEnum[EntryType <: CharEnumEntry] extends ArgonautValueEnum[Char, EntryType] {
   this: ValueEnum[Char, EntryType] =>
@@ -100,8 +92,7 @@ trait CharArgonautEnum[EntryType <: CharEnumEntry] extends ArgonautValueEnum[Cha
   implicit val argonautDecoder: DecodeJson[EntryType] = Argonauter.decoder(this)
 }
 
-/**
-  * ArgonautEnum for ByteEnumEntry
+/** ArgonautEnum for ByteEnumEntry
   */
 trait ByteArgonautEnum[EntryType <: ByteEnumEntry] extends ArgonautValueEnum[Byte, EntryType] {
   this: ValueEnum[Byte, EntryType] =>
