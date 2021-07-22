@@ -4,9 +4,10 @@ import cats.Order
 import cats.instances.int._
 import cats.syntax.order._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class CatsOrderValueEnumSpec extends FreeSpec with ScalaFutures with Matchers {
+class CatsOrderValueEnumSpec extends AnyFreeSpec with ScalaFutures with Matchers {
 
   "CatsOrderedValueEnum" - {
     "has a proper Order instance" - {

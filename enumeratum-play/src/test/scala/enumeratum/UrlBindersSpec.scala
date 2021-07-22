@@ -1,13 +1,14 @@
 package enumeratum
 
 import UrlBinders._
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.OptionValues._
 import org.scalatest.EitherValues._
 
 /** Created by Lloyd on 2/3/15.
   */
-class UrlBindersSpec extends FunSpec with Matchers {
+class UrlBindersSpec extends AnyFunSpec with Matchers {
 
   describe(".pathBinder") {
 

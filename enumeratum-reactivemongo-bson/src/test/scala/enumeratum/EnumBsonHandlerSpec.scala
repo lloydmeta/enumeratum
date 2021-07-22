@@ -1,7 +1,8 @@
 package enumeratum
 
 import org.scalatest.OptionValues._
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import reactivemongo.api.bson._
 
 import scala.util.Success
@@ -10,7 +11,7 @@ import scala.util.Success
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-class EnumBsonHandlerSpec extends FunSpec with Matchers {
+class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
 
   testScenario(
     descriptor = "normal operation (no transformations)",

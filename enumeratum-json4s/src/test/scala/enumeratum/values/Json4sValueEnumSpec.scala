@@ -3,9 +3,10 @@ package enumeratum.values
 import org.json4s.{DefaultFormats, JObject, MappingException}
 import org.json4s.JsonDSL._
 import org.json4s.native.Serialization
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class Json4sValueEnumSpec extends FunSpec with Matchers {
+class Json4sValueEnumSpec extends AnyFunSpec with Matchers {
 
   implicit val formats = DefaultFormats +
     Json4s.serializer(Json4sMediaType) + Json4s.serializer(Json4sJsonLibs) +

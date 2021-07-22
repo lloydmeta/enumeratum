@@ -4,9 +4,11 @@ import cats.{Eq, Hash, Show}
 import cats.syntax.eq._
 import cats.syntax.show._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class CatsEnumSpec extends FreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
+class CatsEnumSpec extends AnyFreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
 
   "CatsEnum" - {
     "has a proper Eq instance" - {

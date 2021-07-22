@@ -1,12 +1,14 @@
 package enumeratum.values
 
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
-import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time._
 
 class SlickValueEnumSupportSpec
-    extends FreeSpec
+    extends AnyFreeSpec
     with ScalaFutures
     with Matchers
     with BeforeAndAfterAll {

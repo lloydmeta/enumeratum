@@ -4,9 +4,10 @@ import cats.syntax.eq._
 import cats.syntax.show._
 import cats.{Eq, Show}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class CatsValueEnumSpec extends FreeSpec with ScalaFutures with Matchers {
+class CatsValueEnumSpec extends AnyFreeSpec with ScalaFutures with Matchers {
 
   "CatsValueEnum" - {
     "has a proper Eq instance" - {

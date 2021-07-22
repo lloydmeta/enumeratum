@@ -1,12 +1,13 @@
 package enumeratum
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.data.Form
 import org.scalatest.OptionValues._
 
 /** Created by Lloyd on 2/3/15.
   */
-class FormSpec extends FunSpec with Matchers {
+class FormSpec extends AnyFunSpec with Matchers {
 
   import Forms._
 

@@ -1,10 +1,11 @@
 package enumeratum.values
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.collection.immutable
 
-class QuillValueEnumSpec extends FunSpec with Matchers {
+class QuillValueEnumSpec extends AnyFunSpec with Matchers {
 
   describe("An IntQuillEnum") {
 

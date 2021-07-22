@@ -1,11 +1,12 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import doobie.util.{Read => DoobieRead, Write => DoobieWrite}
 import scala.collection.immutable
 
-class DoobieEnumSpec extends FunSpec with Matchers {
+class DoobieEnumSpec extends AnyFunSpec with Matchers {
 
   describe("A DoobieEnum") {
 
