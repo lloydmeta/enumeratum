@@ -9,8 +9,7 @@ lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_1
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion  = "3.2.9"
-lazy val scalacheckVersion = "1.15.4"
+lazy val scalaTestVersion = "3.2.9"
 
 // Library versions
 lazy val reactiveMongoVersion = "1.0.0"
@@ -70,6 +69,12 @@ def theCirceVersion(scalaVersion: String) =
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "0.11.1"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+  }
+
+def theScalacheckVersion(scalaVersion: String) =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, 11)) => "1.15.2"
+    case _             => "1.15.4"
   }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
@@ -407,7 +412,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= {
       Seq(
         "com.beachape"      %%% "enumeratum"      % Versions.Core.stable,
-        "org.scalacheck"    %%% "scalacheck"      % scalacheckVersion,
+        "org.scalacheck"    %%% "scalacheck"      % theScalacheckVersion(scalaVersion.value),
         "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"            % Test,
         "com.beachape"      %%% "enumeratum-test" % Versions.Core.stable % Test
       )
