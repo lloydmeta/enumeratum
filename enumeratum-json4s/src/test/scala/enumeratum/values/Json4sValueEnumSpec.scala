@@ -12,12 +12,14 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
     Json4s.serializer(Json4sDevice) + Json4s.serializer(Json4sHttpMethod) +
     Json4s.serializer(Json4sBool) + Json4s.serializer(Json4sDigits)
 
-  val data = Data(Json4sMediaType.`application/jpeg`,
-                  Json4sJsonLibs.Json4s,
-                  Json4sDevice.Laptop,
-                  Json4sHttpMethod.Put,
-                  Json4sBool.Maybe,
-                  Json4sDigits.Dos)
+  val data = Data(
+    Json4sMediaType.`application/jpeg`,
+    Json4sJsonLibs.Json4s,
+    Json4sDevice.Laptop,
+    Json4sHttpMethod.Put,
+    Json4sBool.Maybe,
+    Json4sDigits.Dos
+  )
 
   describe("to JSON") {
     it("should serialize plain value") {
@@ -26,7 +28,9 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
     }
 
     it("should serialize Some(value)") {
-      Serialization.write(DataOpt(Some(Json4sMediaType.`application/jpeg`))) shouldBe """{"mediaType":3}"""
+      Serialization.write(
+        DataOpt(Some(Json4sMediaType.`application/jpeg`))
+      ) shouldBe """{"mediaType":3}"""
     }
 
     it("should serialize None to nothing") {
@@ -38,12 +42,14 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
   describe("from JSON") {
     it("should parse enum members when given proper encoding") {
       Serialization.read[Data](
-        """{"mediaType":3,"jsonLib":2,"device":2,"httpMethod":"PUT","bool":"?","digits":2}""") shouldBe data
+        """{"mediaType":3,"jsonLib":2,"device":2,"httpMethod":"PUT","bool":"?","digits":2}"""
+      ) shouldBe data
     }
 
     it("should parse enum members into optional values") {
       Serialization.read[DataOpt]("""{"mediaType":3}""") shouldBe DataOpt(
-        Some(Json4sMediaType.`application/jpeg`))
+        Some(Json4sMediaType.`application/jpeg`)
+      )
     }
 
     it("should parse missing value into None") {
@@ -59,23 +65,28 @@ class Json4sValueEnumSpec extends FunSpec with Matchers {
 
     it("should fail to parse random JSON values to members") {
       a[MappingException] shouldBe thrownBy(
-        Serialization.read[DataSingle]("""{"mediaType":"bogus"}"""))
+        Serialization.read[DataSingle]("""{"mediaType":"bogus"}""")
+      )
       a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{"mediaType":17}"""))
       a[MappingException] shouldBe thrownBy(
-        Serialization.read[DataSingle]("""{"mediaType":true}"""))
+        Serialization.read[DataSingle]("""{"mediaType":true}""")
+      )
       a[MappingException] shouldBe thrownBy(
-        Serialization.read[DataSingle]("""{"mediaType":null}"""))
+        Serialization.read[DataSingle]("""{"mediaType":null}""")
+      )
       a[MappingException] shouldBe thrownBy(Serialization.read[DataSingle]("""{}"""))
     }
   }
 }
 
-case class Data(mediaType: Json4sMediaType,
-                jsonLib: Json4sJsonLibs,
-                device: Json4sDevice,
-                httpMethod: Json4sHttpMethod,
-                bool: Json4sBool,
-                digits: Json4sDigits)
+case class Data(
+    mediaType: Json4sMediaType,
+    jsonLib: Json4sJsonLibs,
+    device: Json4sDevice,
+    httpMethod: Json4sHttpMethod,
+    bool: Json4sBool,
+    digits: Json4sDigits
+)
 
 case class DataOpt(mediaType: Option[Json4sMediaType])
 

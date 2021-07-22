@@ -4,15 +4,13 @@ import cats.syntax.either._
 import io.circe.Decoder.Result
 import io.circe._
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */
 object Circe {
 
-  /**
-    * Returns an Encoder for the provided ValueEnum
+  /** Returns an Encoder for the provided ValueEnum
     */
   def encoder[ValueType: Encoder, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]
@@ -23,8 +21,7 @@ object Circe {
     }
   }
 
-  /**
-    * Returns a Decoder for the provided ValueEnum
+  /** Returns a Decoder for the provided ValueEnum
     */
   def decoder[ValueType: Decoder, EntryType <: ValueEnumEntry[ValueType]](
       enum: ValueEnum[ValueType, EntryType]

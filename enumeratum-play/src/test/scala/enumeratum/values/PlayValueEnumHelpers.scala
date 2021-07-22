@@ -9,36 +9,40 @@ import play.api.libs.json.{Format, JsNumber, JsValue}
 import play.api.test.FakeRequest
 import enumeratum.helpers.ActionHelper
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
 trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Matchers =>
 
-  def testNumericPlayEnum[EntryType <: ValueEnumEntry[ValueType],
-                          ValueType <: AnyVal: Numeric: Format](
+  def testNumericPlayEnum[EntryType <: ValueEnumEntry[
+    ValueType
+  ], ValueType <: AnyVal: Numeric: Format](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
-        ValueType,
-        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
-        ValueType,
-        EntryType]
+      enum: ValueEnum[ValueType, EntryType]
+        with PlayFormValueEnum[ValueType, EntryType]
+        with PlayPathBindableValueEnum[ValueType, EntryType]
+        with PlayQueryBindableValueEnum[ValueType, EntryType]
+        with PlayJsonValueEnum[ValueType, EntryType]
   ) = {
     val numeric = implicitly[Numeric[ValueType]]
-    testPlayEnum(enumKind, enum, { i: ValueType =>
-      JsNumber(numeric.toInt(i))
-    })
+    testPlayEnum(
+      enumKind,
+      enum,
+      { i: ValueType =>
+        JsNumber(numeric.toInt(i))
+      }
+    )
 
   }
 
   def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType: Format](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType] with PlayFormValueEnum[ValueType, EntryType] with PlayPathBindableValueEnum[
-        ValueType,
-        EntryType] with PlayQueryBindableValueEnum[ValueType, EntryType] with PlayJsonValueEnum[
-        ValueType,
-        EntryType],
+      enum: ValueEnum[ValueType, EntryType]
+        with PlayFormValueEnum[ValueType, EntryType]
+        with PlayPathBindableValueEnum[ValueType, EntryType]
+        with PlayQueryBindableValueEnum[ValueType, EntryType]
+        with PlayJsonValueEnum[ValueType, EntryType],
       jsWrapper: ValueType => JsValue
   ) = {
 
@@ -116,14 +120,17 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Ma
             import play.api.routing._
             import play.api.mvc._
             enum.values.foreach { entry =>
-              val router = Router.from {
-                case GET(p"/${enum.fromPath(greeting)}") =>
-                  ActionHelper {
-                    Results.Ok(s"$greeting")
-                  }
+              val router = Router.from { case GET(p"/${enum.fromPath(greeting)}") =>
+                ActionHelper {
+                  Results.Ok(s"$greeting")
+                }
               }
-              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/${entry.value}")) shouldBe true
-              router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/${Int.MaxValue}")) shouldBe false
+              router.routes.isDefinedAt(
+                FakeRequest(HttpVerbs.GET, s"/${entry.value}")
+              ) shouldBe true
+              router.routes.isDefinedAt(
+                FakeRequest(HttpVerbs.GET, s"/${Int.MaxValue}")
+              ) shouldBe false
             }
           }
 

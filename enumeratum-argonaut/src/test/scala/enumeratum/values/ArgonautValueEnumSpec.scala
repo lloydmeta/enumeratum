@@ -4,8 +4,7 @@ import org.scalatest.{FunSpec, Matchers}
 import argonaut._
 import Argonaut._
 
-/**
-  * Created by alonsodomin on 14/10/2016.
+/** Created by alonsodomin on 14/10/2016.
   */
 class ArgonautValueEnumSpec extends FunSpec with Matchers {
 
@@ -16,8 +15,9 @@ class ArgonautValueEnumSpec extends FunSpec with Matchers {
   testArgonautEnum("StringArgonautEnum", ArgonautHttpMethod)
   testArgonautEnum("ByteArgonautEnum", ArgonautDigits)
 
-  private def testArgonautEnum[ValueType: EncodeJson: DecodeJson,
-                               EntryType <: ValueEnumEntry[ValueType]: EncodeJson: DecodeJson](
+  private def testArgonautEnum[ValueType: EncodeJson: DecodeJson, EntryType <: ValueEnumEntry[
+    ValueType
+  ]: EncodeJson: DecodeJson](
       enumKind: String,
       enum: ValueEnum[ValueType, EntryType] with ArgonautValueEnum[ValueType, EntryType]
   ): Unit = {

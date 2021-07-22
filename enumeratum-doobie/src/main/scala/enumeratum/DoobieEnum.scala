@@ -3,8 +3,7 @@ package enumeratum
 import doobie.util._
 import doobie.Meta
 
-/**
-  * Helper trait that adds implicit Doobie Get and Put for an [[Enum]]'s members
+/** Helper trait that adds implicit Doobie Get and Put for an [[Enum]] 's members
   *
   * Example:
   *
@@ -15,11 +14,11 @@ import doobie.Meta
   *
   * scala> sealed trait ShirtSize extends EnumEntry
   * scala> case object ShirtSize extends Enum[ShirtSize] with DoobieEnum[ShirtSize] {
-  *      |  case object Small  extends ShirtSize
-  *      |  case object Medium extends ShirtSize
-  *      |  case object Large  extends ShirtSize
-  *      |  val values = findValues
-  *      | }
+  *     |  case object Small  extends ShirtSize
+  *     |  case object Medium extends ShirtSize
+  *     |  case object Large  extends ShirtSize
+  *     |  val values = findValues
+  *     | }
   *
   * scala> case class Shirt(size: ShirtSize)
   *

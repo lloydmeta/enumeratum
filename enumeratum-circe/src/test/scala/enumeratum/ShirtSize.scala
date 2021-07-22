@@ -1,7 +1,6 @@
 package enumeratum
 
-/**
-  * Created by Lloyd on 4/14/16.
+/** Created by Lloyd on 4/14/16.
   *
   * Copyright 2016
   */

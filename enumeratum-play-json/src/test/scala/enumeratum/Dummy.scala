@@ -1,7 +1,6 @@
 package enumeratum
 
-/**
-  * Created by Lloyd on 2/4/15.
+/** Created by Lloyd on 2/4/15.
   */
 sealed trait Dummy extends EnumEntry
 object Dummy extends Enum[Dummy] with PlayJsonEnum[Dummy] {
@@ -11,8 +10,7 @@ object Dummy extends Enum[Dummy] with PlayJsonEnum[Dummy] {
   val values = findValues
 }
 
-/**
-  * Created by dbuschman on 03/20/2018
+/** Created by dbuschman on 03/20/2018
   */
 sealed trait InsensitiveDummy extends EnumEntry
 object InsensitiveDummy

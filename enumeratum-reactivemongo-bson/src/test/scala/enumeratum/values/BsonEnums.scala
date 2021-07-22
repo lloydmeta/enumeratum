@@ -1,7 +1,7 @@
 package enumeratum.values
 
-/**
-  * @author Alessandro Lacava
+/** @author
+  *   Alessandro Lacava
   * @since 2016-04-23
   */
 sealed abstract class BsonDrinks(val value: Short, name: String) extends ShortEnumEntry

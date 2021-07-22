@@ -3,21 +3,18 @@ package enumeratum.values
 import play.api.mvc.PathBindable
 import play.api.routing.sird.PathBindableExtractor
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
 sealed trait PlayPathBindableValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   enum: ValueEnum[ValueType, EntryType] =>
 
-  /**
-    * Implicit path binder for Play's default router
+  /** Implicit path binder for Play's default router
     */
   implicit def pathBindable: PathBindable[EntryType]
 
-  /**
-    * Binder for [[play.api.routing.sird]] router
+  /** Binder for [[play.api.routing.sird]] router
     *
     * Example:
     *
@@ -29,18 +26,18 @@ sealed trait PlayPathBindableValueEnum[ValueType, EntryType <: ValueEnumEntry[Va
     * scala> sealed abstract class Greeting(val value: Int) extends IntEnumEntry
     *
     * scala> object Greeting extends IntPlayEnum[Greeting] {
-    *      |   val values = findValues
-    *      |   case object Hello   extends Greeting(1)
-    *      |   case object GoodBye extends Greeting(2)
-    *      |   case object Hi      extends Greeting(3)
-    *      |   case object Bye     extends Greeting(4)
-    *      | }
+    *     |   val values = findValues
+    *     |   case object Hello   extends Greeting(1)
+    *     |   case object GoodBye extends Greeting(2)
+    *     |   case object Hi      extends Greeting(3)
+    *     |   case object Bye     extends Greeting(4)
+    *     | }
     *
     * scala> val router = Router.from {
-    *      |   case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
-    *      |     Results.Ok(s"$greeting")
-    *      |   }
-    *      | }
+    *     |   case GET(p"/hello/${Greeting.fromPath(greeting)}") => Action {
+    *     |     Results.Ok(s"$greeting")
+    *     |   }
+    *     | }
     * scala> router.routes
     * res0: Router.Routes = <function1>
     * }}}
@@ -48,8 +45,7 @@ sealed trait PlayPathBindableValueEnum[ValueType, EntryType <: ValueEnumEntry[Va
   lazy val fromPath = new PathBindableExtractor[EntryType]
 }
 
-/**
-  * Path Bindable implicits for IntEnum
+/** Path Bindable implicits for IntEnum
   */
 trait IntPlayPathBindableValueEnum[EntryType <: IntEnumEntry]
     extends PlayPathBindableValueEnum[Int, EntryType] { this: IntEnum[EntryType] =>
@@ -57,8 +53,7 @@ trait IntPlayPathBindableValueEnum[EntryType <: IntEnumEntry]
     UrlBinders.pathBinder(this)
 }
 
-/**
-  * Path Bindable implicits for LongEnum
+/** Path Bindable implicits for LongEnum
   */
 trait LongPlayPathBindableValueEnum[EntryType <: LongEnumEntry]
     extends PlayPathBindableValueEnum[Long, EntryType] { this: LongEnum[EntryType] =>
@@ -66,8 +61,7 @@ trait LongPlayPathBindableValueEnum[EntryType <: LongEnumEntry]
     UrlBinders.pathBinder(this)
 }
 
-/**
-  * Path Bindable implicits for ShortEnum
+/** Path Bindable implicits for ShortEnum
   */
 trait ShortPlayPathBindableValueEnum[EntryType <: ShortEnumEntry]
     extends PlayPathBindableValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
@@ -75,8 +69,7 @@ trait ShortPlayPathBindableValueEnum[EntryType <: ShortEnumEntry]
     UrlBinders.pathBinder(this)(PathBindable.bindableInt.transform(_.toShort, _.toInt))
 }
 
-/**
-  * Path Bindable implicits for StringEnum
+/** Path Bindable implicits for StringEnum
   */
 trait StringPlayPathBindableValueEnum[EntryType <: StringEnumEntry]
     extends PlayPathBindableValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
@@ -84,8 +77,7 @@ trait StringPlayPathBindableValueEnum[EntryType <: StringEnumEntry]
     UrlBinders.pathBinder(this)(PathBindable.bindableString)
 }
 
-/**
-  * Path Bindable implicits for CharEnum
+/** Path Bindable implicits for CharEnum
   */
 trait CharPlayPathBindableValueEnum[EntryType <: CharEnumEntry]
     extends PlayPathBindableValueEnum[Char, EntryType] { this: CharEnum[EntryType] =>
@@ -93,8 +85,7 @@ trait CharPlayPathBindableValueEnum[EntryType <: CharEnumEntry]
     UrlBinders.pathBinder(this)(PathBindable.bindableChar)
 }
 
-/**
-  * Path Bindable implicits for ByteEnum
+/** Path Bindable implicits for ByteEnum
   */
 trait BytePlayPathBindableValueEnum[EntryType <: ByteEnumEntry]
     extends PlayPathBindableValueEnum[Byte, EntryType] { this: ByteEnum[EntryType] =>

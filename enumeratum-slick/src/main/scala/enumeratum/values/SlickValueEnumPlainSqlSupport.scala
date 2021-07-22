@@ -2,22 +2,20 @@ package enumeratum.values
 
 import slick.jdbc._
 
-/**
-  * Allows for easy creation of GetResult[_] and SetParameter[_] instances for use with Slick's
-  * plain sql functionality.
-  * Does not require a profile to be in scope; only works with JDBC
-  * GetResult instances are used when mapping query results back to Scala types.
-  * SetParameter instances are used when inserting Scala types into interpolated sql queries.
+/** Allows for easy creation of GetResult[_] and SetParameter[_] instances for use with Slick's
+  * plain sql functionality. Does not require a profile to be in scope; only works with JDBC
+  * GetResult instances are used when mapping query results back to Scala types. SetParameter
+  * instances are used when inserting Scala types into interpolated sql queries.
   * {{{
   * scala> import enumeratum.values._
   *
   * scala> sealed abstract class TrafficLightByInt(val value: Int) extends IntEnumEntry
   * scala> object TrafficLightByInt extends IntEnum[TrafficLightByInt] {
-  *      |   case object Red    extends TrafficLightByInt(0)
-  *      |   case object Yellow extends TrafficLightByInt(1)
-  *      |   case object Green  extends TrafficLightByInt(2)
-  *      |   val values = findValues
-  *      | }
+  *     |   case object Red    extends TrafficLightByInt(0)
+  *     |   case object Yellow extends TrafficLightByInt(1)
+  *     |   case object Green  extends TrafficLightByInt(2)
+  *     |   val values = findValues
+  *     | }
   * scala> import SlickValueEnumPlainSqlSupport._
   * scala> implicit val trafficLightSetParameter = setParameterForIntEnum(TrafficLightByInt)
   * scala> implicit val trafficLightOptionalSetParameter = optionalSetParameterForIntEnum(TrafficLightByInt)
@@ -150,15 +148,21 @@ trait SlickValueEnumPlainSqlSupport {
   def getResultForCharEnum[E <: CharEnumEntry](
       enum: CharEnum[E]
   ): GetResult[E] =
-    _makeGetResult[Char, E](enum, { pr =>
-      pr.nextString.head
-    })
+    _makeGetResult[Char, E](
+      enum,
+      { pr =>
+        pr.nextString.head
+      }
+    )
   def optionalGetResultForCharEnum[E <: CharEnumEntry](
       enum: CharEnum[E]
   ): GetResult[Option[E]] =
-    _makeOptionalGetResult[Char, E](enum, { pr =>
-      pr.nextStringOption.map(_.head)
-    })
+    _makeOptionalGetResult[Char, E](
+      enum,
+      { pr =>
+        pr.nextStringOption.map(_.head)
+      }
+    )
 
 }
 

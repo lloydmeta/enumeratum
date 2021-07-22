@@ -4,8 +4,7 @@ import org.scalatest.{FunSpec, Matchers}
 import play.api.libs.json.{JsNumber, JsString}
 import EnumFormats.charFormat
 
-/**
-  * Created by Lloyd on 4/13/16.
+/** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
@@ -15,12 +14,20 @@ class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers 
   testNumericPlayEnum("ShortPlayEnum", PlayDrinks)
   testNumericPlayEnum("IntPlayEnum", PlayLibraryItem)
   testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString)
-  testPlayEnum("BytePlayEnum", PlayBites, { s: Byte =>
-    JsNumber(s.toInt)
-  })
-  testPlayEnum("CharPlayEnum", PlayAlphabet, { s: Char =>
-    JsString(s"$s")
-  })
+  testPlayEnum(
+    "BytePlayEnum",
+    PlayBites,
+    { s: Byte =>
+      JsNumber(s.toInt)
+    }
+  )
+  testPlayEnum(
+    "CharPlayEnum",
+    PlayAlphabet,
+    { s: Char =>
+      JsString(s"$s")
+    }
+  )
   testNumericPlayEnum("IntPlayEnum with values declared as members", PlayMovieGenre)
 
 }

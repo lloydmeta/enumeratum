@@ -9,8 +9,7 @@ import enumeratum.values.AllowAlias
 @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object ValueEnumMacros {
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:Int implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:Int implementations
     *
     * Note, requires the ValueEntryType to have a 'value' member that has a literal value
     */
@@ -20,8 +19,7 @@ object ValueEnumMacros {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Int](c)(identity)
   }
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:Long implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:Long implementations
     *
     * Note, requires the ValueEntryType to have a 'value' member that has a literal value
     */
@@ -31,26 +29,26 @@ object ValueEnumMacros {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTLong, Long](c)(identity)
   }
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:Short implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:Short implementations
     *
     * Note
     *
-    *  - requires the ValueEntryType to have a 'value' member that has a literal value
-    *  - the Short value should be a literal Int (do no need to cast .toShort).
+    *   - requires the ValueEntryType to have a 'value' member that has a literal value
+    *   - the Short value should be a literal Int (do no need to cast .toShort).
     */
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
   ): c.Expr[IndexedSeq[ValueEntryType]] = {
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(_.toShort) // do a transform because there is no such thing as Short literals
+    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(
+      _.toShort
+    ) // do a transform because there is no such thing as Short literals
   }
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:String implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:String implementations
     *
     * Note
     *
-    *  - requires the ValueEntryType to have a 'value' member that has a literal value
+    *   - requires the ValueEntryType to have a 'value' member that has a literal value
     */
   def findStringValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
@@ -58,12 +56,11 @@ object ValueEnumMacros {
     findValueEntriesImpl[ValueEntryType, String, String](c)(identity)
   }
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:Byte implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:Byte implementations
     *
     * Note
     *
-    *  - requires the ValueEntryType to have a 'value' member that has a literal value
+    *   - requires the ValueEntryType to have a 'value' member that has a literal value
     */
   def findByteValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
@@ -71,12 +68,11 @@ object ValueEnumMacros {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Byte](c)(_.toByte)
   }
 
-  /**
-    * Finds ValueEntryType-typed objects in scope that have literal value:Char implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal value:Char implementations
     *
     * Note
     *
-    *  - requires the ValueEntryType to have a 'value' member that has a literal value
+    *   - requires the ValueEntryType to have a 'value' member that has a literal value
     */
   def findCharValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
@@ -84,12 +80,13 @@ object ValueEnumMacros {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTChar, Char](c)(identity)
   }
 
-  /**
-    * The method that does the heavy lifting.
+  /** The method that does the heavy lifting.
     */
-  private[this] def findValueEntriesImpl[ValueEntryType: c.WeakTypeTag,
-                                         ValueType: ClassTag,
-                                         ProcessedValue](c: Context)(
+  private[this] def findValueEntriesImpl[
+      ValueEntryType: c.WeakTypeTag,
+      ValueType: ClassTag,
+      ProcessedValue
+  ](c: Context)(
       processFoundValues: ValueType => ProcessedValue
   ): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
@@ -119,10 +116,11 @@ object ValueEnumMacros {
     EnumMacros.buildSeqExpr[ValueEntryType](c)(subclassSymbols)
   }
 
-  /**
-    * Returns a list of TreeWithVal (tree with value of type ProcessedValueType) for the given trees and transformation
+  /** Returns a list of TreeWithVal (tree with value of type ProcessedValueType) for the given trees
+    * and transformation
     *
-    * Will abort compilation if not all the trees provided have a literal value member/constructor argument
+    * Will abort compilation if not all the trees provided have a literal value member/constructor
+    * argument
     */
   private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](
       c: Context
@@ -155,13 +153,13 @@ object ValueEnumMacros {
          """.stripMargin
       )
     }
-    hasValueMember.collect {
-      case TreeWithMaybeVal(tree, Some(v)) => TreeWithVal(tree, v)
+    hasValueMember.collect { case TreeWithMaybeVal(tree, Some(v)) =>
+      TreeWithVal(tree, v)
     }
   }
 
-  /**
-    * Looks through the given trees and tries to find the proper value declaration/constructor argument.
+  /** Looks through the given trees and tries to find the proper value declaration/constructor
+    * argument.
     *
     * Aborts compilation if the value declaration/constructor is of the wrong type,
     */
@@ -175,7 +173,8 @@ object ValueEnumMacros {
     val valueTerm = ContextUtils.termName(c)("value")
     // go through all the trees
     memberTrees.map { declTree =>
-      val directMemberTrees = declTree.children.flatMap(_.children) // Things that are body-level, no lower
+      val directMemberTrees =
+        declTree.children.flatMap(_.children) // Things that are body-level, no lower
       val constructorTrees = {
         val immediate       = directMemberTrees // for 2.11+ this is enough
         val constructorName = ContextUtils.constructorName(c)
@@ -235,15 +234,14 @@ object ValueEnumMacros {
       }
 
       val values = valuesFromMembers ++ valuesFromConstructors
-      val processedValue = values.collectFirst {
-        case Some(v) => processFoundValues(v)
+      val processedValue = values.collectFirst { case Some(v) =>
+        processFoundValues(v)
       }
       TreeWithMaybeVal(declTree, processedValue)
     }
   }
 
-  /**
-    * Given a type, finds the constructor params lists for it
+  /** Given a type, finds the constructor params lists for it
     */
   private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](
       c: Context
@@ -253,8 +251,8 @@ object ValueEnumMacros {
     valueEntryTypeTpeMembers.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
   }
 
-  /**
-    * Ensures that we have unique values for trees, aborting otherwise with a message indicating which trees have the same symbol
+  /** Ensures that we have unique values for trees, aborting otherwise with a message indicating
+    * which trees have the same symbol
     */
   private[this] def ensureUnique[A](c: Context)(
       treeWithVals: Seq[TreeWithVal[c.universe.ModuleDef, A]]
@@ -262,8 +260,8 @@ object ValueEnumMacros {
     val membersWithValues = treeWithVals.map { treeWithVal =>
       treeWithVal.tree.symbol -> treeWithVal.value
     }
-    val groupedByValue = membersWithValues.groupBy(_._2).map {
-      case (k, v) => (k, v.map(_._1))
+    val groupedByValue = membersWithValues.groupBy(_._2).map { case (k, v) =>
+      (k, v.map(_._1))
     }
     val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
       groupedByValue.partition(_._2.size <= 1)

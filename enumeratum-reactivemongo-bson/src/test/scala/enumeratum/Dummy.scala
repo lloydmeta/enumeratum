@@ -1,8 +1,7 @@
 package enumeratum
 
-/**
-  *
-  * @author Alessandro Lacava (@lambdista)
+/** @author
+  *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 sealed trait Dummy extends EnumEntry

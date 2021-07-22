@@ -9,7 +9,8 @@ trait ScalacheckTest {
   self: FunSpecLike with ScalaCheckDrivenPropertyChecks with Matchers =>
 
   private implicit val arbSeed: Arbitrary[Seed] = Arbitrary(
-    Arbitrary.arbitrary[Long].map(Seed.apply))
+    Arbitrary.arbitrary[Long].map(Seed.apply)
+  )
 
   def test[BaseType, EnumType <: BaseType: Arbitrary: Cogen](label: String): Unit =
     describe(s"Cogen[$label]") {
@@ -34,14 +35,16 @@ trait ScalacheckTest {
       it("should preserve identity") {
         forAll { (seed: Seed, value: EnumType) =>
           Cogen[EnumType].contramap(identity[EnumType]).perturb(seed, value) should be(
-            Cogen[EnumType].perturb(seed, value))
+            Cogen[EnumType].perturb(seed, value)
+          )
         }
       }
 
       it("should preserve composition") {
         forAll { (seed: Seed, value: Int, f: Int => EnumType, g: Int => Int) =>
           Cogen[EnumType].contramap(f).contramap(g).perturb(seed, value) should be(
-            Cogen[EnumType].contramap(f compose g).perturb(seed, value))
+            Cogen[EnumType].contramap(f compose g).perturb(seed, value)
+          )
         }
       }
 

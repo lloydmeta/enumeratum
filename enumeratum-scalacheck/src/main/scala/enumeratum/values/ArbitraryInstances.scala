@@ -22,8 +22,9 @@ trait ArbitraryInstances {
   implicit def arbStringEnumEntry[EntryType <: StringEnumEntry: StringEnum]: Arbitrary[EntryType] =
     arbValueEnumEntry[String, EntryType]
 
-  private def arbValueEnumEntry[ValueType, EnumType <: ValueEnumEntry[ValueType]](
-      implicit valueEnum: ValueEnum[ValueType, EnumType]): Arbitrary[EnumType] =
+  private def arbValueEnumEntry[ValueType, EnumType <: ValueEnumEntry[ValueType]](implicit
+      valueEnum: ValueEnum[ValueType, EnumType]
+  ): Arbitrary[EnumType] =
     Arbitrary(Gen.oneOf(valueEnum.values))
 
 }

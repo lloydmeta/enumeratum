@@ -5,9 +5,8 @@ import scala.util.Success
 import org.scalatest.{FunSpec, Matchers}
 import reactivemongo.api.bson.{BSON, BSONDocument, BSONInteger, BSONString, BSONValue}
 
-/**
-  *
-  * @author Alessandro Lacava (@lambdista)
+/** @author
+  *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
@@ -22,7 +21,7 @@ class ReactiveMongoBsonEnumSpec extends FunSpec with Matchers {
 
       it("should work with valid keys") {
         val doc = BSONDocument("1" -> "foo", "2" -> "bar")
-        val map = Map(1            -> "foo", 2   -> "bar")
+        val map = Map(1 -> "foo", 2 -> "bar")
 
         doc.asTry[Map[Int, String]] shouldBe Success(map)
         BSON.writeDocument(map) shouldBe Success(doc)

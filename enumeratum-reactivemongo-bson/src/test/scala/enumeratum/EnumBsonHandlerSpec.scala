@@ -6,9 +6,8 @@ import reactivemongo.api.bson._
 
 import scala.util.Success
 
-/**
-  *
-  * @author Alessandro Lacava (@lambdista)
+/** @author
+  *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 class EnumBsonHandlerSpec extends FunSpec with Matchers {
@@ -105,9 +104,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
     def readTests(theReader: BSONReader[Dummy]): Unit = {
       it("should work with valid values") {
-        expectedReadSuccesses.foreach {
-          case (k, v) =>
-            theReader.readOpt(BSONString(k)).value shouldBe v
+        expectedReadSuccesses.foreach { case (k, v) =>
+          theReader.readOpt(BSONString(k)).value shouldBe v
         }
       }
 
@@ -120,9 +118,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
     def writeTests(theWriter: BSONWriter[Dummy]): Unit = {
       it("should write enum values to BSONString") {
-        expectedWrites.foreach {
-          case (k, v) =>
-            theWriter.writeTry(k) shouldBe Success(BSONString(v))
+        expectedWrites.foreach { case (k, v) =>
+          theWriter.writeTry(k) shouldBe Success(BSONString(v))
         }
       }
     }
@@ -155,9 +152,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
   ): Unit = describe(descriptor) {
     def readTests(theReader: KeyReader[Dummy]): Unit = {
       it("should work with valid keys") {
-        expectedReadSuccesses.foreach {
-          case (k, v) =>
-            theReader.readTry(k) shouldBe Success(v)
+        expectedReadSuccesses.foreach { case (k, v) =>
+          theReader.readTry(k) shouldBe Success(v)
         }
       }
 
@@ -170,8 +166,8 @@ class EnumBsonHandlerSpec extends FunSpec with Matchers {
 
     def writeTests(theWriter: KeyWriter[Dummy]): Unit = {
       it("should write enum values to String") {
-        expectedWrites.foreach {
-          case (k, v) => theWriter.writeTry(k) shouldBe Success(v)
+        expectedWrites.foreach { case (k, v) =>
+          theWriter.writeTry(k) shouldBe Success(v)
         }
       }
     }

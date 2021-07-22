@@ -2,19 +2,18 @@ package enumeratum
 
 import java.util.regex.Pattern
 
-/**
-  * Base type for an enum entry for [[Enum]]
+/** Base type for an enum entry for [[Enum]]
   *
   * By default, the entryName method used for serialising and deserialising Enum values uses
   * toString, but feel free to override to fit your needs.
   *
-  * Mix in the supplied stackable traits to convert the entryName to [[EnumEntry.Snakecase Snakecase]],
-  * [[EnumEntry.Uppercase Uppercase]], [[EnumEntry.Lowercase Lowercase]] etc.
+  * Mix in the supplied stackable traits to convert the entryName to
+  * [[EnumEntry.Snakecase Snakecase]], [[EnumEntry.Uppercase Uppercase]],
+  * [[EnumEntry.Lowercase Lowercase]] etc.
   */
 trait EnumEntry {
 
-  /**
-    * String representation of this Enum Entry.
+  /** String representation of this Enum Entry.
     *
     * Override in your implementation if needed
     */
@@ -58,8 +57,7 @@ object EnumEntry {
     (1499.862ns/call before vs 3.180ns/call for something like UpperHyphencase).
    */
 
-  /**
-    * Stackable trait to convert the entryName to Capital_Snake_Case .
+  /** Stackable trait to convert the entryName to Capital_Snake_Case .
     */
   trait CapitalSnakecase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -67,8 +65,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("_")
   }
 
-  /**
-    * Stackable trait to convert the entryName to Capital-Hyphen-Case.
+  /** Stackable trait to convert the entryName to Capital-Hyphen-Case.
     */
   trait CapitalHyphencase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -76,8 +73,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("-")
   }
 
-  /**
-    * Stackable trait to convert the entryName to Capital.Dot.Case.
+  /** Stackable trait to convert the entryName to Capital.Dot.Case.
     */
   trait CapitalDotcase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -85,8 +81,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(".")
   }
 
-  /**
-    * Stackable trait to convert the entryName to Capital Words.
+  /** Stackable trait to convert the entryName to Capital Words.
     */
   trait CapitalWords extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -94,8 +89,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(" ")
   }
 
-  /**
-    * Stackable trait to convert the entryName to CamelCase.
+  /** Stackable trait to convert the entryName to CamelCase.
     */
   trait Camelcase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -104,8 +98,7 @@ object EnumEntry {
       camel2WordArray(super.entryName).map(s => capitalise(s.toLowerCase)).mkString
   }
 
-  /**
-    * Stackable trait to convert the entryName to UPPERCASE.
+  /** Stackable trait to convert the entryName to UPPERCASE.
     */
   trait Uppercase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -113,8 +106,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = super.entryName.toUpperCase
   }
 
-  /**
-    * Stackable trait to convert the entryName to lowercase.
+  /** Stackable trait to convert the entryName to lowercase.
     */
   trait Lowercase extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -122,8 +114,7 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = super.entryName.toLowerCase
   }
 
-  /**
-    * Stackable trait to uncapitalise the first letter of the entryName.
+  /** Stackable trait to uncapitalise the first letter of the entryName.
     */
   trait Uncapitalised extends EnumEntry {
     override def entryName: String = stableEntryName
@@ -131,71 +122,66 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = uncapitalise(super.entryName)
   }
 
-  /**
-    * Stackable trait to convert the entryName to snake_case.
+  /** Stackable trait to convert the entryName to snake_case.
     */
   trait Snakecase extends EnumEntry with CapitalSnakecase with Lowercase
 
-  /**
-    * Stackable trait to convert the entryName to UPPER_SNAKE_CASE
+  /** Stackable trait to convert the entryName to UPPER_SNAKE_CASE
     */
   trait UpperSnakecase extends EnumEntry with CapitalSnakecase with Uppercase
 
-  /**
-    * Stackable trait to convert the entryName to hyphen-case.
+  /** Stackable trait to convert the entryName to hyphen-case.
     */
   trait Hyphencase extends EnumEntry with CapitalHyphencase with Lowercase
 
-  /**
-    * Stackable trait to convert the entryName to UPPER-HYPHEN-CASE.
+  /** Stackable trait to convert the entryName to UPPER-HYPHEN-CASE.
     */
   trait UpperHyphencase extends EnumEntry with CapitalHyphencase with Uppercase
 
-  /**
-    * Stackable trait to convert the entryName to dot.case
+  /** Stackable trait to convert the entryName to dot.case
     */
   trait Dotcase extends EnumEntry with CapitalDotcase with Lowercase
 
-  /**
-    * Stackable trait to convert the entryName to UPPER.DOT.CASE
+  /** Stackable trait to convert the entryName to UPPER.DOT.CASE
     */
   trait UpperDotcase extends EnumEntry with CapitalDotcase with Uppercase
 
-  /**
-    * Stackable trait to convert the entryName to words.
+  /** Stackable trait to convert the entryName to words.
     */
   trait Words extends EnumEntry with CapitalWords with Lowercase
 
-  /**
-    * Stackable trait to convert the entryName to UPPER WORDS.
+  /** Stackable trait to convert the entryName to UPPER WORDS.
     */
   trait UpperWords extends EnumEntry with CapitalWords with Uppercase
 
-  /**
-    * Stackable trait to convert the entryName to lowerCamelCase.
+  /** Stackable trait to convert the entryName to lowerCamelCase.
     */
   trait LowerCamelcase extends EnumEntry with Camelcase with Uncapitalised
 
-  /**
-    * Helper implicit class that holds enrichment methods
+  /** Helper implicit class that holds enrichment methods
     */
   implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A) extends AnyVal {
 
-    /**
-      * Checks if the current enum value is contained by the set of enum values in the parameter list.
+    /** Checks if the current enum value is contained by the set of enum values in the parameter
+      * list.
       *
-      * @param firstEntry First enum of the list.
-      * @param otherEnums Remaining enums.
-      * @return `true` if the current value is contained by the parameter list.
+      * @param firstEntry
+      *   First enum of the list.
+      * @param otherEnums
+      *   Remaining enums.
+      * @return
+      *   `true` if the current value is contained by the parameter list.
       */
     def in(firstEntry: A, otherEnums: A*): Boolean =
       in(firstEntry +: otherEnums)
 
-    /**
-      * Checks if the current enum value is contained by the set of enum values in the parameter list.
+    /** Checks if the current enum value is contained by the set of enum values in the parameter
+      * list.
       *
-      * @param entries First enum of the list.
-      * @return `true` if the current value is contained by the parameter list.
+      * @param entries
+      *   First enum of the list.
+      * @return
+      *   `true` if the current value is contained by the parameter list.
       */
     def in(entries: Seq[A]): Boolean = entries.contains(enumEntry)
   }

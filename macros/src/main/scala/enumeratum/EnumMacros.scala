@@ -8,8 +8,7 @@ import scala.util.control.NonFatal
 @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object EnumMacros {
 
-  /**
-    * Finds any [A] in the current scope and returns an expression for a list of them
+  /** Finds any [A] in the current scope and returns an expression for a list of them
     */
   def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
     import c.universe._
@@ -19,8 +18,7 @@ object EnumMacros {
     buildSeqExpr[A](c)(subclassSymbols)
   }
 
-  /**
-    * Given an A, provides its companion
+  /** Given an A, provides its companion
     */
   def materializeEnumImpl[A: c.WeakTypeTag](c: Context) = {
     import c.universe._
@@ -63,8 +61,7 @@ object EnumMacros {
     }
   }
 
-  /**
-    * Makes sure that we can work with the given type as an enum:
+  /** Makes sure that we can work with the given type as an enum:
     *
     * Aborts if the type is not sealed
     */
@@ -94,41 +91,41 @@ object EnumMacros {
     })
   }
 
-  /**
-    * Finds the actual trees in the current scope that implement objects of the given type
+  /** Finds the actual trees in the current scope that implement objects of the given type
     *
     * aborts compilation if:
     *
-    * - the implementations are not all objects
-    * - the current scope is not an object
+    *   - the implementations are not all objects
+    *   - the current scope is not an object
     */
   private[enumeratum] def enclosedSubClassTrees(c: Context)(
       typeSymbol: c.universe.Symbol
   ): Seq[c.universe.ModuleDef] = {
     import c.universe._
-    val enclosingBodySubClassTrees: List[Tree] = try {
-      val enclosingModule = c.enclosingClass match {
-        case md @ ModuleDef(_, _, _) => md
-        case _ =>
-          c.abort(
-            c.enclosingPosition,
-            "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
-          )
-      }
+    val enclosingBodySubClassTrees: List[Tree] =
       try {
-        enclosedSubClassTreesInModule(c)(typeSymbol, enclosingModule)
+        val enclosingModule = c.enclosingClass match {
+          case md @ ModuleDef(_, _, _) => md
+          case _ =>
+            c.abort(
+              c.enclosingPosition,
+              "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
+            )
+        }
+        try {
+          enclosedSubClassTreesInModule(c)(typeSymbol, enclosingModule)
+        } catch {
+          case NonFatal(e) =>
+            c.warning(
+              c.enclosingPosition,
+              s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
+            )
+            List.empty
+        }
       } catch {
         case NonFatal(e) =>
-          c.warning(
-            c.enclosingPosition,
-            s"Got an exception, indicating a possible bug in Enumeratum. Message: ${e.getMessage}"
-          )
-          List.empty
+          c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
       }
-    } catch {
-      case NonFatal(e) =>
-        c.abort(c.enclosingPosition, s"Unexpected error: ${e.getMessage}")
-    }
     if (isDocCompiler(c))
       enclosingBodySubClassTrees.flatMap {
         /*
@@ -137,19 +134,19 @@ object EnumMacros {
          That said, DocDef *should* be the only thing that passes the prior filter
          */
         case docDef if isDocDef(c)(docDef) => {
-          docDef.children.collect {
-            case m: ModuleDef => m
+          docDef.children.collect { case m: ModuleDef =>
+            m
           }
         }
         case moduleDef: ModuleDef => List(moduleDef)
-      } else
-      enclosingBodySubClassTrees.collect {
-        case m: ModuleDef => m
+      }
+    else
+      enclosingBodySubClassTrees.collect { case m: ModuleDef =>
+        m
       }
   }
 
-  /**
-    * Returns a sequence of symbols for objects that implement the given type
+  /** Returns a sequence of symbols for objects that implement the given type
     */
   private[enumeratum] def enclosedSubClasses(c: Context)(
       typeSymbol: c.universe.Symbol
@@ -157,8 +154,7 @@ object EnumMacros {
     enclosedSubClassTrees(c)(typeSymbol).map(_.symbol)
   }
 
-  /**
-    * Builds and returns an expression for an IndexedSeq containing the given symbols
+  /** Builds and returns an expression for an IndexedSeq containing the given symbols
     */
   @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   private[enumeratum] def buildSeqExpr[A: c.WeakTypeTag](c: Context)(
@@ -181,18 +177,16 @@ object EnumMacros {
     }
   }
 
-  /**
-    * Returns whether or not we are in doc mode.
+  /** Returns whether or not we are in doc mode.
     *
-    * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler
-    * for the sake of getting access to this class and doing an `isInstanceOf`
+    * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler for the
+    * sake of getting access to this class and doing an `isInstanceOf`
     */
   private[this] def isDocCompiler(c: Context): Boolean = {
     c.universe.getClass.toString.contains("doc.DocFactory")
   }
 
-  /**
-    * Returns whether or not a given tree is a DocDef
+  /** Returns whether or not a given tree is a DocDef
     *
     * DocDefs are not part of the public API, so we try to hack around it here.
     */

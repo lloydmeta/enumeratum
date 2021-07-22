@@ -2,9 +2,8 @@ package enumeratum.values
 
 import org.scalacheck.Cogen
 
-/**
-  * `FooEnum` context bounds are unused but can drastically reduce compilation time.
-  * See https://github.com/nrinaudo/kantan.codecs/blob/bb74def19e94ce4f14330100b467c3fc9271068d/enumeratum/core/src/main/scala/kantan/codecs/enumeratum/values/ValueEnumInstances.scala#L82
+/** `FooEnum` context bounds are unused but can drastically reduce compilation time. See
+  * https://github.com/nrinaudo/kantan.codecs/blob/bb74def19e94ce4f14330100b467c3fc9271068d/enumeratum/core/src/main/scala/kantan/codecs/enumeratum/values/ValueEnumInstances.scala#L82
   */
 trait CogenInstances {
 
@@ -27,6 +26,6 @@ trait CogenInstances {
     cogenEnumEntry[String, EnumType]
 
   private def cogenEnumEntry[ValueType: Cogen, EnumType <: ValueEnumEntry[ValueType]]
-    : Cogen[EnumType] = Cogen[ValueType].contramap(_.value)
+      : Cogen[EnumType] = Cogen[ValueType].contramap(_.value)
 
 }
