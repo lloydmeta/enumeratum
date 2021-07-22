@@ -165,7 +165,7 @@ trait Enum[A <: EnumEntry] {
     *   the member you want to check the index of
     * @return
     *   the index of the first element of values that is equal (as determined by ==) to member, or
-    *   -1, if none exists.
+    * -1, if none exists.
     */
   def indexOf(member: A): Int = valuesToIndex.getOrElse(member, -1)
 
