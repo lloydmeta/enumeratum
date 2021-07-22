@@ -5,6 +5,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 lazy val scala_2_11Version = "2.11.12"
 lazy val scala_2_12Version = "2.12.14"
 lazy val scala_2_13Version = "2.13.6"
+lazy val scala_3_01Version = "3.0.1"
 lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
 
 lazy val theScalaVersion = scala_2_12Version
@@ -195,14 +196,12 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .jsSettings(jsTestSettings: _*)
   .settings(commonWithPublishSettings: _*)
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
+  .settings(withMacrosCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
     name := "enumeratum-macros",
     version := Versions.Macros.head,
-    crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+    crossScalaVersions := scalaVersionsAll :+ scala_3_01Version, // eventually move this to aggregateProject once more 2.13 libs are out
+    libraryDependencies ++= macroDependencies(scalaVersion.value)
   )
 
 lazy val macrosJS  = macros.js
@@ -682,6 +681,60 @@ def withCompatUnmanagedSources(jsJvmCrossProject: Boolean,
     }
   } else {
     unmanagedMainDirsSetting
+  }
+}
+
+/**
+  * Helper function to add unmanaged source compat directories for different scala versions
+  */
+def withMacrosCompatUnmanagedSources(jsJvmCrossProject: Boolean,
+                                     includeTestSrcs: Boolean): Seq[Setting[_]] = {
+  def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
+    val base = if (jsJvmCrossProject) projectbase / ".." else projectbase
+    val compatDir = base / "compat" / "src" / (if (isMain) "main" else "test")
+    CrossVersion.partialVersion(scalaVersion) match {
+      case Some((2, scalaMinor))  =>
+        val majorSpecific =  Seq(compatDir / "scala-2")
+          .map(_.getCanonicalFile)
+        val minorSpecific = if (scalaMinor >= 13) {
+          Seq(compatDir / "scala-2.13")
+            .map(_.getCanonicalFile)
+        } else {
+          Seq(compatDir / "scala-2.11")
+            .map(_.getCanonicalFile)
+        }
+        majorSpecific ++ minorSpecific
+      case Some((3, _)) =>
+        Seq(compatDir / "scala-3")
+          .map(_.getCanonicalFile)
+      case _ => Nil
+    }
+  }
+
+  val unmanagedMainDirsSetting = Seq(
+    unmanagedSourceDirectories in Compile ++= {
+      compatDirs(projectbase = baseDirectory.value,
+                 scalaVersion = scalaVersion.value,
+                 isMain = true)
+    }
+  )
+  if (includeTestSrcs) {
+    unmanagedMainDirsSetting ++ {
+      unmanagedSourceDirectories in Test ++= {
+        compatDirs(projectbase = baseDirectory.value,
+                   scalaVersion = scalaVersion.value,
+                   isMain = false)
+      }
+    }
+  } else {
+    unmanagedMainDirsSetting
+  }
+}
+
+def macroDependencies(scalaVersion: String) = {
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, scalaMinor))  => Seq("org.scala-lang" % "scala-reflect" % scalaVersion)
+    case _ => Nil
   }
 }
 
