@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.data.Form
 import play.api.http.HttpVerbs
 import org.scalatest.OptionValues._
@@ -13,7 +14,7 @@ import enumeratum.helpers.ActionHelper
   *
   * Copyright 2016
   */
-trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: FunSpec with Matchers =>
+trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
   def testNumericPlayEnum[EntryType <: ValueEnumEntry[
     ValueType

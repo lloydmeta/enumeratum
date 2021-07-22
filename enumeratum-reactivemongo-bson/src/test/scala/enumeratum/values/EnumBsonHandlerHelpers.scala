@@ -2,14 +2,15 @@ package enumeratum.values
 
 import scala.util.Success
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import reactivemongo.api.bson._
 
 /** @author
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-trait EnumBsonHandlerHelpers { this: FunSpec with Matchers =>
+trait EnumBsonHandlerHelpers { this: AnyFunSpec with Matchers =>
 
   def testWriter[EntryType <: ValueEnumEntry[ValueType], ValueType](
       enumKind: String,

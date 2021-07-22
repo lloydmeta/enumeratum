@@ -1,8 +1,9 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
-class EnumJVMSpec extends FunSpec with Matchers {
+class EnumJVMSpec extends AnyFunSpec with Matchers {
 
   describe("findValues Vector") {
 

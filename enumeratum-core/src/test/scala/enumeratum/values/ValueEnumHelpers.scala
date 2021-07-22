@@ -2,13 +2,14 @@ package enumeratum.values
 
 import java.util.NoSuchElementException
 
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /** Created by Lloyd on 4/13/16.
   *
   * Copyright 2016
   */
-trait ValueEnumHelpers { this: FunSpec with Matchers =>
+trait ValueEnumHelpers { this: AnyFunSpec with Matchers =>
 
   /*
    * Generates tests for a given enum and groups the tests inside the given enumKind descriptor

@@ -4,9 +4,15 @@ import enumeratum.values.SlickValueEnumSupport
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time._
-import org.scalatest.{BeforeAndAfterAll, FreeSpec, Matchers}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class SlickEnumSupportSpec extends FreeSpec with ScalaFutures with Matchers with BeforeAndAfterAll {
+class SlickEnumSupportSpec
+    extends AnyFreeSpec
+    with ScalaFutures
+    with Matchers
+    with BeforeAndAfterAll {
 
   trait TrafficLightRepository extends SlickEnumSupport with SlickValueEnumSupport {
 

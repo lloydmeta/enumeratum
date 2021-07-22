@@ -1,13 +1,14 @@
 package enumeratum.values
 
 import enumeratum.values.BSONValueHandlers._
-import org.scalatest._
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /** @author
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-class EnumBsonHandlerSpec extends FunSpec with Matchers with EnumBsonHandlerHelpers {
+class EnumBsonHandlerSpec extends AnyFunSpec with Matchers with EnumBsonHandlerHelpers {
 
   describe(".reader") {
 

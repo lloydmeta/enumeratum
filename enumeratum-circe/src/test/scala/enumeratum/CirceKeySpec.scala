@@ -1,11 +1,12 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import cats.syntax.either._
 import io.circe.Json
 import io.circe.syntax._
 
-class CirceKeySpec extends FunSpec with Matchers {
+class CirceKeySpec extends AnyFunSpec with Matchers {
   describe("to JSON") {
     it("should work") {
       Map(ShirtSize.Small -> 5, ShirtSize.Large -> 10).asJson shouldBe Json.obj(

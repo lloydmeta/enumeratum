@@ -1,13 +1,14 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import argonaut._
 import Argonaut._
 
 /** Created by alonsodomin on 14/10/2016.
   */
-class ArgonautSpec extends FunSpec with Matchers {
+class ArgonautSpec extends AnyFunSpec with Matchers {
 
   describe("to JSON") {
     it("should work") {

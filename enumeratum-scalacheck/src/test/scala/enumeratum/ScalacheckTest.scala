@@ -2,11 +2,12 @@ package enumeratum
 
 import org.scalacheck.{Arbitrary, Cogen}
 import org.scalacheck.rng.Seed
-import org.scalatest.{FunSpecLike, Matchers}
+import org.scalatest.funspec.AnyFunSpecLike
+import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
 trait ScalacheckTest {
-  self: FunSpecLike with ScalaCheckDrivenPropertyChecks with Matchers =>
+  self: AnyFunSpecLike with ScalaCheckDrivenPropertyChecks with Matchers =>
 
   private implicit val arbSeed: Arbitrary[Seed] = Arbitrary(
     Arbitrary.arbitrary[Long].map(Seed.apply)

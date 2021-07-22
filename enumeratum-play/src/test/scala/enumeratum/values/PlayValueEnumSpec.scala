@@ -1,6 +1,7 @@
 package enumeratum.values
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsNumber, JsString}
 import EnumFormats.charFormat
 
@@ -8,7 +9,7 @@ import EnumFormats.charFormat
   *
   * Copyright 2016
   */
-class PlayValueEnumSpec extends FunSpec with Matchers with PlayValueEnumHelpers {
+class PlayValueEnumSpec extends AnyFunSpec with Matchers with PlayValueEnumHelpers {
 
   testNumericPlayEnum("LongPlayEnum", PlayContentType)
   testNumericPlayEnum("ShortPlayEnum", PlayDrinks)

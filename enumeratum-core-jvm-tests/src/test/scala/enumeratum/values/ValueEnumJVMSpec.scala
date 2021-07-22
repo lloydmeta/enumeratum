@@ -1,7 +1,8 @@
 package enumeratum.values
 
 import enumeratum.Eval
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.reflect.ClassTag
 import scala.util.Random
@@ -10,7 +11,7 @@ import scala.util.Random
   *
   * Copyright 2016
   */
-class ValueEnumJVMSpec extends FunSpec with Matchers {
+class ValueEnumJVMSpec extends AnyFunSpec with Matchers {
 
   private def stringGenerator =
     Random.alphanumeric.grouped(10).toStream.map(_.mkString.replaceAll("[0-9]", "")).distinct

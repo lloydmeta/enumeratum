@@ -1,10 +1,11 @@
 package enumeratum
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 import scala.language.experimental.macros
 
-class CompilationSpec extends FunSpec with Matchers {
+class CompilationSpec extends AnyFunSpec with Matchers {
 
   describe("sanity check") {
     it("should have proper members") {
