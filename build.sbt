@@ -701,17 +701,18 @@ def withCompatUnmanagedSources(
   }
 }
 
-/**
-  * Helper function to add unmanaged source compat directories for different scala versions
+/** Helper function to add unmanaged source compat directories for different scala versions
   */
-def withMacrosCompatUnmanagedSources(jsJvmCrossProject: Boolean,
-                                     includeTestSrcs: Boolean): Seq[Setting[_]] = {
+def withMacrosCompatUnmanagedSources(
+    jsJvmCrossProject: Boolean,
+    includeTestSrcs: Boolean
+): Seq[Setting[_]] = {
   def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
-    val base = if (jsJvmCrossProject) projectbase / ".." else projectbase
+    val base      = if (jsJvmCrossProject) projectbase / ".." else projectbase
     val compatDir = base / "compat" / "src" / (if (isMain) "main" else "test")
     CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, scalaMinor))  =>
-        val majorSpecific =  Seq(compatDir / "scala-2")
+      case Some((2, scalaMinor)) =>
+        val majorSpecific = Seq(compatDir / "scala-2")
           .map(_.getCanonicalFile)
         val minorSpecific = if (scalaMinor >= 13) {
           Seq(compatDir / "scala-2.13")
@@ -730,17 +731,21 @@ def withMacrosCompatUnmanagedSources(jsJvmCrossProject: Boolean,
 
   val unmanagedMainDirsSetting = Seq(
     unmanagedSourceDirectories in Compile ++= {
-      compatDirs(projectbase = baseDirectory.value,
-                 scalaVersion = scalaVersion.value,
-                 isMain = true)
+      compatDirs(
+        projectbase = baseDirectory.value,
+        scalaVersion = scalaVersion.value,
+        isMain = true
+      )
     }
   )
   if (includeTestSrcs) {
     unmanagedMainDirsSetting ++ {
       unmanagedSourceDirectories in Test ++= {
-        compatDirs(projectbase = baseDirectory.value,
-                   scalaVersion = scalaVersion.value,
-                   isMain = false)
+        compatDirs(
+          projectbase = baseDirectory.value,
+          scalaVersion = scalaVersion.value,
+          isMain = false
+        )
       }
     }
   } else {
@@ -750,8 +755,8 @@ def withMacrosCompatUnmanagedSources(jsJvmCrossProject: Boolean,
 
 def macroDependencies(scalaVersion: String) = {
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMinor))  => Seq("org.scala-lang" % "scala-reflect" % scalaVersion)
-    case _ => Nil
+    case Some((2, scalaMinor)) => Seq("org.scala-lang" % "scala-reflect" % scalaVersion)
+    case _                     => Nil
   }
 }
 
