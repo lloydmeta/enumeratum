@@ -9,8 +9,8 @@ lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_1
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion  = "3.1.1"
-lazy val scalacheckVersion = "1.14.3"
+lazy val scalaTestVersion  = "3.2.9"
+lazy val scalacheckVersion = "1.15.4"
 
 // Library versions
 lazy val reactiveMongoVersion = "1.0.0"
