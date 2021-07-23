@@ -201,7 +201,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings: _*)
   .jsSettings(jsTestSettings: _*)
   .settings(commonWithPublishSettings: _*)
-  .settings(withMacrosCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
   .settings(
     name    := "enumeratum-macros",
     version := Versions.Macros.head,
@@ -514,7 +514,7 @@ lazy val enumeratumCatsJvm = enumeratumCats.jvm
 
 lazy val commonSettings = Seq(
   organization       := "com.beachape",
-  scalafmtOnCompile  := true,
+//  scalafmtOnCompile  := true,
   scalaVersion       := theScalaVersion,
   crossScalaVersions := scalaVersionsAll
 ) ++
@@ -552,7 +552,6 @@ lazy val compilerSettings = Seq(
   },
   scalacOptions in (Compile, compile) ++= {
     val base = Seq(
-      "-Xlog-free-terms",
       "-encoding",
       "UTF-8", // yes, this is 2 args
       "-feature",
@@ -560,28 +559,35 @@ lazy val compilerSettings = Seq(
       "-language:higherKinds",
       "-language:implicitConversions",
       "-unchecked",
-      "-Xfatal-warnings",
-//      "-Ywarn-adapted-args",
-      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Xfuture"
+      "-Xfatal-warnings"
     )
     CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, m)) if m >= 13 =>
-        base.filterNot(flag =>
-          flag == "-Xfatal-warnings" || flag == "-Xfuture"
-        ) ++ // todo see how to disable deprecations in 2.13.x
+      case Some((2, m)) =>
+        val base_2 =
           Seq(
-            /*"-deprecation:false", */ "-Xlint:-unused,_"
+            "-Xlog-free-terms",
+            //      "-Ywarn-adapted-args",
+            "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+            "-Ywarn-numeric-widen",
+            "-Ywarn-value-discard",
+            "-Xfuture"
+          ) ++ base
+        if (m >= 13) {
+          base_2.filterNot(flag =>
+            flag == "-Xfatal-warnings" || flag == "-Xfuture"
+          ) ++ // todo see how to disable deprecations in 2.13.x
+            Seq(
+              /*"-deprecation:false", */ "-Xlint:-unused,_"
+            ) // unused-import breaks Circe Either shim
+        } else if (m >= 11) {
+          base_2 ++ Seq(
+            "-deprecation:false",
+            "-Xlint:-unused,_"
           ) // unused-import breaks Circe Either shim
-      case Some((2, m)) if m >= 12 =>
-        base ++ Seq(
-          "-deprecation:false",
-          "-Xlint:-unused,_"
-        ) // unused-import breaks Circe Either shim
-      case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
-      case _             => base ++ Seq("-Xlint")
+        } else {
+          base_2 ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
+        }
+      case _ => base
     }
   }
 )
@@ -677,58 +683,6 @@ def withCompatUnmanagedSources(
           .map(_.getCanonicalFile)
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.11")
-          .map(_.getCanonicalFile)
-      case _ => Nil
-    }
-  }
-
-  val unmanagedMainDirsSetting = Seq(
-    unmanagedSourceDirectories in Compile ++= {
-      compatDirs(
-        projectbase = baseDirectory.value,
-        scalaVersion = scalaVersion.value,
-        isMain = true
-      )
-    }
-  )
-  if (includeTestSrcs) {
-    unmanagedMainDirsSetting ++ {
-      unmanagedSourceDirectories in Test ++= {
-        compatDirs(
-          projectbase = baseDirectory.value,
-          scalaVersion = scalaVersion.value,
-          isMain = false
-        )
-      }
-    }
-  } else {
-    unmanagedMainDirsSetting
-  }
-}
-
-/** Helper function to add unmanaged source compat directories for different scala versions
-  */
-def withMacrosCompatUnmanagedSources(
-    jsJvmCrossProject: Boolean,
-    includeTestSrcs: Boolean
-): Seq[Setting[_]] = {
-  def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
-    val base      = if (jsJvmCrossProject) projectbase / ".." else projectbase
-    val compatDir = base / "compat" / "src" / (if (isMain) "main" else "test")
-    CrossVersion.partialVersion(scalaVersion) match {
-      case Some((2, scalaMinor)) =>
-        val majorSpecific = Seq(compatDir / "scala-2")
-          .map(_.getCanonicalFile)
-        val minorSpecific = if (scalaMinor >= 13) {
-          Seq(compatDir / "scala-2.13")
-            .map(_.getCanonicalFile)
-        } else {
-          Seq(compatDir / "scala-2.11")
-            .map(_.getCanonicalFile)
-        }
-        majorSpecific ++ minorSpecific
-      case Some((3, _)) =>
-        Seq(compatDir / "scala-3")
           .map(_.getCanonicalFile)
       case _ => Nil
     }
