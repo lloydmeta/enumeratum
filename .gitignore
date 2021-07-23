@@ -15,6 +15,7 @@ dist
 /RUNNING_PID
 /.settings
 .bsp
+.bloop
 
 #OSX
 .DS_Store

@@ -4,8 +4,7 @@ import enumeratum.EnumEntry.UpperHyphencase
 
 import scala.collection.immutable.IndexedSeq
 
-/**
-  * Created by Lloyd on 2/5/17.
+/** Created by Lloyd on 2/5/17.
   *
   * Copyright 2017
   */

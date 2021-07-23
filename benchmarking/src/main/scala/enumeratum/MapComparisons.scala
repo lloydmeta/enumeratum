@@ -7,8 +7,7 @@ import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 import testing.JAgeGroup
 
-/**
-  * Created by Lloyd on 2/6/17.
+/** Created by Lloyd on 2/6/17.
   *
   * Copyright 2017
   */
