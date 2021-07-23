@@ -7,13 +7,11 @@ import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
 import testing._
 
-/**
-  * Created by Lloyd on 2/6/17.
+/** Created by Lloyd on 2/6/17.
   *
   * Copyright 2017
   */
-/**
-  * Compares performance of Java's EnumSet, Scala's Set for JavaEnums and Enumeratum Enums
+/** Compares performance of Java's EnumSet, Scala's Set for JavaEnums and Enumeratum Enums
   */
 @State(Scope.Thread)
 @BenchmarkMode(Array(Mode.AverageTime))
