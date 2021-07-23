@@ -16,6 +16,7 @@ dist
 /.settings
 .bsp
 .bloop
+metals.sbt
 
 #OSX
 .DS_Store
