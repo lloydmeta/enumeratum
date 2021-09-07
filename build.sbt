@@ -13,7 +13,7 @@ lazy val scalaTestVersion = "3.2.9"
 
 // Library versions
 lazy val reactiveMongoVersion = "1.0.0"
-lazy val json4sVersion        = "3.6.6"
+lazy val json4sVersion        = "4.0.3"
 lazy val quillVersion         = "3.7.1"
 
 def theDoobieVersion(scalaVersion: String) =
