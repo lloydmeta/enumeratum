@@ -59,6 +59,6 @@ jobs:
           find $HOME/.sbt                              -name "*.lock"               -delete || true
       - name: Upload coverage to Codecov
         if: ${{ matrix.scala == '2.12.14' }}
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: true
