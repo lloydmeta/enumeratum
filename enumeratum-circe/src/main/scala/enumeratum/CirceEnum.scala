@@ -1,5 +1,5 @@
 package enumeratum
-import io.circe.{Decoder, Encoder}
+import io.circe.{Codec, Decoder, Encoder}
 
 /** Created by Lloyd on 4/14/16.
   *
@@ -45,5 +45,9 @@ trait CirceEnum[A <: EnumEntry] { this: Enum[A] =>
   /** Implicit Decoder for this enum
     */
   implicit val circeDecoder: Decoder[A] = Circe.decoder(this)
+
+  /** Implicit Codec for this enum
+    */
+  implicit val circeCodec: Codec[A] = Codec.from(circeDecoder, circeEncoder)
 
 }
