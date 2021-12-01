@@ -2,7 +2,7 @@ package enumeratum
 
 import cats.syntax.either._
 import io.circe.Decoder.Result
-import io.circe.{Encoder, Decoder, Json, HCursor, DecodingFailure, KeyEncoder, KeyDecoder}
+import io.circe.{Encoder, Codec, Decoder, Json, HCursor, DecodingFailure, KeyEncoder, KeyDecoder}
 
 /** Created by Lloyd on 4/14/16.
   *
@@ -76,6 +76,17 @@ object Circe {
         }
       }
     }
+
+  /** Returns a Codec for the given enum
+    */
+  def codec[A <: EnumEntry](enum: Enum[A]): Codec[A] =
+    Codec.from(decoder(enum), encoder(enum))
+
+  def codecLowercase[A <: EnumEntry](enum: Enum[A]): Codec[A] =
+    Codec.from(decoderLowercaseOnly(enum), encoderLowercase(enum))
+
+  def codecUppercase[A <: EnumEntry](enum: Enum[A]): Codec[A] =
+    Codec.from(decoderUppercaseOnly(enum), encoderUppercase(enum))
 
   /** Returns a KeyEncoder for the given enum
     */
