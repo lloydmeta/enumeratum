@@ -40,11 +40,6 @@ object Circe {
     }
   }
 
-  /** Returns a Codec for the provided ValueEnum
-   */
-  def codec[ValueType: Decoder: Encoder, EntryType <: ValueEnumEntry[ValueType]](enum: ValueEnum[ValueType, EntryType]): Codec[EntryType] =
-    Codec.from(decoder(enum), encoder(enum))
-
   def keyEncoder[EntryType <: ValueEnumEntry[String]](
       enum: ValueEnum[String, EntryType]
   ): KeyEncoder[EntryType] =

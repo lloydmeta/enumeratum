@@ -1,6 +1,6 @@
 package enumeratum.values
 
-import io.circe.{Codec, Decoder, Encoder, KeyDecoder, KeyEncoder}
+import io.circe.{Decoder, Encoder, KeyDecoder, KeyEncoder}
 
 /** Created by Lloyd on 4/14/16.
   *
@@ -16,10 +16,6 @@ sealed trait CirceValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   /** Implicit Decoder for this enum
     */
   implicit def circeDecoder: Decoder[EntryType]
-
-  /** Implicit Codec for this enum
-    */
-  implicit def circeCodec: Codec[EntryType] = Codec.from(circeDecoder, circeEncoder)
 }
 
 /** CirceEnum for IntEnumEntry
