@@ -523,7 +523,7 @@ object Greeting extends Enum[Greeting] with PlayJsonEnum[Greeting] {
 
 #### PlayJsonValueEnum
 
-There are `IntPlayJsonEnum`, `LongPlayJsonEnum`, and `ShortPlayJsonEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
+There are `IntPlayJsonValueEnum`, `LongPlayJsonValueEnum`, and `ShortPlayJsonValueEnum` traits for use with `IntEnumEntry`, `LongEnumEntry`, and
 `ShortEnumEntry` respectively. For example:
 
 ```scala
