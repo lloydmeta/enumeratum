@@ -16,6 +16,8 @@ dist
 /.settings
 .bsp
 .bloop
+.metals/
+.vscode/
 metals.sbt
 
 #OSX
