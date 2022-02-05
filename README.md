@@ -170,7 +170,7 @@ Nesting.values
 // => res0: scala.collection.immutable.IndexedSeq[Nesting] = Vector(Hello, GoodBye, Hi)
 ```
 
-For an interactive demo, checkout this [Scastie snippet](https://scastie.scala-lang.org/lloydmeta/AMXiGvzkR0CD5sgWXiW4bg).
+For an interactive demo, checkout this [Scastie snippet](https://scastie.scala-lang.org/ELNlwiZSRO61vxUHer4Ieg).
 
 ## More examples
 
