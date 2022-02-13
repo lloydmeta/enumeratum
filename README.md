@@ -35,6 +35,7 @@ Integrations are available for:
 - [Slick](http://slick.lightbend.com/): JVM only
 - [Quill](http://getquill.io): JVM and ScalaJS
 - [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
+- [Scalafix](https://github.com/OlegYch/enumeratum-scalafix)
 
 ### Table of Contents
 
