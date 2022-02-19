@@ -89,6 +89,14 @@ object EnumEntry {
     private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(" ")
   }
 
+  /** Stackable trait to convert the entryName to Capital Words.
+    */
+  trait CapitalColoncase extends EnumEntry {
+    override def entryName: String = stableEntryName
+
+    private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(":")
+  }
+
   /** Stackable trait to convert the entryName to CamelCase.
     */
   trait Camelcase extends EnumEntry {
@@ -157,6 +165,14 @@ object EnumEntry {
   /** Stackable trait to convert the entryName to lowerCamelCase.
     */
   trait LowerCamelcase extends EnumEntry with Camelcase with Uncapitalised
+
+  /** Stackable trait to convert the entryName to colon:case
+    */
+  trait Coloncase extends EnumEntry with CapitalColoncase with Lowercase
+
+  /** Stackable trait to convert the entryName to UPPER:COLON:CASE
+    */
+  trait UpperColoncase extends EnumEntry with CapitalColoncase with Uppercase
 
   /** Helper implicit class that holds enrichment methods
     */

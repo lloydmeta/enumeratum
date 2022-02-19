@@ -411,6 +411,18 @@ class EnumSpec extends AnyFunSpec with Matchers {
         CapitalWordsEnum.withName("Good Bye") shouldBe CapitalWordsEnum.GoodBye
         CapitalWordsEnum.withName("whisper good bye") shouldBe CapitalWordsEnum.WhisperGoodBye
 
+        ColonEnum.withName("hello") shouldBe ColonEnum.Hello
+        ColonEnum.withName("good:bye") shouldBe ColonEnum.GoodBye
+        ColonEnum.withName("SHOUT:GOOD:BYE") shouldBe ColonEnum.ShoutGoodBye
+
+        UpperColonEnum.withName("HELLO") shouldBe UpperColonEnum.Hello
+        UpperColonEnum.withName("GOOD:BYE") shouldBe UpperColonEnum.GoodBye
+        UpperColonEnum.withName("whisper:good:bye") shouldBe UpperColonEnum.WhisperGoodBye
+
+        CapitalColonEnum.withName("Hello") shouldBe CapitalColonEnum.Hello
+        CapitalColonEnum.withName("Good:Bye") shouldBe CapitalColonEnum.GoodBye
+        CapitalColonEnum.withName("whisper:good:bye") shouldBe CapitalColonEnum.WhisperGoodBye
+
         UpperEnum.withName("HELLO") shouldBe UpperEnum.Hello
         UpperEnum.withName("GOODBYE") shouldBe UpperEnum.GoodBye
         UpperEnum.withName("sike") shouldBe UpperEnum.Sike

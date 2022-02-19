@@ -164,6 +164,42 @@ object CapitalWordsEnum extends Enum[CapitalWordsEnum] {
 
 }
 
+sealed trait ColonEnum extends EnumEntry with Coloncase
+
+object ColonEnum extends Enum[ColonEnum] {
+
+  val values = findValues
+
+  case object Hello        extends ColonEnum
+  case object GoodBye      extends ColonEnum
+  case object ShoutGoodBye extends ColonEnum with Uppercase
+
+}
+
+sealed trait UpperColonEnum extends EnumEntry with UpperColoncase
+
+object UpperColonEnum extends Enum[UpperColonEnum] {
+
+  val values = findValues
+
+  case object Hello          extends UpperColonEnum
+  case object GoodBye        extends UpperColonEnum
+  case object WhisperGoodBye extends UpperColonEnum with Lowercase
+
+}
+
+sealed trait CapitalColonEnum extends EnumEntry with CapitalColoncase
+
+object CapitalColonEnum extends Enum[CapitalColonEnum] {
+
+  val values = findValues
+
+  case object Hello          extends CapitalColonEnum
+  case object GoodBye        extends CapitalColonEnum
+  case object WhisperGoodBye extends CapitalColonEnum with Lowercase
+
+}
+
 sealed trait UpperEnum extends EnumEntry with Uppercase
 
 object UpperEnum extends Enum[UpperEnum] {
