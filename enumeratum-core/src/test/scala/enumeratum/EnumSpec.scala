@@ -454,6 +454,21 @@ class EnumSpec extends AnyFunSpec with Matchers {
         MultiEnum.withName("two") shouldBe MultiEnum.Two
       }
     }
+    describe("entryName") {
+      it("should return the proper name with stackable traits") {
+        ColonEnum.Hello.entryName shouldBe "hello"
+        ColonEnum.GoodBye.entryName shouldBe "good:bye"
+        ColonEnum.ShoutGoodBye.entryName shouldBe "SHOUT:GOOD:BYE"
+
+        UpperColonEnum.Hello.entryName shouldBe "HELLO"
+        UpperColonEnum.GoodBye.entryName shouldBe "GOOD:BYE"
+        UpperColonEnum.WhisperGoodBye.entryName shouldBe "whisper:good:bye"
+
+        CapitalColonEnum.Hello.entryName shouldBe "Hello"
+        CapitalColonEnum.GoodBye.entryName shouldBe "Good:Bye"
+        CapitalColonEnum.WhisperGoodBye.entryName shouldBe "whisper:good:bye"
+      }
+    }
   }
 
   describe("indexOf") {
