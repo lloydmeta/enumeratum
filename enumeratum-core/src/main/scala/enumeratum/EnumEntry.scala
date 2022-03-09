@@ -160,7 +160,7 @@ object EnumEntry {
 
   /** Helper implicit class that holds enrichment methods
     */
-  implicit class EnumEntryOps[A <: EnumEntry](val enumEntry: A) extends AnyVal {
+  implicit class EnumEntryOps[A <: EnumEntry](private val enumEntry: A) extends AnyVal {
 
     /** Checks if the current enum value is contained by the set of enum values in the parameter
       * list.
