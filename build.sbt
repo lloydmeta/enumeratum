@@ -436,7 +436,7 @@ lazy val enumeratumQuill =
     // .jsSettings(jsTestSettings: _*) TODO re-enable once quill supports Scala.js 1.0 */,
     .settings(
       name               := "enumeratum-quill",
-      version            := "1.7.1-SNAPSHOT",
+      version            := "1.7.2-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
         Seq(
