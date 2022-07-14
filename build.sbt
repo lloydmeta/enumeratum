@@ -14,7 +14,7 @@ lazy val scalaTestVersion = "3.2.9"
 // Library versions
 lazy val reactiveMongoVersion = "1.0.0"
 lazy val json4sVersion        = "4.0.3"
-lazy val quillVersion         = "3.7.1"
+lazy val quillVersion         = "4.1.0"
 
 def theDoobieVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
