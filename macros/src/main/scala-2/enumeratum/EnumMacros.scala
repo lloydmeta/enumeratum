@@ -20,10 +20,11 @@ object EnumMacros {
 
   /** Given an A, provides its companion
     */
-  def materializeEnumImpl[A: c.WeakTypeTag](c: Context) = {
+  def materializeEnumImpl[A: c.WeakTypeTag](c: Context): c.Expr[A] = {
     import c.universe._
     val symbol          = weakTypeOf[A].typeSymbol
     val companionSymbol = ContextUtils.companion(c)(symbol)
+
     if (companionSymbol == NoSymbol) {
       c.abort(
         c.enclosingPosition,

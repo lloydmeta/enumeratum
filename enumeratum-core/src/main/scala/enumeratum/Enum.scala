@@ -1,7 +1,6 @@
 package enumeratum
 
 import scala.collection.immutable._
-import scala.language.experimental.macros
 
 /** All the cool kids have their own Enumeration implementation, most of which try to do so in the
   * name of implementing exhaustive pattern matching.
@@ -32,7 +31,7 @@ import scala.language.experimental.macros
   * @tparam A
   *   The sealed trait
   */
-trait Enum[A <: EnumEntry] {
+trait Enum[A <: EnumEntry] extends EnumCompat[A] {
 
   /** Map of [[A]] object names to [[A]] s
     */
@@ -169,13 +168,6 @@ trait Enum[A <: EnumEntry] {
     */
   def indexOf(member: A): Int = valuesToIndex.getOrElse(member, -1)
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  protected def findValues: IndexedSeq[A] = macro EnumMacros.findValuesImpl[A]
-
   private def buildNotFoundMessage(notFoundName: String): String = {
     s"$notFoundName is not a member of Enum ($existingEntriesString)"
   }
@@ -185,10 +177,4 @@ trait Enum[A <: EnumEntry] {
 
 }
 
-object Enum {
-
-  /** Finds the Enum companion object for a particular EnumEntry
-    */
-  implicit def materializeEnum[A <: EnumEntry]: Enum[A] = macro EnumMacros.materializeEnumImpl[A]
-
-}
+object Enum extends EnumCompanion

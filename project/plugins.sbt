@@ -2,7 +2,7 @@ resolvers ++= Seq(
   Classpaths.sbtPluginReleases
 )
 
-addSbtPlugin("org.scalameta"       % "sbt-scalafmt"             % "2.4.0")
+addSbtPlugin("org.scalameta"       % "sbt-scalafmt"             % "2.4.6")
 addSbtPlugin("org.scoverage"       % "sbt-scoverage"            % "1.8.2")
 addSbtPlugin("org.scoverage"       % "sbt-coveralls"            % "1.2.7")
 addSbtPlugin("com.typesafe.sbt"    % "sbt-git"                  % "1.0.0")

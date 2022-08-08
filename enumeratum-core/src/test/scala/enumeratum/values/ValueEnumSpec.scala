@@ -36,8 +36,11 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
     it("should work for IntEnums") {
       def findCompanion[EntryType <: IntEnumEntry: IntEnum](entry: EntryType) =
         implicitly[IntEnum[EntryType]]
+
       val companion = findCompanion(LibraryItem.Magazine: LibraryItem)
+
       companion shouldBe LibraryItem
+      IntEnum.materialiseIntValueEnum[LibraryItem] shouldBe LibraryItem
       companion.values should contain(LibraryItem.Magazine)
     }
 

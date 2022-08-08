@@ -3,68 +3,74 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_11Version = "2.11.12"
-lazy val scala_2_12Version = "2.12.14"
-lazy val scala_2_13Version = "2.13.6"
-lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version)
+lazy val scala_2_12Version = "2.12.16"
+lazy val scala_2_13Version = "2.13.8"
+lazy val scala_3Version = "3.2.1-RC1-bin-20220705-9bb3108-NIGHTLY" // Fix not yet available in RC or stable version: https://github.com/lampepfl/dotty/issues/12498
+lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
 
 lazy val scalaTestVersion = "3.2.9"
 
 // Library versions
-lazy val reactiveMongoVersion = "1.0.0"
+lazy val reactiveMongoVersion = "1.0.0-RC6"
 lazy val json4sVersion        = "4.0.3"
 lazy val quillVersion         = "4.1.0"
 
 def theDoobieVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "1.0.0-RC2"
-    case Some((2, scalaMajor)) if scalaMajor == 11 => "0.7.1"
+    case Some((2, scalaMajor)) if scalaMajor <= 11 => "0.7.1"
+    case Some(_) => "1.0.0-RC2"
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Doobie")
   }
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "6.3.0"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.5"
+    case Some(_) => "6.3.0"
+
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Argonaut")
   }
 
 def thePlayVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.8.0"
+    case Some((3, _)) => "2.8.0"
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Play")
   }
 
 def theSlickVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "3.3.3"
+    case Some((2, scalaMajor)) if scalaMajor <= 11 => "3.3.3"
+    case Some(_) => "3.3.3"
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Slick")
   }
 
 def theCatsVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.6.1"
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.0.0"
+    case Some((2, scalaMajor)) if scalaMajor <= 11 => "2.0.0"
+    case Some(_) => "2.6.1"
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Cats")
   }
 
 def thePlayJsonVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.9.0"
+    case Some((2, scalaMajor)) if scalaMajor <= 11 => "2.7.3"
     // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
-    case Some((2, scalaMajor)) if scalaMajor >= 11 => "2.7.3"
+
+    case Some(_) => "2.9.0"
     case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-json")
   }
 
 def theCirceVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
+    case Some((3, _)) => "0.14.1"
     case Some((2, scalaMajor)) if scalaMajor >= 12 => "0.14.1"
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "0.11.1"
     case _ =>
@@ -81,7 +87,7 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
   case _ =>
-    throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion")
+    throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-test")
 }
 
 lazy val baseProjectRefs =
@@ -197,39 +203,63 @@ lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM)
 lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("macros"))
-  .settings(testSettings: _*)
-  .jsSettings(jsTestSettings: _*)
-  .settings(commonWithPublishSettings: _*)
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false): _*)
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(withCompatUnmanagedSources(
+    jsJvmCrossProject = true,
+    includeTestSrcs = false))
   .settings(
     name    := "enumeratum-macros",
     version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+    libraryDependencies ++= {
+      if (scalaBinaryVersion.value startsWith "2.") {
+        Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+      } else {
+        Seq(
+          "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % Provided
+        )
+      }
+    }
   )
 
 lazy val macrosJS  = macros.js
 lazy val macrosJVM = macros.jvm
+
+lazy val devMacros = sys.props.get("enumeratum.devMacros").nonEmpty
 
 // Aggregates core
 lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM)
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-core"))
-  .settings(testSettings: _*)
-  .jsSettings(jsTestSettings: _*)
-  .settings(commonWithPublishSettings: _*)
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .settings(commonWithPublishSettings)
   .settings(
-    name                                  := "enumeratum",
-    version                               := Versions.Core.head,
-    crossScalaVersions                    := scalaVersionsAll,
-    libraryDependencies += "com.beachape" %% "enumeratum-macros" % Versions.Macros.stable
+    name                := "enumeratum",
+    version             := Versions.Core.head,
+    crossScalaVersions  := scalaVersionsAll,
+    libraryDependencies ++= {
+      if (devMacros) {
+        Seq.empty
+      } else {
+        Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.stable)
+      }
+    }
   )
-// .dependsOn(macros) // used for testing macros
-lazy val coreJS  = core.js
-lazy val coreJVM = core.jvm
+
+def configureWithMacro(m: Project): Project => Project = { p =>
+  if (devMacros) { // used for testing macros
+    p.dependsOn(m)
+  } else {
+    p
+  }
+}
+
+lazy val coreJS  = core.js.configure(configureWithMacro(macrosJS))
+lazy val coreJVM = core.jvm.configure(configureWithMacro(macrosJVM))
 
 lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
 // Project models used in test for some subprojects
@@ -316,8 +346,8 @@ lazy val enumeratumPlayJsonJs  = enumeratumPlayJson.js
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
 
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(testSettings: _*)
+  .settings(commonWithPublishSettings)
+  .settings(testSettings)
   .settings(
     version            := "1.7.1-SNAPSHOT",
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
@@ -329,16 +359,18 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
         scalaTestPlay(scalaVersion.value)
       )
   )
-  .settings(withCompatUnmanagedSources(jsJvmCrossProject = false, includeTestSrcs = true): _*)
+  .settings(withCompatUnmanagedSources(
+    jsJvmCrossProject = false,
+    includeTestSrcs = true))
   .dependsOn(enumeratumPlayJsonJvm % "compile->compile;test->test")
 
 lazy val circeAggregate = aggregateProject("circe", enumeratumCirceJs, enumeratumCirceJvm)
 lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-circe"))
-  .settings(commonWithPublishSettings: _*)
-  .settings(testSettings: _*)
-  .jsSettings(jsTestSettings: _*)
+  .settings(commonWithPublishSettings)
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
   .settings(
     name    := "enumeratum-circe",
     version := "1.7.1-SNAPSHOT",
@@ -552,8 +584,7 @@ lazy val compilerSettings = Seq(
     }
   },
   scalacOptions in (Compile, compile) ++= {
-    val base = Seq(
-      "-Xlog-free-terms",
+    val minimal = Seq(
       "-encoding",
       "UTF-8", // yes, this is 2 args
       "-feature",
@@ -561,13 +592,24 @@ lazy val compilerSettings = Seq(
       "-language:higherKinds",
       "-language:implicitConversions",
       "-unchecked",
-      "-Xfatal-warnings",
-//      "-Ywarn-adapted-args",
-      "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Xfuture"
+      "-Xfatal-warnings"
     )
+
+    val base = {
+      if (scalaBinaryVersion.value == "3") {
+        minimal
+      } else {
+        minimal ++ Seq(
+          // "-Ywarn-adapted-args",
+          "-Xlog-free-terms",
+          "-Ywarn-dead-code", // N.B. doesn't work well with the ??? hole
+          "-Ywarn-numeric-widen",
+          "-Ywarn-value-discard",
+          "-Xfuture"
+        )
+      }
+    }
+
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, m)) if m >= 13 =>
         base.filterNot(flag =>
@@ -576,13 +618,16 @@ lazy val compilerSettings = Seq(
           Seq(
             /*"-deprecation:false", */ "-Xlint:-unused,_"
           ) // unused-import breaks Circe Either shim
+
       case Some((2, m)) if m >= 12 =>
         base ++ Seq(
           "-deprecation:false",
           "-Xlint:-unused,_"
         ) // unused-import breaks Circe Either shim
+
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
-      case _             => base ++ Seq("-Xlint")
+      case Some((2, _)) => base ++ Seq("-Xlint")
+      case _ => base
     }
   }
 )
@@ -672,13 +717,21 @@ def withCompatUnmanagedSources(
 ): Seq[Setting[_]] = {
   def compatDirs(projectbase: File, scalaVersion: String, isMain: Boolean) = {
     val base = if (jsJvmCrossProject) projectbase / ".." else projectbase
+    val cat = if (isMain) "main" else "test"
+
     CrossVersion.partialVersion(scalaVersion) match {
+      case Some((3, _)) =>
+        Seq(base / "compat" / "src" / cat / "scala-3")
+          .map(_.getCanonicalFile)
+
       case Some((2, scalaMajor)) if scalaMajor >= 13 =>
-        Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.13")
+        Seq(base / "compat" / "src" / cat / "scala-2.13")
           .map(_.getCanonicalFile)
+
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(base / "compat" / "src" / (if (isMain) "main" else "test") / "scala-2.11")
+        Seq(base / "compat" / "src" / cat / "scala-2.11")
           .map(_.getCanonicalFile)
+
       case _ => Nil
     }
   }

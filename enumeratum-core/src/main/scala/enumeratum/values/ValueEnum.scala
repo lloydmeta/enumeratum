@@ -1,9 +1,6 @@
 package enumeratum.values
 
-import enumeratum.{EnumMacros, ValueEnumMacros}
-
-import scala.collection.immutable._
-import scala.language.experimental.macros
+import _root_.enumeratum.Enum
 
 /** Base trait for a Value-based enums.
   *
@@ -80,79 +77,25 @@ sealed trait ValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
  * and macro invocations cannot provide implementations for a super class's abstract method
  */
 
-object IntEnum {
-
-  /** Materializes an IntEnum for a given IntEnumEntry
-    */
-  implicit def materialiseIntValueEnum[EntryType <: IntEnumEntry]: IntEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object IntEnum extends IntEnumCompanion
 
 /** Value enum with [[IntEnumEntry]] entries
   */
-trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] {
+trait IntEnum[A <: IntEnumEntry] extends ValueEnum[Int, A] with IntEnumCompat[A]
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findIntValueEntriesImpl[A]
-
-}
-
-object LongEnum {
-
-  /** Materializes a LongEnum for an scope LongEnumEntry
-    */
-  implicit def materialiseLongValueEnum[EntryType <: LongEnumEntry]: LongEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object LongEnum extends LongEnumCompanion
 
 /** Value enum with [[LongEnumEntry]] entries
   */
-trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] {
+trait LongEnum[A <: LongEnumEntry] extends ValueEnum[Long, A] with LongEnumCompat[A]
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findLongValueEntriesImpl[A]
-}
-
-object ShortEnum {
-
-  /** Materializes a ShortEnum for an in-scope ShortEnumEntry
-    */
-  implicit def materialiseShortValueEnum[EntryType <: ShortEnumEntry]: ShortEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object ShortEnum extends ShortEnumCompanion
 
 /** Value enum with [[ShortEnumEntry]] entries
   */
-trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] {
+trait ShortEnum[A <: ShortEnumEntry] extends ValueEnum[Short, A] with ShortEnumCompat[A]
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  final protected def findValues: IndexedSeq[A] =
-    macro ValueEnumMacros.findShortValueEntriesImpl[A]
-}
-
-object StringEnum {
-
-  /** Materializes a StringEnum for an in-scope StringEnumEntry
-    */
-  implicit def materialiseStringValueEnum[EntryType <: StringEnumEntry]: StringEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object StringEnum extends StringEnumCompanion
 
 /** Value enum with [[StringEnumEntry]] entries
   *
@@ -162,25 +105,9 @@ object StringEnum {
   * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on
   * values.
   */
-trait StringEnum[A <: StringEnumEntry] extends ValueEnum[String, A] {
+trait StringEnum[A <: StringEnumEntry] extends ValueEnum[String, A] with StringEnumCompat[A]
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  final protected def findValues: IndexedSeq[A] =
-    macro ValueEnumMacros.findStringValueEntriesImpl[A]
-}
-
-object ByteEnum {
-
-  /** Materializes a ByteEnum for an in-scope ByteEnumEntry
-    */
-  implicit def materialiseByteValueEnum[EntryType <: ByteEnumEntry]: ByteEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object ByteEnum extends ByteEnumCompanion
 
 /** Value enum with [[ByteEnumEntry]] entries
   *
@@ -190,24 +117,9 @@ object ByteEnum {
   * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on
   * values.
   */
-trait ByteEnum[A <: ByteEnumEntry] extends ValueEnum[Byte, A] {
+trait ByteEnum[A <: ByteEnumEntry] extends ValueEnum[Byte, A] with ByteEnumCompat[A]
 
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findByteValueEntriesImpl[A]
-}
-
-object CharEnum {
-
-  /** Materializes a CharEnum for an in-scope CharEnumEntry
-    */
-  implicit def materialiseCharValueEnum[EntryType <: CharEnumEntry]: CharEnum[EntryType] =
-    macro EnumMacros.materializeEnumImpl[EntryType]
-
-}
+object CharEnum extends CharEnumCompanion
 
 /** Value enum with [[CharEnumEntry]] entries
   *
@@ -217,12 +129,4 @@ object CharEnum {
   * Note that uniqueness is only guaranteed if you do not do any runtime string manipulation on
   * values.
   */
-trait CharEnum[A <: CharEnumEntry] extends ValueEnum[Char, A] {
-
-  /** Method that returns a Seq of [[A]] objects that the macro was able to find.
-    *
-    * You will want to use this in some way to implement your [[values]] method. In fact, if you
-    * aren't using this method...why are you even bothering with this lib?
-    */
-  final protected def findValues: IndexedSeq[A] = macro ValueEnumMacros.findCharValueEntriesImpl[A]
-}
+trait CharEnum[A <: CharEnumEntry] extends ValueEnum[Char, A] with CharEnumCompat[A]
