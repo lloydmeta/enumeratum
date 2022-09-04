@@ -2,32 +2,36 @@ package enumeratum
 
 import scala.reflect.ClassTag
 
-import scala.quoted.{Expr, Quotes, Type}
+import scala.deriving.Mirror
+import scala.quoted.{Expr, FromExpr, Quotes, Type}
 
 import enumeratum.values.AllowAlias
 
+/** @define valueEntryTypeNote
+  *   Note, requires the ValueEntryType to have a 'value' member that has a literal value.
+  */
 @SuppressWarnings(Array("org.wartremover.warts.StringPlusAny"))
 object ValueEnumMacros {
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:Int implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: Int` implementations.
     *
-    * Note, requires the ValueEntryType to have a 'value' member that has a literal value
+    * $valueEntryTypeNote
     */
   def findIntValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Int](identity)
+    findValueEntriesImpl[ValueEntryType, Int]
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:Long implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: Long` implementations.
     *
-    * Note, requires the ValueEntryType to have a 'value' member that has a literal value
+    * $valueEntryTypeNote
     */
   def findLongValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTLong, Long](identity)
+    findValueEntriesImpl[ValueEntryType, Long]
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:Short implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: Short` implementations.
     *
     * Note
     *
@@ -37,11 +41,9 @@ object ValueEnumMacros {
   def findShortValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](
-      _.toShort
-    ) // do a transform because there is no such thing as Short literals
+    findValueEntriesImpl[ValueEntryType, Short]
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:String implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: String` implementations.
     *
     * Note
     *
@@ -50,9 +52,9 @@ object ValueEnumMacros {
   def findStringValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, String, String](identity)
+    findValueEntriesImpl[ValueEntryType, String]
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:Byte implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: Byte` implementations.
     *
     * Note
     *
@@ -61,9 +63,9 @@ object ValueEnumMacros {
   def findByteValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Byte](_.toByte)
+    findValueEntriesImpl[ValueEntryType, Byte]
 
-  /** Finds ValueEntryType-typed objects in scope that have literal value:Char implementations
+  /** Finds ValueEntryType-typed objects in scope that have literal `value: Char` implementations.
     *
     * Note
     *
@@ -72,220 +74,192 @@ object ValueEnumMacros {
   def findCharValueEntriesImpl[ValueEntryType: Type](using
       Quotes
   ): Expr[IndexedSeq[ValueEntryType]] =
-    findValueEntriesImpl[ValueEntryType, ContextUtils.CTChar, Char](identity)
+    findValueEntriesImpl[ValueEntryType, Char]
+
+  private given ValueOfFromExpr[T <: Singleton](using Type[T]): FromExpr[ValueOf[T]] with {
+    def unapply(x: Expr[ValueOf[T]])(using q: Quotes): Option[ValueOf[T]] = {
+      import q.reflect.*
+
+      x match {
+        case '{ new ValueOf[T]($v) } =>
+          v.asTerm match {
+            case id: Ident => {
+              val cls         = Class.forName(id.symbol.fullName + '$')
+              val moduleField = cls.getFields.find(_.getName == f"MODULE$$")
+
+              moduleField.map { field =>
+                new ValueOf(field.get(null).asInstanceOf[T])
+              }
+            }
+
+            case _ =>
+              None
+          }
+
+        case _ =>
+          None
+      }
+    }
+  }
 
   /** The method that does the heavy lifting.
     */
-  private[this] def findValueEntriesImpl[
-      ValueEntryType,
-      ValueType: ClassTag,
-      ProcessedValue
-  ](
-      processFoundValues: ValueType => ProcessedValue
-  )(using tpe: Type[ValueEntryType], q: Quotes): Expr[IndexedSeq[ValueEntryType]] = {
+  private def findValueEntriesImpl[A, ValueType](using
+      q: Quotes,
+      tpe: Type[A],
+      valueTpe: Type[ValueType]
+  )(using cls: ClassTag[ValueType]): Expr[IndexedSeq[A]] = {
+    type TakeHead[Head <: A & Singleton, Tail <: Tuple] = Head *: Tail
+
+    type SumOf[X <: A, T <: Tuple] = Mirror.SumOf[X] {
+      type MirroredElemTypes = T
+    }
+
     import q.reflect.*
 
-    val repr       = TypeRepr.of[ValueEntryType](using tpe)
-    val typeSymbol = repr.typeSymbol
+    val ctx = q.asInstanceOf[scala.quoted.runtime.impl.QuotesImpl].ctx
 
-    /*
-    EnumMacros.validateType(c)(typeSymbol)
-    // Find the trees in the enclosing object that match the given ValueEntryType
-    val subclassTrees = EnumMacros.enclosedSubClassTrees(c)(typeSymbol)
-    // Find the parameters for the constructors of ValueEntryType
-    val valueEntryTypeConstructorsParams =
-      findConstructorParamsLists[ValueEntryType](c)
-    // Identify the value:ValueType implementations for each of the trees we found and process them if required
-    val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(
-      valueEntryTypeConstructorsParams,
-      subclassTrees,
-      processFoundValues
-    )
+    val yRetainTrees = ctx.settings.YretainTrees.valueIn(ctx.settingsState)
 
-    if (weakTypeOf[ValueEntryType] <:< c.typeOf[AllowAlias]) {
-      // Skip the uniqueness check
-    } else {
-      // Make sure the processed found value implementations are unique
-      ensureUnique[ProcessedValue](c)(treeWithVals)
+    if (!yRetainTrees) {
+      report.errorAndAbort("""Option -Yretain-trees must be set in scalacOptions.
+In SBT settings:
+
+  scalacOptions += "-Yretain-trees"
+""")
     }
 
-    // Finish by building our Sequence
-    val subclassSymbols = treeWithVals.map(_.tree.symbol)
-    EnumMacros.buildSeqExpr[ValueEntryType](c)(subclassSymbols)
-     */
+    val repr   = TypeRepr.of[A](using tpe)
+    val tpeSym = repr.typeSymbol
 
-    '{
-      IndexedSeq.empty[ValueEntryType] // TODO
-    }
-  }
+    val valueRepr = TypeRepr.of[ValueType]
 
-  /*
-  /** Returns a list of TreeWithVal (tree with value of type ProcessedValueType) for the given trees
-   * and transformation
-   *
-   * Will abort compilation if not all the trees provided have a literal value member/constructor
-   * argument
-   */
-  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](using Quotes)(
-      valueEntryCTorsParams: List[List[c.universe.Name]],
-      memberTrees: Seq[c.universe.ModuleDef],
-      processFoundValues: ValueType => ProcessedValueType
-  ): Seq[TreeWithVal[c.universe.ModuleDef, ProcessedValueType]] = {
-    val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(
-      valueEntryCTorsParams,
-      memberTrees,
-      processFoundValues
-    )
-    val (hasValueMember, lacksValueMember) =
-      treeWithValues.partition(_.maybeValue.isDefined)
-    if (lacksValueMember.nonEmpty) {
-      val classTag = implicitly[ClassTag[ValueType]]
-      val lacksValueMemberStr =
-        lacksValueMember.map(_.tree.symbol).mkString(", ")
-      c.abort(
-        c.enclosingPosition,
-        s"""
-           |It looks like not all of the members have a literal/constant 'value:${classTag.runtimeClass.getSimpleName}' declaration, namely: $lacksValueMemberStr.
-           |
-           |This can happen if:
-           |
-           |- The aforementioned members have their `value` supplied by a variable, or otherwise defined as a method
-           |
-           |If none of the above apply to your case, it's likely you have discovered an issue with Enumeratum, so please file an issue :)
-         """.stripMargin
-      )
-    }
-    hasValueMember.collect { case TreeWithMaybeVal(tree, Some(v)) =>
-      TreeWithVal(tree, v)
-    }
-  }
+    val ctorParams = tpeSym.primaryConstructor.paramSymss.flatten
 
-  /** Looks through the given trees and tries to find the proper value declaration/constructor
-   * argument.
-   *
-   * Aborts compilation if the value declaration/constructor is of the wrong type,
-   */
-  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(
-      valueEntryCTorsParams: List[List[c.universe.Name]],
-      memberTrees: Seq[c.universe.ModuleDef],
-      processFoundValues: ValueType => ProcessedValueType
-  ): Seq[TreeWithMaybeVal[c.universe.ModuleDef, ProcessedValueType]] = {
-    import c.universe._
-    val classTag  = implicitly[ClassTag[ValueType]]
-    val valueTerm = ContextUtils.termName(c)("value")
-    // go through all the trees
-    memberTrees.map { declTree =>
-      val directMemberTrees =
-        declTree.children.flatMap(_.children) // Things that are body-level, no lower
-      val constructorTrees = {
-        val immediate       = directMemberTrees // for 2.11+ this is enough
-        val constructorName = ContextUtils.constructorName(c)
-        // Sadly 2.10 has parent-class constructor calls nested inside a member..
-        val method =
-          directMemberTrees.collect { // for 2.10.x, we need to grab the body-level constructor method's trees
-            case t @ DefDef(_, `constructorName`, _, _, _, _) =>
-              t.collect { case t => t }
-          }.flatten
-        immediate ++ method
-      }.iterator
+    val enumFields = repr.typeSymbol.fieldMembers.flatMap { field =>
+      ctorParams.zipWithIndex.find { case (p, i) =>
+        p.name == field.name && (p.tree match {
+          case term: Term =>
+            term.tpe <:< valueRepr
 
-      val valuesFromMembers = directMemberTrees.iterator.collect {
-        case ValDef(_, termName, _, Literal(Constant(i: ValueType))) if termName == valueTerm =>
-          Some(i)
+          case _ =>
+            false
+        })
       }
+    }.toSeq
 
-      val NamedArg = ContextUtils.namedArg(c)
+    val (valueField, valueParamIndex): (Symbol, Int) = {
+      if (enumFields.size == 1) {
+        enumFields.headOption
+      } else {
+        enumFields.find(_._1.name == "value")
+      }
+    }.getOrElse {
+      Symbol.newVal(tpeSym, "value", valueRepr, Flags.Abstract, Symbol.noSymbol) -> 0
+    }
 
-      // Sadly 2.10 has parent-class constructor calls nested inside a member..
-      val valuesFromConstructors = constructorTrees.collect {
-        // The tree has a method call
-        case Apply(_, args) => {
-          val valueArguments: List[Option[ValueType]] =
-            valueEntryCTorsParams.collect {
-              // Find non-empty constructor param lists
-              case paramTermNames if paramTermNames.nonEmpty => {
-                val paramsWithArg = paramTermNames.zip(args)
-                paramsWithArg.collectFirst {
-                  // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
-                  case (`valueTerm`, Literal(Constant(i: ValueType))) => i
-                  // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the wrong type
-                  case (`valueTerm`, Literal(Constant(i))) =>
-                    c.abort(
-                      c.enclosingPosition,
-                      s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
-                    )
-                  /*
-   * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
-   */
-                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
-                    i
-                  /*
-   * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
-   */
-                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
-                    c.abort(
-                      c.enclosingPosition,
-                      s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
-                    )
-                }
+    type IsValue[T <: ValueType] = T
+
+    object ConstVal {
+      @annotation.tailrec
+      def unapply(tree: Tree): Option[Constant] = tree match {
+        case NamedArg(nme, v) if (nme == valueField.name) =>
+          unapply(v)
+
+        case ValDef(nme, _, Some(v)) if (nme == valueField.name) =>
+          unapply(v)
+
+        case lit @ Literal(const) if (lit.tpe <:< valueRepr) =>
+          Some(const)
+
+        case _ =>
+          None
+      }
+    }
+
+    @annotation.tailrec
+    def collect[T <: Tuple](
+        instances: List[Expr[A]],
+        values: Map[TypeRepr, ValueType]
+    )(using tupleTpe: Type[T]): Either[String, Expr[List[A]]] =
+      tupleTpe match {
+        case '[TakeHead[h, tail]] => {
+          val htpr = TypeRepr.of[h]
+
+          (for {
+            vof <- Expr.summon[ValueOf[h]]
+            constValue <- htpr.typeSymbol.tree match {
+              case ClassDef(_, _, spr, _, rhs) => {
+                val fromCtor = spr
+                  .collectFirst {
+                    case Apply(Select(New(id), _), args) if id.tpe <:< repr =>
+                      args
+                  }
+                  .flatMap(_.lift(valueParamIndex).collect { case ConstVal(const) =>
+                    const
+                  })
+
+                fromCtor
+                  .orElse(rhs.collectFirst { case ConstVal(v) => v })
+                  .flatMap { const =>
+                    cls.unapply(const.value)
+                  }
+
               }
+
+              case _ =>
+                Option.empty[ValueType]
             }
-          // We only want the first such constructor argument
-          valueArguments.collectFirst { case Some(v) => v }
+          } yield Tuple3(TypeRepr.of[h], '{ ${ vof }.value: A }, constValue)) match {
+            case Some((tpr, instance, value)) =>
+              collect[tail](instance :: instances, values + (tpr -> value))
+
+            case None =>
+              report.errorAndAbort(
+                s"Fails to check value entry ${htpr.show} for enum ${repr.show}"
+              )
+          }
+        }
+
+        case '[EmptyTuple] => {
+          val allowAlias = repr <:< TypeRepr.of[AllowAlias]
+
+          if (!allowAlias && values.values.toSet.size < values.size) {
+            val details = values
+              .map { case (sub, value) =>
+                s"${sub.show} = $value"
+              }
+              .mkString(", ")
+
+            Left(s"Values for ${valueField.name} are not discriminated subtypes: ${details}")
+          } else {
+            Right(Expr ofList instances.reverse)
+          }
         }
       }
 
-      val values = valuesFromMembers ++ valuesFromConstructors
-      val processedValue = values.collectFirst { case Some(v) =>
-        processFoundValues(v)
+    val result: Either[String, Expr[List[A]]] =
+      Expr.summon[Mirror.SumOf[A]] match {
+        case Some(sum) =>
+          sum.asTerm.tpe.asType match {
+            case '[SumOf[A, t]] =>
+              collect[t](List.empty, Map.empty)
+
+            case _ =>
+              Left(s"Invalid `Mirror.SumOf[${repr.show}]`")
+
+          }
+
+        case None =>
+          Left(s"Missing `Mirror.SumOf[${repr.show}]`")
       }
-      TreeWithMaybeVal(declTree, processedValue)
+
+    result match {
+      case Left(errorMsg) =>
+        report.errorAndAbort(errorMsg)
+
+      case Right(instances) =>
+        '{ IndexedSeq.empty ++ $instances }
     }
   }
-
-  /** Given a type, finds the constructor params lists for it
-   */
-  private[this] def findConstructorParamsLists[ValueEntryType: Type](using Quotes): List[List[c.universe.Name]] = {
-    val valueEntryTypeTpe        = implicitly[Type[ValueEntryType]].tpe
-    val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
-    valueEntryTypeTpeMembers.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
-  }
-
-  /** Ensures that we have unique values for trees, aborting otherwise with a message indicating
-   * which trees have the same symbol
-   */
-  private[this] def ensureUnique[A](c: Context)(
-      treeWithVals: Seq[TreeWithVal[c.universe.ModuleDef, A]]
-  ): Unit = {
-    val membersWithValues = treeWithVals.map { treeWithVal =>
-      treeWithVal.tree.symbol -> treeWithVal.value
-    }
-    val groupedByValue = membersWithValues.groupBy(_._2).map { case (k, v) =>
-      (k, v.map(_._1))
-    }
-    val (valuesWithOneSymbol, valuesWithMoreThanOneSymbol) =
-      groupedByValue.partition(_._2.size <= 1)
-    if (valuesWithOneSymbol.size != membersWithValues.toMap.keys.size) {
-      val formattedString = valuesWithMoreThanOneSymbol.toSeq.reverse.foldLeft("") {
-        case (acc, (k, v)) =>
-          acc ++ s"""$k has members [ ${v.mkString(", ")} ]\n  """
-      }
-      c.abort(
-        c.enclosingPosition,
-        s"""
-           |
-           |  It does not look like you have unique values in your ValueEnum.
-           |  Each of the following values correspond to more than one member:
-           |
-           |  $formattedString
-           |  Please check to make sure members have unique values.
-           |  """.stripMargin
-      )
-    }
-  }
-
-  // Helper case classes
-  private[this] case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
-  private[this] case class TreeWithVal[CTree, T](tree: CTree, value: T)
-   */
 }

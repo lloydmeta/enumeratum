@@ -1,7 +1,5 @@
 package enumeratum.values
 
-import _root_.enumeratum.Enum
-
 /** Base trait for a Value-based enums.
   *
   * Example:

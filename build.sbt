@@ -5,7 +5,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 lazy val scala_2_11Version = "2.11.12"
 lazy val scala_2_12Version = "2.12.16"
 lazy val scala_2_13Version = "2.13.8"
-lazy val scala_3Version = "3.2.1-RC1-bin-20220705-9bb3108-NIGHTLY" // Fix not yet available in RC or stable version: https://github.com/lampepfl/dotty/issues/12498
+lazy val scala_3Version = "3.2.1-RC1"
 lazy val scalaVersionsAll  = Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
@@ -628,6 +628,13 @@ lazy val compilerSettings = Seq(
       case Some((2, 11)) => base ++ Seq("-deprecation:false", "-Xlint", "-Ywarn-unused-import")
       case Some((2, _)) => base ++ Seq("-Xlint")
       case _ => base
+    }
+  },
+  Test / scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Seq("-Yretain-trees")
+    } else {
+      Seq.empty
     }
   }
 )

@@ -58,6 +58,9 @@ object EnumMacros:
   /** Makes sure that we can work with the given type as an enum:
     *
     * Aborts if the type is not sealed.
+    *
+    * @tparam T
+    *   the `Enum` type
     */
   private[enumeratum] def validateType[T](using q: Quotes, tpe: Type[T]): q.reflect.TypeRepr = {
     import q.reflect.*
@@ -75,8 +78,8 @@ object EnumMacros:
 
   /** Returns a sequence of symbols for objects that implement the given type
     *
-    * @tparam the
-    *   `Enum` type
+    * @tparam T
+    *   the `Enum` type
     * @param tpr
     *   the representation of type `T` (also specified by `tpe`)
     */
@@ -85,6 +88,7 @@ object EnumMacros:
   )(using tpe: Type[T]): List[q.reflect.TypeRepr] = {
     import q.reflect.*
 
+    // TODO: Use SumOf?
     given quotes: q.type = q
 
     @annotation.tailrec
@@ -173,6 +177,7 @@ object EnumMacros:
 
     tpr.classSymbol
       .flatMap { cls =>
+        // TODO: cls.typeMembers
         val types = subclasses(cls.children.map(_.tree), Nil)
 
         if (types.isEmpty) None else Some(types)

@@ -2,7 +2,7 @@ package enumeratum.values
 
 import scala.language.experimental.macros
 
-import _root_.enumeratum.{Enum, EnumMacros, ValueEnumMacros}
+import _root_.enumeratum.{EnumMacros, ValueEnumMacros}
 
 private[enumeratum] trait IntEnumCompanion {
 

@@ -61,14 +61,6 @@ trait Enum[A <: EnumEntry] extends EnumCompat[A] {
     */
   lazy final val valuesToIndex: Map[A, Int] = values.zipWithIndex.toMap
 
-  /** The sequence of values for your [[Enum]]. You will typically want to implement this in your
-    * extending class as a `val` so that `withName` and friends are as efficient as possible.
-    *
-    * Feel free to implement this however you'd like (including messing around with ordering, etc)
-    * if that fits your needs better.
-    */
-  def values: IndexedSeq[A]
-
   /** Tries to get an [[A]] by the supplied name. The name corresponds to the .name of the case
     * objects implementing [[A]]
     *
