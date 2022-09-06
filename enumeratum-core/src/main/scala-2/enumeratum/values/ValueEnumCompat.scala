@@ -2,6 +2,8 @@ package enumeratum.values
 
 import scala.language.experimental.macros
 
+import scala.collection.immutable.IndexedSeq
+
 import _root_.enumeratum.{EnumMacros, ValueEnumMacros}
 
 private[enumeratum] trait IntEnumCompanion {

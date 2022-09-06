@@ -1,5 +1,7 @@
 package enumeratum
 
+import scala.collection.immutable.IndexedSeq
+
 import scala.language.experimental.macros
 
 private[enumeratum] trait EnumCompat[A <: EnumEntry] { _: Enum[A] =>
