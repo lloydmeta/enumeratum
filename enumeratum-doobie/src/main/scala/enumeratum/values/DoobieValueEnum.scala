@@ -63,7 +63,7 @@ trait CharDoobieEnum[EntryType <: CharEnumEntry] extends DoobieValueEnum[Char, E
   this: ValueEnum[Char, EntryType] =>
 
   implicit val meta: Meta[EntryType] =
-    Meta[String].imap(str => withValue(str.charAt(0)))(enum => String.valueOf(enum.value))
+    Meta[String].imap(str => withValue(str.charAt(0)))(e => String.valueOf(e.value))
 }
 
 /** DoobieEnum for ByteEnumEntry

@@ -16,15 +16,6 @@ lazy val scalaTestVersion = "3.2.9"
 // Library versions
 lazy val reactiveMongoVersion = "1.1.0-RC7-SNAPSHOT"
 lazy val json4sVersion        = "4.0.3"
-lazy val quillVersion         = "4.1.0"
-
-def theDoobieVersion(scalaVersion: String) =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor <= 11 => "0.7.1"
-    case Some(_)                                   => "1.0.0-RC2"
-    case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Doobie")
-  }
 
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
@@ -41,14 +32,6 @@ def theSlickVersion(scalaVersion: String) =
     case Some(_)                                   => "3.3.3"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Slick")
-  }
-
-def theCatsVersion(scalaVersion: String) =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor <= 11 => "2.0.0"
-    case Some(_)                                   => "2.6.1"
-    case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Cats")
   }
 
 def thePlayJsonVersion(scalaVersion: String) =
@@ -393,7 +376,8 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
       val dep = "com.typesafe.play" %% "play" % "2.8.0"
 
       if (scalaBinaryVersion.value == "3") {
-        dep.exclude("org.scala-lang.modules", "*")
+        dep
+          .exclude("org.scala-lang.modules", "*")
           .exclude("com.typesafe.play", "play-json_2.13")
           .cross(CrossVersion.for3Use2_13)
       } else {
@@ -577,9 +561,18 @@ lazy val enumeratumQuill =
       version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
+        val (core, ver) = {
+          if (scalaBinaryVersion.value == "3") {
+            "quill-engine" -> "4.4.0"
+          } else {
+            "quill-core" -> "4.1.0"
+          }
+        }
+
         Seq(
-          "io.getquill" %%% "quill-core" % quillVersion,
-          "io.getquill" %%% "quill-sql"  % quillVersion % Test
+          "io.getquill" %%% core        % ver,
+          "io.getquill" %%% "quill-sql" % ver % Test,
+          scalaXmlTest.value
         )
       },
       libraryDependencies ++= {
@@ -589,15 +582,17 @@ lazy val enumeratumQuill =
           Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
         }
       },
-      dependencyOverrides ++= {
-        def pprintVersion(v: String) =
-          if (v startsWith "2.11") "0.5.4" else "0.5.5"
+      dependencyOverrides += {
+        val ver = scalaBinaryVersion.value match {
+          case "3"    => "0.7.3"
+          case "2.11" => "0.5.4"
+          case _      => "0.5.5"
+        }
 
-        Seq(
-          "com.lihaoyi" %%% "pprint" % pprintVersion(scalaVersion.value)
-        )
+        "com.lihaoyi" %%% "pprint" % ver
       }
     )
+
 // lazy val enumeratumQuillJs  = enumeratumQuill.js // TODO re-enable once quill supports Scala.js 1.0
 lazy val enumeratumQuillJvm = enumeratumQuill.jvm.configure(configureWithLocal(coreJVM))
 
@@ -607,10 +602,19 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version            := "1.7.2-SNAPSHOT",
+      version            := Versions.Macros.head,
       libraryDependencies += {
-        "org.tpolecat" %% "doobie-core" % theDoobieVersion(scalaVersion.value)
+        val ver = {
+          if (scalaBinaryVersion.value == "2.11") {
+            "0.7.1"
+          } else {
+            "1.0.0-RC2"
+          }
+        }
+
+        "org.tpolecat" %% "doobie-core" % ver
       },
+      libraryDependencies += scalaXmlTest.value,
       libraryDependencies ++= {
         if (useLocalVersion) {
           Seq.empty
@@ -655,8 +659,17 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
     name    := "enumeratum-cats",
     version := Versions.Core.head,
     libraryDependencies += {
-      "org.typelevel" %%% "cats-core" % theCatsVersion(scalaVersion.value)
+      val ver = {
+        if (scalaBinaryVersion.value == "2.11") {
+          "2.0.0"
+        } else {
+          "2.6.1"
+        }
+      }
+
+      "org.typelevel" %%% "cats-core" % ver
     },
+    libraryDependencies += scalaXmlTest.value,
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -837,17 +850,17 @@ val jsTestSettings = {
 
 lazy val benchmarking =
   Project(id = "benchmarking", base = file("benchmarking"))
-    .settings(commonWithPublishSettings: _*)
+    .settings(commonWithPublishSettings)
     .settings(
-      name         := "benchmarking",
-      crossVersion := CrossVersion.binary,
+      name                              := "benchmarking",
+      crossVersion                      := CrossVersion.binary,
+      libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21",
       // Do not publish
       publishArtifact := false,
       publishLocal    := {}
     )
     .dependsOn((baseProjectRefs ++ integrationProjectRefs).map(ClasspathDependency(_, None)): _*)
     .enablePlugins(JmhPlugin)
-    .settings(libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.21")
 
 /** Helper function to add unmanaged source compat directories for different scala versions
   */
