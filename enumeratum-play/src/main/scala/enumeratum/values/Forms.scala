@@ -7,29 +7,17 @@ import play.api.data.{FormError, Mapping, Forms => PlayForms}
   *
   * Copyright 2016
   */
-object Forms {
+object Forms extends FormsCompat {
 
-  /** Returns a [[ValueEnum]] mapping for Play form fields
-    */
-  def enum[ValueType, EntryType <: ValueEnumEntry[ValueType], EnumType <: ValueEnum[
-    ValueType,
-    EntryType
-  ]](baseFormatter: Formatter[ValueType])(
-      enum: EnumType
-  ): Mapping[EntryType] = {
-    PlayForms.of(formatter(baseFormatter)(enum))
-  }
-
-  private[this] def formatter[ValueType, EntryType <: ValueEnumEntry[
+  protected[this] def formatter[ValueType, EntryType <: ValueEnumEntry[
     ValueType
   ], EnumType <: ValueEnum[ValueType, EntryType]](
       baseFormatter: Formatter[ValueType]
-  )(enum: EnumType) = {
+  )(@deprecatedName(Symbol("enum")) e: EnumType) = {
     new Formatter[EntryType] {
       def bind(key: String, data: Map[String, String]): Either[Seq[FormError], EntryType] =
         baseFormatter.bind(key, data).right.flatMap { s =>
-          val maybeBound = enum.withValueOpt(s)
-          maybeBound match {
+          e.withValueOpt(s) match {
             case Some(obj) => Right(obj)
             case None      => Left(Seq(FormError(key, "error.enum", Nil)))
           }

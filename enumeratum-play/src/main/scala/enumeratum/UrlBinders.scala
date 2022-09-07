@@ -9,66 +9,73 @@ object UrlBinders {
 
   /** Builds a [[PathBindable]] A for a given Enum A
     *
-    * @param enum
+    * @param e
     *   The enum
     * @param insensitive
     *   bind in a case-insensitive way, defaults to false
     */
-  def pathBinder[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): PathBindable[A] =
+  def pathBinder[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      insensitive: Boolean = false
+  ): PathBindable[A] =
     new PathBindable[A] {
       def unbind(key: String, value: A): String = value.entryName
       def bind(key: String, value: String): Either[String, A] = {
         val maybeBound =
-          if (insensitive) enum.withNameInsensitiveOption(value)
-          else enum.withNameOption(value)
+          if (insensitive) e.withNameInsensitiveOption(value)
+          else e.withNameOption(value)
         maybeBound match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
+          case _       => Left(s"Unknown value supplied for ${e.toString} '$value'")
         }
       }
     }
 
   /** Builds a [[PathBindable]] A for a given Enum A that transforms to lower case
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def pathBinderLowercaseOnly[A <: EnumEntry](enum: Enum[A]): PathBindable[A] =
+  def pathBinderLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): PathBindable[A] =
     new PathBindable[A] {
       def unbind(key: String, value: A): String = value.entryName.toLowerCase
       def bind(key: String, value: String): Either[String, A] = {
-        enum.withNameLowercaseOnlyOption(value) match {
+        e.withNameLowercaseOnlyOption(value) match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
+          case _       => Left(s"Unknown value supplied for ${e.toString} '$value'")
         }
       }
     }
 
   /** Builds a [[PathBindable]] A for a given Enum A that transforms to upper case
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def pathBinderUppercaseOnly[A <: EnumEntry](enum: Enum[A]): PathBindable[A] =
+  def pathBinderUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): PathBindable[A] =
     new PathBindable[A] {
       def unbind(key: String, value: A): String = value.entryName.toUpperCase
       def bind(key: String, value: String): Either[String, A] = {
-        enum.withNameUppercaseOnlyOption(value) match {
+        e.withNameUppercaseOnlyOption(value) match {
           case Some(v) => Right(v)
-          case _       => Left(s"Unknown value supplied for ${enum.toString} '$value'")
+          case _       => Left(s"Unknown value supplied for ${e.toString} '$value'")
         }
       }
     }
 
   /** Builds a [[QueryStringBindable]] A for a given Enum A
     *
-    * @param enum
+    * @param e
     *   The enum
     * @param insensitive
     *   bind in a case-insensitive way, defaults to false
     */
   def queryBinder[A <: EnumEntry](
-      enum: Enum[A],
+      @deprecatedName(Symbol("enum")) e: Enum[A],
       insensitive: Boolean = false
   ): QueryStringBindable[A] =
     new QueryStringBindable[A] {
@@ -77,12 +84,14 @@ object UrlBinders {
 
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
         params.get(key).flatMap(_.headOption).map { p =>
-          val maybeBound =
-            if (insensitive) enum.withNameInsensitiveOption(p)
-            else enum.withNameOption(p)
+          val maybeBound = {
+            if (insensitive) e.withNameInsensitiveOption(p)
+            else e.withNameOption(p)
+          }
+
           maybeBound match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${e.toString}")
           }
         }
       }
@@ -90,10 +99,12 @@ object UrlBinders {
 
   /** Builds a [[QueryStringBindable]] A for a given Enum A that transforms to lower case
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def queryBinderLowercaseOnly[A <: EnumEntry](enum: Enum[A]): QueryStringBindable[A] =
+  def queryBinderLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): QueryStringBindable[A] =
     new QueryStringBindable[A] {
 
       def unbind(key: String, value: A): String =
@@ -101,9 +112,9 @@ object UrlBinders {
 
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
         params.get(key).flatMap(_.headOption).map { p =>
-          enum.withNameLowercaseOnlyOption(p) match {
+          e.withNameLowercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${e.toString}")
           }
         }
       }
@@ -111,10 +122,12 @@ object UrlBinders {
 
   /** Builds a [[QueryStringBindable]] A for a given Enum A that transforms to upper case
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def queryBinderUppercaseOnly[A <: EnumEntry](enum: Enum[A]): QueryStringBindable[A] =
+  def queryBinderUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): QueryStringBindable[A] =
     new QueryStringBindable[A] {
 
       def unbind(key: String, value: A): String =
@@ -122,9 +135,9 @@ object UrlBinders {
 
       def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]] = {
         params.get(key).flatMap(_.headOption).map { p =>
-          enum.withNameUppercaseOnlyOption(p) match {
+          e.withNameUppercaseOnlyOption(p) match {
             case Some(v) => Right(v)
-            case _       => Left(s"Cannot parse parameter $key as an Enum: ${enum.toString}")
+            case _       => Left(s"Cannot parse parameter $key as an Enum: ${e.toString}")
           }
         }
       }

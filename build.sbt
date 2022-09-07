@@ -35,14 +35,6 @@ def theArgonautVersion(scalaVersion: String) =
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Argonaut")
   }
 
-def thePlayVersion(scalaVersion: String) =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor >= 12 => "2.8.0"
-    case Some((3, _))                              => "2.8.0"
-    case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Play")
-  }
-
 def theSlickVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor <= 11 => "3.3.3"
@@ -91,6 +83,10 @@ def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersi
   case Some((3, _)) =>
     ("org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test)
       .cross(CrossVersion.for3Use2_13)
+      .exclude("org.scalactic", "*")
+      .exclude("org.scalatest", "*")
+      .exclude("org.scala-lang.modules", "*")
+      .exclude("com.typesafe.play", "play-json_2.13")
 
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-test")
@@ -393,12 +389,18 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(
     version            := Versions.Core.head,
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version),
-    libraryDependencies ++= Seq(
-      ("com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value))
-        .exclude("org.scala-lang.modules", "*")
-        .cross(CrossVersion.for3Use2_13),
-      scalaTestPlay(scalaVersion.value)
-    ),
+    libraryDependencies += {
+      val dep = "com.typesafe.play" %% "play" % "2.8.0"
+
+      if (scalaBinaryVersion.value == "3") {
+        dep.exclude("org.scala-lang.modules", "*")
+          .exclude("com.typesafe.play", "play-json_2.13")
+          .cross(CrossVersion.for3Use2_13)
+      } else {
+        dep
+      }
+    },
+    libraryDependencies += scalaTestPlay(scalaVersion.value),
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -407,6 +409,13 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
           "com.beachape" %% "enumeratum"      % Versions.Core.stable,
           "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test
         )
+      }
+    },
+    scalacOptions ++= {
+      if (scalaBinaryVersion.value == "3") {
+        Seq("-Wconf:cat=deprecation&msg=.*right-biased.*:s")
+      } else {
+        Seq.empty
       }
     }
   )

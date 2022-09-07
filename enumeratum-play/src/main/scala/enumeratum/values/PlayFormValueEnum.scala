@@ -8,7 +8,7 @@ import play.api.data.Mapping
   * Copyright 2016
   */
 sealed trait PlayFormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
-  enum: ValueEnum[ValueType, EntryType] =>
+  self: ValueEnum[ValueType, EntryType] =>
 
   /** The [[Formatter]] for binding the ValueType of this ValueEnum.
     *
@@ -18,48 +18,49 @@ sealed trait PlayFormValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]
 
   /** Field for mapping this enum in Forms
     */
-  lazy val formField: Mapping[EntryType] = Forms.enum(baseFormatter)(enum)
+  lazy val formField: Mapping[EntryType] =
+    Forms.enumMapping(baseFormatter)(self)
 
 }
 
 /** Form Bindable implicits for IntEnum
   */
 trait IntPlayFormValueEnum[EntryType <: IntEnumEntry] extends PlayFormValueEnum[Int, EntryType] {
-  this: IntEnum[EntryType] =>
+  _enum: IntEnum[EntryType] =>
   protected val baseFormatter: Formatter[Int] = Formats.intFormat
 }
 
 /** Form Bindable implicits for LongEnum
   */
 trait LongPlayFormValueEnum[EntryType <: LongEnumEntry] extends PlayFormValueEnum[Long, EntryType] {
-  this: LongEnum[EntryType] =>
+  _enum: LongEnum[EntryType] =>
   protected val baseFormatter: Formatter[Long] = Formats.longFormat
 }
 
 /** Form Bindable implicits for ShortEnum
   */
 trait ShortPlayFormValueEnum[EntryType <: ShortEnumEntry]
-    extends PlayFormValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
+    extends PlayFormValueEnum[Short, EntryType] { _enum: ShortEnum[EntryType] =>
   protected val baseFormatter: Formatter[Short] = Formats.shortFormat
 }
 
 /** Form Bindable implicits for StringEnum
   */
 trait StringPlayFormValueEnum[EntryType <: StringEnumEntry]
-    extends PlayFormValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
+    extends PlayFormValueEnum[String, EntryType] { _enum: StringEnum[EntryType] =>
   protected val baseFormatter: Formatter[String] = Formats.stringFormat
 }
 
 /** Form Bindable implicits for CharEnum
   */
 trait CharPlayFormValueEnum[EntryType <: CharEnumEntry] extends PlayFormValueEnum[Char, EntryType] {
-  this: CharEnum[EntryType] =>
+  _enum: CharEnum[EntryType] =>
   protected val baseFormatter: Formatter[Char] = Forms.charFormatter
 }
 
 /** Form Bindable implicits for ByteEnum
   */
 trait BytePlayFormValueEnum[EntryType <: ByteEnumEntry] extends PlayFormValueEnum[Byte, EntryType] {
-  this: ByteEnum[EntryType] =>
+  _enum: ByteEnum[EntryType] =>
   protected val baseFormatter: Formatter[Byte] = Formats.byteFormat
 }

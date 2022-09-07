@@ -135,7 +135,7 @@ class UrlBindersSpec extends AnyFunSpec with Matchers {
     it(
       "should create an enumeration binder that cannot bind strings not found in the enumeration"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be(Symbol("left"))
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
@@ -165,7 +165,7 @@ class UrlBindersSpec extends AnyFunSpec with Matchers {
     it(
       "should create an enumeration binder that cannot bind strings not found in the enumeration"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be(Symbol("left"))
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
@@ -189,14 +189,14 @@ class UrlBindersSpec extends AnyFunSpec with Matchers {
     it(
       "should create an enumeration binder that cannot bind strings not found in the enumeration"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be(Symbol("left"))
       subject.bind("hello", Map("helloz" -> Seq("a"))) shouldBe None
     }
 
     it(
       "should create an enumeration binder that cannot bind strings that aren't lower case but are mixed case"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("A"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("A"))).value should be(Symbol("left"))
     }
 
     it("should create an enumeration binder that can unbind values") {
@@ -224,14 +224,14 @@ class UrlBindersSpec extends AnyFunSpec with Matchers {
     it(
       "should create an enumeration binder that cannot bind strings not found in the enumeration"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("Z"))).value should be(Symbol("left"))
       subject.bind("hello", Map("helloz" -> Seq("A"))) shouldBe None
     }
 
     it(
       "should create an enumeration binder that cannot bind strings that aren't upper case but are mixed case"
     ) {
-      subject.bind("hello", Map("hello" -> Seq("a"))).value should be('left)
+      subject.bind("hello", Map("hello" -> Seq("a"))).value should be(Symbol("left"))
     }
 
     it("should create an enumeration binder that can unbind values") {

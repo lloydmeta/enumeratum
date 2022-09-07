@@ -12,11 +12,11 @@ import play.api.routing.sird.PathBindableExtractor
 import play.api.test.FakeRequest
 import enumeratum.helpers.ActionHelper
 
-class PlayEnumSpec extends AnyFunSpec with Matchers {
+final class PlayEnumSpec extends AnyFunSpec with Matchers {
 
   testScenarios(
     descriptor = "ordinary operation (no tarnsforms)",
-    enum = PlayDummyNormal,
+    myEnum = PlayDummyNormal,
     validTransforms =
       Map("A" -> PlayDummyNormal.A, "B" -> PlayDummyNormal.B, "c" -> PlayDummyNormal.c),
     expectedFailures = Seq("1.234"),
@@ -28,7 +28,7 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
 
   testScenarios(
     descriptor = "lower case transformed",
-    enum = PlayDummyLowerOnly,
+    myEnum = PlayDummyLowerOnly,
     validTransforms =
       Map("a" -> PlayDummyLowerOnly.A, "b" -> PlayDummyLowerOnly.B, "c" -> PlayDummyLowerOnly.c),
     expectedFailures = Seq("C"),
@@ -40,7 +40,7 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
 
   testScenarios(
     descriptor = "upper case transformed",
-    enum = PlayDummyUpperOnly,
+    myEnum = PlayDummyUpperOnly,
     validTransforms =
       Map("A" -> PlayDummyUpperOnly.A, "B" -> PlayDummyUpperOnly.B, "C" -> PlayDummyUpperOnly.c),
     expectedFailures = Seq("c"),
@@ -52,7 +52,7 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
 
   private def testScenarios[A <: EnumEntry: Format](
       descriptor: String,
-      enum: Enum[A],
+      myEnum: Enum[A],
       validTransforms: Map[String, A],
       expectedFailures: Seq[String],
       formMapping: Mapping[A],
@@ -67,7 +67,7 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
 
     def testJson(): Unit = {
 
-      val failures: Seq[JsValue] = expectedFailures.map(JsString) ++ Seq(
+      val failures: Seq[JsValue] = expectedFailures.map(JsString(_)) ++ Seq(
         JsString("AVADSGDSAFA"),
         JsNumber(Int.MaxValue)
       )
@@ -176,6 +176,7 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
             validTransforms.foreach { case (k, v) =>
               router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$k")) shouldBe true
             }
+
             expectedErrors.foreach { v =>
               router.routes.isDefinedAt(FakeRequest(HttpVerbs.GET, s"/$v")) shouldBe false
             }
@@ -197,7 +198,9 @@ class PlayEnumSpec extends AnyFunSpec with Matchers {
 
           it("should not bind strings not found in the enumeration") {
             expectedErrors.foreach { v =>
-              queryStringBindable.bind("hello", Map("hello" -> Seq(v))).value shouldBe 'left
+              queryStringBindable.bind("hello", Map("hello" -> Seq(v))).value shouldBe Symbol(
+                "left"
+              )
               queryStringBindable.bind("hello", Map("helloz" -> Seq(v))) shouldBe None
             }
           }

@@ -6,5 +6,5 @@ trait PlayFormFieldEnum[A <: EnumEntry] { self: Enum[A] =>
 
   /** Form field for this enum
     */
-  val formField: Mapping[A] = Forms.enum(self)
+  val formField: Mapping[A] = Forms.enumMapping(self)
 }

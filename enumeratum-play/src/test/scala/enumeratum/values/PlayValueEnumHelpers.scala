@@ -20,7 +20,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
     ValueType
   ], ValueType <: AnyVal: Numeric: Format](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType]
+      myEnum: ValueEnum[ValueType, EntryType]
         with PlayFormValueEnum[ValueType, EntryType]
         with PlayPathBindableValueEnum[ValueType, EntryType]
         with PlayQueryBindableValueEnum[ValueType, EntryType]
@@ -29,8 +29,8 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
     val numeric = implicitly[Numeric[ValueType]]
     testPlayEnum(
       enumKind,
-      enum,
-      { i: ValueType =>
+      myEnum,
+      { (i: ValueType) =>
         JsNumber(numeric.toInt(i))
       }
     )
@@ -39,36 +39,33 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
 
   def testPlayEnum[EntryType <: ValueEnumEntry[ValueType], ValueType: Format](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType]
+      myEnum: ValueEnum[ValueType, EntryType]
         with PlayFormValueEnum[ValueType, EntryType]
         with PlayPathBindableValueEnum[ValueType, EntryType]
         with PlayQueryBindableValueEnum[ValueType, EntryType]
         with PlayJsonValueEnum[ValueType, EntryType],
       jsWrapper: ValueType => JsValue
   ) = {
-
     describe(enumKind) {
 
       describe("Form binding") {
 
-        val subject = Form("hello" -> enum.formField)
+        val subject = Form("hello" -> myEnum.formField)
 
         it("should bind proper strings into an Enum value") {
-          enum.values.foreach { entry =>
-            val r = subject.bind(Map("hello" -> s"${entry.value}"))
-            r.value.value shouldBe entry
+          myEnum.values.foreach { entry =>
+            subject.bind(Map("hello" -> s"${entry.value}")).value.value shouldBe entry
           }
         }
 
         it("should fail to bind random strings") {
-          val r1 = subject.bind(Map("hello" -> "AARS143515123E"))
-          val r2 = subject.bind(Map("hello" -> s"${Int.MaxValue}"))
-          r1.value shouldBe None
-          r2.value shouldBe None
+          subject.bind(Map("hello" -> "AARS143515123E")).value shouldBe None
+
+          subject.bind(Map("hello" -> s"${Int.MaxValue}")).value shouldBe None
         }
 
         it("should unbind") {
-          enum.values.foreach { entry =>
+          myEnum.values.foreach { entry =>
             val r = subject.mapping.unbind(entry)
             r shouldBe Map("hello" -> s"${entry.value}")
           }
@@ -80,10 +77,10 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
 
         describe("PathBindable") {
 
-          val subject = enum.pathBindable
+          val subject = myEnum.pathBindable
 
           it("should bind strings corresponding to enum values") {
-            enum.values.foreach { entry =>
+            myEnum.values.foreach { entry =>
               subject.bind("hello", s"${entry.value}").right.value shouldBe entry
             }
           }
@@ -94,7 +91,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
           }
 
           it("should unbind values") {
-            enum.values.foreach { entry =>
+            myEnum.values.foreach { entry =>
               subject.unbind("hello", entry) shouldBe entry.value.toString
             }
           }
@@ -103,10 +100,10 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
 
         describe("PathBindableExtractor") {
 
-          val subject = enum.fromPath
+          val subject = myEnum.fromPath
 
           it("should extract strings corresponding to enum values") {
-            enum.values.foreach { entry =>
+            myEnum.values.foreach { entry =>
               subject.unapply(s"${entry.value}") shouldBe Some(entry)
             }
           }
@@ -120,8 +117,8 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
             import play.api.routing.sird._
             import play.api.routing._
             import play.api.mvc._
-            enum.values.foreach { entry =>
-              val router = Router.from { case GET(p"/${enum.fromPath(greeting)}") =>
+            myEnum.values.foreach { entry =>
+              val router = Router.from { case GET(p"/${myEnum.fromPath(greeting)}") =>
                 ActionHelper {
                   Results.Ok(s"$greeting")
                 }
@@ -139,10 +136,10 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
 
         describe("QueryStringBindable") {
 
-          val subject = enum.queryBindable
+          val subject = myEnum.queryBindable
 
           it("should bind strings corresponding to enum values regardless of case") {
-            enum.values.foreach { entry =>
+            myEnum.values.foreach { entry =>
               subject
                 .bind("hello", Map("hello" -> Seq(s"${entry.value}")))
                 .value
@@ -152,13 +149,15 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
           }
 
           it("should not bind strings not found as values in the enumeration") {
-            subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe 'left
-            subject.bind("hello", Map("hello" -> Seq(s"${Int.MaxValue}"))).value shouldBe 'left
+            subject.bind("hello", Map("hello" -> Seq("Z"))).value shouldBe Symbol("left")
+            subject.bind("hello", Map("hello" -> Seq(s"${Int.MaxValue}"))).value shouldBe Symbol(
+              "left"
+            )
             subject.bind("hello", Map("helloz" -> Seq("1"))) shouldBe None
           }
 
           it("should unbind values") {
-            enum.values.foreach { entry =>
+            myEnum.values.foreach { entry =>
               subject.unbind("hello", entry) shouldBe s"hello=${entry.value}"
             }
           }
@@ -166,7 +165,7 @@ trait PlayValueEnumHelpers extends EnumJsonFormatHelpers { this: AnyFunSpec with
         }
 
         describe("JSON formats") {
-          testFormats(enumKind, enum, jsWrapper, Some(enum.format))
+          testFormats(enumKind, myEnum, jsWrapper, Some(myEnum.format))
         }
 
       }
