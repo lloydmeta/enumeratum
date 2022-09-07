@@ -28,7 +28,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
 
   testScenario(
     descriptor = "case insensitive",
-    reads = EnumFormats.reads(enum = Dummy, insensitive = true),
+    reads = EnumFormats.reads(e = Dummy, insensitive = true),
     readSuccessExpectations = Map(
       "A" -> Dummy.A,
       "a" -> Dummy.A
@@ -36,12 +36,12 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     readErrors = Map.empty,
     writes = EnumFormats.writes(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
-    formats = EnumFormats.formats(enum = Dummy, insensitive = true)
+    formats = EnumFormats.formats(e = Dummy, insensitive = true)
   )
 
   testKeyScenario(
     descriptor = "case insensitive",
-    reads = EnumFormats.keyReads(enum = Dummy, insensitive = true),
+    reads = EnumFormats.keyReads(e = Dummy, insensitive = true),
     readSuccessExpectations = Map(
       "A" -> Dummy.A,
       "a" -> Dummy.A

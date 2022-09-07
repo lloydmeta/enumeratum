@@ -8,7 +8,7 @@ import EnumFormats.charFormat
   * Copyright 2016
   */
 trait PlayJsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
-  enum: ValueEnum[ValueType, EntryType] =>
+  _enum: ValueEnum[ValueType, EntryType] =>
 
   /** Implicit JSON format for the entries of this enum
     */
@@ -19,41 +19,41 @@ trait PlayJsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
 /** Enum implementation for Int enum members that contains an implicit Play JSON Format
   */
 trait IntPlayJsonValueEnum[EntryType <: IntEnumEntry] extends PlayJsonValueEnum[Int, EntryType] {
-  this: IntEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+  self: IntEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }
 
 /** Enum implementation for Long enum members that contains an implicit Play JSON Format
   */
 trait LongPlayJsonValueEnum[EntryType <: LongEnumEntry] extends PlayJsonValueEnum[Long, EntryType] {
-  this: LongEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+  self: LongEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }
 
 /** Enum implementation for Short enum members that contains an implicit Play JSON Format
   */
 trait ShortPlayJsonValueEnum[EntryType <: ShortEnumEntry]
-    extends PlayJsonValueEnum[Short, EntryType] { this: ShortEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+    extends PlayJsonValueEnum[Short, EntryType] { self: ShortEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }
 
 /** Enum implementation for String enum members that contains an implicit Play JSON Format
   */
 trait StringPlayJsonValueEnum[EntryType <: StringEnumEntry]
-    extends PlayJsonValueEnum[String, EntryType] { this: StringEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+    extends PlayJsonValueEnum[String, EntryType] { self: StringEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }
 
 /** Enum implementation for Char enum members that contains an implicit Play JSON Format
   */
 trait CharPlayJsonValueEnum[EntryType <: CharEnumEntry] extends PlayJsonValueEnum[Char, EntryType] {
-  this: CharEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+  self: CharEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }
 
 /** Enum implementation for Byte enum members that contains an implicit Play JSON Format
   */
 trait BytePlayJsonValueEnum[EntryType <: ByteEnumEntry] extends PlayJsonValueEnum[Byte, EntryType] {
-  this: ByteEnum[EntryType] =>
-  implicit val format: Format[EntryType] = EnumFormats.formats(this)
+  self: ByteEnum[EntryType] =>
+  implicit val format: Format[EntryType] = EnumFormats.formats(self)
 }

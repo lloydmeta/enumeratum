@@ -7,7 +7,7 @@ package enumeratum.values
 sealed abstract class Bites(val value: Byte) extends ByteEnumEntry
 
 object Bites extends ByteEnum[Bites] {
-  lazy val values = findValues
+  val values = findValues
 
   case object OneByte   extends Bites(1)
   case object TwoByte   extends Bites(2)

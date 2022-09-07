@@ -14,7 +14,7 @@ lazy val theScalaVersion = scala_2_12Version
 lazy val scalaTestVersion = "3.2.9"
 
 // Library versions
-lazy val reactiveMongoVersion = "1.1.0-RC6"
+lazy val reactiveMongoVersion = "1.1.0-RC7-SNAPSHOT"
 lazy val json4sVersion        = "4.0.3"
 lazy val quillVersion         = "4.1.0"
 
@@ -29,7 +29,7 @@ def theDoobieVersion(scalaVersion: String) =
 def theArgonautVersion(scalaVersion: String) =
   CrossVersion.partialVersion(scalaVersion) match {
     case Some((2, scalaMajor)) if scalaMajor >= 11 => "6.2.5"
-    case Some(_)                                   => "6.3.0"
+    case Some(_)                                   => "6.3.8"
 
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for Argonaut")
@@ -64,7 +64,7 @@ def thePlayJsonVersion(scalaVersion: String) =
     case Some((2, scalaMajor)) if scalaMajor <= 11 => "2.7.3"
     // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
 
-    case Some(_) => "2.9.0"
+    case Some(_) => "2.10.0-RC6"
     case _ =>
       throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-json")
   }
@@ -87,6 +87,10 @@ def theScalacheckVersion(scalaVersion: String) =
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
     "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+
+  case Some((3, _)) =>
+    ("org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test)
+      .cross(CrossVersion.for3Use2_13)
 
   case _ =>
     throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-test")
@@ -309,16 +313,26 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
   )
   .dependsOn(coreJVM, macrosJVM)
 
+lazy val scalaXmlTest = Def.setting[ModuleID] {
+  val ver: String = {
+    if (scalaBinaryVersion.value == "2.11") "1.3.0"
+    else "2.1.0"
+  }
+
+  "org.scala-lang.modules" %% "scala-xml" % ver % Test
+}
+
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := "1.7.0",
+      version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies += {
         "org.reactivemongo" %% "reactivemongo-bson-api" % reactiveMongoVersion % Provided
       },
+      libraryDependencies += scalaXmlTest.value,
       libraryDependencies ++= {
         if (useLocalVersion) {
           Seq.empty
@@ -332,6 +346,7 @@ lazy val enumeratumReactiveMongoBson =
     )
     .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
+// Play-JSON
 lazy val playJsonAggregate =
   aggregateProject("play-json", enumeratumPlayJsonJs, enumeratumPlayJsonJvm)
 
@@ -342,12 +357,17 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings)
   .jsSettings(jsTestSettings)
   .settings(
-    name               := "enumeratum-play-json",
-    version            := Versions.Core.head,
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
-    libraryDependencies += {
-      "com.typesafe.play" %%% "play-json" % thePlayJsonVersion(scalaVersion.value)
-    },
+    name    := "enumeratum-play-json",
+    version := Versions.Core.head,
+    crossScalaVersions := Seq(
+      scala_2_12Version,
+      scala_2_13Version,
+      scala_3Version
+    ),
+    libraryDependencies ++= Seq(
+      "com.typesafe.play" %%% "play-json" % thePlayJsonVersion(scalaVersion.value),
+      scalaXmlTest.value
+    ),
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -366,15 +386,17 @@ lazy val enumeratumPlayJsonJs = enumeratumPlayJson.js
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
   .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
+// Play
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
     version            := Versions.Core.head,
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version),
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version),
     libraryDependencies ++= Seq(
       ("com.typesafe.play" %% "play" % thePlayVersion(scalaVersion.value))
-        .exclude("org.scala-lang.modules", "*"),
+        .exclude("org.scala-lang.modules", "*")
+        .cross(CrossVersion.for3Use2_13),
       scalaTestPlay(scalaVersion.value)
     ),
     libraryDependencies ++= {
@@ -404,9 +426,10 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name    := "enumeratum-circe",
     version := Versions.Core.head,
-    libraryDependencies += {
-      "io.circe" %%% "circe-core" % theCirceVersion(scalaVersion.value)
-    },
+    libraryDependencies ++= Seq(
+      "io.circe" %%% "circe-core" % theCirceVersion(scalaVersion.value),
+      scalaXmlTest.value
+    ),
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -442,9 +465,10 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
     name               := "enumeratum-argonaut",
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
-    libraryDependencies += {
-      "io.argonaut" %%% "argonaut" % theArgonautVersion(scalaVersion.value)
-    },
+    libraryDependencies ++= Seq(
+      "io.argonaut" %%% "argonaut" % theArgonautVersion(scalaVersion.value),
+      scalaXmlTest.value
+    ),
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -470,7 +494,8 @@ lazy val enumeratumJson4s =
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         "org.json4s" %% "json4s-core"   % json4sVersion,
-        "org.json4s" %% "json4s-native" % json4sVersion % Test
+        "org.json4s" %% "json4s-native" % json4sVersion % Test,
+        scalaXmlTest.value
       ),
       libraryDependencies ++= {
         if (useLocalVersion) {
@@ -506,14 +531,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
           .cross(CrossVersion.for3Use2_13)
       )
     },
-    libraryDependencies += {
-      val ver: String = {
-        if (scalaBinaryVersion.value == "2.11") "1.3.0"
-        else "2.1.0"
-      }
-
-      "org.scala-lang.modules" %% "scala-xml" % ver % Test
-    },
+    libraryDependencies += scalaXmlTest.value,
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -701,7 +719,7 @@ lazy val compilerSettings = Seq(
 
     val base = {
       if (scalaBinaryVersion.value == "3") {
-        minimal
+        minimal :+ "-deprecation"
       } else {
         minimal ++ Seq(
           // "-Ywarn-adapted-args",

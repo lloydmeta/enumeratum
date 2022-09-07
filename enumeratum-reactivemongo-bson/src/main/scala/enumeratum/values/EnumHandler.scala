@@ -12,29 +12,29 @@ object EnumHandler {
     * Enum's value type.
     */
   def reader[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseBsonReader: BSONReader[ValueType]
   ): BSONReader[EntryType] = BSONReader.from[EntryType] { bson =>
-    baseBsonReader.readTry(bson).map(enum.withValue)
+    baseBsonReader.readTry(bson).map(e.withValue)
   }
 
   /** Returns a KeyReader for the provided ValueEnum based on the given base KeyReader for the
     * Enum's value type.
     */
   def keyReader[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseBsonReader: KeyReader[ValueType]
   ): KeyReader[EntryType] = KeyReader.from[EntryType] { bson =>
-    baseBsonReader.readTry(bson).map(enum.withValue)
+    baseBsonReader.readTry(bson).map(e.withValue)
   }
 
   /** Returns a BSONWriter for the provided ValueEnum based on the given base BSONWriter for the
     * Enum's value type.
     */
   def writer[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseBsonWriter: BSONWriter[ValueType]
   ): BSONWriter[EntryType] = BSONWriter.from[EntryType] { t =>
@@ -45,7 +45,7 @@ object EnumHandler {
     * Enum's value type.
     */
   def keyWriter[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseBsonWriter: KeyWriter[ValueType]
   ): KeyWriter[EntryType] = KeyWriter.from[EntryType] { t =>
@@ -56,8 +56,8 @@ object EnumHandler {
     * BSONWriter for the Enum's value type.
     */
   def handler[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseBsonHandler: BSONHandler[ValueType]
-  ): BSONHandler[EntryType] = BSONHandler.provided[EntryType](reader(enum), writer(enum))
+  ): BSONHandler[EntryType] = BSONHandler.provided[EntryType](reader(e), writer(e))
 }

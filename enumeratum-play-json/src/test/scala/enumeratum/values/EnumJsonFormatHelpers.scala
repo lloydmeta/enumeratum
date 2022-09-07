@@ -15,14 +15,14 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
     ValueType
   ], ValueType <: AnyVal: Numeric: Writes](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       providedWrites: Option[Writes[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     testWrites(
       enumKind,
-      enum,
-      { i: ValueType =>
+      myEnum,
+      { (i: ValueType) =>
         JsNumber(numeric.toInt(i))
       },
       providedWrites
@@ -31,14 +31,14 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
   def testWrites[EntryType <: ValueEnumEntry[ValueType], ValueType: Writes](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       jsWrapper: ValueType => JsValue,
       providedWrites: Option[Writes[EntryType]] = None
   ): Unit = {
-    val writes = providedWrites.getOrElse(EnumFormats.writes(enum))
+    val writes = providedWrites.getOrElse(EnumFormats.writes(myEnum))
     describe(enumKind) {
       it("should write proper JsValues") {
-        enum.values.foreach { entry =>
+        myEnum.values.foreach { entry =>
           writes.writes(entry) shouldBe jsWrapper(entry.value)
         }
       }
@@ -47,14 +47,14 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
   def testNumericReads[EntryType <: ValueEnumEntry[ValueType], ValueType <: AnyVal: Numeric: Reads](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       providedReads: Option[Reads[EntryType]] = None
   ): Unit = {
     val numeric = implicitly[Numeric[ValueType]]
     testReads(
       enumKind,
-      enum,
-      { i: ValueType =>
+      myEnum,
+      { (i: ValueType) =>
         JsNumber(numeric.toInt(i))
       },
       providedReads
@@ -63,17 +63,18 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
 
   def testReads[EntryType <: ValueEnumEntry[ValueType], ValueType: Reads](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       jsWrapper: ValueType => JsValue,
       providedReads: Option[Reads[EntryType]] = None
   ): Unit = {
-    val reads = providedReads.getOrElse(EnumFormats.reads(enum))
+    val reads = providedReads.getOrElse(EnumFormats.reads(myEnum))
     describe(enumKind) {
       it("should read valid values") {
-        enum.values.foreach { entry =>
+        myEnum.values.foreach { entry =>
           reads.reads(jsWrapper(entry.value)).asOpt.value shouldBe entry
         }
       }
+
       it("should fail to read with invalid values") {
         reads.reads(JsNumber(Int.MaxValue)).isError shouldBe true
         reads.reads(JsString("boon")).isError shouldBe true
@@ -85,22 +86,22 @@ trait EnumJsonFormatHelpers { this: AnyFunSpec with Matchers =>
     ValueType
   ], ValueType <: AnyVal: Numeric: Reads: Writes](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       providedFormat: Option[Format[EntryType]] = None
   ): Unit = {
-    testNumericReads(enumKind, enum, providedFormat)
-    testNumericWrites(enumKind, enum, providedFormat)
+    testNumericReads(enumKind, myEnum, providedFormat)
+    testNumericWrites(enumKind, myEnum, providedFormat)
   }
 
   def testFormats[EntryType <: ValueEnumEntry[ValueType], ValueType: Reads: Writes](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType],
+      myEnum: ValueEnum[ValueType, EntryType],
       jsWrapper: ValueType => JsValue,
       providedFormat: Option[Format[EntryType]] = None
   ): Unit = {
-    val format = providedFormat.getOrElse(EnumFormats.formats(enum))
-    testReads(enumKind, enum, jsWrapper, Some(format))
-    testWrites(enumKind, enum, jsWrapper, Some(format))
+    val format = providedFormat.getOrElse(EnumFormats.formats(myEnum))
+    testReads(enumKind, myEnum, jsWrapper, Some(format))
+    testWrites(enumKind, myEnum, jsWrapper, Some(format))
   }
 
 }

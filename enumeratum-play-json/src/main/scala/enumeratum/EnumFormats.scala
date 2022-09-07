@@ -8,109 +8,131 @@ object EnumFormats {
 
   /** Returns an Json Reads for a given enum [[Enum]]
     *
-    * @param enum
+    * @param e
     *   The enum
     * @param insensitive
     *   bind in a case-insensitive way, defaults to false
     */
-  def reads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Reads[A] =
-    readsAndExtracts[A](enum) { s =>
-      if (insensitive) enum.withNameInsensitiveOption(s)
-      else enum.withNameOption(s)
+  def reads[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      insensitive: Boolean = false
+  ): Reads[A] =
+    readsAndExtracts[A](e) { s =>
+      if (insensitive) e.withNameInsensitiveOption(s)
+      else e.withNameOption(s)
     }
 
-  def readsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
-    readsAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
+  def readsLowercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
+    readsAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
 
-  def readsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Reads[A] =
-    readsAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
+  def readsUppercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
+    readsAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
 
-  def keyReads[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): KeyReads[A] =
-    readsKeyAndExtracts[A](enum) { s =>
-      if (insensitive) enum.withNameInsensitiveOption(s)
-      else enum.withNameOption(s)
+  def keyReads[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      insensitive: Boolean = false
+  ): KeyReads[A] =
+    readsKeyAndExtracts[A](e) { s =>
+      if (insensitive) e.withNameInsensitiveOption(s)
+      else e.withNameOption(s)
     }
 
-  def keyReadsLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
-    readsKeyAndExtracts[A](enum)(enum.withNameLowercaseOnlyOption)
+  def keyReadsLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): KeyReads[A] =
+    readsKeyAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
 
-  def keyReadsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyReads[A] =
-    readsKeyAndExtracts[A](enum)(enum.withNameUppercaseOnlyOption)
+  def keyReadsUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): KeyReads[A] =
+    readsKeyAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
 
   /** Returns a Json writes for a given enum [[Enum]]
     */
-  def writes[A <: EnumEntry](enum: Enum[A]): Writes[A] = Writes[A] { e =>
-    JsString(e.entryName)
+  def writes[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Writes[A] = Writes[A] {
+    e =>
+      JsString(e.entryName)
   }
 
   /** Returns a Json writes for a given enum [[Enum]] and transforms it to lower case
     */
-  def writesLowercaseOnly[A <: EnumEntry](enum: Enum[A]): Writes[A] =
+  def writesLowercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Writes[A] =
     Writes[A] { e =>
       JsString(e.entryName.toLowerCase)
     }
 
   /** Returns a Json writes for a given enum [[Enum]] and transforms it to upper case
     */
-  def writesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Writes[A] =
+  def writesUppercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Writes[A] =
     Writes[A] { e =>
       JsString(e.entryName.toUpperCase)
     }
 
   /** Returns a Json key writes for a given enum [[Enum]]
     */
-  def keyWrites[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+  def keyWrites[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): KeyWrites[A] =
     new KeyWrites[A] {
       def writeKey(e: A): String = e.entryName
     }
 
   /** Returns a Json key writes for a given enum [[Enum]] and transforms it to lower case
     */
-  def keyWritesLowercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+  def keyWritesLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): KeyWrites[A] =
     new KeyWrites[A] {
       def writeKey(e: A) = e.entryName.toLowerCase
     }
 
   /** Returns a Json key writes for a given enum [[Enum]] and transforms it to upper case
     */
-  def keyWritesUppercaseOnly[A <: EnumEntry](enum: Enum[A]): KeyWrites[A] =
+  def keyWritesUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): KeyWrites[A] =
     new KeyWrites[A] {
       def writeKey(e: A) = e.entryName.toUpperCase
     }
 
   /** Returns a Json format for a given enum [[Enum]]
     *
-    * @param enum
+    * @param e
     *   The enum
     * @param insensitive
     *   bind in a case-insensitive way, defaults to false
     */
-  def formats[A <: EnumEntry](enum: Enum[A], insensitive: Boolean = false): Format[A] = {
-    Format(reads(enum, insensitive), writes(enum))
+  def formats[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      insensitive: Boolean = false
+  ): Format[A] = {
+    Format(reads(e, insensitive), writes(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling lower case transformations
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def formatsLowerCaseOnly[A <: EnumEntry](enum: Enum[A]): Format[A] = {
-    Format(readsLowercaseOnly(enum), writesLowercaseOnly(enum))
+  def formatsLowerCaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): Format[A] = {
+    Format(readsLowercaseOnly(e), writesLowercaseOnly(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling upper case transformations
     *
-    * @param enum
+    * @param e
     *   The enum
     */
-  def formatsUppercaseOnly[A <: EnumEntry](enum: Enum[A]): Format[A] = {
-    Format(readsUppercaseOnly(enum), writesUppercaseOnly(enum))
+  def formatsUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): Format[A] = {
+    Format(readsUppercaseOnly(e), writesUppercaseOnly(e))
   }
 
   // ---
 
   private def readsAndExtracts[A <: EnumEntry](
-      enum: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A]
   )(extract: String => Option[A]): Reads[A] = Reads[A] {
     case JsString(s) =>
       extract(s) match {
@@ -122,7 +144,7 @@ object EnumFormats {
   }
 
   private def readsKeyAndExtracts[A <: EnumEntry](
-      enum: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A]
   )(extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
     def readKey(s: String): JsResult[A] = extract(s) match {
       case Some(obj) => JsSuccess(obj)

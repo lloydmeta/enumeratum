@@ -20,13 +20,13 @@ class ArgonautValueEnumSpec extends AnyFunSpec with Matchers {
     ValueType
   ]: EncodeJson: DecodeJson](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType] with ArgonautValueEnum[ValueType, EntryType]
+      e: ValueEnum[ValueType, EntryType] with ArgonautValueEnum[ValueType, EntryType]
   ): Unit = {
     describe(enumKind) {
 
       describe("from JSON") {
         it("should work") {
-          enum.values.foreach { entry =>
+          e.values.foreach { entry =>
             entry.asJson shouldBe entry.value.asJson
           }
         }
@@ -34,7 +34,7 @@ class ArgonautValueEnumSpec extends AnyFunSpec with Matchers {
 
       describe("from JSON") {
         it("should parse members when passing proper JSON values") {
-          enum.values.foreach { entry =>
+          e.values.foreach { entry =>
             entry.asJson.as[EntryType] shouldBe okResult(entry)
           }
         }
