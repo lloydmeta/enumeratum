@@ -166,7 +166,8 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
       } else {
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
       }
-    }
+    },
+    libraryDependencies += scalaXmlTest.value
   )
 
 lazy val macrosJS  = macros.js
@@ -192,7 +193,8 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       } else {
         Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.stable)
       }
-    }
+    },
+    libraryDependencies += scalaXmlTest.value
   )
 
 def configureWithLocal(
@@ -251,6 +253,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
         "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
       }
     },
+    libraryDependencies += scalaXmlTest.value,
     publishArtifact := false,
     publishLocal    := {}
   )
@@ -489,7 +492,8 @@ lazy val enumeratumJson4s =
     .settings(
       // TODO: Remove once JSON4S is fixed for Scala3;
       // https://github.com/json4s/json4s/issues/1035
-      disabledSettings)
+      disabledSettings
+    )
     .configure(configureWithLocal(coreJVM))
 
 // ScalaCheck
@@ -645,7 +649,8 @@ lazy val enumeratumSlick =
       }
     )
     .settings( // TODO: Remove once Slick is published for Dotty
-    disabledSettings)
+      disabledSettings
+    )
     .configure(configureWithLocal(coreJVM))
 
 // Cats
