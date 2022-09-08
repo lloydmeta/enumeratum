@@ -486,6 +486,10 @@ lazy val enumeratumJson4s =
         }
       }
     )
+    .settings(
+      // TODO: Remove once JSON4S is fixed for Scala3;
+      // https://github.com/json4s/json4s/issues/1035
+      disabledSettings)
     .configure(configureWithLocal(coreJVM))
 
 // ScalaCheck
@@ -638,19 +642,10 @@ lazy val enumeratumSlick =
         } else {
           Seq("com.beachape" %% "enumeratum" % Versions.Core.stable)
         }
-      },
-      doctestScalaTestVersion := Some(scalaTestVersion),
-      // TODO: Remove once Slick is published for Dotty
-      sourceDirectory := {
-        if (scalaBinaryVersion.value == "3") new java.io.File("/no/sources")
-        else sourceDirectory.value
-      },
-      publishArtifact := (scalaBinaryVersion.value != "3"),
-      publishLocal := {
-        if (publishArtifact.value) ({})
-        else publishLocal.value
       }
     )
+    .settings( // TODO: Remove once Slick is published for Dotty
+    disabledSettings)
     .configure(configureWithLocal(coreJVM))
 
 // Cats
@@ -848,12 +843,23 @@ val testSettings = {
   )
 }
 
-val jsTestSettings = {
-  Seq(
-    coverageEnabled := false, // Disable until Scala.js 1.0 support is there https://github.com/scoverage/scalac-scoverage-plugin/pull/287
-    doctestGenTests := Seq.empty
-  )
-}
+val jsTestSettings = Seq(
+  coverageEnabled := false, // Disable until Scala.js 1.0 support is there https://github.com/scoverage/scalac-scoverage-plugin/pull/287
+  doctestGenTests := Seq.empty
+)
+
+lazy val disabledSettings = Seq(
+  doctestScalaTestVersion := Some(scalaTestVersion),
+  sourceDirectory := {
+    if (scalaBinaryVersion.value == "3") new java.io.File("/no/sources")
+    else sourceDirectory.value
+  },
+  publishArtifact := (scalaBinaryVersion.value != "3"),
+  publishLocal := {
+    if (publishArtifact.value) ({})
+    else publishLocal.value
+  }
+)
 
 lazy val benchmarking =
   Project(id = "benchmarking", base = file("benchmarking"))
