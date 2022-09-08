@@ -23,17 +23,17 @@ import scala.reflect.ClassTag
   */
 trait SlickValueEnumColumnSupport {
 
-  val profile: slick.profile.RelationalProfile
+  val profile: slick.relational.RelationalProfile
 
   def mappedColumnTypeForValueEnum[V, E <: ValueEnumEntry[V]](
-      enum: ValueEnum[V, E]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[V, E]
   )(implicit
       tag: ClassTag[E],
       valueColumnType: profile.BaseColumnType[V]
   ): profile.BaseColumnType[E] = {
     profile.MappedColumnType.base[E, V](
       { _.value },
-      { enum.withValue(_) }
+      { e.withValue(_) }
     )
   }
 

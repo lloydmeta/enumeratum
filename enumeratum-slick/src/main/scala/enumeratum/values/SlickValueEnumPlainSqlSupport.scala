@@ -46,7 +46,7 @@ trait SlickValueEnumPlainSqlSupport {
   }
 
   def setParameterForIntEnum[E <: IntEnumEntry](
-      enum: IntEnum[E]
+      @deprecatedName(Symbol("enum")) e: IntEnum[E]
   ): SetParameter[E] = {
     /* Implementation note: the enum argument is not used directly, but is used
        for type inference - if it wasn't required the caller would have to pass a type
@@ -55,110 +55,131 @@ trait SlickValueEnumPlainSqlSupport {
      */
     _makeSetParameter[Int, E](_.setInt(_))
   }
+
   def optionalSetParameterForIntEnum[E <: IntEnumEntry](
-      enum: IntEnum[E]
+      @deprecatedName(Symbol("enum")) e: IntEnum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter[Int, E](_.setIntOption(_))
+
   def setParameterForLongEnum[E <: LongEnumEntry](
-      enum: LongEnum[E]
+      @deprecatedName(Symbol("enum")) e: LongEnum[E]
   ): SetParameter[E] = _makeSetParameter[Long, E](_.setLong(_))
+
   def optionalSetParameterForLongEnum[E <: LongEnumEntry](
-      enum: LongEnum[E]
+      @deprecatedName(Symbol("enum")) e: LongEnum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter[Long, E](_.setLongOption(_))
+
   def setParameterForShortEnum[E <: ShortEnumEntry](
-      enum: ShortEnum[E]
+      @deprecatedName(Symbol("enum")) e: ShortEnum[E]
   ): SetParameter[E] = _makeSetParameter[Short, E](_.setShort(_))
+
   def optionalSetParameterForShortEnum[E <: ShortEnumEntry](
-      enum: ShortEnum[E]
+      @deprecatedName(Symbol("enum")) e: ShortEnum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter[Short, E](_.setShortOption(_))
+
   def setParameterForStringEnum[E <: StringEnumEntry](
-      enum: StringEnum[E]
+      @deprecatedName(Symbol("enum")) e: StringEnum[E]
   ): SetParameter[E] = _makeSetParameter[String, E](_.setString(_))
+
   def optionalSetParameterForStringEnum[E <: StringEnumEntry](
-      enum: StringEnum[E]
+      @deprecatedName(Symbol("enum")) e: StringEnum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter[String, E](_.setStringOption(_))
+
   def setParameterForByteEnum[E <: ByteEnumEntry](
-      enum: ByteEnum[E]
+      @deprecatedName(Symbol("enum")) e: ByteEnum[E]
   ): SetParameter[E] = _makeSetParameter[Byte, E](_.setByte(_))
+
   def optionalSetParameterForByteEnum[E <: ByteEnumEntry](
-      enum: ByteEnum[E]
+      @deprecatedName(Symbol("enum")) e: ByteEnum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter[Byte, E](_.setByteOption(_))
+
   def setParameterForCharEnum[E <: CharEnumEntry](
-      enum: CharEnum[E]
+      @deprecatedName(Symbol("enum")) e: CharEnum[E]
   ): SetParameter[E] =
     _makeSetParameter[Char, E]({ (pp, char) =>
       pp.setString(char.toString)
     })
   def optionalSetParameterForCharEnum[E <: CharEnumEntry](
-      enum: CharEnum[E]
+      @deprecatedName(Symbol("enum")) e: CharEnum[E]
   ): SetParameter[Option[E]] =
     _makeOptionalSetParameter[Char, E]({ (pp, char) =>
       pp.setStringOption(char.map(_.toString))
     })
 
   private def _makeGetResult[V, E <: ValueEnumEntry[V]](
-      enum: ValueEnum[V, E],
+      @deprecatedName(Symbol("enum")) e: ValueEnum[V, E],
       get: PositionedResult => V
   ): GetResult[E] = {
     new GetResult[E] {
-      override def apply(pr: PositionedResult): E = enum.valuesToEntriesMap(get(pr))
+      override def apply(pr: PositionedResult): E = e.valuesToEntriesMap(get(pr))
     }
   }
 
   private def _makeOptionalGetResult[V, E <: ValueEnumEntry[V]](
-      enum: ValueEnum[V, E],
+      @deprecatedName(Symbol("enum")) e: ValueEnum[V, E],
       get: PositionedResult => Option[V]
   ): GetResult[Option[E]] = {
     new GetResult[Option[E]] {
       override def apply(pr: PositionedResult): Option[E] = {
-        get(pr).map(v => enum.valuesToEntriesMap(v))
+        get(pr).map(v => e.valuesToEntriesMap(v))
       }
     }
   }
 
   def getResultForIntEnum[E <: IntEnumEntry](
-      enum: IntEnum[E]
-  ): GetResult[E] = _makeGetResult[Int, E](enum, _.nextInt)
+      @deprecatedName(Symbol("enum")) e: IntEnum[E]
+  ): GetResult[E] = _makeGetResult[Int, E](e, _.nextInt)
+
   def optionalGetResultForIntEnum[E <: IntEnumEntry](
-      enum: IntEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Int, E](enum, _.nextIntOption)
+      @deprecatedName(Symbol("enum")) e: IntEnum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Int, E](e, _.nextIntOption)
+
   def getResultForLongEnum[E <: LongEnumEntry](
-      enum: LongEnum[E]
-  ): GetResult[E] = _makeGetResult[Long, E](enum, _.nextLong)
+      @deprecatedName(Symbol("enum")) e: LongEnum[E]
+  ): GetResult[E] = _makeGetResult[Long, E](e, _.nextLong)
+
   def optionalGetResultForLongEnum[E <: LongEnumEntry](
-      enum: LongEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Long, E](enum, _.nextLongOption)
+      @deprecatedName(Symbol("enum")) e: LongEnum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Long, E](e, _.nextLongOption)
+
   def getResultForShortEnum[E <: ShortEnumEntry](
-      enum: ShortEnum[E]
-  ): GetResult[E] = _makeGetResult[Short, E](enum, { _.nextShort })
+      @deprecatedName(Symbol("enum")) e: ShortEnum[E]
+  ): GetResult[E] = _makeGetResult[Short, E](e, { _.nextShort })
+
   def optionalGetResultForShortEnum[E <: ShortEnumEntry](
-      enum: ShortEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Short, E](enum, { _.nextShortOption })
+      @deprecatedName(Symbol("enum")) e: ShortEnum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Short, E](e, { _.nextShortOption })
+
   def getResultForStringEnum[E <: StringEnumEntry](
-      enum: StringEnum[E]
-  ): GetResult[E] = _makeGetResult[String, E](enum, { _.nextString })
+      @deprecatedName(Symbol("enum")) e: StringEnum[E]
+  ): GetResult[E] = _makeGetResult[String, E](e, { _.nextString })
+
   def optionalGetResultForStringEnum[E <: StringEnumEntry](
-      enum: StringEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[String, E](enum, { _.nextStringOption })
+      @deprecatedName(Symbol("enum")) e: StringEnum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult[String, E](e, { _.nextStringOption })
+
   def getResultForByteEnum[E <: ByteEnumEntry](
-      enum: ByteEnum[E]
-  ): GetResult[E] = _makeGetResult[Byte, E](enum, { _.nextByte })
+      @deprecatedName(Symbol("enum")) e: ByteEnum[E]
+  ): GetResult[E] = _makeGetResult[Byte, E](e, { _.nextByte })
+
   def optionalGetResultForByteEnum[E <: ByteEnumEntry](
-      enum: ByteEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Byte, E](enum, { _.nextByteOption })
+      @deprecatedName(Symbol("enum")) e: ByteEnum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Byte, E](e, { _.nextByteOption })
+
   def getResultForCharEnum[E <: CharEnumEntry](
-      enum: CharEnum[E]
+      @deprecatedName(Symbol("enum")) e: CharEnum[E]
   ): GetResult[E] =
     _makeGetResult[Char, E](
-      enum,
+      e,
       { pr =>
         pr.nextString.head
       }
     )
+
   def optionalGetResultForCharEnum[E <: CharEnumEntry](
-      enum: CharEnum[E]
+      @deprecatedName(Symbol("enum")) e: CharEnum[E]
   ): GetResult[Option[E]] =
     _makeOptionalGetResult[Char, E](
-      enum,
+      e,
       { pr =>
         pr.nextStringOption.map(_.head)
       }
