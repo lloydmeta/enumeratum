@@ -373,7 +373,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
     version            := Versions.Core.head,
     crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version),
     libraryDependencies += {
-      val dep = "com.typesafe.play" %% "play" % "2.8.0"
+      val dep = ("com.typesafe.play" %% "play" % "2.8.0").exclude("org.scala-lang.modules", "*")
 
       if (scalaBinaryVersion.value == "3") {
         dep
