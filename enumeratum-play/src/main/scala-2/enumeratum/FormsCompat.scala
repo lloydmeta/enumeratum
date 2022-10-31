@@ -37,7 +37,7 @@ private[enumeratum] trait FormsCompat { _: Forms.type =>
     * res1: Option[Greeting] = Some(Hello)
     * }}}
     *
-    * @param enum
+    * @param e
     *   The enum
     * @param insensitive
     *   bind in a case-insensitive way, defaults to false

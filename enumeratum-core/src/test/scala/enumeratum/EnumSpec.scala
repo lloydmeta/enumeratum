@@ -582,4 +582,6 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
       Result.withNameInsensitive("ok") shouldBe Result.Good
     }
   }
+
+  scalaCompat
 }
