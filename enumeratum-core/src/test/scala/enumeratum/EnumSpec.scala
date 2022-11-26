@@ -37,6 +37,12 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
           )
         )
       }
+
+      it("should contain instance of subclass") {
+        import Inheritance._
+
+        Word.values should be(IndexedSeq(Word.Hello, Word.Hi))
+      }
     }
 
     describe("#withName") {

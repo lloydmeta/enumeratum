@@ -7,6 +7,16 @@ object EnumMacros:
   def findValuesImpl[A](using tpe: Type[A], q: Quotes): Expr[IndexedSeq[A]] = {
     import q.reflect.*
 
+    // println(s"${child.show} :: ${child.typeSymbol.methodMember("findValues")}")
+    val definingTpeSym = Symbol.spliceOwner.maybeOwner.maybeOwner
+
+    if (!definingTpeSym.flags.is(Flags.Module)) {
+      report.errorAndAbort(
+        // Root must be a module to have same behaviour
+        s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
+      )
+    }
+
     val repr       = validateType[A]
     val subclasses = enclosedSubClasses[A](q)(repr)
 
@@ -88,25 +98,11 @@ object EnumMacros:
   )(using tpe: Type[T]): List[q.reflect.TypeRepr] = {
     import q.reflect.*
 
-    // TODO: Use SumOf?
     given quotes: q.type = q
 
     @annotation.tailrec
     def isObject(sym: Symbol, ok: Boolean = false): Boolean = {
       if (!sym.flags.is(Flags.Module)) {
-        val owner = sym.maybeOwner
-
-        if (
-          owner == defn.RootClass ||
-          owner.flags.is(Flags.Package) ||
-          owner.isAnonymousFunction
-        ) {
-          report.errorAndAbort(
-            // Root must be a module to have same behaviour
-            "The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object"
-          )
-        }
-
         false
       } else {
         val owner = sym.maybeOwner
@@ -139,7 +135,7 @@ object EnumMacros:
         children: List[Tree],
         out: List[TypeRepr]
     ): List[TypeRepr] = {
-      val childTpr = children.headOption.collect {
+      val childTpr: Option[TypeRepr] = children.headOption.collect {
         case tpd: Typed =>
           tpd.tpt.tpe
 
@@ -147,19 +143,21 @@ object EnumMacros:
           vd.tpt.tpe
 
         case cd: ClassDef =>
-          cd.constructor.returnTpt.tpe
+          cd.symbol.typeRef match {
+            case TypeRef(prefix, _) =>
+              prefix.select(cd.symbol)
 
+          }
       }
 
       childTpr match {
         case Some(child) => {
           child.asType match {
-            case '[IsEntry[t]] => {
+            case ct @ '[IsEntry[t]] => {
               val tpeSym = child.typeSymbol
-              // TODO: Check is subtype (same in Scala2?)
 
               if (!isObject(tpeSym)) {
-                subclasses(children.tail, out)
+                subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
               } else {
                 subclasses(children.tail, child :: out)
               }
@@ -177,7 +175,6 @@ object EnumMacros:
 
     tpr.classSymbol
       .flatMap { cls =>
-        // TODO: cls.typeMembers
         val types = subclasses(cls.children.map(_.tree), Nil)
 
         if (types.isEmpty) None else Some(types)

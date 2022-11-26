@@ -305,3 +305,16 @@ object InTheWoods {
 
   }
 }
+
+object Inheritance {
+  sealed trait Word extends EnumEntry
+
+  object Word extends Enum[Word] {
+    sealed class Greeting extends Word
+
+    lazy val values = findValues
+
+    case object Hello extends Greeting
+    case object Hi    extends Greeting
+  }
+}
