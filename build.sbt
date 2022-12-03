@@ -255,7 +255,7 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
   .settings(testSettings)
   .settings(
     name               := "coreJVMTests",
-    version            := Versions.Core.stable,
+    version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     Test / sourceGenerators += CoreJVMTest.testsGenerator,
     libraryDependencies += {
@@ -279,6 +279,25 @@ lazy val scalaXmlTest = Def.setting[ModuleID] {
 
   "org.scala-lang.modules" %% "scala-xml" % ver % Test
 }
+
+lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
+// Project models used in test for some subprojects
+lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-test"))
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(
+    name               := "enumeratum-test",
+    version            := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
+    libraryDependencies += {
+      "com.beachape" %%% "enumeratum" % Versions.Core.stable
+    }
+  )
+lazy val enumeratumTestJs  = enumeratumTest.js
+lazy val enumeratumTestJvm = enumeratumTest.jvm
 
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
@@ -633,7 +652,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version            := Versions.Macros.head,
+      version            := "1.7.3-SNAPSHOT",
       libraryDependencies += {
         val ver = {
           if (scalaBinaryVersion.value == "2.11") {
@@ -752,7 +771,8 @@ lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-    "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+    "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases",
+    "Sonatype releases local" at "https://oss.sonatype.org/service/local/repositories/releases/content"
   )
 )
 
