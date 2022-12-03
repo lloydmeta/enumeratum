@@ -280,13 +280,15 @@ lazy val scalaXmlTest = Def.setting[ModuleID] {
   "org.scala-lang.modules" %% "scala-xml" % ver % Test
 }
 
-lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
+lazy val testsAggregate =
+  aggregateProject("test", enumeratumTestJs, enumeratumTestJvm, enumeratumTestNative)
 // Project models used in test for some subprojects
-lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
+lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("enumeratum-test"))
   .settings(testSettings)
   .jsSettings(jsTestSettings)
+  .nativeSettings(nativeTestSettings)
   .settings(commonWithPublishSettings)
   .settings(
     name               := "enumeratum-test",
@@ -296,8 +298,9 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
       "com.beachape" %%% "enumeratum" % Versions.Core.stable
     }
   )
-lazy val enumeratumTestJs  = enumeratumTest.js
-lazy val enumeratumTestJvm = enumeratumTest.jvm
+lazy val enumeratumTestJs     = enumeratumTest.js
+lazy val enumeratumTestJvm    = enumeratumTest.jvm
+lazy val enumeratumTestNative = enumeratumTest.native
 
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
