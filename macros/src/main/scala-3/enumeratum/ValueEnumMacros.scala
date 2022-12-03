@@ -117,7 +117,10 @@ object ValueEnumMacros {
 
     import q.reflect.*
 
-    val ctx = q.asInstanceOf[scala.quoted.runtime.impl.QuotesImpl].ctx
+    val ctx = q match {
+      case quotesImpl: scala.quoted.runtime.impl.QuotesImpl => quotesImpl.ctx
+      case other => report.errorAndAbort(s"[${other}] was not the expected class")
+    }
 
     val yRetainTrees = ctx.settings.YretainTrees.valueIn(ctx.settingsState)
 
