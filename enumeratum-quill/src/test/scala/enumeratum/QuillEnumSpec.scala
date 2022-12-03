@@ -5,28 +5,28 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.collection.immutable
 
-class QuillEnumSpec extends AnyFunSpec with Matchers {
+final class QuillEnumSpec extends AnyFunSpec with Matchers {
 
   describe("A QuillEnum") {
 
     // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
     it("should encode to String") {
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillShirt].insert(_.size -> lift(QuillShirtSize.Small: QuillShirtSize)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillShirt].insert(_.size -> lift(QuillShirtSize.Small: QuillShirtSize)))
+      """ should compile
     }
 
     // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
     it("should decode from String") {
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillShirt])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillShirt])
+      """ should compile
     }
 
   }

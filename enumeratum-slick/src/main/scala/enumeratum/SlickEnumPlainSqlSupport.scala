@@ -49,7 +49,7 @@ trait SlickEnumPlainSqlSupport {
   }
 
   def setParameterForEnum[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[E] = {
     /* Implementation note: the enum argument is not used directly, but is used
        for type inference - if it wasn't required the caller would have to pass a type
@@ -58,22 +58,25 @@ trait SlickEnumPlainSqlSupport {
      */
     _makeSetParameter(identity)
   }
+
   def optionalSetParameterForEnum[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter(identity)
 
   def setParameterForEnumLowercase[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[E] = _makeSetParameter(_.toLowerCase)
+
   def optionalSetParameterForEnumLowercase[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter(_.toLowerCase)
 
   def setParameterForEnumUppercase[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[E] = _makeSetParameter(_.toUpperCase)
+
   def optionalSetParameterForEnumUppercase[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   ): SetParameter[Option[E]] = _makeOptionalSetParameter(_.toUpperCase)
 
   private def _makeGetResult[E <: EnumEntry](
@@ -83,6 +86,7 @@ trait SlickEnumPlainSqlSupport {
       override def apply(pr: PositionedResult): E = find(pr.nextString)
     }
   }
+
   private def _makeOptionalGetResult[E <: EnumEntry](
       find: String => E
   ): GetResult[Option[E]] = {
@@ -94,25 +98,28 @@ trait SlickEnumPlainSqlSupport {
   }
 
   def getResultForEnum[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[E] = _makeGetResult[E](enum.withName(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[E] = _makeGetResult[E](e.withName(_))
+
   def optionalGetResultForEnum[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult(enum.withName(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult(e.withName(_))
 
   def getResultForEnumLowercase[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[E] = _makeGetResult(enum.withNameLowercaseOnly(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[E] = _makeGetResult(e.withNameLowercaseOnly(_))
+
   def optionalGetResultForEnumLowercase[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult(enum.withNameLowercaseOnly(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult(e.withNameLowercaseOnly(_))
 
   def getResultForEnumUppercase[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[E] = _makeGetResult(enum.withNameUppercaseOnly(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[E] = _makeGetResult(e.withNameUppercaseOnly(_))
+
   def optionalGetResultForEnumUppercase[E <: EnumEntry](
-      enum: Enum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult(enum.withNameUppercaseOnly(_))
+      @deprecatedName(Symbol("enum")) e: Enum[E]
+  ): GetResult[Option[E]] = _makeOptionalGetResult(e.withNameUppercaseOnly(_))
 
 }
 

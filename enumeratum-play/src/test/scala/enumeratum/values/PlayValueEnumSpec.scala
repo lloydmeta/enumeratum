@@ -14,18 +14,18 @@ class PlayValueEnumSpec extends AnyFunSpec with Matchers with PlayValueEnumHelpe
   testNumericPlayEnum("LongPlayEnum", PlayContentType)
   testNumericPlayEnum("ShortPlayEnum", PlayDrinks)
   testNumericPlayEnum("IntPlayEnum", PlayLibraryItem)
-  testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString)
+  testPlayEnum("StringPlayEnum", PlayOperatingSystem, JsString(_))
   testPlayEnum(
     "BytePlayEnum",
     PlayBites,
-    { s: Byte =>
+    { (s: Byte) =>
       JsNumber(s.toInt)
     }
   )
   testPlayEnum(
     "CharPlayEnum",
     PlayAlphabet,
-    { s: Char =>
+    { (s: Char) =>
       JsString(s"$s")
     }
   )

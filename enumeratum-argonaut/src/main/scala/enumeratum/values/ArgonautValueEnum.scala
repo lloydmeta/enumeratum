@@ -37,7 +37,7 @@ import Argonaut._
   * }}}
   *
   * @tparam ValueType
-  *   @tparam EntryType
+  * @tparam EntryType
   */
 sealed trait ArgonautValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
   this: ValueEnum[ValueType, EntryType] =>

@@ -12,21 +12,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to Int") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillBorrowerToLibraryItem].insert(_.borrower -> "Foo", _.item -> lift(QuillLibraryItem.Book: QuillLibraryItem)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillBorrowerToLibraryItem].insert(_.borrower -> "Foo", _.item -> lift(QuillLibraryItem.Book: QuillLibraryItem)))
+      """ should compile
     }
 
     it("should decode from Int") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillBorrowerToLibraryItem])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillBorrowerToLibraryItem])
+      """ should compile
     }
 
   }
@@ -36,21 +36,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to Long") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillContent].insert(_.`type` -> lift(QuillContentType.Image: QuillContentType)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillContent].insert(_.`type` -> lift(QuillContentType.Image: QuillContentType)))
+      """ should compile
     }
 
     it("should decode from Long") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillContent])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillContent])
+      """ should compile
     }
 
   }
@@ -60,21 +60,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to Short") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillDrinkManufacturer].insert(_.name -> "Coca-Cola", _.drink -> lift(QuillDrink.Cola: QuillDrink)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillDrinkManufacturer].insert(_.name -> "Coca-Cola", _.drink -> lift(QuillDrink.Cola: QuillDrink)))
+      """ should compile
     }
 
     it("should decode from Short") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillDrinkManufacturer])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillDrinkManufacturer])
+      """ should compile
     }
 
   }
@@ -84,21 +84,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to String") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillComputer].insert(_.operatingSystem -> lift(QuillOperatingSystem.Windows: QuillOperatingSystem)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillComputer].insert(_.operatingSystem -> lift(QuillOperatingSystem.Windows: QuillOperatingSystem)))
+      """ should compile
     }
 
     it("should decode from String") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillComputer])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillComputer])
+      """ should compile
     }
 
   }
@@ -108,21 +108,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to Char") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillName].insert(_.name -> "Daniel", _.initials -> lift(QuillAlphabet.D: QuillAlphabet)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillName].insert(_.name -> "Daniel", _.initials -> lift(QuillAlphabet.D: QuillAlphabet)))
+      """ should compile
     }
 
     it("should decode from Char") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillName])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillName])
+      """ should compile
     }
 
   }
@@ -132,21 +132,21 @@ class QuillValueEnumSpec extends AnyFunSpec with Matchers {
     it("should encode to Byte") {
       // we only need to test whether it can compile because Quill will fail compilation if an Encoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillChar].insert(_.byte1 -> lift(QuillByte.ThreeByte: QuillByte), _.byte2 -> lift(QuillByte.TwoByte: QuillByte)))
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillChar].insert(_.byte1 -> lift(QuillByte.ThreeByte: QuillByte), _.byte2 -> lift(QuillByte.TwoByte: QuillByte)))
+      """ should compile
     }
 
     it("should decode from Byte") {
       // we only need to test whether it can compile because Quill will fail compilation if a Decoder is not found
       """
-        | import io.getquill._
-        | val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
-        | import ctx._
-        | ctx.run(query[QuillChar])
-      """.stripMargin should compile
+import io.getquill._
+val ctx = new SqlMirrorContext(MirrorSqlDialect, Literal)
+import ctx._
+ctx.run(query[QuillChar])
+      """ should compile
     }
 
   }

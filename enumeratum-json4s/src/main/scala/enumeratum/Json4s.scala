@@ -30,14 +30,16 @@ object Json4s {
     * res1: Boolean = true
     * }}}
     *
-    * @param enum
+    * @param e
     *   the enum you want to generate a Json4s serialiser for
     */
-  def serializer[A <: EnumEntry: Manifest](enum: Enum[A]): CustomSerializer[A] =
+  def serializer[A <: EnumEntry: Manifest](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): CustomSerializer[A] =
     new CustomSerializer[A](_ =>
       (
         {
-          case JString(s) if enum.withNameOption(s).isDefined => enum.withName(s)
+          case JString(s) if e.withNameOption(s).isDefined => e.withName(s)
         },
         { case x: A =>
           JString(x.entryName)
@@ -71,18 +73,18 @@ object Json4s {
     * res1: Boolean = true
     * }}}
     *
-    * @param enum
+    * @param e
     *   the enum you want to generate a Json4s key serialiser for
     */
-  def keySerializer[A <: EnumEntry: Manifest](enum: Enum[A]): CustomKeySerializer[A] =
+  def keySerializer[A <: EnumEntry: Manifest](
+      @deprecatedName(Symbol("enum")) e: Enum[A]
+  ): CustomKeySerializer[A] =
     new CustomKeySerializer[A](_ =>
       (
         {
-          case s: String if enum.withNameOption(s).isDefined => enum.withName(s)
+          case s: String if e.withNameOption(s).isDefined => e.withName(s)
         },
-        { case x: A =>
-          x.entryName
-        }
+        { case x: A => x.entryName }
       )
     )
 }

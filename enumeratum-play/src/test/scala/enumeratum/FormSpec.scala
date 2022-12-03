@@ -7,13 +7,13 @@ import org.scalatest.OptionValues._
 
 /** Created by Lloyd on 2/3/15.
   */
-class FormSpec extends AnyFunSpec with Matchers {
+final class FormSpec extends AnyFunSpec with Matchers {
 
   import Forms._
 
   describe(".enum") {
 
-    val subject = Form("hello" -> enum(Dummy))
+    val subject = Form("hello" -> enumMapping(Dummy))
 
     it("should bind proper strings into an Enum value") {
       val r1 = subject.bind(Map("hello" -> "A"))
@@ -31,7 +31,7 @@ class FormSpec extends AnyFunSpec with Matchers {
 
   describe(".enum insensitive") {
 
-    val subject = Form("hello" -> enum(Dummy, true))
+    val subject = Form("hello" -> enumMapping(Dummy, true))
 
     it("should bind proper strings into an Enum value disregarding case") {
       val r1 = subject.bind(Map("hello" -> "A"))
@@ -81,8 +81,7 @@ class FormSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to bind random strings") {
-      val r = subject.bind(Map("hello" -> "a"))
-      r.value shouldBe None
+      subject.bind(Map("hello" -> "a")).value shouldBe None
     }
 
   }
@@ -99,15 +98,12 @@ class FormSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to bind random strings") {
-      val r = subject.bind("hello", Map("hello" -> "AARSE"))
-      r should be('left)
+      subject.bind("hello", Map("hello" -> "AARSE")) should be(Symbol("left"))
     }
 
     it("should unbind ") {
-      val r = subject.unbind("hello", Dummy.A)
-      r shouldBe Map("hello" -> "A")
+      subject.unbind("hello", Dummy.A) shouldBe Map("hello" -> "A")
     }
-
   }
 
   describe(".format lower case") {
@@ -122,13 +118,11 @@ class FormSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to bind random strings") {
-      val r = subject.bind("hello", Map("hello" -> "A"))
-      r should be('left)
+      subject.bind("hello", Map("hello" -> "A")) should be(Symbol("left"))
     }
 
     it("should unbind ") {
-      val r = subject.unbind("hello", Dummy.A)
-      r shouldBe Map("hello" -> "a")
+      subject.unbind("hello", Dummy.A) shouldBe Map("hello" -> "a")
     }
   }
 
@@ -144,13 +138,11 @@ class FormSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to bind random strings") {
-      val r = subject.bind("hello", Map("hello" -> "a"))
-      r should be('left)
+      subject.bind("hello", Map("hello" -> "a")) should be(Symbol("left"))
     }
 
     it("should unbind ") {
-      val r = subject.unbind("hello", Dummy.A)
-      r shouldBe Map("hello" -> "A")
+      subject.unbind("hello", Dummy.A) shouldBe Map("hello" -> "A")
     }
   }
 
@@ -170,8 +162,7 @@ class FormSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to bind random strings") {
-      val r = subject.bind("hello", Map("hello" -> "AARSE"))
-      r should be('left)
+      subject.bind("hello", Map("hello" -> "AARSE")) should be(Symbol("left"))
     }
 
     it("should unbind ") {

@@ -79,7 +79,7 @@ trait CharQuillEnum[EntryType <: CharEnumEntry] extends QuillValueEnum[Char, Ent
     * String instead.
     */
   implicit val quillEncoder: MappedEncoding[EntryType, String] =
-    MappedEncoding(enum => String.valueOf(enum.value))
+    MappedEncoding(e => String.valueOf(e.value))
 
   /** Because all existing Quill contexts do not have built-in Decoders for Char, convert it from a
     * String instead.

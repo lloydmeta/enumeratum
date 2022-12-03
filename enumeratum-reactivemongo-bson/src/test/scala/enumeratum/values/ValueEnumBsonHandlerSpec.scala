@@ -1,6 +1,5 @@
 package enumeratum.values
 
-import enumeratum.values.BSONValueHandlers._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -8,17 +7,18 @@ import org.scalatest.matchers.should.Matchers
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-class EnumBsonHandlerSpec extends AnyFunSpec with Matchers with EnumBsonHandlerHelpers {
+final class ValueEnumBsonHandlerSpec
+    extends AnyFunSpec
+    with Matchers
+    with ValueEnumBsonHandlerHelpers {
 
   describe(".reader") {
-
     testReader("IntEnum", LibraryItem)
     testReader("LongEnum", ContentType)
     testReader("ShortEnum", Drinks)
     testReader("StringEnum", OperatingSystem)
     testReader("ByteEnum", Bites)
     testReader("CharEnum", Alphabet)
-
   }
 
   describe(".keyReader") {

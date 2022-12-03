@@ -23,41 +23,41 @@ import scala.reflect.ClassTag
   */
 trait SlickEnumColumnSupport {
 
-  val profile: slick.profile.RelationalProfile
+  val profile: slick.relational.RelationalProfile
 
   def mappedColumnTypeForEnum[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   )(implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
     /* This import has a purpose - it brings the proper
     implicit profile.BaseColumnType[String] into scope */
     import profile.api._
     profile.MappedColumnType.base[E, String](
       { _.entryName },
-      { enum.namesToValuesMap }
+      { e.namesToValuesMap }
     )
   }
 
   def mappedColumnTypeForLowercaseEnum[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   )(implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
     /* This import has a purpose - it brings the proper
     implicit profile.BaseColumnType[String] into scope */
     import profile.api._
     profile.MappedColumnType.base[E, String](
       { _.entryName.toLowerCase },
-      { enum.lowerCaseNamesToValuesMap }
+      { e.lowerCaseNamesToValuesMap }
     )
   }
 
   def mappedColumnTypeForUppercaseEnum[E <: EnumEntry](
-      enum: Enum[E]
+      @deprecatedName(Symbol("enum")) e: Enum[E]
   )(implicit tag: ClassTag[E]): profile.BaseColumnType[E] = {
     /* This import has a purpose - it brings the proper
     implicit profile.BaseColumnType[String] into scope */
     import profile.api._
     profile.MappedColumnType.base[E, String](
       { _.entryName.toUpperCase },
-      { enum.upperCaseNameValuesToMap }
+      { e.upperCaseNameValuesToMap }
     )
   }
 }

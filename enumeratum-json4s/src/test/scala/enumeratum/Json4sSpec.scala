@@ -1,13 +1,14 @@
 package enumeratum
 
-import org.json4s.{DefaultFormats, MappingException}
+import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.json4s.native.Serialization
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-class Json4sSpec extends AnyFunSpec with Matchers {
+final class Json4sSpec extends AnyFunSpec with Matchers {
 
-  implicit val formats =
+  implicit val formats: Formats =
     DefaultFormats + Json4s.serializer(TrafficLight) + Json4s.keySerializer(TrafficLight)
 
   case class Data(tr: TrafficLight)

@@ -113,6 +113,7 @@ object ValueEnumMacros {
 
     // Finish by building our Sequence
     val subclassSymbols = treeWithVals.map(_.tree.symbol)
+
     EnumMacros.buildSeqExpr[ValueEntryType](c)(subclassSymbols)
   }
 

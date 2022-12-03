@@ -1,17 +1,26 @@
 package enumeratum
 
+import scala.util.Success
+
+import reactivemongo.api.bson.{
+  BSONHandler,
+  BSONInteger,
+  BSONReader,
+  BSONString,
+  BSONWriter,
+  KeyReader,
+  KeyWriter
+}
+
 import org.scalatest.OptionValues._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import reactivemongo.api.bson._
-
-import scala.util.Success
 
 /** @author
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
-class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
+final class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
 
   testScenario(
     descriptor = "normal operation (no transformations)",
@@ -34,7 +43,7 @@ class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
 
   testScenario(
     descriptor = "case insensitive",
-    reader = EnumHandler.reader(enum = Dummy, insensitive = true),
+    reader = EnumHandler.reader(e = Dummy, insensitive = true),
     expectedReadSuccesses = Map("A" -> Dummy.A, "a" -> Dummy.A, "C" -> Dummy.c),
     expectedReadFails = Nil,
     writer = EnumHandler.writer(Dummy),
@@ -44,7 +53,7 @@ class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
 
   testKeyScenario(
     descriptor = "case insensitive",
-    reader = EnumHandler.keyReader(enum = Dummy, insensitive = true),
+    reader = EnumHandler.keyReader(e = Dummy, insensitive = true),
     expectedReadSuccesses = Map("A" -> Dummy.A, "a" -> Dummy.A, "C" -> Dummy.c),
     expectedReadFails = Nil,
     writer = EnumHandler.keyWriter(Dummy),
@@ -88,6 +97,8 @@ class EnumBsonHandlerSpec extends AnyFunSpec with Matchers {
     writer = EnumHandler.keyWriterUppercase(Dummy),
     expectedWrites = Map(Dummy.A -> "A", Dummy.c -> "C")
   )
+
+  // ---
 
   private def testScenario(
       descriptor: String,

@@ -2,7 +2,7 @@ object Versions {
 
   object Core {
     val stable = "1.7.0"
-    val head   = "1.7.1-SNAPSHOT"
+    val head   = "1.7.2-SNAPSHOT"
   }
 
   object Macros {

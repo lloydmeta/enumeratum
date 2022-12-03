@@ -1,6 +1,7 @@
 package enumeratum.values
 
 import enumeratum.ScalacheckTest
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
@@ -19,5 +20,4 @@ class ScalacheckSpec
   test[LongEnumEntry, ContentType]("LongEnumEntry")
   test[ShortEnumEntry, Drinks]("ShortEnumEntry")
   test[StringEnumEntry, OperatingSystem]("StringEnumEntry")
-
 }

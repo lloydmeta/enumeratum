@@ -4,18 +4,15 @@ import org.scalatest.OptionValues._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-class EnumSpec extends AnyFunSpec with Matchers {
+class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
 
   describe("no values") {
-
     it("should result in findValues finding nothing") {
       EmptyEnum.values.size shouldBe 0
     }
-
   }
 
   describe("when not wrapped in another object") {
-
     import DummyEnum._
 
     describe("#values") {
@@ -41,6 +38,11 @@ class EnumSpec extends AnyFunSpec with Matchers {
         )
       }
 
+      it("should contain instance of subclass") {
+        import Inheritance._
+
+        Word.values should be(IndexedSeq(Word.Hello, Word.Hi))
+      }
     }
 
     describe("#withName") {
@@ -474,26 +476,26 @@ class EnumSpec extends AnyFunSpec with Matchers {
     }
 
     it("should return -1 for elements that do not exist") {
-      // Does this even make sense given that we need to have sealed traits/classes ??
+      // Does this even make sense,
+      // given that we need to have sealed traits/classes ??
       sealed trait Reactions extends EnumEntry
+
       case object Reactions extends Enum[Reactions] {
-
         case object Blah extends Reactions
-
-        case object Yay extends Reactions
-
-        case object Nay extends Reactions
+        case object Yay  extends Reactions
+        case object Nay  extends Reactions
 
         val values = findValues
       }
+
       case object Woot extends Reactions
+
       Reactions.indexOf(Woot) shouldBe -1
     }
 
   }
 
   describe("trying to use with improper types") {
-
     it("should fail to compile for unsealed traits") {
       """
         trait NotSealed extends EnumEntry
@@ -542,22 +544,13 @@ class EnumSpec extends AnyFunSpec with Matchers {
     import DummyEnum._
 
     it("should return true if enum value is contained by the parameter list") {
-      val enum: DummyEnum = Hello
-      enum.in(Hello, GoodBye) should be(true)
+      val myEnum: DummyEnum = Hello
+      myEnum.in(Hello, GoodBye) should be(true)
     }
 
     it("should return false if enum value is not contained by the parameter list") {
-      val enum: DummyEnum = Hi
-      enum.in(Hello, GoodBye) should be(false)
-    }
-
-    it(
-      "should fail to compile if either enum in the parameter list is not instance of the same enum type as the checked one"
-    ) {
-      """
-        val enum: DummyEnum = DummyEnum.Hi
-        enum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye)
-      """ shouldNot compile
+      val myEnum: DummyEnum = Hi
+      myEnum.in(Hello, GoodBye) should be(false)
     }
   }
 
@@ -573,9 +566,7 @@ class EnumSpec extends AnyFunSpec with Matchers {
     }
 
     it("should fail to compile when passed a singleton object") {
-      """
-        | findEnum(Hello)
-      """ shouldNot compile
+      "findEnum(Hello)" shouldNot compile
     }
   }
 
@@ -597,4 +588,6 @@ class EnumSpec extends AnyFunSpec with Matchers {
       Result.withNameInsensitive("ok") shouldBe Result.Good
     }
   }
+
+  scalaCompat
 }

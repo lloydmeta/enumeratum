@@ -1,14 +1,13 @@
 package enumeratum.values
 
-import enumeratum.values.BSONValueHandlers._
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.{BSONHandler, KeyReader, KeyWriter}
 
 /** @author
   *   Alessandro Lacava (@lambdista)
   * @since 2016-04-23
   */
 sealed trait ReactiveMongoBsonValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType]] {
-  enum: ValueEnum[ValueType, EntryType] =>
+  selfEnum: ValueEnum[ValueType, EntryType] =>
 
   /** Implicit BSON handler for the entries of this enum
     */

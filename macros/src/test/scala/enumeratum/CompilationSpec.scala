@@ -19,14 +19,6 @@ class CompilationSpec extends AnyFunSpec with Matchers {
 
 }
 
-/** Created by Lloyd on 1/4/17.
-  *
-  * Copyright 2017
-  */
-object FindValEnums {
-  def apply[A]: IndexedSeq[A] = macro ValueEnumMacros.findIntValueEntriesImpl[A]
-}
-
 sealed abstract class A private (val value: Int) {
   val text: String
 }

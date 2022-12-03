@@ -10,34 +10,50 @@ import org.scalatest.matchers.should.Matchers
 class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
 
   describe("basic sanity check") {
-
     it("should have the proper values") {
       LibraryItem.withValue(1) shouldBe LibraryItem.Book
       LibraryItem.withValue(2) shouldBe LibraryItem.Movie
       LibraryItem.withValue(10) shouldBe LibraryItem.Magazine
       LibraryItem.withValue(14) shouldBe LibraryItem.CD
     }
-
   }
 
   testNumericEnum("IntEnum", LibraryItem)
   testNumericEnum("ShortEnum", Drinks)
   testNumericEnum("LongEnum", ContentType)
+
   testEnum("StringEnum", OperatingSystem, Seq("windows-phone"))
   testEnum("CharEnum", Alphabet, Seq('Z'))
   testEnum("ByteEnum", Bites, Seq(10).map(_.toByte))
-  testNumericEnum("when using val members in the body", MovieGenre)
+
+  testNumericEnum("When using val members in the body", MovieGenre)
   testNumericEnum("LongEnum that is nesting an IntEnum", Animal)
   testNumericEnum("IntEnum that is nested inside a LongEnum", Animal.Mammalian)
   testNumericEnum("Custom IntEnum with private constructors", CustomEnumPrivateConstructor)
+
+  describe("AllowAlias") {
+    it("should be supported") {
+      NumericPrecision.values should contain(NumericPrecision.Integer)
+      NumericPrecision.values should contain(NumericPrecision.Int)
+      NumericPrecision.values should contain(NumericPrecision.Float)
+      NumericPrecision.values should contain(NumericPrecision.Double)
+
+      NumericPrecision.withValue("integer") shouldBe NumericPrecision.Int
+      NumericPrecision.withValue("float") shouldBe NumericPrecision.Float
+      NumericPrecision.withValue("double") shouldBe NumericPrecision.Double
+    }
+  }
 
   describe("finding companion object") {
 
     it("should work for IntEnums") {
       def findCompanion[EntryType <: IntEnumEntry: IntEnum](entry: EntryType) =
         implicitly[IntEnum[EntryType]]
+
       val companion = findCompanion(LibraryItem.Magazine: LibraryItem)
+
       companion shouldBe LibraryItem
+      IntEnum.materialiseIntValueEnum[LibraryItem] shouldBe LibraryItem
       companion.values should contain(LibraryItem.Magazine)
     }
 
@@ -80,11 +96,9 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
       companion shouldBe Bites
       companion.values should contain(Bites.FourByte)
     }
-
   }
 
   describe("compilation failures") {
-
     describe("problematic values") {
 
       it("should fail to compile when values are repeated") {
@@ -138,7 +152,6 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
         }
         """ shouldNot compile
       }
-
     }
 
     describe("trying to use with improper types") {
@@ -195,7 +208,5 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
         """ shouldNot compile
       }
     }
-
   }
-
 }

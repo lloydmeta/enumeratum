@@ -26,14 +26,14 @@ class CirceValueEnumSpec extends AnyFunSpec with Matchers {
     ValueType
   ]: Encoder: Decoder](
       enumKind: String,
-      enum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]
+      myEnum: ValueEnum[ValueType, EntryType] with CirceValueEnum[ValueType, EntryType]
   ): Unit = {
     describe(enumKind) {
 
       describe("to JSON") {
 
         it("should work") {
-          enum.values.foreach { entry =>
+          myEnum.values.foreach { entry =>
             entry.asJson shouldBe entry.value.asJson
           }
         }
@@ -43,7 +43,7 @@ class CirceValueEnumSpec extends AnyFunSpec with Matchers {
       describe("from Json") {
 
         it("should parse to members when given proper JSON") {
-          enum.values.foreach { entry =>
+          myEnum.values.foreach { entry =>
             entry.value.asJson.as[EntryType] shouldBe Right(entry)
           }
         }
@@ -64,12 +64,12 @@ class CirceValueEnumSpec extends AnyFunSpec with Matchers {
 
   private def testCirceKeyEnum[EntryType <: ValueEnumEntry[String]: KeyEncoder: KeyDecoder](
       enumKind: String,
-      enum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
+      myEnum: ValueEnum[String, EntryType] with CirceValueEnum[String, EntryType]
   ): Unit = {
     describe(s"$enumKind as Key") {
       describe("to JSON") {
         it("should work") {
-          val map = enum.values.toStream.zip(Stream.from(1)).toMap
+          val map = myEnum.values.toStream.zip(Stream.from(1)).toMap
           map.asJson.as[Map[EntryType, Int]] shouldBe Right(map)
         }
       }

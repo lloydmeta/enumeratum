@@ -13,15 +13,18 @@ jobs:
           - java: 11
             scala: 2.11.12
           - java: 11
-            scala: 2.12.14
+            scala: 2.12.17
           - java: 11
-            scala: 2.13.6
+            scala: 2.13.10
+          - java: 11
+            scala: 3.2.1
     runs-on: ubuntu-latest
     env:
       SCALAJS_TEST_OPT: full
       # define Java options for both official sbt and sbt-extras
       JAVA_OPTS: -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
       JVM_OPTS:  -Xms6G -Xmx6G -Xss4M -XX:ReservedCodeCacheSize=256M -XX:MaxMetaspaceSize=1G -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8
+      SBT_OPTS:  -Denumeratum.useLocalVersion
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -39,26 +42,23 @@ jobs:
               sbt -v ++${{ matrix.scala }} scalafmtCheck scalafmtSbtCheck scala_2_11/test:compile scala_2_11/test:doc
               sbt -v ++${{ matrix.scala }} scala_2_11/test
               ;;
-            2.12.14)
+            2.12.17)
               sbt -v ++${{ matrix.scala }} test:compile test:doc
               sbt -v ++${{ matrix.scala }} coverage test coverageReport
               sbt -v ++${{ matrix.scala }} coverageAggregate
               ;;
-            2.13.6)
+            *)
               sbt -v ++${{ matrix.scala }} test:compile test:doc
               sbt -v ++${{ matrix.scala }} test
               ;;
-            *)
-              echo unknown Scala Version ${{ matrix.scala }}
-              exit 1
           esac
           rm -rf "$HOME/.ivy2/local" || true
-          find $HOME/Library/Caches/Coursier/v1        -name "ivydata-*.properties" -delete || true
-          find $HOME/.ivy2/cache                       -name "ivydata-*.properties" -delete || true
-          find $HOME/.cache/coursier/v1                -name "ivydata-*.properties" -delete || true
-          find $HOME/.sbt                              -name "*.lock"               -delete || true
+          find $HOME/Library/Caches/Coursier/v1 -name "ivydata-*.properties" -delete || true
+          find $HOME/.ivy2/cache                -name "ivydata-*.properties" -delete || true
+          find $HOME/.cache/coursier/v1         -name "ivydata-*.properties" -delete || true
+          find $HOME/.sbt                       -name "*.lock"               -delete || true
       - name: Upload coverage to Codecov
-        if: ${{ matrix.scala == '2.12.14' }}
+        if: ${{ matrix.scala == '2.12.17' }}
         uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: true

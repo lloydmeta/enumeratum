@@ -12,15 +12,14 @@ object EnumFormats {
     * type
     */
   def reads[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseReads: Reads[ValueType]
   ): Reads[EntryType] =
     new Reads[EntryType] {
       def reads(json: JsValue): JsResult[EntryType] =
         baseReads.reads(json).flatMap { s =>
-          val maybeBound = enum.withValueOpt(s)
-          maybeBound match {
+          e.withValueOpt(s) match {
             case Some(obj) => JsSuccess(obj)
             case None      => JsError("error.expected.validenumvalue")
           }
@@ -31,21 +30,18 @@ object EnumFormats {
     * value type
     */
   def writes[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit
       baseWrites: Writes[ValueType]
-  ): Writes[EntryType] =
-    new Writes[EntryType] {
-      def writes(o: EntryType): JsValue = baseWrites.writes(o.value)
-    }
+  ): Writes[EntryType] = Writes[EntryType] { o => baseWrites.writes(o.value) }
 
   /** Returns a Formats for the provided ValueEnum based on the given base Reads and Writes for the
     * Enum's value type
     */
   def formats[ValueType, EntryType <: ValueEnumEntry[ValueType]](
-      enum: ValueEnum[ValueType, EntryType]
+      @deprecatedName(Symbol("enum")) e: ValueEnum[ValueType, EntryType]
   )(implicit baseReads: Reads[ValueType], baseWrites: Writes[ValueType]): Format[EntryType] = {
-    Format(reads(enum), writes(enum))
+    Format(reads(e), writes(e))
   }
 
   /** Format for Char
