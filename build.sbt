@@ -158,7 +158,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform)
   .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false))
   .settings(
     name    := "enumeratum-macros",
-    version := Versions.Macros.head,
+    version := Versions.Macros.stable,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
     libraryDependencies += {
       if (scalaBinaryVersion.value == "3") {
@@ -185,7 +185,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(commonWithPublishSettings)
   .settings(
     name               := "enumeratum",
-    version            := Versions.Core.head,
+    version            := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       if (useLocalVersion) {
@@ -268,12 +268,31 @@ lazy val scalaXmlTest = Def.setting[ModuleID] {
   "org.scala-lang.modules" %% "scala-xml" % ver % Test
 }
 
+lazy val testsAggregate = aggregateProject("test", enumeratumTestJs, enumeratumTestJvm)
+// Project models used in test for some subprojects
+lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-test"))
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(
+    name               := "enumeratum-test",
+    version            := Versions.Core.stable,
+    crossScalaVersions := scalaVersionsAll,
+    libraryDependencies += {
+      "com.beachape" %%% "enumeratum" % Versions.Core.stable
+    }
+  )
+lazy val enumeratumTestJs  = enumeratumTest.js
+lazy val enumeratumTestJvm = enumeratumTest.jvm
+
 lazy val enumeratumReactiveMongoBson =
   Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := Versions.Core.head,
+      version            := Versions.Core.stable,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies += {
         "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC7-SNAPSHOT" % Provided
@@ -304,7 +323,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name    := "enumeratum-play-json",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     crossScalaVersions := Seq(
       scala_2_12Version,
       scala_2_13Version,
@@ -337,7 +356,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
-    version            := Versions.Core.head,
+    version            := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version),
     libraryDependencies += {
       val dep = ("com.typesafe.play" %% "play" % "2.8.0").exclude("org.scala-lang.modules", "*")
@@ -385,7 +404,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name    := "enumeratum-circe",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     libraryDependencies ++= {
       val ver: String = {
         if (scalaBinaryVersion.value == "2.11") {
@@ -433,7 +452,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name               := "enumeratum-argonaut",
-    version            := Versions.Core.head,
+    version            := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       val ver: String = {
@@ -470,7 +489,7 @@ lazy val enumeratumJson4s =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := Versions.Core.head,
+      version            := Versions.Core.stable,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
         val ver = "4.0.3"
@@ -508,7 +527,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name               := "enumeratum-scalacheck",
-    version            := Versions.Core.head,
+    version            := Versions.Core.stable,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       val ver: String = {
@@ -562,7 +581,7 @@ lazy val enumeratumQuill =
     // .jsSettings(jsTestSettings: _*) TODO re-enable once quill supports Scala.js 1.0 */,
     .settings(
       name               := "enumeratum-quill",
-      version            := Versions.Core.head,
+      version            := Versions.Core.stable,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
         val (core, ver) = {
@@ -606,7 +625,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version            := Versions.Macros.head,
+      version            := "1.7.2",
       libraryDependencies += {
         val ver = {
           if (scalaBinaryVersion.value == "2.11") {
@@ -634,7 +653,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := Versions.Core.head,
+      version            := Versions.Core.stable,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.3.3").cross(CrossVersion.for3Use2_13),
@@ -664,7 +683,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name    := "enumeratum-cats",
-    version := Versions.Core.head,
+    version := Versions.Core.stable,
     libraryDependencies += {
       val ver = {
         if (scalaBinaryVersion.value == "2.11") {
@@ -718,7 +737,8 @@ lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
-    "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+    "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases",
+    "Sonatype releases local" at "https://oss.sonatype.org/service/local/repositories/releases/content"
   )
 )
 
