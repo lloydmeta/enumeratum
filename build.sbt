@@ -554,8 +554,8 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
   .jsSettings(jsTestSettings)
   .nativeSettings(nativeTestSettings)
   .settings(
-    name               := "enumeratum-scalacheck",
-    version            := Versions.Core.head,
+    name    := "enumeratum-scalacheck",
+    version := Versions.Core.head,
     crossScalaVersions := Seq(
       scala_2_12Version,
       scala_2_13Version,
