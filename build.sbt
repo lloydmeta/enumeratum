@@ -586,6 +586,12 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
       }
     }
   )
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll
+  )
+  .nativeSettings(
+    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version)
+  )
 
 lazy val enumeratumScalacheckJs = enumeratumScalacheck.js
   .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
@@ -655,7 +661,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions := scalaVersionsAll,
-      version            := "1.7.3-SNAPSHOT",
+      version            := "1.7.4-SNAPSHOT",
       libraryDependencies += {
         val ver = {
           if (scalaBinaryVersion.value == "2.11") {
