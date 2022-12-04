@@ -554,13 +554,9 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
   .jsSettings(jsTestSettings)
   .nativeSettings(nativeTestSettings)
   .settings(
-    name    := "enumeratum-scalacheck",
-    version := Versions.Core.head,
-    crossScalaVersions := Seq(
-      scala_2_12Version,
-      scala_2_13Version,
-      scala_3Version
-    ),
+    name               := "enumeratum-scalacheck",
+    version            := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       val (ver, mod, ver2) = {
         if (scalaBinaryVersion.value == "2.11") {
@@ -589,6 +585,12 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
         )
       }
     }
+  )
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll
+  )
+  .nativeSettings(
+    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version)
   )
 
 lazy val enumeratumScalacheckJs = enumeratumScalacheck.js
