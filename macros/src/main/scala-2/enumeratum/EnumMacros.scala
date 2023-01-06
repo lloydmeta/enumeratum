@@ -163,13 +163,19 @@ object EnumMacros {
   ) = {
     import c.universe._
     val resultType = weakTypeOf[A]
+    val indexedSeq = Ident(c.mirror.staticModule(classOf[IndexedSeq[A]].getName))
     if (subclassSymbols.isEmpty) {
-      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
+      c.Expr[IndexedSeq[A]](
+        TypeApply(
+          Select(indexedSeq, ContextUtils.termName(c)("empty")),
+          List(TypeTree(resultType))
+        )
+      )
     } else {
       c.Expr[IndexedSeq[A]](
         Apply(
           TypeApply(
-            Select(reify(IndexedSeq).tree, ContextUtils.termName(c)("apply")),
+            Select(indexedSeq, ContextUtils.termName(c)("apply")),
             List(TypeTree(resultType))
           ),
           subclassSymbols.map(Ident(_)).toList
