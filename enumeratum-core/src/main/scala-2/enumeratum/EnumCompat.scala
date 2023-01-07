@@ -4,6 +4,8 @@ import scala.collection.immutable.IndexedSeq
 
 import scala.language.experimental.macros
 
+import _root_.enumeratum.compat.EnumMacros
+
 private[enumeratum] trait EnumCompat[A <: EnumEntry] { _: Enum[A] =>
 
   /** Returns a Seq of [[A]] objects that the macro was able to find.

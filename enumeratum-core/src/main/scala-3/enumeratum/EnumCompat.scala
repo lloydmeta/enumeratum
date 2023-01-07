@@ -1,5 +1,8 @@
 package enumeratum
 
+import _root_.enumeratum.compat
+import scala.language.experimental.macros
+
 private[enumeratum] trait EnumCompat[A <: EnumEntry] { _enum: Enum[A] =>
 
   // format: off
@@ -8,7 +11,8 @@ private[enumeratum] trait EnumCompat[A <: EnumEntry] { _enum: Enum[A] =>
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
     * aren't using this method... why are you even bothering with this lib?
     */
-  inline def findValues: IndexedSeq[A] = ${ EnumMacros.findValuesImpl[A] }
+  protected inline def findValues: IndexedSeq[A] = ${ EnumMacros.findValuesImpl[A] }
+  protected def findValues: IndexedSeq[A] = macro compat.EnumMacros.findValuesImpl[A]
   // format: on
 
   /** The sequence of values for your [[Enum]]. You will typically want to implement this in your
@@ -26,6 +30,8 @@ private[enumeratum] trait EnumCompanion {
   /** Finds the `Enum` companion object for a particular `EnumEntry`. */
   implicit inline def materializeEnum[A <: EnumEntry]: Enum[A] =
     ${ EnumMacros.materializeEnumImpl[A, Enum[A]] }
+  implicit def materializeEnum[A <: EnumEntry]: Enum[A] = macro
+    compat.EnumMacros.materializeEnumImpl[A]
   // format: on
 
 }

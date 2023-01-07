@@ -1,4 +1,5 @@
 package enumeratum
+package compat
 
 import ContextUtils.Context
 
@@ -15,7 +16,7 @@ object ValueEnumMacros {
     */
   def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Int](c)(identity)
   }
 
@@ -25,7 +26,7 @@ object ValueEnumMacros {
     */
   def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTLong, Long](c)(identity)
   }
 
@@ -38,7 +39,7 @@ object ValueEnumMacros {
     */
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(
       _.toShort
     ) // do a transform because there is no such thing as Short literals
@@ -52,7 +53,7 @@ object ValueEnumMacros {
     */
   def findStringValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, String, String](c)(identity)
   }
 
@@ -64,7 +65,7 @@ object ValueEnumMacros {
     */
   def findByteValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Byte](c)(_.toByte)
   }
 
@@ -76,7 +77,7 @@ object ValueEnumMacros {
     */
   def findCharValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTChar, Char](c)(identity)
   }
 
@@ -88,7 +89,7 @@ object ValueEnumMacros {
       ProcessedValue
   ](c: Context)(
       processFoundValues: ValueType => ProcessedValue
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     import c.universe._
     val valueEntryType = weakTypeOf[ValueEntryType]
     EnumMacros.validateType(c)(valueEntryType.typeSymbol)
@@ -101,7 +102,11 @@ object ValueEnumMacros {
       processFoundValues
     )
 
-    if (valueEntryType <:< c.typeOf[AllowAlias]) {
+    if (
+      valueEntryType.baseClasses.contains(
+        c.mirror.staticClass(classOf[AllowAlias].getName)
+      )
+    ) {
       // Skip the uniqueness check
     } else {
       // Make sure the processed found value implementations are unique
@@ -223,6 +228,9 @@ object ValueEnumMacros {
             // Handle nested TypeApply for multiple argument lists with type parameters
             getConstructorTypeAndArguments(inner, arguments +: argumentLists)
 
+          // Sometimes constructor calls are wrapped in TypeApply without being inside Apply
+          case ta @ TypeApply(Select(New(tpt), _), _) => Some((ta, argumentLists))
+
           case TypeApply(inner, _) =>
             // When we hit a TypeApply, continue unwrapping to find the actual constructor
             getConstructorTypeAndArguments(inner, argumentLists)
@@ -232,9 +240,6 @@ object ValueEnumMacros {
             Some((tree, arguments +: argumentLists))
 
           case Apply(ident, arguments) => Some((ident, arguments +: argumentLists))
-
-          // Sometimes constructor calls are wrapped in TypeApply without being inside Apply
-          case ta @ TypeApply(Select(New(tpt), _), _) => Some((ta, argumentLists))
 
           case _ => None
         }
@@ -315,8 +320,9 @@ object ValueEnumMacros {
       }
 
       val valuesFromConstructors = constructorTrees.collect {
-        case tree @ (Apply(_, _) | TypeApply(_, _) | Block(List(), _)) =>
-          processTree(tree)
+        case tree @ Apply(_, _)      => processTree(tree)
+        case tree @ TypeApply(_, _)  => processTree(tree)
+        case tree @ Block(List(), _) => processTree(tree)
       }
 
       val values = valuesFromMembers ++ valuesFromConstructors
