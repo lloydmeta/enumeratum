@@ -1,4 +1,5 @@
 package enumeratum
+package compat
 
 import ContextUtils.Context
 
@@ -15,7 +16,7 @@ object ValueEnumMacros {
     */
   def findIntValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Int](c)(identity)
   }
 
@@ -25,7 +26,7 @@ object ValueEnumMacros {
     */
   def findLongValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTLong, Long](c)(identity)
   }
 
@@ -38,7 +39,7 @@ object ValueEnumMacros {
     */
   def findShortValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Short](c)(
       _.toShort
     ) // do a transform because there is no such thing as Short literals
@@ -52,7 +53,7 @@ object ValueEnumMacros {
     */
   def findStringValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, String, String](c)(identity)
   }
 
@@ -64,7 +65,7 @@ object ValueEnumMacros {
     */
   def findByteValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTInt, Byte](c)(_.toByte)
   }
 
@@ -76,7 +77,7 @@ object ValueEnumMacros {
     */
   def findCharValueEntriesImpl[ValueEntryType: c.WeakTypeTag](
       c: Context
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     findValueEntriesImpl[ValueEntryType, ContextUtils.CTChar, Char](c)(identity)
   }
 
@@ -88,7 +89,7 @@ object ValueEnumMacros {
       ProcessedValue
   ](c: Context)(
       processFoundValues: ValueType => ProcessedValue
-  ): c.Expr[IndexedSeq[ValueEntryType]] = {
+  ): c.Tree = {
     import c.universe._
     val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
     EnumMacros.validateType(c)(typeSymbol)
@@ -104,7 +105,11 @@ object ValueEnumMacros {
       processFoundValues
     )
 
-    if (weakTypeOf[ValueEntryType] <:< c.typeOf[AllowAlias]) {
+    if (
+      weakTypeOf[ValueEntryType].baseClasses.contains(
+        c.mirror.staticClass(classOf[AllowAlias].getName)
+      )
+    ) {
       // Skip the uniqueness check
     } else {
       // Make sure the processed found value implementations are unique

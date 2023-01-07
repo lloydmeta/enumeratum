@@ -1,5 +1,6 @@
 package enumeratum
 
+import enumeratum.compat.ValueEnumMacros
 import scala.language.experimental.macros
 
 /** Created by Lloyd on 1/4/17.

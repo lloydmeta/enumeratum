@@ -4,7 +4,7 @@ import scala.language.experimental.macros
 
 import scala.collection.immutable.IndexedSeq
 
-import _root_.enumeratum.{EnumMacros, ValueEnumMacros}
+import _root_.enumeratum.compat.{EnumMacros, ValueEnumMacros}
 
 private[enumeratum] trait IntEnumCompanion {
 
