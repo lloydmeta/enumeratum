@@ -40,6 +40,7 @@ Integrations are available for:
 - [Quill](http://getquill.io): JVM and ScalaJS
 - [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
 - [Scalafix](https://github.com/OlegYch/enumeratum-scalafix)
+- [ScalikeJDBC](http://scalikejdbc.org/)
 
 ### Table of Contents
 
@@ -64,6 +65,7 @@ Integrations are available for:
 14. [Cats integration](#cats)
 15. [Doobie integration](#doobie)
 16. [Anorm integration](#anorm)
+17. [ScalikeJDBC integration](#scalikejdbc)
 17. [Benchmarking](#benchmarking)
 18. [Publishing](#publishing)
 
@@ -1270,6 +1272,84 @@ sql"select shirt from clothes"
 ## Anorm
 
 Anorm provides a [module to support Enum](https://playframework.github.io/anorm/AnormEnumeratum.html) as `Column` and parameters.
+
+## ScalikeJDBC
+
+### SBT
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-scalikejdbc" % enumeratumPlayJsonVersion
+)
+```
+
+### Usage
+
+#### ScalikeJDBCEnum
+
+The included `ScalikeJDBCEnum` trait is probably going to be the most interesting as it includes a bunch
+of built-in implicits `TypeBinder` and `ParameterBinderFactory` support.
+
+For example:
+
+```scala
+package enums
+
+import enumeratum._
+
+sealed trait Greeting extends EnumEntry
+
+object Greeting extends ScalikeJDBCEnum[Greeting] {
+
+  val values = findValues
+
+  case object Hello   extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
+
+}
+
+/* table definition is:
+create table greeting_table (
+  id integer not null primary key,
+  greeting enum('Hello', 'GoodBye', 'Hi', 'Bye')
+)
+*/
+
+case class GreetingRow(id: Int, greeting: Greeting)
+object GreetingRow extends SQLSyntaxSupport[GreetingRow] {
+  override val tableName = "greeting_table"
+  def apply(rs: WrappedResultSet) = new GreetingRow(rs.int("id"), rs.get("greeting"))
+}
+
+val greetingRows = withSQL {
+  select.from(GreetingRow as t)
+}.map(GreetingRow.apply).list.apply()
+```
+
+#### ScalikeJDBCValueEnums
+
+There are `ByteScalikeJDBCEnum`, `ShortScalikeJDBCEnum`, `IntScalikeJDBCEnum`, `LongScalikeJDBCEnum`, and `StringScalikeJDBCEnum` traits for use with
+`ByteEnumEntry`, `ShortEnumEntry`, `IntEnumEnum`, `LongEnumEntry`, and `StringEnumEntry` respectively that provide ScalikeJDBC-specific implicits as with normal `ScalikeJDBCEnum`. For example:
+
+```scala
+import enumeratum.values._
+
+sealed abstract class LibraryItem(override val value: Int, val name: String) extends IntEnumEntry
+
+case object LibraryItem extends IntScalikeJDBCEnum[LibraryItem] {
+
+  // A good mix of named, unnamed, named + unordered args
+  case object Book     extends LibraryItem(value = 1, name = "book")
+  case object Movie    extends LibraryItem(name = "movie", value = 2)
+  case object Magazine extends LibraryItem(3, "magazine")
+  case object CD       extends LibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+```
 
 ## Benchmarking
 

@@ -18,4 +18,6 @@ say "Done 7" &&
 sbt "project scalacheck-aggregate" +clean +publishSigned &&
 say "Done 8" &&
 sbt "project quill-aggregate" +clean +publishSigned &&
+say "Done 9" &&
+sbt "project enumeratum-scalikejdbc" +clean +publishSigned &&
 say "All done"

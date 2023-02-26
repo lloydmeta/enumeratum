@@ -758,6 +758,33 @@ lazy val enumeratumCatsJvm = enumeratumCats.jvm.configure(configureWithLocal(cor
 
 lazy val enumeratumCatsNative = enumeratumCats.native.configure(configureWithLocal(coreNative))
 
+// ScalikeJDBC
+lazy val enumeratumScalikeJDBC =
+  (project in file("enumeratum-scalikejdbc") withId "enumeratum-scalikejdbc")
+    .settings(commonWithPublishSettings)
+    .settings(testSettings)
+    .settings(
+      version := Versions.Core.head,
+      crossScalaVersions := scalaVersionsAll,
+      libraryDependencies ++= Seq(
+        "com.h2database" % "h2" % "1.4.197" % Test,
+        "org.scalikejdbc" %% "scalikejdbc" % "4.0.0",
+        "org.scalikejdbc" %% "scalikejdbc-test" % "4.0.0" % Test
+      ),
+      libraryDependencies ++= {
+        if (useLocalVersion) {
+          Seq.empty
+        } else {
+          Seq("com.beachape" %% "enumeratum" % Versions.Core.stable)
+        }
+      },
+      Test / parallelExecution := false
+    )
+    .settings( // TODO: Remove once Slick is published for Dotty
+      disabledSettings
+    )
+    .configure(configureWithLocal(coreJVM))
+
 lazy val commonSettings = Seq(
   organization       := "com.beachape",
   scalafmtOnCompile  := true,
