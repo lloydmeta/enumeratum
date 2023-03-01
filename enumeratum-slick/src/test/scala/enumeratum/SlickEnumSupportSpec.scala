@@ -50,9 +50,9 @@ class SlickEnumSupportSpec
     }
     val lights = TableQuery[TrafficLightTable]
   }
-  class ConcreteRepository(val profile: slick.driver.H2Driver) extends TrafficLightRepository
+  class ConcreteRepository(val profile: slick.jdbc.H2Profile) extends TrafficLightRepository
 
-  val repo = new ConcreteRepository(slick.driver.H2Driver)
+  val repo = new ConcreteRepository(slick.jdbc.H2Profile)
   import repo.lights
   import repo.profile.api._
   val db = Database.forURL(

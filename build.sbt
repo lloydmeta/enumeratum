@@ -93,7 +93,7 @@ lazy val scala211ProjectRefs = Seq(
   // enumeratumPlay,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
-  enumeratumSlick,
+  // enumeratumSlick,
   enumeratumCirceJvm,
   enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
@@ -690,9 +690,9 @@ lazy val enumeratumSlick =
     .settings(testSettings)
     .settings(
       version            := Versions.Core.head,
-      crossScalaVersions := scalaVersionsAll,
+      crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version),
       libraryDependencies ++= Seq(
-        ("com.typesafe.slick" %% "slick" % "3.3.3").cross(CrossVersion.for3Use2_13),
+        ("com.typesafe.slick" %% "slick" % "3.4.1").cross(CrossVersion.for3Use2_13),
         "com.h2database"       % "h2"    % "1.4.197" % Test
       ),
       libraryDependencies ++= {
