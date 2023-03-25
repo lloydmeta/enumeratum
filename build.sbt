@@ -689,7 +689,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := Versions.Core.head,
+      version            := "1.7.3-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version),
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.4.1").cross(CrossVersion.for3Use2_13),
