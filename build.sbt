@@ -667,7 +667,7 @@ lazy val enumeratumDoobie =
           if (scalaBinaryVersion.value == "2.11") {
             "0.7.1"
           } else {
-            "1.0.0-RC2"
+            "1.0.0-RC4"
           }
         }
 
