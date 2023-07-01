@@ -310,7 +310,7 @@ lazy val enumeratumReactiveMongoBson =
       version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies += {
-        "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC7-SNAPSHOT" % Provided
+        "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC9" % Provided
       },
       libraryDependencies += scalaXmlTest.value,
       libraryDependencies ++= {
