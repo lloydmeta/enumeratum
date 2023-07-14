@@ -5,7 +5,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 lazy val scala_2_12Version = "2.12.17"
 lazy val scala_2_13Version = "2.13.10"
 lazy val scala_3Version    = "3.2.1"
-lazy val scalaVersionsAll = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
+lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
 
@@ -575,8 +575,8 @@ lazy val enumeratumQuill =
       },
       dependencyOverrides += {
         val ver = scalaBinaryVersion.value match {
-          case "3"    => "0.7.3"
-          case _      => "0.5.5"
+          case "3" => "0.7.3"
+          case _   => "0.5.5"
         }
 
         "com.lihaoyi" %%% "pprint" % ver
@@ -591,8 +591,8 @@ lazy val enumeratumDoobie =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      crossScalaVersions := scalaVersionsAll,
-      version            := "1.7.4-SNAPSHOT",
+      crossScalaVersions                    := scalaVersionsAll,
+      version                               := "1.7.4-SNAPSHOT",
       libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC2",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
@@ -641,8 +641,8 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .jsSettings(jsTestSettings)
   .nativeSettings(nativeTestSettings)
   .settings(
-    name    := "enumeratum-cats",
-    version := Versions.Core.head,
+    name                                    := "enumeratum-cats",
+    version                                 := Versions.Core.head,
     libraryDependencies += "org.typelevel" %%% "cats-core" % "2.9.0",
     libraryDependencies += scalaXmlTest,
     libraryDependencies ++= {
