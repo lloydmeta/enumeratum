@@ -2,26 +2,14 @@ import com.typesafe.sbt.SbtGit.{GitKeys => git}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-lazy val scala_2_11Version = "2.11.12"
 lazy val scala_2_12Version = "2.12.17"
 lazy val scala_2_13Version = "2.13.10"
 lazy val scala_3Version    = "3.2.1"
-lazy val scalaVersionsAll =
-  Seq(scala_2_11Version, scala_2_12Version, scala_2_13Version, scala_3Version)
+lazy val scalaVersionsAll = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
 
 lazy val scalaTestVersion = "3.2.14"
-
-def thePlayJsonVersion(scalaVersion: String) =
-  CrossVersion.partialVersion(scalaVersion) match {
-    case Some((2, scalaMajor)) if scalaMajor <= 11 => "2.7.3"
-    // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
-
-    case Some(_) => "2.10.0-RC6"
-    case _ =>
-      throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-json")
-  }
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
@@ -83,39 +71,6 @@ lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
   .aggregate((baseProjectRefs ++ scala213ProjectRefs): _*)
 
 // Disable cats and circe js modules here, as they don't have versions compatible with Scala.js 1.0 on Scala 2.11
-lazy val scala211ProjectRefs = Seq(
-  enumeratumJson4s,
-  enumeratumScalacheckJvm,
-  enumeratumScalacheckJs,
-  // enumeratumPlayJsonJvm,
-  // TODO drop 2.11 as play-json 2.7.x supporting Scala.js 1.x is unlikely?
-  // enumeratumPlayJsonJs, TODO re-enable once play-json supports Scala.js 1.0
-  // enumeratumPlay,
-  enumeratumArgonautJs,
-  enumeratumArgonautJvm,
-  // enumeratumSlick,
-  enumeratumCirceJvm,
-  enumeratumReactiveMongoBson,
-  enumeratumCatsJvm,
-  enumeratumQuillJvm
-  // enumeratumQuillJs  TODO re-enable once quill supports Scala.js 1.0
-).map(Project.projectToRef)
-
-lazy val scala_2_11 = Project(id = "scala_2_11", base = file("scala_2_11"))
-  .settings(
-    commonSettings ++ publishSettings,
-    name               := "enumeratum-scala_2_11",
-    scalaVersion       := scala_2_11Version, // not sure if this and below are needed
-    crossScalaVersions := Seq(scala_2_11Version),
-    crossVersion       := CrossVersion.binary,
-    // Do not publish this  project (it just serves as an aggregate)
-    publishArtifact := false,
-    publishLocal    := {},
-    // doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
-    publish / aggregate               := false,
-    PgpKeys.publishSigned / aggregate := false
-  )
-  .aggregate((baseProjectRefs ++ scala211ProjectRefs): _*)
 
 lazy val integrationProjectRefs = Seq(
   enumeratumPlay,
@@ -176,7 +131,7 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
         "org.scala-lang" % "scala-reflect" % scalaVersion.value
       }
     },
-    libraryDependencies += scalaXmlTest.value
+    libraryDependencies += scalaXmlTest
   )
 
 lazy val macrosJS     = macros.js
@@ -205,7 +160,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
         Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.stable)
       }
     },
-    libraryDependencies += scalaXmlTest.value
+    libraryDependencies += scalaXmlTest
   )
 
 def configureWithLocal(
@@ -265,20 +220,13 @@ lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-cor
         "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
       }
     },
-    libraryDependencies += scalaXmlTest.value,
+    libraryDependencies += scalaXmlTest,
     publishArtifact := false,
     publishLocal    := {}
   )
   .dependsOn(coreJVM, macrosJVM)
 
-lazy val scalaXmlTest = Def.setting[ModuleID] {
-  val ver: String = {
-    if (scalaBinaryVersion.value == "2.11") "1.3.0"
-    else "2.1.0"
-  }
-
-  "org.scala-lang.modules" %% "scala-xml" % ver % Test
-}
+lazy val scalaXmlTest: ModuleID = "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % Test
 
 lazy val testsAggregate =
   aggregateProject("test", enumeratumTestJs, enumeratumTestJvm, enumeratumTestNative)
@@ -312,7 +260,7 @@ lazy val enumeratumReactiveMongoBson =
       libraryDependencies += {
         "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC9" % Provided
       },
-      libraryDependencies += scalaXmlTest.value,
+      libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
           Seq.empty
@@ -345,8 +293,8 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       scala_3Version
     ),
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %%% "play-json" % thePlayJsonVersion(scalaVersion.value),
-      scalaXmlTest.value
+      "com.typesafe.play" %%% "play-json" % "2.10.0-RC6",
+      scalaXmlTest
     ),
     libraryDependencies ++= {
       if (useLocalVersion) {
@@ -372,7 +320,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(testSettings)
   .settings(
     version            := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version),
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
       val dep = ("com.typesafe.play" %% "play" % "2.8.0").exclude("org.scala-lang.modules", "*")
 
@@ -422,20 +370,10 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name    := "enumeratum-circe",
     version := Versions.Core.head,
-    libraryDependencies ++= {
-      val ver: String = {
-        if (scalaBinaryVersion.value == "2.11") {
-          "0.11.1"
-        } else {
-          "0.14.3"
-        }
-      }
-
-      Seq(
-        "io.circe" %%% "circe-core" % ver,
-        scalaXmlTest.value
-      )
-    },
+    libraryDependencies ++= Seq(
+      "io.circe" %%% "circe-core" % "0.14.3",
+      scalaXmlTest
+    ),
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -487,7 +425,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
 
       Seq(
         "io.argonaut" %%% "argonaut" % ver,
-        scalaXmlTest.value
+        scalaXmlTest
       )
     },
     libraryDependencies ++= {
@@ -519,7 +457,7 @@ lazy val enumeratumJson4s =
         Seq(
           "org.json4s" %% "json4s-core"   % ver,
           "org.json4s" %% "json4s-native" % ver % Test,
-          scalaXmlTest.value
+          scalaXmlTest
         )
       },
       libraryDependencies ++= {
@@ -558,13 +496,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = {
-        if (scalaBinaryVersion.value == "2.11") {
-          ("1.15.2", "scalacheck-1-14", "3.1.1.1")
-        } else {
-          ("1.17.0", "scalacheck-1-17", "3.2.14.0")
-        }
-      }
+      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.14.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
@@ -574,7 +506,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
           .exclude("org.scalatest", "*")
       )
     },
-    libraryDependencies += scalaXmlTest.value,
+    libraryDependencies += scalaXmlTest,
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -590,7 +522,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     crossScalaVersions := scalaVersionsAll
   )
   .nativeSettings(
-    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version)
+    crossScalaVersions := scalaVersionsAll
   )
 
 lazy val enumeratumScalacheckJs = enumeratumScalacheck.js
@@ -631,7 +563,7 @@ lazy val enumeratumQuill =
         Seq(
           "io.getquill" %%% core        % ver,
           "io.getquill" %%% "quill-sql" % ver % Test,
-          scalaXmlTest.value
+          scalaXmlTest
         )
       },
       libraryDependencies ++= {
@@ -644,7 +576,6 @@ lazy val enumeratumQuill =
       dependencyOverrides += {
         val ver = scalaBinaryVersion.value match {
           case "3"    => "0.7.3"
-          case "2.11" => "0.5.4"
           case _      => "0.5.5"
         }
 
@@ -662,18 +593,8 @@ lazy val enumeratumDoobie =
     .settings(
       crossScalaVersions := scalaVersionsAll,
       version            := "1.7.4-SNAPSHOT",
-      libraryDependencies += {
-        val ver = {
-          if (scalaBinaryVersion.value == "2.11") {
-            "0.7.1"
-          } else {
-            "1.0.0-RC2"
-          }
-        }
-
-        "org.tpolecat" %% "doobie-core" % ver
-      },
-      libraryDependencies += scalaXmlTest.value,
+      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC2",
+      libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
           Seq.empty
@@ -690,7 +611,7 @@ lazy val enumeratumSlick =
     .settings(testSettings)
     .settings(
       version            := "1.7.4-SNAPSHOT",
-      crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version),
+      crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.4.1").cross(CrossVersion.for3Use2_13),
         "com.h2database"       % "h2"    % "1.4.197" % Test
@@ -722,18 +643,8 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name    := "enumeratum-cats",
     version := Versions.Core.head,
-    libraryDependencies += {
-      val ver = {
-        if (scalaBinaryVersion.value == "2.11") {
-          "2.0.0"
-        } else {
-          "2.9.0"
-        }
-      }
-
-      "org.typelevel" %%% "cats-core" % ver
-    },
-    libraryDependencies += scalaXmlTest.value,
+    libraryDependencies += "org.typelevel" %%% "cats-core" % "2.9.0",
+    libraryDependencies += scalaXmlTest,
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -746,10 +657,10 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     crossScalaVersions := scalaVersionsAll
   )
   .jsSettings(
-    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version)
+    crossScalaVersions := scalaVersionsAll
   )
   .nativeSettings(
-    crossScalaVersions := scalaVersionsAll.filter(_ != scala_2_11Version)
+    crossScalaVersions := scalaVersionsAll
   )
 
 lazy val enumeratumCatsJs = enumeratumCats.js.configure(configureWithLocal(coreJS))
@@ -963,12 +874,12 @@ def withCompatUnmanagedSources(
         Seq(base / "compat" / "src" / cat / "scala-3")
           .map(_.getCanonicalFile)
 
-      case Some((2, scalaMajor)) if scalaMajor >= 13 =>
+      case Some((2, 13)) =>
         Seq(base / "compat" / "src" / cat / "scala-2.13")
           .map(_.getCanonicalFile)
 
-      case Some((2, scalaMajor)) if scalaMajor >= 11 =>
-        Seq(base / "compat" / "src" / cat / "scala-2.11")
+      case Some((2, 12)) =>
+        Seq(base / "compat" / "src" / cat / "scala-2.12")
           .map(_.getCanonicalFile)
 
       case _ => Nil
@@ -1002,7 +913,7 @@ def withCompatUnmanagedSources(
 /** Assumes that
   *
   *   - a corresponding directory exists under ./aggregates.
-  *   - publishing 2.11.x, 2.12.x, 2.13.x
+  *   - publishing 2.12.x, 2.13.x, 3.x
   */
 def aggregateProject(id: String, projects: ProjectReference*): Project =
   Project(id = s"$id-aggregate", base = file(s"./aggregates/$id"))
