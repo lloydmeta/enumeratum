@@ -21,7 +21,7 @@ Enumeratum has the following niceties:
 - All magic happens at compile-time so you know right away when things go awry
 - Comprehensive automated testing to make sure everything is in tip-top shape
 
-Enumeratum is published for Scala 2.11.x, 2.12.x, 2.13.x, 3.x as well as ScalaJS and ScalaNative.
+Enumeratum is published for Scala 2.12.x, 2.13.x, 3.x as well as ScalaJS and ScalaNative.
 
 Note that there are a couple of limitations for 3.x:
 * All "immediate" parent types of enum entries need to be `sealed` (reasoning [here](https://github.com/lloydmeta/enumeratum/pull/349#discussion_r1034715979))
@@ -358,7 +358,6 @@ libraryDependencies ++= Seq(
 ```
 
 #### Dependencies and compatibility notes
-- As of version 1.4.0, `enumeratum-play` for Scala 2.11 is compatible with Play 2.5 - 2.7
 - As of version 1.6.1, `enumeratum-play` for Scala 2.12 requires Play >= 2.8
 
 ### Usage
@@ -499,8 +498,6 @@ libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum-play-json" % enumeratumPlayJsonVersion
 )
 ```
-
-Note that as of version 1.4.0, `enumeratum-play-json` for Scala 2.11 is compatible with Play 2.5 - 2.7
 
 ### Usage
 
