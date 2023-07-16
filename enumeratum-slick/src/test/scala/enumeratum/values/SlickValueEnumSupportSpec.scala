@@ -119,8 +119,10 @@ class SlickValueEnumSupportSpec
     keepAliveConnection = true
   )
 
+  implicit val defaultPatience = PatienceConfig(timeout = Span(1, Second))
+
   override def beforeAll(): Unit = {
-    db.run(valueEnums.schema.create).futureValue(Timeout(Span(1, Second)))
+    db.run(valueEnums.schema.create).futureValue(Timeout(Span(3, Seconds)))
   }
 
   override def afterAll(): Unit = {
