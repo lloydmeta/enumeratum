@@ -1,4 +1,4 @@
-import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.github.sbt.git.SbtGit.{GitKeys => git}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
