@@ -9,11 +9,11 @@ lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Ve
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion = "3.2.14"
+lazy val scalaTestVersion = "3.2.16"
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
   case Some((3, _)) =>
     ("org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test)
@@ -496,7 +496,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.14.0")
+      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.16.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
