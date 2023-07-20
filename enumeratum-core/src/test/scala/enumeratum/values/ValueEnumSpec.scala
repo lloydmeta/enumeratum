@@ -152,6 +152,21 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
         }
         """ shouldNot compile
       }
+
+      it("should compile when entries accept type parameters") {
+        """
+        sealed abstract class ExampleEnumEntry[Suffix](override val value: String) extends StringEnumEntry {
+          def toString(suffix: Suffix): String = value + suffix.toString
+        }
+
+        object ExampleEnum extends StringEnum[ExampleEnumEntry[?]] {
+          case object Entry1 extends ExampleEnumEntry[Int]("Entry1")
+          case object Entry2 extends ExampleEnumEntry[String]("Entry2")
+
+          override def values: IndexedSeq[ExampleEnumEntry[?]] = findValues
+        }
+        """ should compile
+      }
     }
 
     describe("trying to use with improper types") {

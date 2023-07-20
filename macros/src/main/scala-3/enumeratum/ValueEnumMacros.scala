@@ -195,8 +195,8 @@ In SBT settings:
               case ClassDef(_, _, spr, _, rhs) => {
                 val fromCtor = spr
                   .collectFirst {
-                    case Apply(Select(New(id), _), args) if id.tpe <:< repr =>
-                      args
+                    case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
+                    case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
                   }
                   .flatMap(_.lift(valueParamIndex).collect { case ConstVal(const) =>
                     const
