@@ -7,7 +7,11 @@ import org.scalatest.matchers.should.Matchers
   *
   * Copyright 2016
   */
-class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
+class ValueEnumSpec
+    extends AnyFunSpec
+    with Matchers
+    with ValueEnumHelpers
+    with ValueEnumSpecCompat {
 
   describe("basic sanity check") {
     it("should have the proper values") {
@@ -240,4 +244,6 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
       }
     }
   }
+
+  scalaCompat
 }

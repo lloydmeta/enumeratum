@@ -109,8 +109,8 @@ object ValueEnumMacros {
       tpe: Type[A],
       valueTpe: Type[ValueType]
   )(using cls: ClassTag[ValueType]): Expr[IndexedSeq[A]] = {
-    type SingletonHead[Head <: A & Singleton, Tail <: Tuple] = Head *: Tail
-    type OtherHead[Head <: A, Tail <: Tuple]                 = Head *: Tail
+    type SingletonHead[Head <: Singleton, Tail <: Tuple] = Head *: Tail
+    type OtherHead[Head, Tail <: Tuple]                  = Head *: Tail
 
     type SumOf[X <: A, T <: Tuple] = Mirror.SumOf[X] {
       type MirroredElemTypes = T
@@ -181,6 +181,14 @@ In SBT settings:
       }
     }
 
+    object CorrectType {
+      def unwrap(tpe: TypeRepr) = tpe match {
+        case AppliedType(tpe, _) => tpe
+        case _                   => tpe
+      }
+      def unapply(tree: TypeTree): Boolean = unwrap(tree.tpe) <:< unwrap(repr)
+    }
+
     @annotation.tailrec
     def collect[T <: Tuple](
         instances: List[Expr[A]],
@@ -193,17 +201,23 @@ In SBT settings:
           (for {
             vof <- Expr.summon[ValueOf[h]]
             constValue <- htpr.typeSymbol.tree match {
-              case ClassDef(_, _, spr, _, rhs) => {
-                val fromCtor = spr
-                  .collectFirst {
-                    case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
-                    case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
+              case classDef @ ClassDef(_, _, spr, _, rhs) => {
+                val treeAcc = new TreeAccumulator[Option[List[Term]]] {
+                  def foldTree(value: Option[List[Term]], tree: Tree)(
+                      owner: Symbol
+                  ): Option[List[Term]] = value.orElse {
+                    tree match {
+                      case Apply(Select(New(CorrectType()), _), args)               => Some(args)
+                      case Apply(TypeApply(Select(New(CorrectType()), _), _), args) => Some(args)
+                      case _ => foldOverTree(None, tree)(owner)
+                    }
                   }
+                }
+                treeAcc
+                  .foldTrees(None, spr)(classDef.symbol)
                   .flatMap(_.lift(valueParamIndex).collect { case ConstVal(const) =>
                     const
                   })
-
-                fromCtor
                   .orElse(rhs.collectFirst { case ConstVal(v) => v })
                   .flatMap { const =>
                     cls.unapply(const.value)
@@ -214,7 +228,7 @@ In SBT settings:
               case _ =>
                 Option.empty[ValueType]
             }
-          } yield Tuple3(TypeRepr.of[h], '{ ${ vof }.value: A }, constValue)) match {
+          } yield Tuple3(TypeRepr.of[h], '{ ${ vof }.value.asInstanceOf[A] }, constValue)) match {
             case Some((tpr, instance, value)) =>
               collect[tail](instance :: instances, values + (tpr -> value))
 
