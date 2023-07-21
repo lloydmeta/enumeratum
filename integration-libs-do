@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Warning, OSX-specific command hidden in between ;)
+# SBT dies if we try to do them all in one go...
+sbt "project argonaut-aggregate" +clean $1 &&
+say "Done 1" &&
+sbt "project cats-aggregate" +clean $1 &&
+say "Done 2" &&
+sbt "project circe-aggregate" +clean $1 &&
+say "Done 3" &&
+sbt "project enumeratum-doobie" +clean $1 &&
+say "Done 4" &&
+sbt "project enumeratum-json4s" +clean $1 &&
+say "Done 5" &&
+sbt "project play-json-aggregate" +clean $1 &&
+say "Done 6" &&
+sbt "project enumeratum-play" +clean $1 &&
+say "Done 7" &&
+sbt "project quill-aggregate" +clean $1 &&
+say "Done 8" &&
+sbt "project enumeratum-reactivemongo-bson" +clean $1 &&
+say "Done 9" &&
+sbt "project scalacheck-aggregate" +clean $1 &&
+say "Done 10" &&
+sbt "project enumeratum-slick" +clean $1 &&
+say "Done 11" &&
+say "All done"
