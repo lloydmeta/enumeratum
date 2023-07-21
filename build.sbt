@@ -1,19 +1,19 @@
-import com.typesafe.sbt.SbtGit.{GitKeys => git}
+import com.github.sbt.git.SbtGit.{GitKeys => git}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_12Version = "2.12.18"
 lazy val scala_2_13Version = "2.13.11"
-lazy val scala_3Version    = "3.2.1"
+lazy val scala_3Version    = "3.3.0"
 lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion = "3.2.14"
+lazy val scalaTestVersion = "3.2.16"
 
 def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor >= 12 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
+    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
   case Some((3, _)) =>
     ("org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test)
@@ -496,7 +496,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.14.0")
+      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.16.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
@@ -593,7 +593,7 @@ lazy val enumeratumDoobie =
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
       version                               := "1.7.4-SNAPSHOT",
-      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC2",
+      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC4",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
