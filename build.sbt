@@ -592,7 +592,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
-      version                               := "1.7.4-SNAPSHOT",
+      version                               := "1.7.5-SNAPSHOT",
       libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC4",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
@@ -610,7 +610,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := "1.7.4-SNAPSHOT",
+      version            := "1.7.5-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.4.1").cross(CrossVersion.for3Use2_13),
