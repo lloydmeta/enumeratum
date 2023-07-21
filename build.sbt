@@ -157,7 +157,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.head)
+        Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.stable)
       }
     },
     libraryDependencies += scalaXmlTest
@@ -243,7 +243,7 @@ lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies += {
-      "com.beachape" %%% "enumeratum" % Versions.Core.head
+      "com.beachape" %%% "enumeratum" % Versions.Core.stable
     }
   )
 lazy val enumeratumTestJs     = enumeratumTest.js
@@ -266,8 +266,8 @@ lazy val enumeratumReactiveMongoBson =
           Seq.empty
         } else {
           Seq(
-            "com.beachape" %% "enumeratum"      % Versions.Core.head,
-            "com.beachape" %% "enumeratum-test" % Versions.Core.head % Test
+            "com.beachape" %% "enumeratum"      % Versions.Core.stable,
+            "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test
           )
         }
       }
@@ -301,8 +301,8 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
         Seq.empty
       } else {
         Seq(
-          "com.beachape" %% "enumeratum"      % Versions.Core.head,
-          "com.beachape" %% "enumeratum-test" % Versions.Core.head % Test
+          "com.beachape" %% "enumeratum"      % Versions.Core.stable,
+          "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test
         )
       }
     }
@@ -339,8 +339,8 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
         Seq.empty
       } else {
         Seq(
-          "com.beachape" %% "enumeratum"      % Versions.Core.head,
-          "com.beachape" %% "enumeratum-test" % Versions.Core.head % Test
+          "com.beachape" %% "enumeratum"      % Versions.Core.stable,
+          "com.beachape" %% "enumeratum-test" % Versions.Core.stable % Test
         )
       }
     },
@@ -378,7 +378,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+        Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
       }
     }
   )
@@ -432,7 +432,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+        Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
       }
     }
   )
@@ -464,7 +464,7 @@ lazy val enumeratumJson4s =
         if (useLocalVersion) {
           Seq.empty
         } else {
-          Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+          Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
         }
       }
     )
@@ -512,8 +512,8 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
         Seq.empty
       } else {
         Seq(
-          "com.beachape" %%% "enumeratum"      % Versions.Core.head,
-          "com.beachape" %%% "enumeratum-test" % Versions.Core.head % Test
+          "com.beachape" %%% "enumeratum"      % Versions.Core.stable,
+          "com.beachape" %%% "enumeratum-test" % Versions.Core.stable % Test
         )
       }
     }
@@ -570,7 +570,7 @@ lazy val enumeratumQuill =
         if (useLocalVersion) {
           Seq.empty
         } else {
-          Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+          Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
         }
       },
       dependencyOverrides += {
@@ -599,7 +599,7 @@ lazy val enumeratumDoobie =
         if (useLocalVersion) {
           Seq.empty
         } else {
-          Seq("com.beachape" %% "enumeratum" % Versions.Core.head)
+          Seq("com.beachape" %% "enumeratum" % Versions.Core.stable)
         }
       }
     )
@@ -620,7 +620,7 @@ lazy val enumeratumSlick =
         if (useLocalVersion) {
           Seq.empty
         } else {
-          Seq("com.beachape" %% "enumeratum" % Versions.Core.head)
+          Seq("com.beachape" %% "enumeratum" % Versions.Core.stable)
         }
       }
     )
@@ -649,7 +649,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+        Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
       }
     }
   )
