@@ -109,7 +109,8 @@ object ValueEnumMacros {
       tpe: Type[A],
       valueTpe: Type[ValueType]
   )(using cls: ClassTag[ValueType]): Expr[IndexedSeq[A]] = {
-    type TakeHead[Head <: A & Singleton, Tail <: Tuple] = Head *: Tail
+    type SingletonHead[Head <: A & Singleton, Tail <: Tuple] = Head *: Tail
+    type OtherHead[Head <: A, Tail <: Tuple]                 = Head *: Tail
 
     type SumOf[X <: A, T <: Tuple] = Mirror.SumOf[X] {
       type MirroredElemTypes = T
@@ -186,7 +187,7 @@ In SBT settings:
         values: Map[TypeRepr, ValueType]
     )(using tupleTpe: Type[T]): Either[String, Expr[List[A]]] =
       tupleTpe match {
-        case '[TakeHead[h, tail]] => {
+        case '[SingletonHead[h, tail]] => {
           val htpr = TypeRepr.of[h]
 
           (for {
@@ -223,6 +224,19 @@ In SBT settings:
               )
           }
         }
+
+        case '[OtherHead[h, tail]] =>
+          Expr.summon[Mirror.SumOf[h]] match {
+            case Some(sum) =>
+              sum.asTerm.tpe.asType match {
+                case '[SumOf[a, t]] => collect[Tuple.Concat[t, tail]](instances, values)
+
+                case _ => Left(s"Invalid `Mirror.SumOf[${TypeRepr.of[h].show}]")
+              }
+
+            case None =>
+              Left(s"Missing `Mirror.SumOf[${TypeRepr.of[h].show}]`")
+          }
 
         case '[EmptyTuple] => {
           val allowAlias = repr <:< TypeRepr.of[AllowAlias]

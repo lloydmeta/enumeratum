@@ -135,6 +135,22 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
        """ should (compile)
       }
 
+      it("should compile when there is a hierarchy of sealed traits") {
+        """
+        sealed abstract class Top(val value: Int) extends IntEnumEntry
+        sealed trait Middle extends Top
+
+        case object Top extends IntEnum[Top] {
+          case object One extends Top(1)
+          case object Two extends Top(2)
+          case object Three extends Top(3) with Middle
+          case object Four extends Top(4) with Middle
+
+          val values = findValues
+        }
+        """ should compile
+      }
+
       it("should fail to compile when there are non literal values") {
         """
         sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry
