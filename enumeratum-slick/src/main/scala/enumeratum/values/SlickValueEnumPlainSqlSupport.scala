@@ -127,43 +127,43 @@ trait SlickValueEnumPlainSqlSupport {
 
   def getResultForIntEnum[E <: IntEnumEntry](
       @deprecatedName(Symbol("enum")) e: IntEnum[E]
-  ): GetResult[E] = _makeGetResult[Int, E](e, _.nextInt)
+  ): GetResult[E] = _makeGetResult[Int, E](e, _.nextInt())
 
   def optionalGetResultForIntEnum[E <: IntEnumEntry](
       @deprecatedName(Symbol("enum")) e: IntEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Int, E](e, _.nextIntOption)
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Int, E](e, _.nextIntOption())
 
   def getResultForLongEnum[E <: LongEnumEntry](
       @deprecatedName(Symbol("enum")) e: LongEnum[E]
-  ): GetResult[E] = _makeGetResult[Long, E](e, _.nextLong)
+  ): GetResult[E] = _makeGetResult[Long, E](e, _.nextLong())
 
   def optionalGetResultForLongEnum[E <: LongEnumEntry](
       @deprecatedName(Symbol("enum")) e: LongEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Long, E](e, _.nextLongOption)
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Long, E](e, _.nextLongOption())
 
   def getResultForShortEnum[E <: ShortEnumEntry](
       @deprecatedName(Symbol("enum")) e: ShortEnum[E]
-  ): GetResult[E] = _makeGetResult[Short, E](e, { _.nextShort })
+  ): GetResult[E] = _makeGetResult[Short, E](e, { _.nextShort() })
 
   def optionalGetResultForShortEnum[E <: ShortEnumEntry](
       @deprecatedName(Symbol("enum")) e: ShortEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Short, E](e, { _.nextShortOption })
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Short, E](e, { _.nextShortOption() })
 
   def getResultForStringEnum[E <: StringEnumEntry](
       @deprecatedName(Symbol("enum")) e: StringEnum[E]
-  ): GetResult[E] = _makeGetResult[String, E](e, { _.nextString })
+  ): GetResult[E] = _makeGetResult[String, E](e, { _.nextString() })
 
   def optionalGetResultForStringEnum[E <: StringEnumEntry](
       @deprecatedName(Symbol("enum")) e: StringEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[String, E](e, { _.nextStringOption })
+  ): GetResult[Option[E]] = _makeOptionalGetResult[String, E](e, { _.nextStringOption() })
 
   def getResultForByteEnum[E <: ByteEnumEntry](
       @deprecatedName(Symbol("enum")) e: ByteEnum[E]
-  ): GetResult[E] = _makeGetResult[Byte, E](e, { _.nextByte })
+  ): GetResult[E] = _makeGetResult[Byte, E](e, { _.nextByte() })
 
   def optionalGetResultForByteEnum[E <: ByteEnumEntry](
       @deprecatedName(Symbol("enum")) e: ByteEnum[E]
-  ): GetResult[Option[E]] = _makeOptionalGetResult[Byte, E](e, { _.nextByteOption })
+  ): GetResult[Option[E]] = _makeOptionalGetResult[Byte, E](e, { _.nextByteOption() })
 
   def getResultForCharEnum[E <: CharEnumEntry](
       @deprecatedName(Symbol("enum")) e: CharEnum[E]
@@ -171,7 +171,7 @@ trait SlickValueEnumPlainSqlSupport {
     _makeGetResult[Char, E](
       e,
       { pr =>
-        pr.nextString.head
+        pr.nextString().head
       }
     )
 
@@ -181,7 +181,7 @@ trait SlickValueEnumPlainSqlSupport {
     _makeOptionalGetResult[Char, E](
       e,
       { pr =>
-        pr.nextStringOption.map(_.head)
+        pr.nextStringOption().map(_.head)
       }
     )
 

@@ -18,9 +18,10 @@ class SlickEnumSupportSpec
 
     import profile.api._
 
-    implicit val trafficLightColumnType = mappedColumnTypeForEnum(TrafficLight)
-    val trafficLightUpperColumnType     = mappedColumnTypeForUppercaseEnum(TrafficLight)
-    val trafficLightLowerColumnType     = mappedColumnTypeForLowercaseEnum(TrafficLight)
+    implicit val trafficLightColumnType: profile.BaseColumnType[TrafficLight] =
+      mappedColumnTypeForEnum(TrafficLight)
+    val trafficLightUpperColumnType = mappedColumnTypeForUppercaseEnum(TrafficLight)
+    val trafficLightLowerColumnType = mappedColumnTypeForLowercaseEnum(TrafficLight)
 
     val trafficLightSetParamName   = setParameterForEnum(TrafficLight)
     val trafficLightGetResultName  = getResultForEnum(TrafficLight)

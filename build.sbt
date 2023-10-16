@@ -613,9 +613,10 @@ lazy val enumeratumSlick =
       version            := "1.7.5-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
-        ("com.typesafe.slick" %% "slick" % "3.4.1").cross(CrossVersion.for3Use2_13),
+        ("com.typesafe.slick" %% "slick" % "3.5.0-M4"),
         "com.h2database"       % "h2"    % "1.4.197" % Test
       ),
+      libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
           Seq.empty
@@ -623,9 +624,6 @@ lazy val enumeratumSlick =
           Seq("com.beachape" %% "enumeratum" % Versions.Core.stable)
         }
       }
-    )
-    .settings( // TODO: Remove once Slick is published for Dotty
-      disabledSettings
     )
     .configure(configureWithLocal(coreJVM))
 

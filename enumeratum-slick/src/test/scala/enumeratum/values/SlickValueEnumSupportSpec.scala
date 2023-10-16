@@ -6,6 +6,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time._
+import slick.jdbc.{GetResult, SetParameter}
 
 class SlickValueEnumSupportSpec
     extends AnyFreeSpec
@@ -47,36 +48,61 @@ class SlickValueEnumSupportSpec
 
     import profile.api._
 
-    implicit val intValueColumn       = mappedColumnTypeForValueEnum(IntValueExample)
-    implicit val intSetParam          = setParameterForIntEnum(IntValueExample)
-    implicit val intOptionalSetParam  = optionalSetParameterForIntEnum(IntValueExample)
-    implicit val intGetResult         = getResultForIntEnum(IntValueExample)
-    implicit val intOptionalGetResult = optionalGetResultForIntEnum(IntValueExample)
+    implicit val intValueColumn: profile.BaseColumnType[IntValueExample] =
+      mappedColumnTypeForValueEnum(IntValueExample)
+    implicit val intSetParam: SetParameter[IntValueExample] =
+      setParameterForIntEnum(IntValueExample)
+    implicit val intOptionalSetParam: SetParameter[Option[IntValueExample]] =
+      optionalSetParameterForIntEnum(IntValueExample)
+    implicit val intGetResult: GetResult[IntValueExample] =
+      getResultForIntEnum(IntValueExample)
+    implicit val intOptionalGetResult: GetResult[Option[IntValueExample]] =
+      optionalGetResultForIntEnum(IntValueExample)
 
-    implicit val longValueColumn      = mappedColumnTypeForValueEnum(LongValueExample)
-    implicit val longSetParam         = setParameterForLongEnum(LongValueExample)
-    implicit val longOptionalSetParam = optionalSetParameterForLongEnum(LongValueExample)
-    implicit val longGetResult        = getResultForLongEnum(LongValueExample)
+    implicit val longValueColumn: profile.BaseColumnType[LongValueExample] =
+      mappedColumnTypeForValueEnum(LongValueExample)
+    implicit val longSetParam: SetParameter[LongValueExample] =
+      setParameterForLongEnum(LongValueExample)
+    implicit val longOptionalSetParam: SetParameter[Option[LongValueExample]] =
+      optionalSetParameterForLongEnum(LongValueExample)
+    implicit val longGetResult: GetResult[LongValueExample] =
+      getResultForLongEnum(LongValueExample)
 
-    implicit val shortValueColumn      = mappedColumnTypeForValueEnum(ShortValueExample)
-    implicit val shortSetParam         = setParameterForShortEnum(ShortValueExample)
-    implicit val shortGetResult        = getResultForShortEnum(ShortValueExample)
-    implicit val shortOptionalSetParam = optionalSetParameterForShortEnum(ShortValueExample)
+    implicit val shortValueColumn: profile.BaseColumnType[ShortValueExample] =
+      mappedColumnTypeForValueEnum(ShortValueExample)
+    implicit val shortSetParam: SetParameter[ShortValueExample] =
+      setParameterForShortEnum(ShortValueExample)
+    implicit val shortGetResult: GetResult[ShortValueExample] =
+      getResultForShortEnum(ShortValueExample)
+    implicit val shortOptionalSetParam: SetParameter[Option[ShortValueExample]] =
+      optionalSetParameterForShortEnum(ShortValueExample)
 
-    implicit val stringValueColumn      = mappedColumnTypeForValueEnum(StringValueExample)
-    implicit val stringSetParam         = setParameterForStringEnum(StringValueExample)
-    implicit val stringOptionalSetParam = optionalSetParameterForStringEnum(StringValueExample)
-    implicit val stringGetResult        = getResultForStringEnum(StringValueExample)
+    implicit val stringValueColumn: profile.BaseColumnType[StringValueExample] =
+      mappedColumnTypeForValueEnum(StringValueExample)
+    implicit val stringSetParam: SetParameter[StringValueExample] =
+      setParameterForStringEnum(StringValueExample)
+    implicit val stringOptionalSetParam: SetParameter[Option[StringValueExample]] =
+      optionalSetParameterForStringEnum(StringValueExample)
+    implicit val stringGetResult: GetResult[StringValueExample] =
+      getResultForStringEnum(StringValueExample)
 
-    implicit val byteValueColumn      = mappedColumnTypeForValueEnum(ByteValueExample)
-    implicit val byteSetParam         = setParameterForByteEnum(ByteValueExample)
-    implicit val byteGetResult        = getResultForByteEnum(ByteValueExample)
-    implicit val byteOptionalSetParam = optionalSetParameterForByteEnum(ByteValueExample)
+    implicit val byteValueColumn: profile.BaseColumnType[ByteValueExample] =
+      mappedColumnTypeForValueEnum(ByteValueExample)
+    implicit val byteSetParam: SetParameter[ByteValueExample] =
+      setParameterForByteEnum(ByteValueExample)
+    implicit val byteGetResult: GetResult[ByteValueExample] =
+      getResultForByteEnum(ByteValueExample)
+    implicit val byteOptionalSetParam: SetParameter[Option[ByteValueExample]] =
+      optionalSetParameterForByteEnum(ByteValueExample)
 
-    implicit val charValueColumn      = mappedColumnTypeForValueEnum(CharValueExample)
-    implicit val charSetParam         = setParameterForCharEnum(CharValueExample)
-    implicit val charGetResult        = getResultForCharEnum(CharValueExample)
-    implicit val charOptionalSetParam = optionalSetParameterForCharEnum(CharValueExample)
+    implicit val charValueColumn: profile.BaseColumnType[CharValueExample] =
+      mappedColumnTypeForValueEnum(CharValueExample)
+    implicit val charSetParam: SetParameter[CharValueExample] =
+      setParameterForCharEnum(CharValueExample)
+    implicit val charGetResult: GetResult[CharValueExample] =
+      getResultForCharEnum(CharValueExample)
+    implicit val charOptionalSetParam: SetParameter[Option[CharValueExample]] =
+      optionalSetParameterForCharEnum(CharValueExample)
 
     class ValueEnumTable(tag: Tag) extends Table[ValueEnumRow](tag, "value_enum") {
       def id =
@@ -108,9 +134,9 @@ class SlickValueEnumSupportSpec
     }
     val valueEnums = TableQuery[ValueEnumTable]
   }
-  class ConcreteRepository(val profile: slick.driver.H2Driver) extends ValueEnumRepository
+  class ConcreteRepository(val profile: slick.jdbc.H2Profile) extends ValueEnumRepository
 
-  val repo = new ConcreteRepository(slick.driver.H2Driver)
+  val repo = new ConcreteRepository(slick.jdbc.H2Profile)
   import repo.profile.api._
   import repo.valueEnums
   val db = Database.forURL(
@@ -119,7 +145,7 @@ class SlickValueEnumSupportSpec
     keepAliveConnection = true
   )
 
-  implicit val defaultPatience = PatienceConfig(timeout = Span(1, Second))
+  implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(1, Second))
 
   override def beforeAll(): Unit = {
     db.run(valueEnums.schema.create).futureValue(Timeout(Span(3, Seconds)))
