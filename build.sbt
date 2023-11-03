@@ -293,7 +293,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       scala_3Version
     ),
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %%% "play-json" % "2.10.1",
+      "org.playframework" %%% "play-json" % "3.0.0",
       scalaXmlTest
     ),
     libraryDependencies ++= {
