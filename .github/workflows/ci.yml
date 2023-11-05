@@ -37,13 +37,13 @@ jobs:
         run: |
           case ${{ matrix.scala }} in
             2.12.18)
-              sbt -v ++${{ matrix.scala }} scalafmtCheck scalafmtSbtCheck test:compile test:doc
-              sbt -v ++${{ matrix.scala }} coverage test coverageReport
-              sbt -v ++${{ matrix.scala }} coverageAggregate
+              sbt -v "++${{ matrix.scala }} scalafmtCheck" "++${{ matrix.scala }} scalafmtSbtCheck" "++${{ matrix.scala }} test:compile" "++${{ matrix.scala }} test:doc"
+              sbt -v "coverage" "++${{ matrix.scala }} test" "++${{ matrix.scala }} coverageReport"
+              sbt -v "++${{ matrix.scala }} coverageAggregate"
               ;;
             *)
-              sbt -v ++${{ matrix.scala }} test:compile test:doc
-              sbt -v ++${{ matrix.scala }} test
+              sbt -v "++${{ matrix.scala }} test:compile" "++${{ matrix.scala }} test:doc"
+              sbt -v "++${{ matrix.scala }} test"
               ;;
           esac
           rm -rf "$HOME/.ivy2/local" || true
