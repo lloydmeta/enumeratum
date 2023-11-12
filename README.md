@@ -343,7 +343,7 @@ libraryDependencies ++= Seq(
 As expected, usage is exactly the same as normal Scala.
 
 ## Play Integration
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play_2.13)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
@@ -358,7 +358,7 @@ libraryDependencies ++= Seq(
 ```
 
 #### Dependencies and compatibility notes
-- As of version 1.6.1, `enumeratum-play` for Scala 2.12 requires Play >= 2.8
+- As of version 1.8, `enumeratum-play` requires Scala 2.13+ and Play >= 3
 
 ### Usage
 
@@ -486,7 +486,7 @@ object GreetingForm {
 ```
 
 ## Play JSON
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum-play-json_2.13)
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
