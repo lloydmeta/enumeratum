@@ -270,7 +270,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name               := "enumeratum-play-json",
-    version            := "1.8.0",
+    version            := "1.8.1-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "org.playframework" %%% "play-json" % "3.0.0",
@@ -299,7 +299,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
-    version := "1.8.0",
+    version := "1.8.1-SNAPSHOT",
     // Play do not support 2.12 (default from common settings)
     scalaVersion                                := scala_2_13Version,
     crossScalaVersions                          := Seq(scala_2_13Version, scala_3Version),
