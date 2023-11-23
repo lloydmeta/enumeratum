@@ -14,6 +14,7 @@ private[enumeratum] trait IntEnumCompanion {
 
 private[enumeratum] trait IntEnumCompat[A <: IntEnumEntry] { _enum: IntEnum[A] =>
 
+  // format: off
   /** Returns a Seq of [[A]] objects that the macro was able to find.
     *
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
@@ -21,6 +22,7 @@ private[enumeratum] trait IntEnumCompat[A <: IntEnumEntry] { _enum: IntEnum[A] =
     */
   protected inline def findValues: IndexedSeq[A] =
     ${ ValueEnumMacros.findIntValueEntriesImpl[A] }
+  // format: on
 }
 
 private[enumeratum] trait LongEnumCompanion {
@@ -34,12 +36,14 @@ private[enumeratum] trait LongEnumCompanion {
 
 private[enumeratum] trait LongEnumCompat[A <: LongEnumEntry] { _enum: LongEnum[A] =>
 
+  // format: off
   /** Returns a Seq of [[A]] objects that the macro was able to find.
     *
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
     * aren't using this method...why are you even bothering with this lib?
     */
   protected inline def findValues: IndexedSeq[A] = ${ ValueEnumMacros.findLongValueEntriesImpl[A] }
+  // format: on
 }
 
 private[enumeratum] trait ShortEnumCompanion {
@@ -76,6 +80,7 @@ private[enumeratum] trait StringEnumCompanion {
 
 private[enumeratum] trait StringEnumCompat[A <: StringEnumEntry] { _enum: StringEnum[A] =>
 
+  // format: off
   /** Returns a Seq of [[A]] objects that the macro was able to find.
     *
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
@@ -84,6 +89,7 @@ private[enumeratum] trait StringEnumCompat[A <: StringEnumEntry] { _enum: String
   protected inline def findValues: IndexedSeq[A] = ${
     ValueEnumMacros.findStringValueEntriesImpl[A]
   }
+  // format: on
 }
 
 private[enumeratum] trait ByteEnumCompanion {
@@ -97,6 +103,7 @@ private[enumeratum] trait ByteEnumCompanion {
 
 private[enumeratum] trait ByteEnumCompat[A <: ByteEnumEntry] { _enum: ByteEnum[A] =>
 
+  // format: off
   /** Returns a Seq of [[A]] objects that the macro was able to find.
     *
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
@@ -105,6 +112,7 @@ private[enumeratum] trait ByteEnumCompat[A <: ByteEnumEntry] { _enum: ByteEnum[A
   protected inline def findValues: IndexedSeq[A] = ${
     ValueEnumMacros.findByteValueEntriesImpl[A]
   }
+  // format: on
 }
 
 private[enumeratum] trait CharEnumCompanion {
@@ -118,6 +126,7 @@ private[enumeratum] trait CharEnumCompanion {
 
 private[enumeratum] trait CharEnumCompat[A <: CharEnumEntry] { _enum: CharEnum[A] =>
 
+  // format: off
   /** Returns a Seq of [[A]] objects that the macro was able to find.
     *
     * You will want to use this in some way to implement your [[values]] method. In fact, if you
@@ -126,4 +135,5 @@ private[enumeratum] trait CharEnumCompat[A <: CharEnumEntry] { _enum: CharEnum[A
   protected inline def findValues: IndexedSeq[A] = ${
     ValueEnumMacros.findCharValueEntriesImpl[A]
   }
+  // format: on
 }

@@ -11,22 +11,6 @@ lazy val theScalaVersion = scala_2_12Version
 
 lazy val scalaTestVersion = "3.2.16"
 
-def scalaTestPlay(scalaVersion: String) = CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor >= 12 =>
-    "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
-
-  case Some((3, _)) =>
-    ("org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test)
-      .cross(CrossVersion.for3Use2_13)
-      .exclude("org.scalactic", "*")
-      .exclude("org.scalatest", "*")
-      .exclude("org.scala-lang.modules", "*")
-      .exclude("com.typesafe.play", "play-json_2.13")
-
-  case _ =>
-    throw new IllegalArgumentException(s"Unsupported Scala version $scalaVersion for play-test")
-}
-
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, macrosNative, coreJS, coreJVM, coreNative, coreJVMTests).map(
     Project.projectToRef
@@ -285,15 +269,11 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .settings(testSettings)
   .jsSettings(jsTestSettings)
   .settings(
-    name    := "enumeratum-play-json",
-    version := Versions.Core.head,
-    crossScalaVersions := Seq(
-      scala_2_12Version,
-      scala_2_13Version,
-      scala_3Version
-    ),
+    name               := "enumeratum-play-json",
+    version            := "1.8.1-SNAPSHOT",
+    crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %%% "play-json" % "2.10.0-RC6",
+      "org.playframework" %%% "play-json" % "3.0.0",
       scalaXmlTest
     ),
     libraryDependencies ++= {
@@ -319,21 +299,13 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
-    version            := Versions.Core.head,
-    crossScalaVersions := scalaVersionsAll,
-    libraryDependencies += {
-      val dep = ("com.typesafe.play" %% "play" % "2.8.0").exclude("org.scala-lang.modules", "*")
-
-      if (scalaBinaryVersion.value == "3") {
-        dep
-          .exclude("org.scala-lang.modules", "*")
-          .exclude("com.typesafe.play", "play-json_2.13")
-          .cross(CrossVersion.for3Use2_13)
-      } else {
-        dep
-      }
-    },
-    libraryDependencies += scalaTestPlay(scalaVersion.value),
+    version := "1.8.1-SNAPSHOT",
+    // Play do not support 2.12 (default from common settings)
+    scalaVersion                                := scala_2_13Version,
+    crossScalaVersions                          := Seq(scala_2_13Version, scala_3Version),
+    libraryDependencies += ("org.playframework" %% "play" % "3.0.0")
+      .exclude("org.scala-lang.modules", "*"),
+    libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test,
     libraryDependencies ++= {
       if (useLocalVersion) {
         Seq.empty
@@ -593,7 +565,7 @@ lazy val enumeratumDoobie =
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
       version                               := "1.7.5-SNAPSHOT",
-      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC4",
+      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC5",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
@@ -792,10 +764,8 @@ lazy val publishSettings = Seq(
     else
       Some("releases" at nexus + "service/local/staging/deploy/maven2")
   },
-  pgpPassphrase          := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   publishMavenStyle      := true,
   Test / publishArtifact := false,
-  PgpKeys.pgpPassphrase  := sys.env.get("PGP_PASSPHRASE").map(_.toCharArray),
   pomIncludeRepository := { _ =>
     false
   }
