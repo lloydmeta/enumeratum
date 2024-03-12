@@ -585,7 +585,7 @@ lazy val enumeratumSlick =
       version            := "1.7.5-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
-        ("com.typesafe.slick" %% "slick" % "3.5.0-M4"),
+        ("com.typesafe.slick" %% "slick" % "3.5.0"),
         "com.h2database"       % "h2"    % "1.4.197" % Test
       ),
       libraryDependencies += scalaXmlTest,
