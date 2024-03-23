@@ -83,7 +83,7 @@ trait SlickEnumPlainSqlSupport {
       find: String => E
   ): GetResult[E] = {
     new GetResult[E] {
-      override def apply(pr: PositionedResult): E = find(pr.nextString)
+      override def apply(pr: PositionedResult): E = find(pr.nextString())
     }
   }
 
