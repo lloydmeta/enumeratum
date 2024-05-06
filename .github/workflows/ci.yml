@@ -53,6 +53,7 @@ jobs:
           find $HOME/.sbt                       -name "*.lock"               -delete || true
       - name: Upload coverage to Codecov
         if: ${{ matrix.scala == '2.13.11' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
