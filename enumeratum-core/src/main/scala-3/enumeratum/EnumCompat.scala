@@ -22,8 +22,10 @@ private[enumeratum] trait EnumCompat[A <: EnumEntry] { _enum: Enum[A] =>
 
 private[enumeratum] trait EnumCompanion {
 
+  // format: off
   /** Finds the `Enum` companion object for a particular `EnumEntry`. */
   implicit inline def materializeEnum[A <: EnumEntry]: Enum[A] =
     ${ EnumMacros.materializeEnumImpl[A, Enum[A]] }
+  // format: on
 
 }
