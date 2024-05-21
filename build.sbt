@@ -424,7 +424,7 @@ lazy val enumeratumJson4s =
       version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
-        val ver = "4.0.3"
+        val ver = "4.0.6"
 
         Seq(
           "org.json4s" %% "json4s-core"   % ver,
@@ -439,11 +439,6 @@ lazy val enumeratumJson4s =
           Seq("com.beachape" %%% "enumeratum" % Versions.Core.stable)
         }
       }
-    )
-    .settings(
-      // TODO: Remove once JSON4S is fixed for Scala3;
-      // https://github.com/json4s/json4s/issues/1035
-      disabledSettings
     )
     .configure(configureWithLocal(coreJVM))
 
