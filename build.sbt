@@ -3,8 +3,8 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_12Version = "2.12.18"
-lazy val scala_2_13Version = "2.13.11"
-lazy val scala_3Version    = "3.3.0"
+lazy val scala_2_13Version = "2.13.14"
+lazy val scala_3Version    = "3.4.0"
 lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
@@ -108,11 +108,14 @@ lazy val macros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name    := "enumeratum-macros",
     version := Versions.Macros.head,
     crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
-    libraryDependencies += {
+    libraryDependencies ++= {
       if (scalaBinaryVersion.value == "3") {
-        "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % Provided
+        Seq(
+          "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % Provided,
+          "org.scala-lang" % "scala-reflect" % scala_2_13Version,
+        )
       } else {
-        "org.scala-lang" % "scala-reflect" % scalaVersion.value
+        Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
       }
     },
     libraryDependencies += scalaXmlTest
@@ -141,7 +144,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.stable)
+        Seq("com.beachape" %% "enumeratum-macros" % Versions.Macros.head)
       }
     },
     libraryDependencies += scalaXmlTest
@@ -692,7 +695,7 @@ lazy val compilerSettings = Seq(
 
     val base = {
       if (scalaBinaryVersion.value == "3") {
-        minimal :+ "-deprecation"
+        minimal :+ "-Wconf:cat=deprecation:s"
       } else {
         minimal ++ Seq(
           // "-Ywarn-adapted-args",
