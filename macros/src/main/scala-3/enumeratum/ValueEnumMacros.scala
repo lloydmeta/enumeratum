@@ -140,26 +140,8 @@ In SBT settings:
 
     val ctorParams = tpeSym.primaryConstructor.paramSymss.flatten
 
-    val enumFields = repr.typeSymbol.fieldMembers.flatMap { field =>
-      ctorParams.zipWithIndex.find { case (p, i) =>
-        p.name == field.name && (p.tree match {
-          case term: Term =>
-            term.tpe <:< valueRepr
-
-          case _ =>
-            false
-        })
-      }
-    }.toSeq
-
-    val (valueField, valueParamIndex): (Symbol, Int) = {
-      if (enumFields.size == 1) {
-        enumFields.headOption
-      } else {
-        enumFields.find(_._1.name == "value")
-      }
-    }.getOrElse {
-      Symbol.newVal(tpeSym, "value", valueRepr, Flags.Abstract, Symbol.noSymbol) -> 0
+    val (valueField, valueParamIndex): (Symbol, Int) = ctorParams.zipWithIndex.find{ case (p, _) => p.name == "value"}.getOrElse {
+      report.errorAndAbort(s"Could not find 'value' field in ${tpeSym.name}")
     }
 
     type IsValue[T <: ValueType] = T
