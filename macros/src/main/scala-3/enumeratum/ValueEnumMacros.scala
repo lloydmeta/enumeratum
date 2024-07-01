@@ -191,7 +191,7 @@ In SBT settings:
 
             case None =>
               report.errorAndAbort(
-                s"Failed to check value entry ${htpr.show} for enum ${repr.show}"
+                s"Fails to check value entry ${htpr.show} for enum ${repr.show}"
               )
           }
         }
@@ -218,7 +218,7 @@ In SBT settings:
               }
               .mkString(", ")
 
-            Left(s"Values for the `value` field field are not discriminated subtypes: ${details}")
+            Left(s"Values value are not discriminated subtypes: ${details}")
           } else {
             Right(Expr ofList instances.reverse)
           }
