@@ -171,14 +171,14 @@ In SBT settings:
             vof <- Expr.summon[ValueOf[h]]
             constValue <- htpr.typeSymbol.tree match {
               case ClassDef(_, _, parents, _, statements) => {
-                val fromCtor = parents
-                  .collectFirst {
-                    case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
-                    case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
-                  }
-                  .flatMap(_.lift(valueParamIndex.getOrElse(-1)).collect { case ConstVal(const) =>
-                    const
-                  })
+                val fromCtor = valueParamIndex.flatMap { ix =>
+                  parents
+                    .collectFirst {
+                      case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
+                      case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
+                    }
+                    .flatMap(_.lift(ix).collect { case ConstVal(const) => const })
+                }
                 def fromBody = statements.collectFirst { case ConstVal(v) => v }
                 fromCtor.orElse(fromBody).flatMap { const => cls.unapply(const.value) }
               }
