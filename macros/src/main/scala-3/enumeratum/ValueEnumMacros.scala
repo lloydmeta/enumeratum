@@ -171,7 +171,7 @@ In SBT settings:
             vof <- Expr.summon[ValueOf[h]]
             constValue <- htpr.typeSymbol.tree match {
               case ClassDef(_, _, parents, _, statements) => {
-                val fromCtor = valueParamIndex.flatMap { ix =>
+                val fromCtor = valueParamIndex.flatMap { (ix: Int) =>
                   parents
                     .collectFirst {
                       case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
