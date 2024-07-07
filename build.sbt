@@ -343,7 +343,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name    := "enumeratum-circe",
     version := Versions.Core.head,
     libraryDependencies ++= Seq(
-      "io.circe" %%% "circe-core" % "0.14.8",
+      "io.circe" %%% "circe-core" % "0.14.3",
       scalaXmlTest
     ),
     libraryDependencies ++= {
@@ -461,7 +461,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = ("1.17.1", "scalacheck-1-17", "3.2.18.0")
+      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.16.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
