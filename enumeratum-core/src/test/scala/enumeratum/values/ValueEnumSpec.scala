@@ -118,6 +118,17 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
        """ shouldNot compile
       }
 
+      it("should compile when the value constructor parameter is not first") {
+        """
+        sealed abstract class MyStatus(final val idx: Int, final val value: String) extends StringEnumEntry
+
+        object MyStatus extends StringEnum[MyStatus] {
+          case object PENDING extends MyStatus(1, "PENDING")
+          val values = findValues
+        }
+        """ should compile
+      }
+
       it("should compile even when values are repeated if AllowAlias is extended") {
         """
         sealed abstract class ContentTypeRepeated(val value: Long, name: String) extends LongEnumEntry with AllowAlias
