@@ -242,7 +242,7 @@ lazy val enumeratumReactiveMongoBson =
       version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies += {
-        "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC9" % Provided
+        "org.reactivemongo" %% "reactivemongo-bson-api" % "1.1.0-RC12" % Provided
       },
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
@@ -270,10 +270,10 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name               := "enumeratum-play-json",
-    version            := "1.8.1-SNAPSHOT",
+    version            := "1.8.2-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
-      "org.playframework" %%% "play-json" % "3.0.0",
+      "org.playframework" %%% "play-json" % "3.0.4",
       scalaXmlTest
     ),
     libraryDependencies ++= {
@@ -299,11 +299,11 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
-    version := "1.8.1-SNAPSHOT",
+    version := "1.8.2-SNAPSHOT",
     // Play do not support 2.12 (default from common settings)
     scalaVersion                                := scala_2_13Version,
     crossScalaVersions                          := Seq(scala_2_13Version, scala_3Version),
-    libraryDependencies += ("org.playframework" %% "play" % "3.0.0")
+    libraryDependencies += ("org.playframework" %% "play" % "3.0.4")
       .exclude("org.scala-lang.modules", "*"),
     libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.0" % Test,
     libraryDependencies ++= {
@@ -343,7 +343,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name    := "enumeratum-circe",
     version := Versions.Core.head,
     libraryDependencies ++= Seq(
-      "io.circe" %%% "circe-core" % "0.14.3",
+      "io.circe" %%% "circe-core" % "0.14.8",
       scalaXmlTest
     ),
     libraryDependencies ++= {
@@ -387,14 +387,7 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val ver: String = {
-        if (scalaBinaryVersion.value == "3") {
-          "6.3.8"
-        } else {
-          "6.2.5"
-        }
-      }
-
+      val ver: String = "6.3.9"
       Seq(
         "io.argonaut" %%% "argonaut" % ver,
         scalaXmlTest
@@ -424,7 +417,7 @@ lazy val enumeratumJson4s =
       version            := Versions.Core.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
-        val ver = "4.0.3"
+        val ver = "4.0.7"
 
         Seq(
           "org.json4s" %% "json4s-core"   % ver,
@@ -468,7 +461,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.16.0")
+      val (ver, mod, ver2) = ("1.17.1", "scalacheck-1-17", "3.2.18.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
@@ -564,7 +557,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
-      version                               := "1.7.6-SNAPSHOT",
+      version                               := "1.7.7-SNAPSHOT",
       libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC5",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
@@ -582,7 +575,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := "1.7.7-SNAPSHOT",
+      version            := "1.7.8-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.5.1"),
