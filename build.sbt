@@ -9,7 +9,7 @@ lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Ve
 
 lazy val theScalaVersion = scala_2_12Version
 
-lazy val scalaTestVersion = "3.2.16"
+lazy val scalaTestVersion = "3.2.19"
 
 lazy val baseProjectRefs =
   Seq(macrosJS, macrosJVM, macrosNative, coreJS, coreJVM, coreNative, coreJVMTests).map(
@@ -343,7 +343,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name    := "enumeratum-circe",
     version := Versions.Core.head,
     libraryDependencies ++= Seq(
-      "io.circe" %%% "circe-core" % "0.14.3",
+      "io.circe" %%% "circe-core" % "0.14.9",
       scalaXmlTest
     ),
     libraryDependencies ++= {
@@ -461,7 +461,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
     version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
-      val (ver, mod, ver2) = ("1.17.0", "scalacheck-1-17", "3.2.16.0")
+      val (ver, mod, ver2) = ("1.18.0", "scalacheck-1-18", "3.2.19.0")
 
       Seq(
         "org.scalacheck"    %%% "scalacheck" % ver,
@@ -606,7 +606,7 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name                                    := "enumeratum-cats",
     version                                 := Versions.Core.head,
-    libraryDependencies += "org.typelevel" %%% "cats-core" % "2.9.0",
+    libraryDependencies += "org.typelevel" %%% "cats-core" % "2.12.0",
     libraryDependencies += scalaXmlTest,
     libraryDependencies ++= {
       if (useLocalVersion) {
