@@ -343,7 +343,7 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name    := "enumeratum-circe",
     version := Versions.Core.head,
     libraryDependencies ++= Seq(
-      "io.circe" %%% "circe-core" % "0.14.9",
+      "io.circe" %%% "circe-core" % "0.14.10",
       scalaXmlTest
     ),
     libraryDependencies ++= {
