@@ -2,7 +2,7 @@ package enumeratum
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-
+import doobie.implicits._
 import doobie.util.{Read => DoobieRead, Write => DoobieWrite}
 import scala.collection.immutable
 

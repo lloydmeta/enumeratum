@@ -2,6 +2,7 @@ package enumeratum.values
 
 import cats.effect.{IO, Resource}
 import doobie.util.{Read => DoobieRead, Write => DoobieWrite}
+import doobie.implicits._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import scala.concurrent.Future
