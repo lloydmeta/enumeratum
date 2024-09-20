@@ -9,7 +9,7 @@ import play.api.data.{FormError, Mapping, Forms => PlayForms}
   */
 object Forms extends FormsCompat {
 
-  protected[this] def formatter[ValueType, EntryType <: ValueEnumEntry[
+  protected def formatter[ValueType, EntryType <: ValueEnumEntry[
     ValueType
   ], EnumType <: ValueEnum[ValueType, EntryType]](
       baseFormatter: Formatter[ValueType]
