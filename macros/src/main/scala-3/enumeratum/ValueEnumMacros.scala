@@ -250,7 +250,7 @@ In SBT settings:
 
             Left(s"Values for ${valueField.name} are not discriminated subtypes: ${details}")
           } else {
-            Right(Expr ofList instances.reverse)
+            Right(Expr.ofList(instances.reverse))
           }
         }
       }
