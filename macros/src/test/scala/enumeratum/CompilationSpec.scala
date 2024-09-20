@@ -136,3 +136,9 @@ object F {
   case object F4 extends F(value = 4, "mike")
 
 }
+
+sealed abstract class G(val name: String, val value: Int)
+object G {
+  val values = FindValEnums[G]
+  case object G1 extends G("gerald", 1)
+}
