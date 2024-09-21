@@ -7,7 +7,7 @@ object Cats {
   /** Builds an `Eq` instance which differentiates all enum values as it's based on universal
     * equals.
     */
-  def eqForEnum[A <: ValueEnumEntry[_]]: Eq[A] = Eq.fromUniversalEquals[A]
+  def eqForEnum[A <: ValueEnumEntry[?]]: Eq[A] = Eq.fromUniversalEquals[A]
 
   /** Builds an `Eq` instance which acts accordingly to the given `Eq` on the value type. Allows to
     * implement different behaviour than [[eqForEnum]], for example grouping several enum values in
@@ -17,7 +17,7 @@ object Cats {
 
   /** Builds a `Show` instance based on `toString`.
     */
-  def showForEnum[A <: ValueEnumEntry[_]]: Show[A] = Show.fromToString[A]
+  def showForEnum[A <: ValueEnumEntry[?]]: Show[A] = Show.fromToString[A]
 
   /** Builds a `Show` instance from the given `Show` on the value type.
     */

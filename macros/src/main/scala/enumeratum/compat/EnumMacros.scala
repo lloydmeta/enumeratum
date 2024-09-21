@@ -1,4 +1,5 @@
 package enumeratum
+package compat
 
 import ContextUtils.Context
 
@@ -10,7 +11,7 @@ object EnumMacros {
 
   /** Finds any [A] in the current scope and returns an expression for a list of them
     */
-  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Expr[IndexedSeq[A]] = {
+  def findValuesImpl[A: c.WeakTypeTag](c: Context): c.Tree = {
     import c.universe._
     val typeSymbol = weakTypeOf[A].typeSymbol
     validateType(c)(typeSymbol)
@@ -160,20 +161,22 @@ object EnumMacros {
   @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   private[enumeratum] def buildSeqExpr[A: c.WeakTypeTag](c: Context)(
       subclassSymbols: Seq[c.universe.Symbol]
-  ) = {
+  ): c.Tree = {
     import c.universe._
     val resultType = weakTypeOf[A]
+    val indexedSeq = Ident(c.mirror.staticModule(classOf[IndexedSeq[A]].getName))
     if (subclassSymbols.isEmpty) {
-      c.Expr[IndexedSeq[A]](reify(IndexedSeq.empty[A]).tree)
+      TypeApply(
+        Select(indexedSeq, ContextUtils.termName(c)("empty")),
+        List(TypeTree(resultType))
+      )
     } else {
-      c.Expr[IndexedSeq[A]](
-        Apply(
-          TypeApply(
-            Select(reify(IndexedSeq).tree, ContextUtils.termName(c)("apply")),
-            List(TypeTree(resultType))
-          ),
-          subclassSymbols.map(Ident(_)).toList
-        )
+      Apply(
+        TypeApply(
+          Select(indexedSeq, ContextUtils.termName(c)("apply")),
+          List(TypeTree(resultType))
+        ),
+        subclassSymbols.map(Ident(_)).toList
       )
     }
   }
@@ -183,7 +186,7 @@ object EnumMacros {
     * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler for the
     * sake of getting access to this class and doing an `isInstanceOf`
     */
-  private[this] def isDocCompiler(c: Context): Boolean = {
+  private def isDocCompiler(c: Context): Boolean = {
     c.universe.getClass.toString.contains("doc.DocFactory")
   }
 
@@ -191,7 +194,7 @@ object EnumMacros {
     *
     * DocDefs are not part of the public API, so we try to hack around it here.
     */
-  private[this] def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
+  private def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
     t.getClass.toString.contains("DocDef")
   }
 }

@@ -220,7 +220,7 @@ In SBT settings:
 
             Left(s"Values value are not discriminated subtypes: ${details}")
           } else {
-            Right(Expr ofList instances.reverse)
+            Right(Expr.ofList(instances.reverse))
           }
         }
       }
