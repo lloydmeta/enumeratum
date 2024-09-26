@@ -15,7 +15,7 @@ jobs:
           - java: 11
             scala: 2.13.13
           - java: 11
-            scala: 3.4.0
+            scala: 3.3.4
     runs-on: ubuntu-latest
     env:
       SCALAJS_TEST_OPT: full
