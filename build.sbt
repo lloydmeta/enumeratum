@@ -270,7 +270,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .jsSettings(jsTestSettings)
   .settings(
     name               := "enumeratum-play-json",
-    version            := "1.8.2-SNAPSHOT",
+    version            := "1.8.3-SNAPSHOT",
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= Seq(
       "org.playframework" %%% "play-json" % "3.0.4",
@@ -299,7 +299,7 @@ lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratu
   .settings(commonWithPublishSettings)
   .settings(testSettings)
   .settings(
-    version := "1.8.2-SNAPSHOT",
+    version := "1.8.3-SNAPSHOT",
     // Play do not support 2.12 (default from common settings)
     scalaVersion                                := scala_2_13Version,
     crossScalaVersions                          := Seq(scala_2_13Version, scala_3Version),
@@ -557,7 +557,7 @@ lazy val enumeratumDoobie =
     .settings(testSettings)
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
-      version                               := "1.7.7-SNAPSHOT",
+      version                               := "1.7.8-SNAPSHOT",
       libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC5",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
@@ -575,7 +575,7 @@ lazy val enumeratumSlick =
     .settings(commonWithPublishSettings)
     .settings(testSettings)
     .settings(
-      version            := "1.7.8-SNAPSHOT",
+      version            := "1.7.9-SNAPSHOT",
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= Seq(
         ("com.typesafe.slick" %% "slick" % "3.5.1"),
