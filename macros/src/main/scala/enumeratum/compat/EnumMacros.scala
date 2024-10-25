@@ -3,6 +3,7 @@ package compat
 
 import ContextUtils.Context
 
+import scala.annotation.nowarn
 import scala.collection.immutable._
 import scala.util.control.NonFatal
 
@@ -106,7 +107,7 @@ object EnumMacros {
     import c.universe._
     val enclosingBodySubClassTrees: List[Tree] =
       try {
-        val enclosingModule = c.enclosingClass match {
+        val enclosingModule = (c.enclosingClass: @nowarn) match {
           case md @ ModuleDef(_, _, _) => md
           case _ =>
             c.abort(
