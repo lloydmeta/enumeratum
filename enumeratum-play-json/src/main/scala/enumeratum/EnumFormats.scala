@@ -137,7 +137,13 @@ object EnumFormats {
     case JsString(s) =>
       extract(s) match {
         case Some(obj) => JsSuccess(obj)
-        case None      => JsError("error.expected.validenumvalue")
+        case None =>
+          JsError(
+            JsonValidationError(
+              "error.expected.validenumvalue",
+              s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
+            )
+          )
       }
 
     case _ => JsError("error.expected.enumstring")
@@ -148,7 +154,13 @@ object EnumFormats {
   )(extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
     def readKey(s: String): JsResult[A] = extract(s) match {
       case Some(obj) => JsSuccess(obj)
-      case None      => JsError("error.expected.validenumvalue")
+      case None =>
+        JsError(
+          JsonValidationError(
+            "error.expected.validenumvalue",
+            s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
+          )
+        )
     }
   }
 }
