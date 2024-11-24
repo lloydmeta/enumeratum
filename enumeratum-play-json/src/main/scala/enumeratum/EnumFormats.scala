@@ -112,9 +112,10 @@ object EnumFormats {
     */
   def formats[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(reads(e, insensitive), writes(e))
+    Format(reads(e, insensitive, detailedError), writes(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling lower case transformations
@@ -123,9 +124,10 @@ object EnumFormats {
     *   The enum
     */
   def formatsLowerCaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(readsLowercaseOnly(e), writesLowercaseOnly(e))
+    Format(readsLowercaseOnly(e, detailedError), writesLowercaseOnly(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling upper case transformations
@@ -134,9 +136,10 @@ object EnumFormats {
     *   The enum
     */
   def formatsUppercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(readsUppercaseOnly(e), writesUppercaseOnly(e))
+    Format(readsUppercaseOnly(e, detailedError), writesUppercaseOnly(e))
   }
 
   // ---
