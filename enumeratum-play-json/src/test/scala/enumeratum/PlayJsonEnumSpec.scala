@@ -1,19 +1,12 @@
 package enumeratum
 
+import org.scalatest.Inside
 import org.scalatest.OptionValues._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.libs.json.{
-  JsError,
-  JsNumber,
-  JsString,
-  JsSuccess,
-  JsonValidationError,
-  Writes,
-  Json => PlayJson
-}
+import play.api.libs.json.{Json => PlayJson, _}
 
-class PlayJsonEnumSpec extends AnyFunSpec with Matchers {
+class PlayJsonEnumSpec extends AnyFunSpec with Matchers with Inside {
 
   describe("JSON serdes") {
 
@@ -80,10 +73,13 @@ class PlayJsonEnumSpec extends AnyFunSpec with Matchers {
         it("should fail with detailed error message") {
           val jsError = JsString("Subtract").validate[Operation]
           jsError shouldBe an[JsError]
-          jsError.asInstanceOf[JsError].errors.head._2.head shouldBe JsonValidationError(
-            List("error.expected.validenumvalue"),
-            "valid enum values are: (Eq, Add, Not), but provided: Subtract"
-          )
+
+          inside(jsError) { case JsError((_, jve :: Nil) :: Nil) =>
+            jve shouldBe JsonValidationError(
+              List("error.expected.validenumvalue"),
+              "valid enum values are: (Eq, Add, Not), but provided: Subtract"
+            )
+          }
         }
       }
     }
