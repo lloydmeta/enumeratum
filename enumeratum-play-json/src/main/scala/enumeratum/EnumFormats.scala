@@ -15,37 +15,47 @@ object EnumFormats {
     */
   def reads[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): Reads[A] =
-    readsAndExtracts[A](e) { s =>
+    readsAndExtracts[A](e, detailedError) { s =>
       if (insensitive) e.withNameInsensitiveOption(s)
       else e.withNameOption(s)
     }
 
-  def readsLowercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
-    readsAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
+  def readsLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
+  ): Reads[A] =
+    readsAndExtracts[A](e, detailedError)(e.withNameLowercaseOnlyOption)
 
-  def readsUppercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
-    readsAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
+  def readsUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
+  ): Reads[A] =
+    readsAndExtracts[A](e, detailedError)(e.withNameUppercaseOnlyOption)
 
   def keyReads[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e) { s =>
+    readsKeyAndExtracts[A](e, detailedError) { s =>
       if (insensitive) e.withNameInsensitiveOption(s)
       else e.withNameOption(s)
     }
 
   def keyReadsLowercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
+    readsKeyAndExtracts[A](e, detailedError)(e.withNameLowercaseOnlyOption)
 
   def keyReadsUppercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
+    readsKeyAndExtracts[A](e, detailedError)(e.withNameUppercaseOnlyOption)
 
   /** Returns a Json writes for a given enum [[Enum]]
     */
@@ -132,41 +142,39 @@ object EnumFormats {
   // ---
 
   private def readsAndExtracts[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   )(extract: String => Option[A]): Reads[A] = Reads[A] {
     case JsString(s) =>
       extract(s) match {
         case Some(obj) => JsSuccess(obj)
-        case None =>
+        case None if detailedError =>
           JsError(
             JsonValidationError(
               "error.expected.validenumvalue",
               s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
             )
           )
+        case None => JsError("error.expected.validenumvalue")
       }
 
-    case s =>
-      JsError(
-        JsonValidationError(
-          "error.expected.enumstring",
-          s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
-        )
-      )
+    case _ => JsError("error.expected.enumstring")
   }
 
   private def readsKeyAndExtracts[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   )(extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
     def readKey(s: String): JsResult[A] = extract(s) match {
       case Some(obj) => JsSuccess(obj)
-      case None =>
+      case None if detailedError =>
         JsError(
           JsonValidationError(
             "error.expected.validenumvalue",
             s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
           )
         )
+      case None => JsError("error.expected.validenumvalue")
     }
   }
 }

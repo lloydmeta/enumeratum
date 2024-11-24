@@ -87,7 +87,6 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     readErrors = Map(
       "A" -> ReadError(
         errorMessages = Seq("error.expected.validenumvalue"),
-        // FIXME it looks strange
         errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
       )
     ),
