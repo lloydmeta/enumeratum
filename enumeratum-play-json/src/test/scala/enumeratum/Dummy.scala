@@ -37,3 +37,11 @@ object UppercaseDummy extends Enum[UppercaseDummy] with PlayUppercaseJsonEnum[Up
   case object Cherry extends UppercaseDummy
   val values = findValues
 }
+
+sealed trait Operation extends EnumEntry
+object Operation extends Enum[Operation] with PlayDetailedErrorJsonEnum[Operation] {
+  val values = findValues
+  case object Eq  extends Operation
+  case object Add extends Operation
+  case object Not extends Operation
+}

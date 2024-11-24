@@ -84,6 +84,31 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     writeExpectations = Map(Dummy.A -> "A")
   )
 
+  testDetailedErrorScenario(
+    descriptor = "case insensitive with detailed error",
+    reads = EnumFormats.reads(e = Dummy, insensitive = true, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "a" -> Dummy.A
+    ),
+    readErrors = Map.empty,
+    writes = EnumFormats.writes(Dummy),
+    writeExpectations = Map(Dummy.A -> "A"),
+    formats = EnumFormats.formats(e = Dummy, insensitive = true, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "case insensitive with detailed error",
+    reads = EnumFormats.keyReads(e = Dummy, insensitive = true, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "a" -> Dummy.A
+    ),
+    readErrors = Map.empty,
+    writes = EnumFormats.keyWrites(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
   testScenario(
     descriptor = "lower case transformed",
     reads = EnumFormats.readsLowercaseOnly(Dummy),
@@ -106,6 +131,39 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     ),
     readErrors = Map(
       "A" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
+    writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "a")
+  )
+
+  testDetailedErrorScenario(
+    descriptor = "lower case transformed with detailed error",
+    reads = EnumFormats.readsLowercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "a" -> Dummy.A
+    ),
+    readErrors = Map(
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
+    ),
+    writes = EnumFormats.writesLowercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "a"),
+    formats = EnumFormats.formatsLowerCaseOnly(Dummy, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "lower case transformed with detailed error",
+    reads = EnumFormats.keyReadsLowercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "a" -> Dummy.A
+    ),
+    readErrors = Map(
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
     ),
     writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "a")
@@ -135,6 +193,41 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     ),
     readErrors = Map(
       "a" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
+    writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
+  testDetailedErrorScenario(
+    descriptor = "upper case transformed with detailed error",
+    reads = EnumFormats.readsUppercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "C" -> Dummy.c
+    ),
+    readErrors = Map(
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
+    ),
+    writes = EnumFormats.writesUppercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "A"),
+    formats = EnumFormats.formatsUppercaseOnly(Dummy, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "upper case transformed with detailed error",
+    reads = EnumFormats.keyReadsUppercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "C" -> Dummy.c
+    ),
+    readErrors = Map(
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
     ),
     writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A")

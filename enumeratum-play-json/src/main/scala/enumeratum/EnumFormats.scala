@@ -146,7 +146,7 @@ object EnumFormats {
 
   private def readsAndExtracts[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      detailedError: Boolean = false
+      detailedError: Boolean
   )(extract: String => Option[A]): Reads[A] = Reads[A] {
     case JsString(s) =>
       extract(s) match {
@@ -166,7 +166,7 @@ object EnumFormats {
 
   private def readsKeyAndExtracts[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      detailedError: Boolean = false
+      detailedError: Boolean
   )(extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
     def readKey(s: String): JsResult[A] = extract(s) match {
       case Some(obj) => JsSuccess(obj)
