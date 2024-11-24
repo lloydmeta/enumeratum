@@ -146,7 +146,13 @@ object EnumFormats {
           )
       }
 
-    case _ => JsError("error.expected.enumstring")
+    case s =>
+      JsError(
+        JsonValidationError(
+          "error.expected.enumstring",
+          s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
+        )
+      )
   }
 
   private def readsKeyAndExtracts[A <: EnumEntry](

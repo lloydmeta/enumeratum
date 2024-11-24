@@ -1,7 +1,5 @@
 package enumeratum
 
-import scala.collection.immutable
-
 case class ReadError(errorMessages: Iterable[String], errorArgs: Iterable[String])
 
 object ReadError {

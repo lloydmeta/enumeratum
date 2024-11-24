@@ -11,7 +11,12 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     descriptor = "normal operation",
     reads = EnumFormats.reads(Dummy),
     readSuccessExpectations = Map("A" -> Dummy.A),
-    readErrors = Map("C" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))),
+    readErrors = Map(
+      "C" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: C")
+      )
+    ),
     writes = EnumFormats.writes(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
     formats = EnumFormats.formats(Dummy)
@@ -21,7 +26,12 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     descriptor = "normal operation",
     reads = EnumFormats.keyReads(Dummy),
     readSuccessExpectations = Map("A" -> Dummy.A),
-    readErrors = Map("C" -> Seq("error.expected.validenumvalue")),
+    readErrors = Map(
+      "C" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: C")
+      )
+    ),
     writes = EnumFormats.keyWrites(Dummy),
     writeExpectations = Map(Dummy.A -> "A")
   )
@@ -58,7 +68,10 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "a" -> Dummy.A
     ),
     readErrors = Map(
-      "A" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
     ),
     writes = EnumFormats.writesLowercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "a"),
@@ -72,7 +85,11 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "a" -> Dummy.A
     ),
     readErrors = Map(
-      "A" -> Seq("error.expected.validenumvalue")
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        // FIXME it looks strange
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
     ),
     writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "a")
@@ -86,7 +103,10 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "C" -> Dummy.c
     ),
     readErrors = Map(
-      "a" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
     ),
     writes = EnumFormats.writesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
@@ -101,7 +121,10 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "C" -> Dummy.c
     ),
     readErrors = Map(
-      "a" -> Seq("error.expected.validenumvalue")
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
     ),
     writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A")
@@ -150,8 +173,14 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       val withJsValueKeys = expectedErrors.map { case (k, v) => JsString(k) -> v }
       // Add standard errors
       (withJsValueKeys ++ Map(
-        JsNumber(2)   -> ReadError.onlyMessages(Seq("error.expected.enumstring")),
-        JsString("D") -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+        JsNumber(2) -> ReadError(
+          errorMessages = Seq("error.expected.enumstring"),
+          errorArgs = Seq("valid enum values are: (A, B, c), but provided: 2")
+        ),
+        JsString("D") -> ReadError(
+          errorMessages = Seq("error.expected.validenumvalue"),
+          errorArgs = Seq("valid enum values are: (A, B, c), but provided: D")
+        )
       )).toMap
     }
 
@@ -198,7 +227,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       descriptor: String,
       reads: KeyReads[Dummy],
       readSuccessExpectations: Map[String, Dummy],
-      readErrors: Map[String, Seq[String]],
+      readErrors: Map[String, ReadError],
       writes: KeyWrites[Dummy],
       writeExpectations: Map[Dummy, String]
   ): Unit = describe(descriptor) {
@@ -209,7 +238,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
   private def testKeyReads(
       reads: KeyReads[Dummy],
       expectedSuccesses: Map[String, Dummy],
-      expectedErrors: Map[String, Seq[String]]
+      expectedErrors: Map[String, ReadError]
   ): Unit = describe("KeyReads") {
     it("should create a KeyReads that works with valid values") {
       expectedSuccesses.foreach { case (name, expected) =>
@@ -221,7 +250,8 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       expectedErrors.foreach { case (k, v) =>
         val result = reads.readKey(k)
         result.isError shouldBe true
-        errorMessages(result) shouldBe v
+        errorMessages(result) shouldBe v.errorMessages
+        errorArgs(result) shouldBe v.errorArgs
       }
     }
   }
