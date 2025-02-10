@@ -11,6 +11,8 @@ import java.util.concurrent.{Executors, ExecutorService}
 
 class DoobieValueEnumSpec extends AnyFunSpec with Matchers {
 
+  import doobie.generic.auto._
+
   describe("An IntDoobieEnum") {
 
     it("should have a Write") {
