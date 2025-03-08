@@ -8,6 +8,8 @@ import scala.collection.immutable
 
 class DoobieEnumSpec extends AnyFunSpec with Matchers {
 
+  import doobie.generic.auto._
+
   describe("A DoobieEnum") {
 
     it("should have a Write") {

@@ -11,5 +11,5 @@ object Doobie {
       get: Get[ValueType],
       put: Put[ValueType]
   ): Meta[EntryType] =
-    new Meta[ValueType](get, put).imap(e.withValue)(_.value)
+    new Meta[ValueType](get, put).timap(e.withValue)(_.value)
 }

@@ -11,11 +11,11 @@ jobs:
       matrix:
         include:
           - java: 11
-            scala: 2.12.18
+            scala: 2.12.20
           - java: 11
-            scala: 2.13.11
+            scala: 2.13.16
           - java: 11
-            scala: 3.3.0
+            scala: 3.3.5
     runs-on: ubuntu-latest
     env:
       SCALAJS_TEST_OPT: full
@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           case ${{ matrix.scala }} in
-            2.13.11)
+            2.13.16)
               sbt -v "++${{ matrix.scala }} scalafmtCheck" "++${{ matrix.scala }} scalafmtSbtCheck" "++${{ matrix.scala }} test:compile" "++${{ matrix.scala }} test:doc"
               sbt -v "coverage" "++${{ matrix.scala }} test" "++${{ matrix.scala }} coverageReport"
               sbt -v "++${{ matrix.scala }} coverageAggregate"
@@ -52,7 +52,7 @@ jobs:
           find $HOME/.cache/coursier/v1         -name "ivydata-*.properties" -delete || true
           find $HOME/.sbt                       -name "*.lock"               -delete || true
       - name: Upload coverage to Codecov
-        if: ${{ matrix.scala == '2.13.11' }}
+        if: ${{ matrix.scala == '2.13.16' }}
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
