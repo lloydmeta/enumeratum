@@ -135,7 +135,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonWithPublishSettings)
   .settings(
     name               := "enumeratum",
-    version            := Versions.Core.stable,
+    version            := Versions.Core.head,
     crossScalaVersions := scalaVersionsAll,
     libraryDependencies ++= {
       if (useLocalVersion) {
