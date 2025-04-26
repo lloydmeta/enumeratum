@@ -234,7 +234,7 @@ lazy val enumeratumReactiveMongoBson =
       },
       libraryDependencies += scalaXmlTest
     )
-    .dependsOn(coreJVM, enumeratumTestJvm % Test)
+    .dependsOn(coreJVM % "compile->compile;test->test", enumeratumTestJvm % Test)
 
 // Play-JSON
 lazy val playJsonAggregate =
@@ -254,7 +254,7 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
       scalaXmlTest
     )
   )
-  .dependsOn(core, enumeratumTest % Test)
+  .dependsOn(core % "compile->compile;test->test", enumeratumTest % Test)
 
 lazy val enumeratumPlayJsonJs = enumeratumPlayJson.js
   .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
@@ -414,7 +414,7 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
   .nativeSettings(
     crossScalaVersions := scalaVersionsAll
   )
-  .dependsOn(core, enumeratumTest % Test)
+  .dependsOn(core % "compile->compile;test->test", enumeratumTest % Test)
 
 lazy val enumeratumScalacheckJs = enumeratumScalacheck.js
   .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
