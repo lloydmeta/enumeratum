@@ -7,7 +7,7 @@ lazy val scala_2_13Version = "2.13.16"
 lazy val scala_3Version    = "3.3.5"
 lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
-lazy val theScalaVersion = scala_2_12Version
+lazy val theScalaVersion = scala_2_13Version
 
 lazy val scalaTestVersion = "3.2.19"
 
@@ -303,15 +303,6 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       scalaXmlTest
     )
   )
-  .jvmSettings(
-    crossScalaVersions := scalaVersionsAll
-  )
-  .jsSettings(
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
-  )
-  .nativeSettings(
-    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
-  )
   .dependsOn(core)
 
 lazy val enumeratumCirceJs = enumeratumCirce.js
@@ -407,12 +398,6 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
       )
     },
     libraryDependencies += scalaXmlTest
-  )
-  .jvmSettings(
-    crossScalaVersions := scalaVersionsAll
-  )
-  .nativeSettings(
-    crossScalaVersions := scalaVersionsAll
   )
   .dependsOn(core % "compile->compile;test->test", enumeratumTest % Test)
 
@@ -510,15 +495,6 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name                                    := "enumeratum-cats",
     libraryDependencies += "org.typelevel" %%% "cats-core" % "2.12.0",
     libraryDependencies += scalaXmlTest,
-  )
-  .jvmSettings(
-    crossScalaVersions := scalaVersionsAll
-  )
-  .jsSettings(
-    crossScalaVersions := scalaVersionsAll
-  )
-  .nativeSettings(
-    crossScalaVersions := scalaVersionsAll
   )
   .dependsOn(core)
 
