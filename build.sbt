@@ -121,8 +121,6 @@ lazy val macrosJS     = macros.js
 lazy val macrosJVM    = macros.jvm
 lazy val macrosNative = macros.native
 
-lazy val useLocalVersion = sys.props.get("enumeratum.useLocalVersion").nonEmpty
-
 // Aggregates core
 lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM, coreNative)
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -139,34 +137,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .dependsOn(macros)
 
-def configureWithLocal(
-    dep: (Project, Option[String]),
-    deps: List[(Project, Option[String])] = Nil
-): Project => Project = {
-  if (useLocalVersion) { // used for testing macros
-    { (prj: Project) =>
-      (dep :: deps).foldLeft(prj) {
-        case (p, (m, Some(x))) =>
-          p.dependsOn(m % x)
-
-        case (p, (m, None)) =>
-          p.dependsOn(m)
-      }
-    }
-  } else {
-    identity[Project]
-  }
-}
-
-def configureWithLocal(m: Project): Project => Project =
-  configureWithLocal(m -> Option.empty[String])
-
-def configureWithLocal(m: Project, x: String): Project => Project =
-  configureWithLocal(m -> Some(x))
-
-lazy val coreJS     = core.js.configure(configureWithLocal(macrosJS))
-lazy val coreJVM    = core.jvm.configure(configureWithLocal(macrosJVM))
-lazy val coreNative = core.native.configure(configureWithLocal(macrosNative))
+lazy val coreJS     = core.js
+lazy val coreJVM    = core.jvm
+lazy val coreNative = core.native
 
 lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"))
   .enablePlugins(BuildInfoPlugin)
@@ -257,10 +230,8 @@ lazy val enumeratumPlayJson = crossProject(JSPlatform, JVMPlatform)
   .dependsOn(core % "compile->compile;test->test", enumeratumTest % Test)
 
 lazy val enumeratumPlayJsonJs = enumeratumPlayJson.js
-  .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
 
 lazy val enumeratumPlayJsonJvm = enumeratumPlayJson.jvm
-  .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
 // Play
 lazy val enumeratumPlay = Project(id = "enumeratum-play", base = file("enumeratum-play"))
@@ -306,13 +277,10 @@ lazy val enumeratumCirce = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .dependsOn(core)
 
 lazy val enumeratumCirceJs = enumeratumCirce.js
-  .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
 
 lazy val enumeratumCirceJvm = enumeratumCirce.jvm
-  .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
 lazy val enumeratumCirceNative = enumeratumCirce.native
-  .configure(configureWithLocal(coreNative, "compile->compile;test->test"))
 
 // Argonaut
 lazy val argonautAggregate =
@@ -338,10 +306,8 @@ lazy val enumeratumArgonaut = crossProject(JSPlatform, JVMPlatform)
   .dependsOn(core)
 
 lazy val enumeratumArgonautJs = enumeratumArgonaut.js
-  .configure(configureWithLocal(coreJS))
 
 lazy val enumeratumArgonautJvm = enumeratumArgonaut.jvm
-  .configure(configureWithLocal(coreJVM))
 
 // JSON4S
 lazy val enumeratumJson4s =
@@ -402,13 +368,10 @@ lazy val enumeratumScalacheck = crossProject(JSPlatform, JVMPlatform, NativePlat
   .dependsOn(core % "compile->compile;test->test", enumeratumTest % Test)
 
 lazy val enumeratumScalacheckJs = enumeratumScalacheck.js
-  .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
 
 lazy val enumeratumScalacheckJvm = enumeratumScalacheck.jvm
-  .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
 lazy val enumeratumScalacheckNative = enumeratumScalacheck.native
-  .configure(configureWithLocal(coreNative, "compile->compile;test->test"))
 
 // Quill
 lazy val quillAggregate =
@@ -453,7 +416,7 @@ lazy val enumeratumQuill =
     .dependsOn(core)
 
 // lazy val enumeratumQuillJs  = enumeratumQuill.js // TODO re-enable once quill supports Scala.js 1.0
-lazy val enumeratumQuillJvm = enumeratumQuill.jvm.configure(configureWithLocal(coreJVM))
+lazy val enumeratumQuillJvm = enumeratumQuill.jvm
 
 lazy val enumeratumDoobie =
   Project(id = "enumeratum-doobie", base = file("enumeratum-doobie"))
@@ -498,11 +461,11 @@ lazy val enumeratumCats = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .dependsOn(core)
 
-lazy val enumeratumCatsJs = enumeratumCats.js.configure(configureWithLocal(coreJS))
+lazy val enumeratumCatsJs = enumeratumCats.js
 
-lazy val enumeratumCatsJvm = enumeratumCats.jvm.configure(configureWithLocal(coreJVM))
+lazy val enumeratumCatsJvm = enumeratumCats.jvm
 
-lazy val enumeratumCatsNative = enumeratumCats.native.configure(configureWithLocal(coreNative))
+lazy val enumeratumCatsNative = enumeratumCats.native
 
 lazy val commonSettings = Seq(
   organization       := "com.beachape",
