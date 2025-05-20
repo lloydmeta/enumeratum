@@ -149,22 +149,14 @@ object EnumMacros:
 
           }
       }
-
       childTpr match {
         case Some(child) => {
+          val tpeSym = child.typeSymbol
           child.asType match {
-            case ct @ '[IsEntry[t]] => {
-              val tpeSym = child.typeSymbol
-
-              if (!isObject(tpeSym)) {
-                subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
-              } else {
-                subclasses(children.tail, child :: out)
-              }
-            }
-
+            case ct @ '[IsEntry[t]] if isObject(tpeSym) =>
+              subclasses(children.tail, child :: out)
             case _ =>
-              subclasses(children.tail, out)
+              subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
           }
         }
 

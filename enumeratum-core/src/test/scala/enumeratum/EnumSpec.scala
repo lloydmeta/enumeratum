@@ -43,6 +43,23 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
 
         Word.values should be(IndexedSeq(Word.Hello, Word.Hi))
       }
+
+      it("should contain instance of generic subclass") {
+        sealed trait NestedGenericEnum[T] extends EnumEntry with Serializable
+
+        object NestedGenericEnum extends Enum[NestedGenericEnum[Unit]] {
+          sealed trait Intermediary[T] extends NestedGenericEnum[T]
+
+          case object A extends Intermediary[Unit]
+          case object B extends NestedGenericEnum[Unit]
+          val values = findValues
+        }
+
+        NestedGenericEnum.values should contain theSameElementsAs Seq(
+          NestedGenericEnum.A,
+          NestedGenericEnum.B
+        )
+      }
     }
 
     describe("#withName") {
