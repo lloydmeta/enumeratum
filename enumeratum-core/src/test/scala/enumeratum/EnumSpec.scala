@@ -60,6 +60,21 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
           NestedGenericEnum.B
         )
       }
+
+      it("should contain exactly one instance even if it inherits two subclasses") {
+        sealed trait MyEnum extends EnumEntry with Serializable
+        object MyEnum extends Enum[MyEnum] {
+          sealed trait Intermediary1 extends MyEnum
+          sealed trait Intermediary2 extends MyEnum
+
+          case object A extends Intermediary1 with Intermediary2
+          val values = findValues
+        }
+
+        MyEnum.values should contain theSameElementsAs Seq(
+          MyEnum.A
+        )
+      }
     }
 
     describe("#withName") {

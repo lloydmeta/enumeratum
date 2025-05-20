@@ -167,7 +167,7 @@ object EnumMacros:
 
     tpr.classSymbol
       .flatMap { cls =>
-        val types = subclasses(cls.children.map(_.tree), Nil)
+        val types = subclasses(cls.children.map(_.tree), Nil).distinct
 
         if (types.isEmpty) None else Some(types)
       }
