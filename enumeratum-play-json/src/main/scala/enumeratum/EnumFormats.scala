@@ -15,37 +15,47 @@ object EnumFormats {
     */
   def reads[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): Reads[A] =
-    readsAndExtracts[A](e) { s =>
+    readsAndExtracts[A](e, detailedError) { s =>
       if (insensitive) e.withNameInsensitiveOption(s)
       else e.withNameOption(s)
     }
 
-  def readsLowercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
-    readsAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
+  def readsLowercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
+  ): Reads[A] =
+    readsAndExtracts[A](e, detailedError)(e.withNameLowercaseOnlyOption)
 
-  def readsUppercaseOnly[A <: EnumEntry](@deprecatedName(Symbol("enum")) e: Enum[A]): Reads[A] =
-    readsAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
+  def readsUppercaseOnly[A <: EnumEntry](
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
+  ): Reads[A] =
+    readsAndExtracts[A](e, detailedError)(e.withNameUppercaseOnlyOption)
 
   def keyReads[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e) { s =>
+    readsKeyAndExtracts[A](e, detailedError) { s =>
       if (insensitive) e.withNameInsensitiveOption(s)
       else e.withNameOption(s)
     }
 
   def keyReadsLowercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e)(e.withNameLowercaseOnlyOption)
+    readsKeyAndExtracts[A](e, detailedError)(e.withNameLowercaseOnlyOption)
 
   def keyReadsUppercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): KeyReads[A] =
-    readsKeyAndExtracts[A](e)(e.withNameUppercaseOnlyOption)
+    readsKeyAndExtracts[A](e, detailedError)(e.withNameUppercaseOnlyOption)
 
   /** Returns a Json writes for a given enum [[Enum]]
     */
@@ -102,9 +112,10 @@ object EnumFormats {
     */
   def formats[A <: EnumEntry](
       @deprecatedName(Symbol("enum")) e: Enum[A],
-      insensitive: Boolean = false
+      insensitive: Boolean = false,
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(reads(e, insensitive), writes(e))
+    Format(reads(e, insensitive, detailedError), writes(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling lower case transformations
@@ -113,9 +124,10 @@ object EnumFormats {
     *   The enum
     */
   def formatsLowerCaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(readsLowercaseOnly(e), writesLowercaseOnly(e))
+    Format(readsLowercaseOnly(e, detailedError), writesLowercaseOnly(e))
   }
 
   /** Returns a Json format for a given enum [[Enum]] for handling upper case transformations
@@ -124,31 +136,48 @@ object EnumFormats {
     *   The enum
     */
   def formatsUppercaseOnly[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean = false
   ): Format[A] = {
-    Format(readsUppercaseOnly(e), writesUppercaseOnly(e))
+    Format(readsUppercaseOnly(e, detailedError), writesUppercaseOnly(e))
   }
 
   // ---
 
   private def readsAndExtracts[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean
   )(extract: String => Option[A]): Reads[A] = Reads[A] {
     case JsString(s) =>
       extract(s) match {
         case Some(obj) => JsSuccess(obj)
-        case None      => JsError("error.expected.validenumvalue")
+        case None if detailedError =>
+          JsError(
+            JsonValidationError(
+              "error.expected.validenumvalue",
+              s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
+            )
+          )
+        case None => JsError("error.expected.validenumvalue")
       }
 
     case _ => JsError("error.expected.enumstring")
   }
 
   private def readsKeyAndExtracts[A <: EnumEntry](
-      @deprecatedName(Symbol("enum")) e: Enum[A]
+      @deprecatedName(Symbol("enum")) e: Enum[A],
+      detailedError: Boolean
   )(extract: String => Option[A]): KeyReads[A] = new KeyReads[A] {
     def readKey(s: String): JsResult[A] = extract(s) match {
       case Some(obj) => JsSuccess(obj)
-      case None      => JsError("error.expected.validenumvalue")
+      case None if detailedError =>
+        JsError(
+          JsonValidationError(
+            "error.expected.validenumvalue",
+            s"valid enum values are: (${e.values.map(_.entryName).mkString(", ")}), but provided: $s"
+          )
+        )
+      case None => JsError("error.expected.validenumvalue")
     }
   }
 }
