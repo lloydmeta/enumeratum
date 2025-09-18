@@ -187,7 +187,7 @@ object EnumMacros {
     * It's a bit of a hack, but I don't think it's much worse than pulling in scala-compiler for the
     * sake of getting access to this class and doing an `isInstanceOf`
     */
-  private def isDocCompiler(c: Context): Boolean = {
+  private[this] def isDocCompiler(c: Context): Boolean = {
     c.universe.getClass.toString.contains("doc.DocFactory")
   }
 
@@ -195,7 +195,7 @@ object EnumMacros {
     *
     * DocDefs are not part of the public API, so we try to hack around it here.
     */
-  private def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
+  private[this] def isDocDef(c: Context)(t: c.universe.Tree): Boolean = {
     t.getClass.toString.contains("DocDef")
   }
 }

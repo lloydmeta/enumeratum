@@ -83,7 +83,7 @@ object ValueEnumMacros {
 
   /** The method that does the heavy lifting.
     */
-  private def findValueEntriesImpl[
+  private[this] def findValueEntriesImpl[
       ValueEntryType: c.WeakTypeTag,
       ValueType: ClassTag,
       ProcessedValue
@@ -128,7 +128,7 @@ object ValueEnumMacros {
     * Will abort compilation if not all the trees provided have a literal value member/constructor
     * argument
     */
-  private def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](
+  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](
       c: Context
   )(
       valueEntryCTorsParams: List[List[c.universe.Name]],
@@ -169,7 +169,7 @@ object ValueEnumMacros {
     *
     * Aborts compilation if the value declaration/constructor is of the wrong type,
     */
-  private def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(
+  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(
       valueEntryCTorsParams: List[List[c.universe.Name]],
       memberTrees: Seq[c.universe.ModuleDef],
       processFoundValues: ValueType => ProcessedValueType
@@ -249,7 +249,7 @@ object ValueEnumMacros {
 
   /** Given a type, finds the constructor params lists for it
     */
-  private def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](
+  private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](
       c: Context
   ): List[List[c.universe.Name]] = {
     val valueEntryTypeTpe        = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
@@ -260,7 +260,7 @@ object ValueEnumMacros {
   /** Ensures that we have unique values for trees, aborting otherwise with a message indicating
     * which trees have the same symbol
     */
-  private def ensureUnique[A](c: Context)(
+  private[this] def ensureUnique[A](c: Context)(
       treeWithVals: Seq[TreeWithVal[c.universe.ModuleDef, A]]
   ): Unit = {
     val membersWithValues = treeWithVals.map { treeWithVal =>
@@ -291,7 +291,7 @@ object ValueEnumMacros {
   }
 
   // Helper case classes
-  private case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
-  private case class TreeWithVal[CTree, T](tree: CTree, value: T)
+  private[this] case class TreeWithMaybeVal[CTree, T](tree: CTree, maybeValue: Option[T])
+  private[this] case class TreeWithVal[CTree, T](tree: CTree, value: T)
 
 }

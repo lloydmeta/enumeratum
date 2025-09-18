@@ -19,7 +19,7 @@ trait EnumEntry {
     */
   def entryName: String = stableEntryName
 
-  private lazy val stableEntryName: String = toString
+  private[this] lazy val stableEntryName: String = toString
 
 }
 
@@ -62,7 +62,7 @@ object EnumEntry {
   trait CapitalSnakecase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("_")
+    private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("_")
   }
 
   /** Stackable trait to convert the entryName to Capital-Hyphen-Case.
@@ -70,7 +70,7 @@ object EnumEntry {
   trait CapitalHyphencase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("-")
+    private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString("-")
   }
 
   /** Stackable trait to convert the entryName to Capital.Dot.Case.
@@ -78,7 +78,7 @@ object EnumEntry {
   trait CapitalDotcase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(".")
+    private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(".")
   }
 
   /** Stackable trait to convert the entryName to Capital Words.
@@ -86,7 +86,7 @@ object EnumEntry {
   trait CapitalWords extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(" ")
+    private[this] lazy val stableEntryName: String = camel2WordArray(super.entryName).mkString(" ")
   }
 
   /** Stackable trait to convert the entryName to CamelCase.
@@ -94,7 +94,7 @@ object EnumEntry {
   trait Camelcase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String =
+    private[this] lazy val stableEntryName: String =
       camel2WordArray(super.entryName).map(s => capitalise(s.toLowerCase)).mkString
   }
 
@@ -103,7 +103,7 @@ object EnumEntry {
   trait Uppercase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = super.entryName.toUpperCase
+    private[this] lazy val stableEntryName: String = super.entryName.toUpperCase
   }
 
   /** Stackable trait to convert the entryName to lowercase.
@@ -111,7 +111,7 @@ object EnumEntry {
   trait Lowercase extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = super.entryName.toLowerCase
+    private[this] lazy val stableEntryName: String = super.entryName.toLowerCase
   }
 
   /** Stackable trait to uncapitalise the first letter of the entryName.
@@ -119,7 +119,7 @@ object EnumEntry {
   trait Uncapitalised extends EnumEntry {
     override def entryName: String = stableEntryName
 
-    private lazy val stableEntryName: String = uncapitalise(super.entryName)
+    private[this] lazy val stableEntryName: String = uncapitalise(super.entryName)
   }
 
   /** Stackable trait to convert the entryName to snake_case.

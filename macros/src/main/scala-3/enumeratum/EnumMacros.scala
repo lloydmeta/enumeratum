@@ -77,7 +77,7 @@ object EnumMacros:
 
     val repr = TypeRepr.of[T](using tpe)
 
-    if (!repr.classSymbol.exists(_.flags.is(Flags.Sealed))) {
+    if (!repr.classSymbol.exists(_.flags is Flags.Sealed)) {
       report.errorAndAbort(
         "You can only use findValues on sealed traits or classes"
       )
@@ -201,7 +201,7 @@ object EnumMacros:
       val values = Expr.ofSeq(valueExprs)
 
       '{
-        IndexedSeq[T](${ values }*)
+        IndexedSeq[T](${ values }: _*)
       }
     }
   }
