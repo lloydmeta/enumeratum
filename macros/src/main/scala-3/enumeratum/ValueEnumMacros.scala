@@ -161,8 +161,7 @@ In SBT settings:
     @annotation.tailrec
     def collect[T <: Tuple](
         instances: List[Expr[A]],
-        values: Map[TypeRepr, ValueType],
-        seenSymbols: Set[q.reflect.Symbol]
+        values: Map[TypeRepr, ValueType]
     )(using tupleTpe: Type[T]): Either[String, Expr[List[A]]] =
       tupleTpe match {
         case '[SingletonHead[h, tail]] => {
@@ -188,17 +187,10 @@ In SBT settings:
             }
           } yield Tuple3(TypeRepr.of[h], '{ ${ vof }.value: A }, constValue)) match {
             case Some((tpr, instance, value)) =>
-              // Only add to instances if we haven't seen this type symbol before
-              // This handles cases where enum values mix in a shared trait that extends the entry type
-              if (seenSymbols.contains(tpr.typeSymbol)) {
-                collect[tail](instances, values, seenSymbols)
-              } else {
-                collect[tail](
-                  instance :: instances,
-                  values + (tpr -> value),
-                  seenSymbols + tpr.typeSymbol
-                )
-              }
+              collect[tail](
+                instance :: instances,
+                values + (tpr -> value)
+              )
 
             case None =>
               report.errorAndAbort(
@@ -212,7 +204,7 @@ In SBT settings:
             case Some(sum) =>
               sum.asTerm.tpe.asType match {
                 case '[SumOf[a, t]] =>
-                  collect[Tuple.Concat[t, tail]](instances, values, seenSymbols)
+                  collect[Tuple.Concat[t, tail]](instances, values)
                 case _ => Left(s"Invalid `Mirror.SumOf[${TypeRepr.of[h].show}]")
               }
 
@@ -232,7 +224,11 @@ In SBT settings:
 
             Left(s"Values value are not discriminated subtypes: ${details}")
           } else {
-            Right(Expr ofList instances.reverse)
+            // Deduplicate instances by symbol name before returning
+            // This handles cases where enum values mix in a shared trait that extends the entry type
+            val distinctInstances = instances.reverse
+              .distinctBy(_.asTerm.tpe.typeSymbol.fullName)
+            Right(Expr ofList distinctInstances)
           }
         }
       }
@@ -242,7 +238,7 @@ In SBT settings:
         case Some(sum) =>
           sum.asTerm.tpe.asType match {
             case '[SumOf[A, t]] =>
-              collect[t](List.empty, Map.empty, Set.empty)
+              collect[t](List.empty, Map.empty)
 
             case _ =>
               Left(s"Invalid `Mirror.SumOf[${repr.show}]`")

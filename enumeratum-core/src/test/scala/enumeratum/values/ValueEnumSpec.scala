@@ -33,8 +33,6 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
 
   describe("values with shared trait extending entry type") {
     it("should not return duplicate values") {
-      println(s"AnimalWithMammal.values = ${AnimalWithMammal.values}")
-      println(s"AnimalWithMammal.values.size = ${AnimalWithMammal.values.size}")
       AnimalWithMammal.values.size shouldBe 2
       AnimalWithMammal.values.distinct.size shouldBe 2
       AnimalWithMammal.values should contain(AnimalWithMammal.Dog)
