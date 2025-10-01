@@ -176,8 +176,11 @@ object EnumMacros:
     tpr.classSymbol
       .flatMap { cls =>
         val types = subclasses(cls.children.map(_.tree), Nil)
+        // Remove duplicates by typeSymbol to handle cases where enum values
+        // mix in a shared trait that extends the entry type
+        val distinctTypes = types.distinctBy(_.typeSymbol)
 
-        if (types.isEmpty) None else Some(types)
+        if (distinctTypes.isEmpty) None else Some(distinctTypes)
       }
       .getOrElse(List.empty[TypeRepr])
   }

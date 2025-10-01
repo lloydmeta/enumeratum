@@ -31,6 +31,17 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
   testNumericEnum("IntEnum that is nested inside a LongEnum", Animal.Mammalian)
   testNumericEnum("Custom IntEnum with private constructors", CustomEnumPrivateConstructor)
 
+  describe("values with shared trait extending entry type") {
+    it("should not return duplicate values") {
+      println(s"AnimalWithMammal.values = ${AnimalWithMammal.values}")
+      println(s"AnimalWithMammal.values.size = ${AnimalWithMammal.values.size}")
+      AnimalWithMammal.values.size shouldBe 2
+      AnimalWithMammal.values.distinct.size shouldBe 2
+      AnimalWithMammal.values should contain(AnimalWithMammal.Dog)
+      AnimalWithMammal.values should contain(AnimalWithMammal.Human)
+    }
+  }
+
   describe("AllowAlias") {
     it("should be supported") {
       NumericPrecision.values should contain(NumericPrecision.Integer)
