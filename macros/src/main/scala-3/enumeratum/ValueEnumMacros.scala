@@ -220,7 +220,9 @@ In SBT settings:
 
             Left(s"Values value are not discriminated subtypes: ${details}")
           } else {
-            Right(Expr ofList instances.reverse)
+            val distinctInstances = instances.reverse.distinctBy(_.asTerm.show)
+
+            Right(Expr ofList distinctInstances)
           }
         }
       }
