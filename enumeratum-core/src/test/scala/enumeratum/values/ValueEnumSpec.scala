@@ -194,6 +194,27 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
         }
         """ should compile
       }
+
+      it("should compile for parameterless value enum entry with sealed abstract subclasses") {
+        """
+        sealed trait Day extends StringEnumEntry
+
+        object Day extends StringEnum[Day] {
+          sealed abstract class Weekend(val value: String) extends Day
+          sealed abstract class Workday(val value: String) extends Day
+
+          case object Sun extends Weekend("Sun")
+          case object Mon extends Workday("Mon")
+          case object Tue extends Workday("Tue")
+          case object Wed extends Workday("Wed")
+          case object Thu extends Workday("Thu")
+          case object Fri extends Workday("Fri")
+          case object Sat extends Weekend("Sat")
+
+          override val values: IndexedSeq[Day] = findValues
+        }
+        """ should compile
+      }
     }
 
     describe("trying to use with improper types") {

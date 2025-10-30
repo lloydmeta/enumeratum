@@ -14,6 +14,9 @@ class CompilationSpec extends AnyFunSpec with Matchers {
       D.values shouldBe Seq(D.D1, D.D2, D.D3)
       E.values shouldBe Seq(E.E1, E.E2)
       F.values shouldBe Seq(F.F1, F.F2, F.F3, F.F4)
+      G.values shouldBe Seq(G.G1)
+      H.values shouldBe Seq(H.H1, H.H2, H.H3, H.H4, H.H5, H.H6)
+      I.values shouldBe Seq(I.I1, I.I2, I.I3, I.I4, I.I5, I.I6)
     }
   }
 
@@ -141,4 +144,42 @@ sealed abstract class G(val name: String, val value: Int)
 object G {
   val values = FindValEnums[G]
   case object G1 extends G("gerald", 1)
+}
+
+sealed trait H {
+  def value: Int
+}
+
+object H {
+  sealed abstract class HA(override val value: Int)                   extends H
+  sealed abstract class HB(val name: String, override val value: Int) extends H
+
+  case object H1 extends HA(1)
+  case object H2 extends HA(value = 2)
+  case object H3 extends HB("h3", 3)
+  case object H4 extends HB(name = "h4", 4)
+  case object H5 extends H {
+    override val value: Int = 5
+  }
+  case object H6 extends H {
+    override val value: Int = 6
+  }
+
+  val values = FindValEnums[H]
+}
+
+sealed abstract class I(val value: Int)
+
+object I {
+  sealed abstract class IA(override val value: Int)                   extends I(value)
+  sealed abstract class IB(val name: String, override val value: Int) extends I(value)
+
+  case object I1 extends IA(1)
+  case object I2 extends IA(2)
+  case object I3 extends IB("i3", 3)
+  case object I4 extends IB(name = "i4", 4)
+  case object I5 extends I(5)
+  case object I6 extends I(value = 6)
+
+  val values = FindValEnums[I]
 }
