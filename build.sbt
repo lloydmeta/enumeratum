@@ -3,7 +3,7 @@ import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
 lazy val scala_2_12Version = "2.12.20"
-lazy val scala_2_13Version = "2.13.16"
+lazy val scala_2_13Version = "2.13.17"
 lazy val scala_3Version    = "3.3.5"
 lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
@@ -558,7 +558,7 @@ lazy val enumeratumDoobie =
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
       version                               := Versions.Macros.head,
-      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC9",
+      libraryDependencies += "org.tpolecat" %% "doobie-core" % "1.0.0-RC11",
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {
