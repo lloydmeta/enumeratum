@@ -223,9 +223,17 @@ In SBT settings:
 
             Left(s"Values value are not discriminated subtypes: ${details}")
           } else {
-            val distinctInstances = instances.reverse.distinctBy(_.asTerm.show)
-
-            Right(Expr ofList distinctInstances)
+            def dedupeKey(e: Expr[A]) = {
+              val term   = e.asTerm
+              val symbol = term.symbol
+              if (!symbol.isNoSymbol) {
+                symbol
+              } else {
+                term.show
+              }
+            }
+            val distinctInstances = instances.reverse.distinctBy(dedupeKey)
+            Right(Expr.ofList(distinctInstances))
           }
         }
       }

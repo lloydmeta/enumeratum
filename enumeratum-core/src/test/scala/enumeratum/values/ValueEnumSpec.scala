@@ -273,7 +273,7 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
     }
   }
 
-  describe("complex inheritence hierarchies") {
+  describe("complex inheritance hierarchies") {
     it("findValues shouldn't return duplicate values") {
       Fruit.values.sorted shouldBe IndexedSeq(Fruit.Apple, Fruit.Strawberry)
     }
