@@ -90,21 +90,18 @@ object ValueEnumMacros {
       processFoundValues: ValueType => ProcessedValue
   ): c.Expr[IndexedSeq[ValueEntryType]] = {
     import c.universe._
-    val typeSymbol = weakTypeOf[ValueEntryType].typeSymbol
-    EnumMacros.validateType(c)(typeSymbol)
+    val valueEntryType = weakTypeOf[ValueEntryType]
+    EnumMacros.validateType(c)(valueEntryType.typeSymbol)
     // Find the trees in the enclosing object that match the given ValueEntryType
-    val subclassTrees = EnumMacros.enclosedSubClassTrees(c)(typeSymbol)
-    // Find the parameters for the constructors of ValueEntryType
-    val valueEntryTypeConstructorsParams =
-      findConstructorParamsLists[ValueEntryType](c)
+    val subclassTrees = EnumMacros.enclosedSubClassTrees(c)(valueEntryType.typeSymbol)
     // Identify the value:ValueType implementations for each of the trees we found and process them if required
     val treeWithVals = findValuesForSubclassTrees[ValueType, ProcessedValue](c)(
-      valueEntryTypeConstructorsParams,
+      valueEntryType,
       subclassTrees,
       processFoundValues
     )
 
-    if (weakTypeOf[ValueEntryType] <:< c.typeOf[AllowAlias]) {
+    if (valueEntryType <:< c.typeOf[AllowAlias]) {
       // Skip the uniqueness check
     } else {
       // Make sure the processed found value implementations are unique
@@ -123,15 +120,18 @@ object ValueEnumMacros {
     * Will abort compilation if not all the trees provided have a literal value member/constructor
     * argument
     */
-  private[this] def findValuesForSubclassTrees[ValueType: ClassTag, ProcessedValueType](
+  private[this] def findValuesForSubclassTrees[
+      ValueType: ClassTag,
+      ProcessedValueType
+  ](
       c: Context
   )(
-      valueEntryCTorsParams: List[List[c.universe.Name]],
+      valueEntryType: c.universe.Type,
       memberTrees: Seq[c.universe.ModuleDef],
       processFoundValues: ValueType => ProcessedValueType
   ): Seq[TreeWithVal[c.universe.ModuleDef, ProcessedValueType]] = {
     val treeWithValues = toTreeWithMaybeVals[ValueType, ProcessedValueType](c)(
-      valueEntryCTorsParams,
+      valueEntryType,
       memberTrees,
       processFoundValues
     )
@@ -164,8 +164,11 @@ object ValueEnumMacros {
     *
     * Aborts compilation if the value declaration/constructor is of the wrong type,
     */
-  private[this] def toTreeWithMaybeVals[ValueType: ClassTag, ProcessedValueType](c: Context)(
-      valueEntryCTorsParams: List[List[c.universe.Name]],
+  private[this] def toTreeWithMaybeVals[
+      ValueType: ClassTag,
+      ProcessedValueType
+  ](c: Context)(
+      valueEntryType: c.universe.Type,
       memberTrees: Seq[c.universe.ModuleDef],
       processFoundValues: ValueType => ProcessedValueType
   ): Seq[TreeWithMaybeVal[c.universe.ModuleDef, ProcessedValueType]] = {
@@ -198,9 +201,15 @@ object ValueEnumMacros {
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
       val valuesFromConstructors = constructorTrees.collect {
         // The tree has a method call
-        case Apply(_, args) => {
+        case Apply(ident, args) => {
+          val ctorParamsLists = resolveType(c)(ident) match {
+            case tpe if tpe <:< valueEntryType =>
+              findConstructorParamsLists(c)(tpe)
+            case _ => Nil
+          }
+
           val valueArguments: List[Option[ValueType]] =
-            valueEntryCTorsParams.collect {
+            ctorParamsLists.collect {
               // Find non-empty constructor param lists
               case paramTermNames if paramTermNames.nonEmpty => {
                 val paramsWithArg = paramTermNames.zip(args)
@@ -242,14 +251,21 @@ object ValueEnumMacros {
     }
   }
 
+  /** Resolves type from a given tree
+    */
+  private[this] def resolveType(c: Context)(tree: c.universe.Tree): c.universe.Type = {
+    Option(tree.tpe) match {
+      case Some(tpe) => tpe
+      case None      => c.typecheck(tree, c.TYPEmode).tpe
+    }
+  }
+
   /** Given a type, finds the constructor params lists for it
     */
-  private[this] def findConstructorParamsLists[ValueEntryType: c.WeakTypeTag](
+  private[this] def findConstructorParamsLists(
       c: Context
-  ): List[List[c.universe.Name]] = {
-    val valueEntryTypeTpe        = implicitly[c.WeakTypeTag[ValueEntryType]].tpe
-    val valueEntryTypeTpeMembers = valueEntryTypeTpe.members
-    valueEntryTypeTpeMembers.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
+  )(tpe: c.universe.Type): List[List[c.universe.Name]] = {
+    tpe.members.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
   }
 
   /** Ensures that we have unique values for trees, aborting otherwise with a message indicating

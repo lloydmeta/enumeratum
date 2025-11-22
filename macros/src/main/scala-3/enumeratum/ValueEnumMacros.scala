@@ -133,18 +133,18 @@ In SBT settings:
 """)
     }
 
-    val repr   = TypeRepr.of[A]
-    val tpeSym = repr.typeSymbol
+    val repr = TypeRepr.of[A]
 
     val valueRepr = TypeRepr.of[ValueType]
 
-    val valueParamIndex = tpeSym.primaryConstructor.paramSymss
-      .filterNot(_.exists(_.isType))
-      .flatten
-      .zipWithIndex
-      .collectFirst {
-        case (p, i) if p.name == "value" => i
-      }
+    def valueParamIndexOf(typeRepr: TypeRepr): Option[Int] =
+      typeRepr.typeSymbol.primaryConstructor.paramSymss
+        .filterNot(_.exists(_.isType))
+        .flatten
+        .zipWithIndex
+        .collectFirst {
+          case (p, i) if p.name == "value" => i
+        }
 
     type IsValue[T <: ValueType] = T
 
@@ -171,14 +171,17 @@ In SBT settings:
             vof <- Expr.summon[ValueOf[h]]
             constValue <- htpr.typeSymbol.tree match {
               case ClassDef(_, _, parents, _, statements) => {
-                val fromCtor = valueParamIndex.flatMap { (ix: Int) =>
-                  parents
-                    .collectFirst {
-                      case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
-                      case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
+                val fromCtor = parents
+                  .collectFirst {
+                    case Apply(Select(New(id), _), args) if id.tpe <:< repr => id.tpe -> args
+                    case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr =>
+                      id.tpe -> args
+                  }
+                  .flatMap { case (tpe, args) =>
+                    valueParamIndexOf(tpe).flatMap(args.lift).collect { case ConstVal(const) =>
+                      const
                     }
-                    .flatMap(_.lift(ix).collect { case ConstVal(const) => const })
-                }
+                  }
                 def fromBody = statements.collectFirst { case ConstVal(v) => v }
                 fromCtor.orElse(fromBody).flatMap { const => cls.unapply(const.value) }
               }
