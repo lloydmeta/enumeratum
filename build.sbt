@@ -16,6 +16,8 @@ lazy val baseProjectRefs =
     Project.projectToRef
   )
 
+ThisBuild / version := Versions.Core.stable
+
 lazy val scala213ProjectRefs = Seq(
   enumeratumJson4s,
   enumeratumScalacheckJvm,
@@ -751,11 +753,11 @@ lazy val publishSettings = Seq(
         </developer>
       </developers>,
   publishTo := {
-    val nexus = "https://oss.sonatype.org/"
+    val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
     if (version.value.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
+      Some("central-snapshots" at centralSnapshots)
     else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
+      localStaging.value
   },
   publishMavenStyle      := true,
   Test / publishArtifact := false,
