@@ -652,12 +652,16 @@ lazy val commonWithPublishSettings =
   commonSettingsWithTrimmings ++
     publishSettings
 
+lazy val localStagingResolver =
+  "Local Sonatype staging manual" at "file://" + file("./target").absolutePath + "/sona-staging"
+
 lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
     "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases",
-    "Sonatype releases local" at "https://oss.sonatype.org/service/local/repositories/releases/content"
+    "Sonatype releases local" at "https://oss.sonatype.org/service/local/repositories/releases/content",
+    localStagingResolver
   )
 )
 
