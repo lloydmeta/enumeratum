@@ -11,17 +11,50 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     descriptor = "normal operation",
     reads = EnumFormats.reads(Dummy),
     readSuccessExpectations = Map("A" -> Dummy.A),
-    readErrors = Map("C" -> Seq("error.expected.validenumvalue")),
+    readErrors = Map(
+      "C" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
     writes = EnumFormats.writes(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
     formats = EnumFormats.formats(Dummy)
+  )
+
+  testDetailedErrorScenario(
+    descriptor = "normal operation with detailed error",
+    reads = EnumFormats.reads(Dummy, detailedError = true),
+    readSuccessExpectations = Map("A" -> Dummy.A),
+    readErrors = Map(
+      "C" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: C")
+      )
+    ),
+    writes = EnumFormats.writes(Dummy),
+    writeExpectations = Map(Dummy.A -> "A"),
+    formats = EnumFormats.formats(Dummy, detailedError = true)
   )
 
   testKeyScenario(
     descriptor = "normal operation",
     reads = EnumFormats.keyReads(Dummy),
     readSuccessExpectations = Map("A" -> Dummy.A),
-    readErrors = Map("C" -> Seq("error.expected.validenumvalue")),
+    readErrors = Map(
+      "C" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
+    writes = EnumFormats.keyWrites(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
+  testKeyScenario(
+    descriptor = "normal operation with detailed error",
+    reads = EnumFormats.keyReads(Dummy, detailedError = true),
+    readSuccessExpectations = Map("A" -> Dummy.A),
+    readErrors = Map(
+      "C" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: C")
+      )
+    ),
     writes = EnumFormats.keyWrites(Dummy),
     writeExpectations = Map(Dummy.A -> "A")
   )
@@ -51,6 +84,31 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
     writeExpectations = Map(Dummy.A -> "A")
   )
 
+  testDetailedErrorScenario(
+    descriptor = "case insensitive with detailed error",
+    reads = EnumFormats.reads(e = Dummy, insensitive = true, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "a" -> Dummy.A
+    ),
+    readErrors = Map.empty,
+    writes = EnumFormats.writes(Dummy),
+    writeExpectations = Map(Dummy.A -> "A"),
+    formats = EnumFormats.formats(e = Dummy, insensitive = true, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "case insensitive with detailed error",
+    reads = EnumFormats.keyReads(e = Dummy, insensitive = true, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "a" -> Dummy.A
+    ),
+    readErrors = Map.empty,
+    writes = EnumFormats.keyWrites(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
   testScenario(
     descriptor = "lower case transformed",
     reads = EnumFormats.readsLowercaseOnly(Dummy),
@@ -58,7 +116,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "a" -> Dummy.A
     ),
     readErrors = Map(
-      "A" -> Seq("error.expected.validenumvalue")
+      "A" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
     ),
     writes = EnumFormats.writesLowercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "a"),
@@ -72,7 +130,40 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "a" -> Dummy.A
     ),
     readErrors = Map(
-      "A" -> Seq("error.expected.validenumvalue")
+      "A" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
+    writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "a")
+  )
+
+  testDetailedErrorScenario(
+    descriptor = "lower case transformed with detailed error",
+    reads = EnumFormats.readsLowercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "a" -> Dummy.A
+    ),
+    readErrors = Map(
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
+    ),
+    writes = EnumFormats.writesLowercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "a"),
+    formats = EnumFormats.formatsLowerCaseOnly(Dummy, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "lower case transformed with detailed error",
+    reads = EnumFormats.keyReadsLowercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "a" -> Dummy.A
+    ),
+    readErrors = Map(
+      "A" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: A")
+      )
     ),
     writes = EnumFormats.keyWritesLowercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "a")
@@ -86,7 +177,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "C" -> Dummy.c
     ),
     readErrors = Map(
-      "a" -> Seq("error.expected.validenumvalue")
+      "a" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
     ),
     writes = EnumFormats.writesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A"),
@@ -101,7 +192,42 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       "C" -> Dummy.c
     ),
     readErrors = Map(
-      "a" -> Seq("error.expected.validenumvalue")
+      "a" -> ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+    ),
+    writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "A")
+  )
+
+  testDetailedErrorScenario(
+    descriptor = "upper case transformed with detailed error",
+    reads = EnumFormats.readsUppercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "C" -> Dummy.c
+    ),
+    readErrors = Map(
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
+    ),
+    writes = EnumFormats.writesUppercaseOnly(Dummy),
+    writeExpectations = Map(Dummy.A -> "A"),
+    formats = EnumFormats.formatsUppercaseOnly(Dummy, detailedError = true)
+  )
+
+  testKeyScenario(
+    descriptor = "upper case transformed with detailed error",
+    reads = EnumFormats.keyReadsUppercaseOnly(Dummy, detailedError = true),
+    readSuccessExpectations = Map(
+      "A" -> Dummy.A,
+      "C" -> Dummy.c
+    ),
+    readErrors = Map(
+      "a" -> ReadError(
+        errorMessages = Seq("error.expected.validenumvalue"),
+        errorArgs = Seq("valid enum values are: (A, B, c), but provided: a")
+      )
     ),
     writes = EnumFormats.keyWritesUppercaseOnly(Dummy),
     writeExpectations = Map(Dummy.A -> "A")
@@ -111,24 +237,56 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
 
   private def errorMessages(jsResult: JsResult[_]): scala.collection.Seq[String] =
     jsResult.fold(
-      _.collect { case (path, errors) =>
+      _.collect { case (_, errors) =>
         errors.map(_.message).mkString
       },
       _ => Seq.empty
     )
 
+  private def errorArgs(jsResult: JsResult[_]): scala.collection.Seq[String] =
+    jsResult
+      .fold(
+        _.collect { case (_, errors) =>
+          errors.flatMap(_.args)
+        },
+        _ => Seq.empty
+      )
+      .flatten
+      .map(_.toString)
+
   private def testScenario(
       descriptor: String,
       reads: Reads[Dummy],
       readSuccessExpectations: Map[String, Dummy],
-      readErrors: Map[String, Seq[String]],
+      readErrors: Map[String, ReadError],
+      writes: Writes[Dummy],
+      writeExpectations: Map[Dummy, String],
+      formats: Format[Dummy],
+      detailedError: Boolean = false
+  ): Unit = describe(descriptor) {
+    testReads(reads, readSuccessExpectations, readErrors, detailedError)
+    testWrites(writes, writeExpectations)
+    testFormats(formats, readSuccessExpectations, readErrors, writeExpectations, detailedError)
+  }
+
+  private def testDetailedErrorScenario(
+      descriptor: String,
+      reads: Reads[Dummy],
+      readSuccessExpectations: Map[String, Dummy],
+      readErrors: Map[String, ReadError],
       writes: Writes[Dummy],
       writeExpectations: Map[Dummy, String],
       formats: Format[Dummy]
   ): Unit = describe(descriptor) {
-    testReads(reads, readSuccessExpectations, readErrors)
+    testReads(reads, readSuccessExpectations, readErrors, detailedError = true)
     testWrites(writes, writeExpectations)
-    testFormats(formats, readSuccessExpectations, readErrors, writeExpectations)
+    testFormats(
+      formats,
+      readSuccessExpectations,
+      readErrors,
+      writeExpectations,
+      detailedError = true
+    )
   }
 
   /** Shared scenarios for testing Reads
@@ -136,14 +294,22 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
   private def testReads(
       reads: Reads[Dummy],
       expectedSuccesses: Map[String, Dummy],
-      expectedErrors: Map[String, Seq[String]]
+      expectedErrors: Map[String, ReadError],
+      detailedError: Boolean
   ): Unit = describe("Reads") {
-    val expectedFails: Map[JsValue, Seq[String]] = {
+    val expectedFails: Map[JsValue, ReadError] = {
       val withJsValueKeys = expectedErrors.map { case (k, v) => JsString(k) -> v }
       // Add standard errors
       (withJsValueKeys ++ Map(
-        JsNumber(2)   -> Seq("error.expected.enumstring"),
-        JsString("D") -> Seq("error.expected.validenumvalue")
+        JsNumber(2) -> ReadError.onlyMessages(Seq("error.expected.enumstring")),
+        JsString("D") -> (if (detailedError) {
+                            ReadError(
+                              Seq("error.expected.validenumvalue"),
+                              Seq("valid enum values are: (A, B, c), but provided: D")
+                            )
+                          } else {
+                            ReadError.onlyMessages(Seq("error.expected.validenumvalue"))
+                          })
       )).toMap
     }
 
@@ -157,7 +323,9 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       expectedFails.foreach { case (k, v) =>
         val result = reads.reads(k)
         result.isError shouldBe true
-        errorMessages(result) shouldBe v
+        errorMessages(result) shouldBe v.errorMessages
+        val strings = errorArgs(result)
+        strings shouldBe v.errorArgs
       }
     }
   }
@@ -178,10 +346,11 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
   private def testFormats(
       formats: Format[Dummy],
       expectedReadSuccesses: Map[String, Dummy],
-      expectedReadErrors: Map[String, Seq[String]],
-      expectedWrites: Map[Dummy, String]
+      expectedReadErrors: Map[String, ReadError],
+      expectedWrites: Map[Dummy, String],
+      detailedError: Boolean
   ): Unit = describe("Formats") {
-    testReads(formats, expectedReadSuccesses, expectedReadErrors)
+    testReads(formats, expectedReadSuccesses, expectedReadErrors, detailedError)
     testWrites(formats, expectedWrites)
   }
 
@@ -189,7 +358,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       descriptor: String,
       reads: KeyReads[Dummy],
       readSuccessExpectations: Map[String, Dummy],
-      readErrors: Map[String, Seq[String]],
+      readErrors: Map[String, ReadError],
       writes: KeyWrites[Dummy],
       writeExpectations: Map[Dummy, String]
   ): Unit = describe(descriptor) {
@@ -200,7 +369,7 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
   private def testKeyReads(
       reads: KeyReads[Dummy],
       expectedSuccesses: Map[String, Dummy],
-      expectedErrors: Map[String, Seq[String]]
+      expectedErrors: Map[String, ReadError]
   ): Unit = describe("KeyReads") {
     it("should create a KeyReads that works with valid values") {
       expectedSuccesses.foreach { case (name, expected) =>
@@ -212,7 +381,8 @@ class EnumFormatsSpec extends AnyFunSpec with Matchers {
       expectedErrors.foreach { case (k, v) =>
         val result = reads.readKey(k)
         result.isError shouldBe true
-        errorMessages(result) shouldBe v
+        errorMessages(result) shouldBe v.errorMessages
+        errorArgs(result) shouldBe v.errorArgs
       }
     }
   }
