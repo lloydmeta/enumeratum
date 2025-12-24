@@ -485,7 +485,7 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
         case object Yay  extends Reactions
         case object Nay  extends Reactions
 
-        val values = findValues
+        lazy val values = findValues
       }
 
       case object Woot extends Reactions
@@ -579,7 +579,7 @@ class EnumSpec extends AnyFunSpec with Matchers with EnumSpecCompat {
 
         override val extraNamesToValuesMap: Map[String, Result] = Map[String, Result]("Ok" -> Good)
 
-        override val values = findValues
+        override lazy val values = findValues
       }
 
       Result.withName("Good") shouldBe Result.Good
