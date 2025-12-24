@@ -143,7 +143,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (useLocalVersion) {
         Seq.empty
       } else {
-        Seq("com.beachape" %%% "enumeratum-macros" % Versions.Macros.stable)
+        Seq("com.beachape" %%% "enumeratum-macros" % Versions.Macros.head)
       }
     },
     libraryDependencies += scalaXmlTest
