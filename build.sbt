@@ -2,9 +2,9 @@ import com.github.sbt.git.SbtGit.{GitKeys => git}
 import sbtbuildinfo.BuildInfoPlugin.autoImport._
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 
-lazy val scala_2_12Version = "2.12.20"
-lazy val scala_2_13Version = "2.13.17"
-lazy val scala_3Version    = "3.3.5"
+lazy val scala_2_12Version = "2.12.21"
+lazy val scala_2_13Version = "2.13.18"
+lazy val scala_3Version    = "3.3.7"
 lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
 
 lazy val theScalaVersion = scala_2_12Version
