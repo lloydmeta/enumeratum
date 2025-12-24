@@ -419,11 +419,11 @@ lazy val enumeratumJson4s =
       version            := Versions.Macros.head,
       crossScalaVersions := scalaVersionsAll,
       libraryDependencies ++= {
-        val ver = "4.0.7"
+        val ver = "4.1.0"
 
         Seq(
-          "org.json4s" %% "json4s-core"   % ver,
-          "org.json4s" %% "json4s-native" % ver % Test,
+          "io.github.json4s" %% "json4s-core"   % ver,
+          "io.github.json4s" %% "json4s-native" % ver % Test,
           scalaXmlTest
         )
       },

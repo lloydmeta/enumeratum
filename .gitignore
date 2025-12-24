@@ -34,3 +34,4 @@ node_modules
 
 # Ignore compiled assets
 /public/assets
+sbt/
