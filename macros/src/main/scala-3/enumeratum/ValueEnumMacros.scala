@@ -138,13 +138,14 @@ In SBT settings:
 
     val valueRepr = TypeRepr.of[ValueType]
 
-    val valueParamIndex = tpeSym.primaryConstructor.paramSymss
-      .filterNot(_.exists(_.isType))
-      .flatten
-      .zipWithIndex
-      .collectFirst {
-        case (p, i) if p.name == "value" => i
-      }
+    def valueParamIndexOf(typeRepr: TypeRepr): Option[(Int, Int)] =
+      tpeSym.primaryConstructor.paramSymss.view
+        .filterNot(_.exists(_.isType))
+        .zipWithIndex
+        .flatMap { case (argumentList, i) =>
+          argumentList.zipWithIndex.collectFirst { case (p, j) if p.name == "value" => (i, j) }
+        }
+        .headOption
 
     type IsValue[T <: ValueType] = T
 
@@ -171,14 +172,30 @@ In SBT settings:
             vof <- Expr.summon[ValueOf[h]]
             constValue <- htpr.typeSymbol.tree match {
               case ClassDef(_, _, parents, _, statements) => {
-                val fromCtor = valueParamIndex.flatMap { (ix: Int) =>
-                  parents
-                    .collectFirst {
-                      case Apply(Select(New(id), _), args) if id.tpe <:< repr               => args
-                      case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr => args
-                    }
-                    .flatMap(_.lift(ix).collect { case ConstVal(const) => const })
+                def getConstructorTypeAndArguments(
+                    constructor: Tree,
+                    argumentLists: List[List[Term]] = List.empty
+                ): Option[(TypeRepr, List[List[Term]])] = constructor match {
+                  case Apply(Select(New(id), _), args) if id.tpe <:< repr =>
+                    Some(id.tpe -> (args +: argumentLists))
+
+                  case Apply(TypeApply(Select(New(id), _), _), args) if id.tpe <:< repr =>
+                    Some(id.tpe -> (args +: argumentLists))
+
+                  case Apply(inner: Apply, args) =>
+                    getConstructorTypeAndArguments(inner, args +: argumentLists)
+
+                  case _ => None
                 }
+
+                val fromCtor = for {
+                  (tpe, args) <- parents.view.flatMap { parent =>
+                    getConstructorTypeAndArguments(parent)
+                  }.headOption
+
+                  (i, j) <- valueParamIndexOf(tpe)
+                  case ConstVal(const) <- args.lift(i).flatMap(_.lift(j))
+                } yield const
                 def fromBody = statements.collectFirst { case ConstVal(v) => v }
                 fromCtor.orElse(fromBody).flatMap { const => cls.unapply(const.value) }
               }
