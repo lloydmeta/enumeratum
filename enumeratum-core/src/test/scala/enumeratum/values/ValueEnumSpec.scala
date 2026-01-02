@@ -106,6 +106,14 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
     }
   }
 
+  describe("entries with default parameter values") {
+    it("should be supported") {
+      Creature.values should contain(Creature.Human)
+      Creature.values should contain(Creature.Ghost)
+      Creature.values should contain(Creature.Vampire)
+    }
+  }
+
   describe("compilation failures") {
     describe("problematic values") {
 
