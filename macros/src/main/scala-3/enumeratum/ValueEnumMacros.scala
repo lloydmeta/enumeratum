@@ -184,7 +184,9 @@ In SBT settings:
                   case Apply(inner: Apply, args) =>
                     getConstructorTypeAndArguments(inner, args +: argumentLists)
 
-                  case _ => None
+                  // The compiler generates blocks for calls to constructors that have default parameter values
+                  case Block(_, term) => getConstructorTypeAndArguments(term, argumentLists)
+                  case _              => None
                 }
 
                 val fromCtor = for {
