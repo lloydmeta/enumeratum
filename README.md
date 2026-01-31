@@ -1,4 +1,4 @@
-# Enumeratum [![Continuous integration](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml)](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/lloydmeta/enumeratum/branch/master/graph?token=HNg3LDxnuK)](https://codecov.io/gh/lloydmeta/enumeratum) [![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum_3) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Enumeratum [![Continuous integration](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml/badge.svg)](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/lloydmeta/enumeratum/branch/master/graph/badge.svg?token=HNg3LDxnuK)](https://codecov.io/gh/lloydmeta/enumeratum) [![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum_3) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
@@ -343,7 +343,7 @@ libraryDependencies ++= Seq(
 As expected, usage is exactly the same as normal Scala.
 
 ## Play Integration
-[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play_2.13)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play_3)
 
 The `enumeratum-play` project is published separately and gives you access to various tools
 to help you avoid boilerplate in your Play project.
@@ -486,7 +486,7 @@ object GreetingForm {
 ```
 
 ## Play JSON
-[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play-json_2.13)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play-json_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play-json_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-play-json_3)
 
 The `enumeratum-play-json` project is published separately and gives you access to Play's auto-generated boilerplate
 for JSON serialization in your Enum's.
@@ -766,7 +766,7 @@ ArgonautDevice.values.foreach { item =>
 ```
 
 ## Json4s
-[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-json4s_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-json4s_3)
+[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-json4s_2.13)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-json4s_2.13)
 
 ### SBT
 
