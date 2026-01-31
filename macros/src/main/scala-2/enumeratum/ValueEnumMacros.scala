@@ -198,48 +198,62 @@ object ValueEnumMacros {
 
       val NamedArg = ContextUtils.namedArg(c)
 
+      def getConstructorTypeAndArguments(
+          tree: Tree,
+          argumentLists: List[List[Tree]] = List.empty
+      ): Option[(Tree, List[List[Tree]])] =
+        tree match {
+          case Apply(inner: Apply, arguments) =>
+            getConstructorTypeAndArguments(inner, arguments +: argumentLists)
+
+          case Apply(ident, arguments) => Some((ident, arguments +: argumentLists))
+          case _                       => None
+        }
+
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
       val valuesFromConstructors = constructorTrees.collect {
         // The tree has a method call
-        case Apply(ident, args) => {
-          val ctorParamsLists = resolveType(c)(ident) match {
-            case tpe if tpe <:< valueEntryType =>
-              findConstructorParamsLists(c)(tpe)
-            case _ => Nil
-          }
+        case apply @ Apply(_, _) => {
+          getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
+            val ctorParamsLists = resolveType(c)(ident) match {
+              case tpe if tpe <:< valueEntryType =>
+                findConstructorParamsLists(c)(tpe)
+              case _ => Nil
+            }
 
-          val valueArguments: List[Option[ValueType]] =
-            ctorParamsLists.collect {
-              // Find non-empty constructor param lists
-              case paramTermNames if paramTermNames.nonEmpty => {
-                val paramsWithArg = paramTermNames.zip(args)
-                paramsWithArg.collectFirst {
-                  // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
-                  case (`valueTerm`, Literal(Constant(i: ValueType))) => i
-                  // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the wrong type
-                  case (`valueTerm`, Literal(Constant(i))) =>
-                    c.abort(
-                      c.enclosingPosition,
-                      s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
-                    )
-                  /*
-                   * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
-                   */
-                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
-                    i
-                  /*
-                   * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
-                   */
-                  case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
-                    c.abort(
-                      c.enclosingPosition,
-                      s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
-                    )
+            val valueArguments: List[Option[ValueType]] =
+              ctorParamsLists.zip(argumentLists).collect {
+                // Find non-empty constructor param lists
+                case (paramTermNames, args) if paramTermNames.nonEmpty => {
+                  val paramsWithArg = paramTermNames.zip(args)
+                  paramsWithArg.collectFirst {
+                    // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
+                    case (`valueTerm`, Literal(Constant(i: ValueType))) => i
+                    // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the wrong type
+                    case (`valueTerm`, Literal(Constant(i))) =>
+                      c.abort(
+                        c.enclosingPosition,
+                        s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
+                      )
+                    /*
+                     * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
+                     */
+                    case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
+                      i
+                    /*
+                     * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
+                     */
+                    case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
+                      c.abort(
+                        c.enclosingPosition,
+                        s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
+                      )
+                  }
                 }
               }
-            }
-          // We only want the first such constructor argument
-          valueArguments.collectFirst { case Some(v) => v }
+            // We only want the first such constructor argument
+            valueArguments.collectFirst { case Some(v) => v }
+          }
         }
       }
 
@@ -265,7 +279,13 @@ object ValueEnumMacros {
   private[this] def findConstructorParamsLists(
       c: Context
   )(tpe: c.universe.Type): List[List[c.universe.Name]] = {
-    tpe.members.collect(ContextUtils.constructorsToParamNamesPF(c)).toList
+    import c.universe._
+    tpe.members
+      .collectFirst {
+        case member if member.isConstructor =>
+          member.asMethod.paramLists.map(_.map(_.asTerm.name))
+      }
+      .getOrElse(Nil)
   }
 
   /** Ensures that we have unique values for trees, aborting otherwise with a message indicating

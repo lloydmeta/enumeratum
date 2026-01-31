@@ -98,6 +98,22 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
     }
   }
 
+  describe("entries with multiple parameter lists") {
+    it("should be supported") {
+      IntTransformation.values should contain(IntTransformation.Identity)
+      IntTransformation.values should contain(IntTransformation.Increment)
+      IntTransformation.values should contain(IntTransformation.Decrement)
+    }
+  }
+
+  describe("entries with default parameter values") {
+    it("should be supported") {
+      Creature.values should contain(Creature.Human)
+      Creature.values should contain(Creature.Ghost)
+      Creature.values should contain(Creature.Vampire)
+    }
+  }
+
   describe("compilation failures") {
     describe("problematic values") {
 
@@ -143,7 +159,7 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
           val values = findValues
 
         }
-       """ should (compile)
+       """ should compile
       }
 
       it("should compile when there is a hierarchy of sealed traits") {
