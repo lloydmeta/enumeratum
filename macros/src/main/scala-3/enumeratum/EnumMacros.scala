@@ -158,9 +158,9 @@ object EnumMacros:
 
               if (!isObject(tpeSym)) {
                 // This is an intermediate type (trait or abstract class), not a case object
-                // Check if it's sealed - if not, error out
+                // Check if it's sealed - if not, warn the user
                 if (!tpeSym.flags.is(Flags.Sealed)) {
-                  report.errorAndAbort(
+                  report.warning(
                     s"""Intermediate enum type '${tpeSym.fullName}' must be sealed.
                        |
                        |All intermediate parent types between the enum base type and the case objects must be sealed.

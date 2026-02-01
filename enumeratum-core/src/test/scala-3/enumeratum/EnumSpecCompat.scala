@@ -9,7 +9,7 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
       myEnum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye) shouldBe false
     }
 
-    it("should fail to compile for unsealed intermediate hierarchies") {
+    it("should compile with warning for unsealed intermediate hierarchies") {
       """
         sealed trait BaseEntry extends EnumEntry
 
@@ -21,10 +21,10 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
 
           val values = findValues
         }
-      """ shouldNot compile
+      """ should compile
     }
 
-    it("should fail to compile for unsealed intermediate abstract classes") {
+    it("should compile with warning for unsealed intermediate abstract classes") {
       """
         sealed trait BaseEntry extends EnumEntry
 
@@ -37,7 +37,7 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
 
           val values = findValues
         }
-      """ shouldNot compile
+      """ should compile
     }
   }
 }
