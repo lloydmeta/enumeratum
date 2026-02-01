@@ -172,7 +172,7 @@ object EnumMacros:
                        |  sealed trait ${tpeSym.name} extends ...
                        |  sealed abstract class ${tpeSym.name} extends ...
                        |
-                       |See: https://github.com/lloydmeta/enumeratum/blob/master/README.md#limitations
+                       |See: https://github.com/lloydmeta/enumeratum/blob/master/README.md
                        |""".stripMargin
                   )
                 }
