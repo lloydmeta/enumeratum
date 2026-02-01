@@ -66,6 +66,7 @@ Integrations are available for:
 16. [Anorm integration](#anorm)
 17. [Benchmarking](#benchmarking)
 18. [Publishing](#publishing)
+19. [Contributing](#contributing)
 
 
 ## Quick start
@@ -1312,9 +1313,17 @@ JVM + ScalaJS projects should have an aggregate project to make it easy to publi
 
 Should publish all needed artefacts. Note that `sbt circe-aggregate/publish-signed` will not work (ScalaJS gets skipped).
 
-## Contributions
+## Contributing
 
-Issues and PRs are more than welcome.
+Issues and PRs are more than welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidance on:
+
+* Setting up your development environment
+* Building and testing the project
+* IDE setup and known limitations
+* Working with macros
+* Code style and formatting
+
+### Quick Guidelines
 
 * For bug fixes, enhancements, version bumps etc: please feel free to send a PR or issue
 * For _new_ integrations: these are generally bigger investments, and not all projects are a good fit to be maintained by me, so it would be a good idea to send an issue first to gauge interest and fit. If you feel it's a faster/better to have a concrete PR to discuss things with, by all means, feel free to go that route too.
