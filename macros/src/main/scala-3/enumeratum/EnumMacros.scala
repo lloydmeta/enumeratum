@@ -157,6 +157,23 @@ object EnumMacros:
               val tpeSym = child.typeSymbol
 
               if (!isObject(tpeSym)) {
+                // This is an intermediate type (trait or abstract class), not a case object
+                // Check if it's sealed - if not, error out
+                if (!tpeSym.flags.is(Flags.Sealed)) {
+                  report.errorAndAbort(
+                    s"""Intermediate enum type '${tpeSym.fullName}' must be sealed.
+                       |
+                       |All intermediate parent types between the enum base type and the case objects must be sealed.
+                       |This is a known limitation in Scala 3's macro system.
+                       |
+                       |To fix this, add the 'sealed' modifier to '${tpeSym.name}':
+                       |  sealed trait ${tpeSym.name} extends ...
+                       |  sealed abstract class ${tpeSym.name} extends ...
+                       |
+                       |See: https://github.com/lloydmeta/enumeratum/blob/master/README.md#limitations
+                       |""".stripMargin
+                  )
+                }
                 subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
               } else {
                 subclasses(children.tail, child :: out)
