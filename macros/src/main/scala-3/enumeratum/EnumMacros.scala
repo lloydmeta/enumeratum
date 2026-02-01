@@ -158,8 +158,10 @@ object EnumMacros:
 
               if (!isObject(tpeSym)) {
                 // This is an intermediate type (trait or abstract class), not a case object
-                // Check if it's sealed - if not, warn the user
-                if (!tpeSym.flags.is(Flags.Sealed)) {
+                // However, if it's a Module (object), it means isObject returned false because
+                // the object is in the wrong place (already warned about). Don't double-warn.
+                if (!tpeSym.flags.is(Flags.Module) && !tpeSym.flags.is(Flags.Sealed)) {
+                  // Only warn about unsealed intermediate types, not misplaced objects
                   report.warning(
                     s"""Intermediate enum type '${tpeSym.fullName}' must be sealed.
                        |
