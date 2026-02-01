@@ -183,22 +183,11 @@ object ValueEnumMacros {
       // For case objects, the parent class constructor calls are in the Template
       val parentConstructorCalls = declTree match {
         case ModuleDef(_, _, Template(parents, _, _)) =>
-          // Collect all Apply and TypeApply nodes from parents
-          parents.flatMap { parent =>
-            // Include parent class references which might be Apply or TypeApply
-            val direct = parent match {
-              case a @ Apply(_, _)      => List(a)
-              case ta @ TypeApply(_, _) => List(ta)
-              case _                    => Nil
-            }
-            // Also recursively collect Apply/TypeApply from within the parent, excluding the direct match to avoid duplicates
-            val nested = parent.collect { case a @ Apply(_, _) => a } ++
-              parent.collect { case ta @ TypeApply(_, _) => ta }
-            val nestedWithoutDirect = direct.headOption match {
-              case Some(root) => nested.filterNot(_ == root)
-              case None       => nested
-            }
-            direct ++ nestedWithoutDirect
+          // Collect top-level Apply and TypeApply nodes from parents
+          // The unwrapping of nested Apply/TypeApply happens in getConstructorTypeAndArguments
+          parents.collect {
+            case a @ Apply(_, _)      => a
+            case ta @ TypeApply(_, _) => ta
           }
         case _ => List.empty
       }
@@ -262,12 +251,11 @@ object ValueEnumMacros {
           case t              => t
         }
         // Be very permissive about matching types to handle inferred type parameters
+        // Check if the type matches using type constructor (to handle inferred type parameters) or subtype relation
         val ctorParamsLists =
           if (
-            classType.typeSymbol == valueEntryType.typeSymbol ||
-            classType <:< valueEntryType ||
-            classType.baseType(valueEntryType.typeSymbol) != NoType ||
-            classType.typeConstructor =:= valueEntryType.typeConstructor
+            classType.typeConstructor =:= valueEntryType.typeConstructor ||
+            classType <:< valueEntryType
           ) {
             findConstructorParamsLists(c)(classType)
           } else {
@@ -312,6 +300,8 @@ object ValueEnumMacros {
 
       // Helper function to process a tree that might be Apply or TypeApply
       def processTree(tree: Tree): Option[ValueType] = tree match {
+        // Handle Blocks with empty statement lists that wrap constructor calls
+        // (Blocks with non-empty statements are not expected for literal value initialization)
         case Block(List(), expr) => processTree(expr)
         case apply @ Apply(_, _) =>
           getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
