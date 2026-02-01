@@ -191,10 +191,14 @@ object ValueEnumMacros {
               case ta @ TypeApply(_, _) => List(ta)
               case _                    => Nil
             }
-            // Also recursively collect Apply/TypeApply from within the parent
+            // Also recursively collect Apply/TypeApply from within the parent, excluding the direct match to avoid duplicates
             val nested = parent.collect { case a @ Apply(_, _) => a } ++
               parent.collect { case ta @ TypeApply(_, _) => ta }
-            direct ++ nested
+            val nestedWithoutDirect = direct.headOption match {
+              case Some(root) => nested.filterNot(_ == root)
+              case None       => nested
+            }
+            direct ++ nestedWithoutDirect
           }
         case _ => List.empty
       }
@@ -295,7 +299,7 @@ object ValueEnumMacros {
                 case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
                   c.abort(
                     c.enclosingPosition,
-                    s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
+                    s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
                   )
               }
             }
@@ -305,33 +309,24 @@ object ValueEnumMacros {
       }
 
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
-      val valuesFromConstructors = constructorTrees.collect {
-        // Handle Blocks that wrap constructor calls
-        case Block(List(), expr) => {
-          expr match {
-            case apply @ Apply(_, _) =>
-              getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
-                processConstructorArguments(ident, argumentLists)
-              }
-            case typeApply @ TypeApply(_, _) =>
-              getConstructorTypeAndArguments(typeApply).flatMap { case (ident, argumentLists) =>
-                processConstructorArguments(ident, argumentLists)
-              }
-            case _ => None
-          }
-        }
-        // The tree has a method call
-        case apply @ Apply(_, _) => {
+
+      // Helper function to process a tree that might be Apply or TypeApply
+      def processTree(tree: Tree): Option[ValueType] = tree match {
+        case Block(List(), expr) => processTree(expr)
+        case apply @ Apply(_, _) =>
           getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
             processConstructorArguments(ident, argumentLists)
           }
-        }
-        // Handle TypeApply for parent class references with type parameters
-        case typeApply @ TypeApply(_, _) => {
+        case typeApply @ TypeApply(_, _) =>
           getConstructorTypeAndArguments(typeApply).flatMap { case (ident, argumentLists) =>
             processConstructorArguments(ident, argumentLists)
           }
-        }
+        case _ => None
+      }
+
+      val valuesFromConstructors = constructorTrees.collect {
+        case tree @ (Apply(_, _) | TypeApply(_, _) | Block(List(), _)) =>
+          processTree(tree)
       }
 
       val values = valuesFromMembers ++ valuesFromConstructors
