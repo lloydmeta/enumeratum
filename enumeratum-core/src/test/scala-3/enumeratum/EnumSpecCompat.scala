@@ -9,35 +9,48 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
       myEnum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye) shouldBe false
     }
 
-    it("should compile with warning for unsealed intermediate hierarchies") {
-      """
-        sealed trait BaseEntry extends EnumEntry
+    describe("unsealed intermediate hierarchies") {
+      it("should compile with warning and return empty values for unsealed trait intermediates") {
+        // This demonstrates the known limitation: unsealed intermediates cause findValues to return empty
+        // The warning helps users understand why their enum values are not being found
+        sealed trait UnsealedBase  extends EnumEntry
+        trait UnsealedIntermediate extends UnsealedBase // NOT sealed - causes warning
 
-        object TestEnum extends Enum[BaseEntry] {
-          trait UnsealedIntermediate extends BaseEntry  // NOT sealed - defined in companion
+        case object UnsealedTestEnum extends Enum[UnsealedBase] {
           sealed abstract class Entry extends UnsealedIntermediate
 
           case object Value extends Entry
 
-          val values = findValues
+          lazy val values = findValues
         }
-      """ should compile
-    }
 
-    it("should compile with warning for unsealed intermediate abstract classes") {
-      """
-        sealed trait BaseEntry extends EnumEntry
+        // The limitation: values will be empty because UnsealedIntermediate is not sealed
+        // The macro emits a warning to inform users about this known limitation
+        UnsealedTestEnum.values shouldBe empty
+      }
 
-        object TestEnum extends Enum[BaseEntry] {
-          abstract class UnsealedIntermediateClass extends BaseEntry  // NOT sealed
+      it(
+        "should compile with warning and return empty values for unsealed abstract class intermediates"
+      ) {
+        // This demonstrates the known limitation: unsealed intermediates cause findValues to return empty
+        // The warning helps users understand why their enum values are not being found
+        sealed trait UnsealedBase2 extends EnumEntry
+        abstract class UnsealedIntermediateClass
+            extends UnsealedBase2 // NOT sealed - causes warning
+
+        case object UnsealedTestEnum2 extends Enum[UnsealedBase2] {
           sealed abstract class Entry extends UnsealedIntermediateClass
 
           case object Value1 extends Entry
           case object Value2 extends Entry
 
-          val values = findValues
+          lazy val values = findValues
         }
-      """ should compile
+
+        // The limitation: values will be empty because UnsealedIntermediateClass is not sealed
+        // The macro emits a warning to inform users about this known limitation
+        UnsealedTestEnum2.values shouldBe empty
+      }
     }
   }
 }
