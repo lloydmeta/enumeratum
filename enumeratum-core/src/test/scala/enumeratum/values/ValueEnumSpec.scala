@@ -211,6 +211,21 @@ class ValueEnumSpec extends AnyFunSpec with Matchers with ValueEnumHelpers {
         """ should compile
       }
 
+      it("should compile when entry type parameters are inferred") {
+        """
+        sealed abstract class ExampleEnumEntry[Suffix](override val value: String) extends StringEnumEntry {
+          def toString(suffix: Suffix): String = value + suffix.toString
+        }
+
+        object ExampleEnum extends StringEnum[ExampleEnumEntry[?]] {
+          case object Entry1 extends ExampleEnumEntry("Entry1")
+          case object Entry2 extends ExampleEnumEntry("Entry2")
+
+          override def values: IndexedSeq[ExampleEnumEntry[?]] = findValues
+        }
+        """ should compile
+      }
+
       it("should compile for parameterless value enum entry with sealed abstract subclasses") {
         """
         sealed trait Day extends StringEnumEntry

@@ -179,8 +179,21 @@ object ValueEnumMacros {
     memberTrees.map { declTree =>
       val directMemberTrees =
         declTree.children.flatMap(_.children) // Things that are body-level, no lower
+
+      // For case objects, the parent class constructor calls are in the Template
+      val parentConstructorCalls = declTree match {
+        case ModuleDef(_, _, Template(parents, _, _)) =>
+          // Collect top-level Apply and TypeApply nodes from parents
+          // The unwrapping of nested Apply/TypeApply happens in getConstructorTypeAndArguments
+          parents.collect {
+            case a @ Apply(_, _)      => a
+            case ta @ TypeApply(_, _) => ta
+          }
+        case _ => List.empty
+      }
+
       val constructorTrees = {
-        val immediate       = directMemberTrees // for 2.11+ this is enough
+        val immediate       = directMemberTrees ++ parentConstructorCalls
         val constructorName = ContextUtils.constructorName(c)
         // Sadly 2.10 has parent-class constructor calls nested inside a member..
         val method =
@@ -206,55 +219,104 @@ object ValueEnumMacros {
           case Apply(inner: Apply, arguments) =>
             getConstructorTypeAndArguments(inner, arguments +: argumentLists)
 
+          case Apply(inner: TypeApply, arguments) =>
+            // Handle nested TypeApply for multiple argument lists with type parameters
+            getConstructorTypeAndArguments(inner, arguments +: argumentLists)
+
+          case TypeApply(inner, _) =>
+            // When we hit a TypeApply, continue unwrapping to find the actual constructor
+            getConstructorTypeAndArguments(inner, argumentLists)
+
+          // Handle super constructor calls: super.<init>(args)
+          case Apply(Select(Super(_, _), _), arguments) =>
+            Some((tree, arguments +: argumentLists))
+
           case Apply(ident, arguments) => Some((ident, arguments +: argumentLists))
-          case _                       => None
+
+          // Sometimes constructor calls are wrapped in TypeApply without being inside Apply
+          case ta @ TypeApply(Select(New(tpt), _), _) => Some((ta, argumentLists))
+
+          case _ => None
         }
+
+      def processConstructorArguments(
+          ident: Tree,
+          argumentLists: List[List[Tree]]
+      ): Option[ValueType] = {
+        val resolvedType = resolveType(c)(ident)
+        // Extract the actual class type from the resolved type
+        // (which might be a method type for constructors)
+        val classType = resolvedType match {
+          case mt: MethodType => mt.resultType
+          case t              => t
+        }
+        // Be very permissive about matching types to handle inferred type parameters
+        // Check if the type matches using type constructor (to handle inferred type parameters) or subtype relation
+        val ctorParamsLists =
+          if (
+            classType.typeConstructor =:= valueEntryType.typeConstructor ||
+            classType <:< valueEntryType
+          ) {
+            findConstructorParamsLists(c)(classType)
+          } else {
+            Nil
+          }
+
+        val valueArguments: List[Option[ValueType]] =
+          ctorParamsLists.zip(argumentLists).collect {
+            // Find non-empty constructor param lists
+            case (paramTermNames, args) if paramTermNames.nonEmpty => {
+              val paramsWithArg = paramTermNames.zip(args)
+              paramsWithArg.collectFirst {
+                // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
+                case (`valueTerm`, Literal(Constant(i: ValueType))) => i
+                // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the wrong type
+                case (`valueTerm`, Literal(Constant(i))) =>
+                  c.abort(
+                    c.enclosingPosition,
+                    s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
+                  )
+                /*
+                 * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
+                 */
+                case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
+                  i
+                /*
+                 * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
+                 */
+                case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
+                  c.abort(
+                    c.enclosingPosition,
+                    s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
+                  )
+              }
+            }
+          }
+        // We only want the first such constructor argument
+        valueArguments.collectFirst { case Some(v) => v }
+      }
 
       // Sadly 2.10 has parent-class constructor calls nested inside a member..
-      val valuesFromConstructors = constructorTrees.collect {
-        // The tree has a method call
-        case apply @ Apply(_, _) => {
-          getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
-            val ctorParamsLists = resolveType(c)(ident) match {
-              case tpe if tpe <:< valueEntryType =>
-                findConstructorParamsLists(c)(tpe)
-              case _ => Nil
-            }
 
-            val valueArguments: List[Option[ValueType]] =
-              ctorParamsLists.zip(argumentLists).collect {
-                // Find non-empty constructor param lists
-                case (paramTermNames, args) if paramTermNames.nonEmpty => {
-                  val paramsWithArg = paramTermNames.zip(args)
-                  paramsWithArg.collectFirst {
-                    // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the right type
-                    case (`valueTerm`, Literal(Constant(i: ValueType))) => i
-                    // found a (paramName, argument) parameter-argument pair where paramName is "value", and argument is a constant with the wrong type
-                    case (`valueTerm`, Literal(Constant(i))) =>
-                      c.abort(
-                        c.enclosingPosition,
-                        s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}."
-                      )
-                    /*
-                     * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the right type
-                     */
-                    case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i: ValueType)))) =>
-                      i
-                    /*
-                     * found a (_, NamedArgument(argName, argument)) parameter-named pair where the argument is named "value" and the argument itself is of the wrong type
-                     */
-                    case (_, NamedArg(Ident(`valueTerm`), Literal(Constant(i)))) =>
-                      c.abort(
-                        c.enclosingPosition,
-                        s"${declTree.symbol} has a value with the wrong type: $i:${i.getClass}, instead of ${classTag.runtimeClass}"
-                      )
-                  }
-                }
-              }
-            // We only want the first such constructor argument
-            valueArguments.collectFirst { case Some(v) => v }
+      // Helper function to process a tree that might be Apply or TypeApply
+      def processTree(tree: Tree): Option[ValueType] = tree match {
+        // Handle Blocks with empty statement lists that wrap constructor calls
+        // (Blocks with non-empty statements are not expected for literal value initialization)
+        case Block(List(), expr) => processTree(expr)
+        case apply @ Apply(_, _) =>
+          getConstructorTypeAndArguments(apply).flatMap { case (ident, argumentLists) =>
+            processConstructorArguments(ident, argumentLists)
           }
-        }
+        case typeApply @ TypeApply(_, _) =>
+          getConstructorTypeAndArguments(typeApply).flatMap { case (ident, argumentLists) =>
+            processConstructorArguments(ident, argumentLists)
+          }
+        case _ => None
+      }
+
+      val valuesFromConstructors = constructorTrees.collect {
+        case tree @ (Apply(_, _) | TypeApply(_, _) | Block(List(), _)) =>
+          processTree(tree)
       }
 
       val values = valuesFromMembers ++ valuesFromConstructors
