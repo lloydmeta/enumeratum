@@ -165,7 +165,17 @@ object EnumMacros:
 
     type IsEntry[E <: T] = E
 
-    // Check if a type symbol is a subclass of the target type symbol, ignoring type parameters
+    /** Check if a type symbol is a subclass of the target type symbol, ignoring type parameters.
+      *
+      * This allows intermediate traits with type parameters (e.g., Bar[T] extends Foo[T]) to be
+      * recognized as subclasses even when we're looking for a specific parameterized type (e.g.,
+      * Foo[Unit]). The check is based on the type symbol hierarchy, not exact type conformance.
+      *
+      * @param childTypeSym
+      *   the type symbol to check
+      * @return
+      *   true if childTypeSym is the target or has the target in its base class hierarchy
+      */
     def isSubclassOfTarget(childTypeSym: Symbol): Boolean = {
       childTypeSym == tpr.typeSymbol || childTypeSym.typeRef.baseClasses.contains(tpr.typeSymbol)
     }
