@@ -1,5 +1,14 @@
 package enumeratum
 
+// Test case for nested enum warning - defined at package level to ensure warning is emitted at compile time
+class TestClassWithNestedEnum {
+  sealed trait Foo extends EnumEntry
+  object Foo extends Enum[Foo] {
+    lazy val values = findValues
+    case object a extends Foo
+  }
+}
+
 private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
   def scalaCompat: Unit = describe("Scala3 in") {
     it(
@@ -7,6 +16,15 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
     ) {
       val myEnum: DummyEnum = DummyEnum.Hi
       myEnum.in(DummyEnum.Hello, SnakeEnum.ShoutGoodBye) shouldBe false
+    }
+
+    describe("enum nested inside a class") {
+      it("should return empty values in Scala 3") {
+        // When an enum is nested inside a class, findValues returns empty in Scala 3
+        // (A warning is emitted at compile time for TestClassWithNestedEnum defined at package level above)
+        val test = new TestClassWithNestedEnum()
+        test.Foo.values shouldBe empty
+      }
     }
 
     describe("unsealed intermediate hierarchies") {

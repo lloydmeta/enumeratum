@@ -106,7 +106,53 @@ object EnumMacros {
     val enclosingBodySubClassTrees: List[Tree] =
       try {
         val enclosingModule = c.enclosingClass match {
-          case md @ ModuleDef(_, _, _) => md
+          case md @ ModuleDef(_, _, _) =>
+            // Check if the enum object is nested inside a non-module class or trait
+            val owner = md.symbol.owner
+            if (owner != null && owner.isClass && !owner.isModuleClass) {
+              val ownerClass = owner.asClass
+              val ownerKind =
+                if (ownerClass.isTrait) "trait"
+                else if (ownerClass.isAbstractClass) "abstract class"
+                else "class"
+              c.warning(
+                c.enclosingPosition,
+                s"""Enum '${md.symbol.name}' is nested inside a $ownerKind '${owner.fullName}'.
+                   |
+                   |This pattern is problematic because:
+                   |1. Each instance of the enclosing type has its own copy of the enum, which is likely not what you want
+                   |2. In Scala 3, findValues may not discover members correctly (it may return an empty collection)
+                   |3. The question of identity becomes unclear: should two different instances of '${owner.name}' share the same enum members, or have distinct ones?
+                   |
+                   |Consider moving your enum to:
+                   |  - A top-level object
+                   |  - Inside another object (companion object or nested object)
+                   |  - As a standalone sealed trait/object pair
+                   |""".stripMargin
+              )
+            }
+            md
+          case cd: ClassDef =>
+            c.abort(
+              c.enclosingPosition,
+              s"""The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object, but was a class: ${cd.symbol.fullName}
+                 |
+                 |Enums must be defined as objects, not classes.
+                 |
+                 |Consider defining your enum as an object:
+                 |  - A top-level object
+                 |  - Inside another object (companion object or nested object)
+                 |  - As a standalone sealed trait/object pair
+                 |
+                 |Example:
+                 |  sealed trait MyEnum extends EnumEntry
+                 |  object MyEnum extends Enum[MyEnum] {
+                 |    val values = findValues
+                 |    case object Value1 extends MyEnum
+                 |    case object Value2 extends MyEnum
+                 |  }
+                 |""".stripMargin
+            )
           case _ =>
             c.abort(
               c.enclosingPosition,

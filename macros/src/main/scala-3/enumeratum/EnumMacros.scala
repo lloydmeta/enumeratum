@@ -7,14 +7,46 @@ object EnumMacros:
   def findValuesImpl[A](using tpe: Type[A], q: Quotes): Expr[IndexedSeq[A]] = {
     import q.reflect.*
 
-    // println(s"${child.show} :: ${child.typeSymbol.methodMember("findValues")}")
     val definingTpeSym = Symbol.spliceOwner.maybeOwner.maybeOwner
 
     if (!definingTpeSym.flags.is(Flags.Module)) {
+      // The enum itself is not an object (it's a class or something else) - this is an error
       report.errorAndAbort(
         // Root must be a module to have same behaviour
         s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
       )
+    } else {
+      // The enum object (definingTpeSym) is a module, but check if it's nested inside a class/trait
+      val ownerOfEnum = definingTpeSym.maybeOwner
+
+      if (
+        ownerOfEnum.exists && ownerOfEnum.isClassDef && !ownerOfEnum.flags
+          .is(Flags.Module) && !ownerOfEnum.flags.is(Flags.Package)
+      ) {
+        val ownerKind = if (ownerOfEnum.flags.is(Flags.Trait)) "trait" else "class"
+        report.warning(
+          s"""Enum object '${definingTpeSym.name}' is nested inside a $ownerKind '${ownerOfEnum.fullName}'.
+             |
+             |This pattern is problematic and will not work correctly:
+             |1. Each instance of the $ownerKind has its own copy of the enum, which is likely not what you want
+             |2. In Scala 3, findValues cannot discover members in this context (it will return an empty collection)
+             |3. The question of identity becomes unclear: should enum members from different $ownerKind instances be equal?
+             |
+             |Consider moving your enum to:
+             |  - A top-level object
+             |  - Inside another object (companion object or nested object)
+             |  - As a standalone sealed trait/object pair
+             |
+             |Example:
+             |  sealed trait MyEnum extends EnumEntry
+             |  object MyEnum extends Enum[MyEnum] {
+             |    val values = findValues
+             |    case object Value1 extends MyEnum
+             |    case object Value2 extends MyEnum
+             |  }
+             |""".stripMargin
+        )
+      }
     }
 
     val repr       = validateType[A]
