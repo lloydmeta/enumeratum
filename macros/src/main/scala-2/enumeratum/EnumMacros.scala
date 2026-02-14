@@ -107,17 +107,22 @@ object EnumMacros {
       try {
         val enclosingModule = c.enclosingClass match {
           case md @ ModuleDef(_, _, _) =>
-            // Check if the enum object is nested inside a class
+            // Check if the enum object is nested inside a non-module class or trait
             val owner = md.symbol.owner
             if (owner != null && owner.isClass && !owner.isModuleClass) {
+              val ownerClass = owner.asClass
+              val ownerKind =
+                if (ownerClass.isTrait) "trait"
+                else if (ownerClass.isAbstractClass) "abstract class"
+                else "class"
               c.warning(
                 c.enclosingPosition,
-                s"""Enum '${md.symbol.name}' is nested inside a class '${owner.fullName}'.
+                s"""Enum '${md.symbol.name}' is nested inside a $ownerKind '${owner.fullName}'.
                    |
                    |This pattern is problematic because:
-                   |1. Each instance of the class has its own copy of the enum, which is likely not what you want
+                   |1. Each instance of the enclosing type has its own copy of the enum, which is likely not what you want
                    |2. In Scala 3, findValues may not discover members correctly (it may return an empty collection)
-                   |3. The question of identity becomes unclear: should `(new ${owner.name}).${md.symbol.name}.Member == (new ${owner.name}).${md.symbol.name}.Member`?
+                   |3. The question of identity becomes unclear: should two different instances of '${owner.name}' share the same enum members, or have distinct ones?
                    |
                    |Consider moving your enum to:
                    |  - A top-level object
