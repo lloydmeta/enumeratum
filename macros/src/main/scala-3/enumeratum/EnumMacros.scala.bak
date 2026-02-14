@@ -7,12 +7,30 @@ object EnumMacros:
   def findValuesImpl[A](using tpe: Type[A], q: Quotes): Expr[IndexedSeq[A]] = {
     import q.reflect.*
 
-    val definingTpeSym = Symbol.spliceOwner.maybeOwner.maybeOwner
+    // println(s"${child.show} :: ${child.typeSymbol.methodMember("findValues")}")
+    val spliceOwner    = Symbol.spliceOwner
+    val enumObjectSym  = spliceOwner.maybeOwner
+    val definingTpeSym = enumObjectSym.maybeOwner
+
+    // DEBUG: Print owner chain
+    val ownerOfDefining = definingTpeSym.maybeOwner
+    println(s"[ENUMERATUM DEBUG] spliceOwner: ${spliceOwner.fullName}")
+    println(
+      s"[ENUMERATUM DEBUG] enumObjectSym: ${enumObjectSym.fullName}, isModule: ${enumObjectSym.flags.is(Flags.Module)}"
+    )
+    println(
+      s"[ENUMERATUM DEBUG] definingTpeSym: ${definingTpeSym.fullName}, isModule: ${definingTpeSym.flags.is(Flags.Module)}, isClassDef: ${definingTpeSym.isClassDef}"
+    )
+    println(
+      s"[ENUMERATUM DEBUG] ownerOfDefining: ${ownerOfDefining.fullName}, isModule: ${ownerOfDefining.flags.is(Flags.Module)}, isClassDef: ${ownerOfDefining.isClassDef}"
+    )
 
     if (!definingTpeSym.flags.is(Flags.Module)) {
       // Check if nested inside a class to provide a more helpful message
       // In Scala 3, if it's not a Module and it's a ClassDef, it's a class (not object)
       val isNestedInClass = definingTpeSym.isClassDef && !definingTpeSym.flags.is(Flags.Module)
+
+      println(s"[ENUMERATUM DEBUG] NOT a module, isNestedInClass: ${isNestedInClass}")
 
       if (isNestedInClass) {
         // Emit a warning but allow compilation for backward compatibility with Scala 2
@@ -43,29 +61,6 @@ object EnumMacros:
         report.errorAndAbort(
           // Root must be a module to have same behaviour
           s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
-        )
-      }
-    } else {
-      // The enum object (definingTpeSym) is a module, but check if it's nested inside a class
-      val ownerOfEnum = definingTpeSym.maybeOwner
-
-      if (
-        ownerOfEnum.exists && ownerOfEnum.isClassDef && !ownerOfEnum.flags
-          .is(Flags.Module) && !ownerOfEnum.flags.is(Flags.Package)
-      ) {
-        report.warning(
-          s"""Enum nested inside a class '${ownerOfEnum.fullName}'.
-             |
-             |This pattern is problematic and will not work correctly:
-             |1. Each instance of the class has its own copy of the enum, which is likely not what you want
-             |2. In Scala 3, findValues cannot discover members in this context (it will return an empty collection)
-             |3. The question of identity becomes unclear: should enum members from different class instances be equal?
-             |
-             |Consider moving your enum to:
-             |  - A top-level object
-             |  - Inside another object (companion object or nested object)
-             |  - As a standalone sealed trait/object pair
-             |""".stripMargin
         )
       }
     }
