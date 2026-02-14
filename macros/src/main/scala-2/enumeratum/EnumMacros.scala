@@ -130,22 +130,21 @@ object EnumMacros {
           case cd: ClassDef =>
             c.abort(
               c.enclosingPosition,
-              s"""The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object, but it is nested inside a class: ${cd.symbol.fullName}
+              s"""The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object, but was a class: ${cd.symbol.fullName}
                  |
-                 |Enums should not be nested inside classes because:
-                 |1. Each instance of the class would have its own copy of the enum, which is likely not what you want
-                 |2. In Scala 3, findValues cannot discover members in this context (it will return an empty collection)
+                 |Enums must be defined as objects, not classes.
                  |
-                 |Consider moving your enum to:
+                 |Consider defining your enum as an object:
                  |  - A top-level object
                  |  - Inside another object (companion object or nested object)
                  |  - As a standalone sealed trait/object pair
                  |
                  |Example:
+                 |  sealed trait MyEnum extends EnumEntry
                  |  object MyEnum extends Enum[MyEnum] {
-                 |    sealed trait Entry extends EnumEntry
-                 |    case object Value1 extends Entry
-                 |    // ...
+                 |    val values = findValues
+                 |    case object Value1 extends MyEnum
+                 |    case object Value2 extends MyEnum
                  |  }
                  |""".stripMargin
             )

@@ -21,12 +21,10 @@ private[enumeratum] trait EnumSpecCompat { _: EnumSpec =>
     }
 
     describe("enum nested inside a class") {
-      it("should compile with warning and work correctly") {
-        // This demonstrates that nesting enums inside classes works in Scala 2
-        // but is discouraged because it won't work in Scala 3
-        // Warning is emitted for TestClassWithNestedEnum defined at package level above
+      it("should work correctly in Scala 2") {
+        // When an enum is nested inside a class, it works in Scala 2
+        // (A warning is emitted at compile time for TestClassWithNestedEnum defined at package level above)
         val test = new TestClassWithNestedEnum()
-        // In Scala 2, this works but emits a warning
         test.Foo.values should not be empty
         test.Foo.values.head.entryName shouldBe "a"
       }

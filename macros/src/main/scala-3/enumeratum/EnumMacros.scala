@@ -10,25 +10,27 @@ object EnumMacros:
     val definingTpeSym = Symbol.spliceOwner.maybeOwner.maybeOwner
 
     if (!definingTpeSym.flags.is(Flags.Module)) {
-      // definingTpeSym is not a module - this means the enum itself is not an object
-      // Check if this is because the enum object is nested inside a class (owner is a class)
-      // vs the enum itself being a class (not allowed)
+      // The enum itself is not an object (it's a class or something else) - this is an error
+      report.errorAndAbort(
+        // Root must be a module to have same behaviour
+        s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
+      )
+    } else {
+      // The enum object (definingTpeSym) is a module, but check if it's nested inside a class/trait
+      val ownerOfEnum = definingTpeSym.maybeOwner
 
-      val owner = definingTpeSym.maybeOwner
-      val enumIsNestedInClass =
-        definingTpeSym.isClassDef && owner.exists && owner.isClassDef && !owner.flags.is(
-          Flags.Module
-        ) && !owner.flags.is(Flags.Package)
-
-      if (enumIsNestedInClass) {
-        // The enum object is nested inside a class - emit warning but continue
+      if (
+        ownerOfEnum.exists && ownerOfEnum.isClassDef && !ownerOfEnum.flags
+          .is(Flags.Module) && !ownerOfEnum.flags.is(Flags.Package)
+      ) {
+        val ownerKind = if (ownerOfEnum.flags.is(Flags.Trait)) "trait" else "class"
         report.warning(
-          s"""Enum object '${definingTpeSym.fullName}' is nested inside a class '${owner.fullName}'.
+          s"""Enum object '${definingTpeSym.name}' is nested inside a $ownerKind '${ownerOfEnum.fullName}'.
              |
              |This pattern is problematic and will not work correctly:
-             |1. Each instance of the class has its own copy of the enum, which is likely not what you want
+             |1. Each instance of the $ownerKind has its own copy of the enum, which is likely not what you want
              |2. In Scala 3, findValues cannot discover members in this context (it will return an empty collection)
-             |3. The question of identity becomes unclear: should enum members from different class instances be equal?
+             |3. The question of identity becomes unclear: should enum members from different $ownerKind instances be equal?
              |
              |Consider moving your enum to:
              |  - A top-level object
@@ -36,41 +38,12 @@ object EnumMacros:
              |  - As a standalone sealed trait/object pair
              |
              |Example:
+             |  sealed trait MyEnum extends EnumEntry
              |  object MyEnum extends Enum[MyEnum] {
-             |    sealed trait Entry extends EnumEntry
-             |    case object Value1 extends Entry
-             |    // ...
+             |    val values = findValues
+             |    case object Value1 extends MyEnum
+             |    case object Value2 extends MyEnum
              |  }
-             |""".stripMargin
-        )
-        // Continue with compilation even though it won't work properly
-      } else {
-        // The enum itself is not an object (it's a class or something else) - this is an error
-        report.errorAndAbort(
-          // Root must be a module to have same behaviour
-          s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
-        )
-      }
-    } else {
-      // The enum object (definingTpeSym) is a module, but check if it's nested inside a class
-      val ownerOfEnum = definingTpeSym.maybeOwner
-
-      if (
-        ownerOfEnum.exists && ownerOfEnum.isClassDef && !ownerOfEnum.flags
-          .is(Flags.Module) && !ownerOfEnum.flags.is(Flags.Package)
-      ) {
-        report.warning(
-          s"""Enum nested inside a class '${ownerOfEnum.fullName}'.
-             |
-             |This pattern is problematic and will not work correctly:
-             |1. Each instance of the class has its own copy of the enum, which is likely not what you want
-             |2. In Scala 3, findValues cannot discover members in this context (it will return an empty collection)
-             |3. The question of identity becomes unclear: should enum members from different class instances be equal?
-             |
-             |Consider moving your enum to:
-             |  - A top-level object
-             |  - Inside another object (companion object or nested object)
-             |  - As a standalone sealed trait/object pair
              |""".stripMargin
         )
       }

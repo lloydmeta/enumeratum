@@ -19,12 +19,10 @@ private[enumeratum] trait EnumSpecCompat { spec: EnumSpec =>
     }
 
     describe("enum nested inside a class") {
-      it("should compile with warning but return empty values") {
-        // This demonstrates that nesting enums inside classes doesn't work as expected
-        // The enum compiles (with a warning) but findValues returns empty in Scala 3
-        // Warning is emitted for TestClassWithNestedEnum defined at package level above
+      it("should return empty values in Scala 3") {
+        // When an enum is nested inside a class, findValues returns empty in Scala 3
+        // (A warning is emitted at compile time for TestClassWithNestedEnum defined at package level above)
         val test = new TestClassWithNestedEnum()
-        // In Scala 3, findValues returns empty when nested inside a class
         test.Foo.values shouldBe empty
       }
     }
