@@ -50,7 +50,7 @@ object EnumMacros:
     }
 
     val repr       = validateType[A]
-    val subclasses = enclosedSubClasses[A](q)(repr)
+    val subclasses = enclosedSubClasses[A](q)(repr, definingTpeSym)
 
     buildSeqExpr[A](q)(subclasses)
   }
@@ -124,9 +124,12 @@ object EnumMacros:
     *   the `Enum` type
     * @param tpr
     *   the representation of type `T` (also specified by `tpe`)
+    * @param definingModule
+    *   the symbol of the module (object) where findValues is called
     */
   private[enumeratum] def enclosedSubClasses[T](q: Quotes)(
-      tpr: q.reflect.TypeRepr
+      tpr: q.reflect.TypeRepr,
+      definingModule: q.reflect.Symbol
   )(using tpe: Type[T]): List[q.reflect.TypeRepr] = {
     import q.reflect.*
 
@@ -142,7 +145,7 @@ object EnumMacros:
         if (!owner.exists || owner == defn.RootClass || owner.isTerm) {
           if (
             sym.flags.is(Flags.Module) && !sym.flags.is(Flags.Package) &&
-            !sym.fullName.startsWith(tpr.typeSymbol.companionModule.fullName)
+            !sym.fullName.startsWith(definingModule.fullName)
           ) {
             // See EnumSpec#'should return -1 for elements that do not exist'
 
@@ -161,6 +164,11 @@ object EnumMacros:
     }
 
     type IsEntry[E <: T] = E
+
+    // Check if a type symbol is a subclass of the target type symbol, ignoring type parameters
+    def isSubclassOfTarget(childTypeSym: Symbol): Boolean = {
+      childTypeSym == tpr.typeSymbol || childTypeSym.typeRef.baseClasses.contains(tpr.typeSymbol)
+    }
 
     @annotation.tailrec
     def subclasses(
@@ -184,38 +192,46 @@ object EnumMacros:
 
       childTpr match {
         case Some(child) => {
-          child.asType match {
-            case ct @ '[IsEntry[t]] => {
-              val tpeSym = child.typeSymbol
+          val tpeSym = child.typeSymbol
 
-              if (!isObject(tpeSym)) {
-                // This is an intermediate type (trait or abstract class), not a case object
-                // However, if it's a Module (object), it means isObject returned false because
-                // the object is in the wrong place (already warned about). Don't double-warn.
-                if (!tpeSym.flags.is(Flags.Module) && !tpeSym.flags.is(Flags.Sealed)) {
-                  // Only warn about unsealed intermediate types, not misplaced objects
-                  report.warning(
-                    s"""Intermediate enum type '${tpeSym.fullName}' must be sealed.
-                       |
-                       |All intermediate parent types between the enum base type and the case objects must be sealed.
-                       |This is a known limitation in Scala 3's macro system.
-                       |
-                       |To fix this, add the 'sealed' modifier to '${tpeSym.name}':
-                       |  sealed trait ${tpeSym.name} extends ...
-                       |  sealed abstract class ${tpeSym.name} extends ...
-                       |
-                       |See: https://github.com/lloydmeta/enumeratum/blob/master/README.md
-                       |""".stripMargin
-                  )
-                }
-                subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
-              } else {
-                subclasses(children.tail, child :: out)
+          // First check: is this type symbol related to our target type (ignoring type parameters)?
+          // This allows intermediate traits like Bar[T] extends Foo[T] to be recognized
+          // even when we're looking for Foo[Unit]
+          if (isSubclassOfTarget(tpeSym)) {
+            if (!isObject(tpeSym)) {
+              // This is an intermediate type (trait or abstract class), not a case object
+              // However, if it's a Module (object), it means isObject returned false because
+              // the object is in the wrong place (already warned about). Don't double-warn.
+              if (!tpeSym.flags.is(Flags.Module) && !tpeSym.flags.is(Flags.Sealed)) {
+                // Only warn about unsealed intermediate types, not misplaced objects
+                report.warning(
+                  s"""Intermediate enum type '${tpeSym.fullName}' must be sealed.
+                     |
+                     |All intermediate parent types between the enum base type and the case objects must be sealed.
+                     |This is a known limitation in Scala 3's macro system.
+                     |
+                     |To fix this, add the 'sealed' modifier to '${tpeSym.name}':
+                     |  sealed trait ${tpeSym.name} extends ...
+                     |  sealed abstract class ${tpeSym.name} extends ...
+                     |
+                     |See: https://github.com/lloydmeta/enumeratum/blob/master/README.md
+                     |""".stripMargin
+                )
+              }
+              subclasses(tpeSym.children.map(_.tree) ::: children.tail, out)
+            } else {
+              // This is a case object - also check that it matches the exact target type with parameters
+              child.asType match {
+                case ct @ '[IsEntry[t]] =>
+                  subclasses(children.tail, child :: out)
+                case _ =>
+                  // Type symbol matches but exact type doesn't - skip it
+                  subclasses(children.tail, out)
               }
             }
-
-            case _ =>
-              subclasses(children.tail, out)
+          } else {
+            // Not related to our target type at all - skip it
+            subclasses(children.tail, out)
           }
         }
 
