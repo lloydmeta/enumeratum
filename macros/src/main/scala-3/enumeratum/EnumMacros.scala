@@ -10,15 +10,20 @@ object EnumMacros:
     val definingTpeSym = Symbol.spliceOwner.maybeOwner.maybeOwner
 
     if (!definingTpeSym.flags.is(Flags.Module)) {
-      // Check if nested inside a class to provide a more helpful message
-      // In Scala 3, if it's not a Module and it's a ClassDef, it's a class (not object)
-      val isNestedInClass = definingTpeSym.isClassDef && !definingTpeSym.flags.is(Flags.Module)
+      // definingTpeSym is not a module - this means the enum itself is not an object
+      // Check if this is because the enum object is nested inside a class (owner is a class)
+      // vs the enum itself being a class (not allowed)
 
-      if (isNestedInClass) {
-        // Emit a warning but allow compilation for backward compatibility with Scala 2
-        // However, this won't work correctly in Scala 3 (findValues will return empty)
+      val owner = definingTpeSym.maybeOwner
+      val enumIsNestedInClass =
+        definingTpeSym.isClassDef && owner.exists && owner.isClassDef && !owner.flags.is(
+          Flags.Module
+        ) && !owner.flags.is(Flags.Package)
+
+      if (enumIsNestedInClass) {
+        // The enum object is nested inside a class - emit warning but continue
         report.warning(
-          s"""Enum nested inside a class '${definingTpeSym.fullName}'.
+          s"""Enum object '${definingTpeSym.fullName}' is nested inside a class '${owner.fullName}'.
              |
              |This pattern is problematic and will not work correctly:
              |1. Each instance of the class has its own copy of the enum, which is likely not what you want
@@ -40,6 +45,7 @@ object EnumMacros:
         )
         // Continue with compilation even though it won't work properly
       } else {
+        // The enum itself is not an object (it's a class or something else) - this is an error
         report.errorAndAbort(
           // Root must be a module to have same behaviour
           s"The enum (i.e. the class containing the case objects and the call to `findValues`) must be an object: ${definingTpeSym.fullName}"
