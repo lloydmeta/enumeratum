@@ -145,7 +145,9 @@ object EnumMacros:
         if (!owner.exists || owner == defn.RootClass || owner.isTerm) {
           if (
             sym.flags.is(Flags.Module) && !sym.flags.is(Flags.Package) &&
-            !sym.fullName.startsWith(definingModule.fullName)
+            !(sym.fullName == definingModule.fullName || sym.fullName.startsWith(
+              definingModule.fullName + "."
+            ))
           ) {
             // See EnumSpec#'should return -1 for elements that do not exist'
 
