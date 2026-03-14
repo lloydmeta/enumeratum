@@ -32,6 +32,9 @@ lazy val scala213ProjectRefs = Seq(
   enumeratumCirceJvm,
   enumeratumCirceJs,
   enumeratumCirceNative,
+  enumeratumZioJsonJs,
+  enumeratumZioJsonJvm,
+  enumeratumZioJsonNative,
   enumeratumReactiveMongoBson,
   enumeratumCatsJvm,
   enumeratumCatsJs,
@@ -65,6 +68,9 @@ lazy val integrationProjectRefs = Seq(
   enumeratumCirceJs,
   enumeratumCirceJvm,
   enumeratumCirceNative,
+  enumeratumZioJsonJs,
+  enumeratumZioJsonJvm,
+  enumeratumZioJsonNative,
   enumeratumReactiveMongoBson,
   enumeratumArgonautJs,
   enumeratumArgonautJvm,
@@ -372,6 +378,50 @@ lazy val enumeratumCirceJvm = enumeratumCirce.jvm
   .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
 
 lazy val enumeratumCirceNative = enumeratumCirce.native
+  .configure(configureWithLocal(coreNative, "compile->compile;test->test"))
+
+// ZIO JSON
+lazy val zioJsonAggregate =
+  aggregateProject("zio-json", enumeratumZioJsonJs, enumeratumZioJsonJvm, enumeratumZioJsonNative)
+
+lazy val enumeratumZioJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-zio-json"))
+  .settings(commonWithPublishSettings)
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .nativeSettings(nativeTestSettings)
+  .settings(
+    name    := "enumeratum-zio-json",
+    version := Versions.Macros.head,
+    libraryDependencies ++= Seq(
+      "dev.zio" %%% "zio-json" % "0.9.0",
+      scalaXmlTest
+    ),
+    libraryDependencies ++= {
+      if (useLocalVersion) {
+        Seq.empty
+      } else {
+        Seq("com.beachape" %%% "enumeratum" % Versions.Core.head)
+      }
+    }
+  )
+  .jvmSettings(
+    crossScalaVersions := scalaVersionsAll
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
+  )
+  .nativeSettings(
+    crossScalaVersions := Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
+  )
+lazy val enumeratumZioJsonJs = enumeratumZioJson.js
+  .configure(configureWithLocal(coreJS, "compile->compile;test->test"))
+
+lazy val enumeratumZioJsonJvm = enumeratumZioJson.jvm
+  .configure(configureWithLocal(coreJVM, "compile->compile;test->test"))
+
+lazy val enumeratumZioJsonNative = enumeratumZioJson.native
   .configure(configureWithLocal(coreNative, "compile->compile;test->test"))
 
 // Argonaut

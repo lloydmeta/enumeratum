@@ -631,6 +631,85 @@ CirceLibraryItem.values.foreach { item =>
 }
 ```
 
+## ZIO JSON
+[![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-zio-json_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-zio-json_3)
+
+### SBT
+
+To use enumeratum with [zio-json](https://github.com/zio/zio-json):
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum-zio-json" % enumeratumZioJsonVersion
+)
+```
+
+To use with ScalaJS or ScalaNative:
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %%% "enumeratum-zio-json" % enumeratumZioJsonVersion
+)
+```
+
+### Usage
+
+#### Enum
+
+```scala
+import enumeratum._
+
+sealed trait ShirtSize extends EnumEntry
+
+case object ShirtSize extends Enum[ShirtSize] with ZioJsonEnum[ShirtSize] {
+
+  case object Small  extends ShirtSize
+  case object Medium extends ShirtSize
+  case object Large  extends ShirtSize
+
+  val values = findValues
+
+}
+
+import zio.json._
+
+ShirtSize.values.foreach { size =>
+    assert(size.toJson == s""""${size.entryName}"""")
+}
+
+assert(""""Small"""".fromJson[ShirtSize] == Right(ShirtSize.Small))
+```
+
+#### ValueEnum
+
+```scala
+import enumeratum.values._
+
+sealed abstract class ZioJsonLibraryItem(val value: Int, val name: String) extends IntEnumEntry
+
+case object ZioJsonLibraryItem extends IntEnum[ZioJsonLibraryItem] with IntZioJsonEnum[ZioJsonLibraryItem] {
+
+  case object Book     extends ZioJsonLibraryItem(value = 1, name = "book")
+  case object Movie    extends ZioJsonLibraryItem(name = "movie", value = 2)
+  case object Magazine extends ZioJsonLibraryItem(3, "magazine")
+  case object CD       extends ZioJsonLibraryItem(4, name = "cd")
+
+  val values = findValues
+
+}
+
+import zio.json._
+
+ZioJsonLibraryItem.values.foreach { item =>
+    assert(item.toJson == item.value.toJson)
+}
+```
+
+#### Map key support
+
+String, Int, and Long value enums automatically get `JsonFieldEncoder`/`JsonFieldDecoder` instances
+for use as Map keys. String-based `Enum` also supports keys via the `ZioJsonKeyEnum` trait.
+
 ## ReactiveMongo BSON
 [![Maven Central](https://img.shields.io/maven-central/v/com.beachape/enumeratum-reactivemongo-bson_3)](https://img.shields.io/maven-central/v/com.beachape/enumeratum-reactivemongo-bson_3)
 
