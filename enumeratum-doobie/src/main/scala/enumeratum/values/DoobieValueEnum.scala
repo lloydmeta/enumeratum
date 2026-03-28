@@ -7,6 +7,9 @@ sealed trait DoobieValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType], 
   this: ValueEnum[ValueType, EntryType] =>
 
   implicit val meta: Meta[EntryType]
+
+  implicit def enumSingletonPut[SingletonEntry <: EntryType with Singleton]: Put[SingletonEntry] =
+    Put[EntryType].contramap[SingletonEntry](identity)
 }
 
 /** DoobieEnum for IntEnumEntry

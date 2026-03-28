@@ -20,6 +20,10 @@ class DoobieEnumSpec extends AnyFunSpec with Matchers {
       DoobieRead[DoobieShirt]
     }
 
+    it("singleton values should have a Write") {
+      DoobieWrite[DoobieShirtSize.Medium.type]
+    }
+
   }
 
 }

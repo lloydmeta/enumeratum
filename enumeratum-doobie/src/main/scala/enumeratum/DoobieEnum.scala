@@ -27,6 +27,8 @@ import doobie.Meta
   */
 trait DoobieEnum[A <: EnumEntry] { this: Enum[A] =>
 
+  implicit def enumSingletonPut[B <: A with Singleton]: Put[B] = Put[A].contramap[B](identity)
+
   implicit lazy val enumMeta: Meta[A] = Doobie.meta(this)
 
 }

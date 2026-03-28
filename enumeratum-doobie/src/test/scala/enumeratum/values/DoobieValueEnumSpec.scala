@@ -23,6 +23,10 @@ class DoobieValueEnumSpec extends AnyFunSpec with Matchers {
       DoobieRead[DoobieBorrowerToLibraryItem]
     }
 
+    it("singleton value should have a Write") {
+      DoobieWrite[DoobieLibraryItem.Book.type]
+    }
+
   }
 
   describe("A LongDoobieEnum") {
@@ -35,6 +39,10 @@ class DoobieValueEnumSpec extends AnyFunSpec with Matchers {
       DoobieRead[DoobieContent]
     }
 
+    it("singleton value should have a Write") {
+      DoobieWrite[DoobieContentType.Text.type]
+    }
+
   }
 
   describe("A ShortDoobieEnum") {
@@ -45,6 +53,10 @@ class DoobieValueEnumSpec extends AnyFunSpec with Matchers {
 
     it("should have a Read") {
       DoobieRead[DoobieDrinkManufacturer]
+    }
+
+    it("singleton value should have a Write") {
+      DoobieWrite[DoobieDrink.OrangeJuice.type]
     }
 
   }
