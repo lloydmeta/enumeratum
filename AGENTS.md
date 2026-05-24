@@ -11,7 +11,7 @@ This document provides comprehensive guidance for AI agents (Claude, GitHub Copi
 - Full ScalaJS, ScalaNative, and JVM support
 - Rich integrations with popular Scala libraries
 
-**Current Version**: 1.9.4-SNAPSHOT (stable: 1.9.3)
+**Current Version**: 1.9.8-SNAPSHOT (stable: 1.9.7)
 **License**: MIT
 **Scala Versions**: 2.12.21, 2.13.18, 3.3.7
 **Main Branch**: `master`
@@ -153,6 +153,14 @@ sealed trait Color extends EnumEntry with Snakecase
 - **Either**: `withNameEither`, `withValueEither` (returns `NoSuchMember[A]`)
 
 ## Build System (SBT)
+
+**SBT Version**: 1.12.11+
+
+The project requires SBT 1.12.11 or later. Install via:
+```bash
+sdk install sbt 1.12.11
+# or update project/build.properties
+```
 
 ### Key Files
 
@@ -465,4 +473,4 @@ A: Scoverage has best support for 2.13. Coverage on JS/Native is unreliable.
 
 ---
 
-**Last Updated**: 2026-02-01 (for version 1.9.4-SNAPSHOT)
+**Last Updated**: 2026-05-24 (for version 1.9.8-SNAPSHOT)
