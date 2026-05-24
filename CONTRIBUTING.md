@@ -17,7 +17,7 @@ Thank you for your interest in contributing to Enumeratum! This guide will help 
 ### Prerequisites
 
 - **Java**: Version 11 or higher (Java 11 is used in CI)
-- **SBT**: The project uses SBT as the build tool
+- **SBT**: Version 1.12.11 or later (install via `sdk install sbt 1.12.11` or update `project/build.properties`)
 - **Scala**: The project supports Scala 2.12.21, 2.13.18, and 3.3.7
 
 ### Quick Start
