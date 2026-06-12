@@ -1,7 +1,7 @@
 package enumeratum
 
-import doobie.util._
-import doobie.Meta
+import org.typelevel.doobie.util._
+import org.typelevel.doobie.Meta
 
 /** Helper trait that adds implicit Doobie Get and Put for an [[Enum]] 's members
   *
@@ -9,8 +9,8 @@ import doobie.Meta
   *
   * {{{
   * scala> import enumeratum._
-  * scala> import doobie._
-  * scala> import doobie.implicits._
+  * scala> import org.typelevel.doobie._
+  * scala> import org.typelevel.doobie.implicits._
   *
   * scala> sealed trait ShirtSize extends EnumEntry
   * scala> case object ShirtSize extends Enum[ShirtSize] with DoobieEnum[ShirtSize] {
