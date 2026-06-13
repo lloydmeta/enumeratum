@@ -18,7 +18,7 @@ Thank you for your interest in contributing to Enumeratum! This guide will help 
 
 - **Java**: Version 11 or higher (Java 11 is used in CI)
 - **SBT**: Version 1.12.11 or later (install via `sdk install sbt 1.12.11` or update `project/build.properties`)
-- **Scala**: The project supports Scala 2.12.21, 2.13.18, and 3.3.7
+- **Scala**: The project supports Scala 2.12.21, 2.13.18, and 3.3.8
 
 ### Quick Start
 
@@ -341,7 +341,7 @@ sbt coverage "++2.13.18 test" coverageReport coverageAggregate
 
 # For other Scala versions
 sbt "++2.12.21 test:compile" "++2.12.21 test:doc" "++2.12.21 test"
-sbt "++3.3.7 test:compile" "++3.3.7 test:doc" "++3.3.7 test"
+sbt "++3.3.8 test:compile" "++3.3.8 test:doc" "++3.3.8 test"
 ```
 
 ## Getting Help
