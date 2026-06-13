@@ -3,12 +3,12 @@ package enumeratum
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-import doobie.util.{Read => DoobieRead, Write => DoobieWrite}
+import org.typelevel.doobie.util.{Read => DoobieRead, Write => DoobieWrite}
 import scala.collection.immutable
 
 class DoobieEnumSpec extends AnyFunSpec with Matchers {
 
-  import doobie.generic.auto._
+  import org.typelevel.doobie.generic.auto._
 
   describe("A DoobieEnum") {
 

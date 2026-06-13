@@ -1,7 +1,7 @@
 package enumeratum
 
-import doobie.util._
-import doobie.Meta
+import org.typelevel.doobie.util._
+import org.typelevel.doobie.Meta
 
 object Doobie {
 

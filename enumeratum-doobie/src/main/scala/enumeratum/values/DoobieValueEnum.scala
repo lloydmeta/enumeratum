@@ -1,7 +1,7 @@
 package enumeratum.values
 
-import doobie.util._
-import doobie.Meta
+import org.typelevel.doobie.util._
+import org.typelevel.doobie.Meta
 
 sealed trait DoobieValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType], DoobieType] {
   this: ValueEnum[ValueType, EntryType] =>
@@ -16,8 +16,8 @@ sealed trait DoobieValueEnum[ValueType, EntryType <: ValueEnumEntry[ValueType], 
   *
   * {{{
   * scala> import enumeratum.values._
-  * scala> import doobie._
-  * scala> import doobie.implicits._
+  * scala> import org.typelevel.doobie._
+  * scala> import org.typelevel.doobie.implicits._
   *
   * scala> sealed abstract class ShirtSize(val value:Int) extends IntEnumEntry
   * scala> case object ShirtSize extends IntEnum[ShirtSize] with IntDoobieEnum[ShirtSize] {

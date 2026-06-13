@@ -542,7 +542,7 @@ lazy val enumeratumDoobie =
     .settings(
       crossScalaVersions                    := scalaVersionsAll,
       version                               := Versions.Macros.head,
-      libraryDependencies += "org.tpolecat" %% "doobie-core" % Versions.Dependencies.doobie,
+      libraryDependencies += "org.typelevel" %% "doobie-core" % Versions.Dependencies.doobie,
       libraryDependencies += scalaXmlTest,
       libraryDependencies ++= {
         if (useLocalVersion) {

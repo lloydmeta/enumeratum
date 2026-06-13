@@ -17,7 +17,7 @@ object Versions {
     val scalatestPlusPlay = "7.0.0"
     val circe             = "0.14.10"
     val reactiveMongo     = "1.1.0-RC12"
-    val doobie            = "1.0.0-RC12"
+    val doobie            = "1.0.0-RC13"
     val slick             = "3.5.1"
     val h2                = "1.4.197"
     val cats              = "2.12.0"
