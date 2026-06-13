@@ -13,7 +13,7 @@ This document provides comprehensive guidance for AI agents (Claude, GitHub Copi
 
 **Current Version**: 1.9.8-SNAPSHOT (stable: 1.9.7)
 **License**: MIT
-**Scala Versions**: 2.12.21, 2.13.18, 3.3.7
+**Scala Versions**: 2.12.21, 2.13.18, 3.3.8
 **Main Branch**: `master`
 
 ## Architecture
@@ -257,7 +257,7 @@ sbt "coreJVM/test" "coreJS/test" "coreNative/test"
 
 **Matrix**:
 - Java 11
-- Scala: 2.12.21, 2.13.18, 3.3.7
+- Scala: 2.12.21, 2.13.18, 3.3.8
 
 **Environment**:
 ```yaml
