@@ -118,21 +118,6 @@ object ValueEnumMacros {
 
     import q.reflect.*
 
-    val ctx = q match {
-      case quotesImpl: scala.quoted.runtime.impl.QuotesImpl => quotesImpl.ctx
-      case other => report.errorAndAbort(s"[${other}] was not the expected class")
-    }
-
-    val yRetainTrees = ctx.settings.YretainTrees.valueIn(ctx.settingsState)
-
-    if (!yRetainTrees) {
-      report.errorAndAbort("""Option -Yretain-trees must be set in scalacOptions.
-In SBT settings:
-
-  scalacOptions += "-Yretain-trees"
-""")
-    }
-
     val repr = TypeRepr.of[A]
 
     val valueRepr = TypeRepr.of[ValueType]
@@ -201,7 +186,14 @@ In SBT settings:
                 fromCtor.orElse(fromBody).flatMap { const => cls.unapply(const.value) }
               }
               case _ =>
-                Option.empty[ValueType]
+                report.errorAndAbort(
+                  s"""Cannot read the value of ${htpr.show}: its definition tree is not available.
+                     |Option -Yretain-trees must be set in scalacOptions.
+                     |In SBT settings:
+                     |
+                     |  scalacOptions += "-Yretain-trees"
+                     |""".stripMargin
+                )
             }
           } yield Tuple3(TypeRepr.of[h], '{ ${ vof }.value: A }, constValue)) match {
             case Some((tpr, instance, value)) =>
@@ -209,7 +201,11 @@ In SBT settings:
 
             case None =>
               report.errorAndAbort(
-                s"Fails to check value entry ${htpr.show} for enum ${repr.show}"
+                s"""Fails to check value entry ${htpr.show} for enum ${repr.show}
+                   |If its definition tree is not available, set -Yretain-trees in scalacOptions:
+                   |
+                   |  scalacOptions += "-Yretain-trees"
+                   |""".stripMargin
               )
           }
         }
